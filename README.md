@@ -2,6 +2,10 @@
 
 This web app serves as a launch point for volunteers who want to get involved with [Humanity Forward](https://movehumanityforward.com/).
 
+## System Requirements
+
+Running this code requires the developer to have a working computer with a terminal (built-in terminal for Linux/OSX or something like [Git Bash](https://git-scm.com/downloads)), an IDE such as [Visual Studio Code](https://code.visualstudio.com/), and [Node](https://nodejs.org/en/) installed globally. There is no mandated node version in the package files, but for reference, I'm running on version 14.6.
+
 ## Setup
 
 To run this code locally, it must first be cloned from GitHub. This can be done with the following command:
