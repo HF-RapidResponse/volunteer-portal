@@ -1,17 +1,21 @@
 @import 'variables';
 
-.hfCyan {
+.hf-cyan {
   color: $hfCyan;
 }
 
-.hfDarkBlue {
+.hf-dark-blue {
   color: $hfDarkBlue;
 }
 
-.hfBlack {
+.hf-black {
   color: $hfBlack;
 }
 
 body {
   background-color: $background;
+}
+
+#main-content {
+  margin: 9em;
 }

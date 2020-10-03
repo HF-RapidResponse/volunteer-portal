@@ -1,22 +1,27 @@
 import React from 'react';
+import Header from './components/Header';
 import { BrowserRouter } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/base.scss';
 
 function App() {
   return (
     <BrowserRouter>
-      <section>
-        <h1 className="hfBlack">
-          Hello World! This section is black like my soul. We're still on a
-          white background.
-        </h1>
-      </section>
-      <section>
-        <h2 className="hfCyan">Here is something in cyan.</h2>
-      </section>
-      <section>
-        <h2 className="hfDarkBlue">Here is something in dark blue.</h2>
-      </section>
+      <Header />
+      <div id="main-content">
+        <section>
+          <h1 className="hf-black">
+            Hello World! This section is black like my soul. We're still on a
+            white background.
+          </h1>
+        </section>
+        <section>
+          <h2 className="hf-cyan">Here is something in cyan.</h2>
+        </section>
+        <section>
+          <h2 className="hf-dark-blue">Here is something in dark blue.</h2>
+        </section>
+      </div>
     </BrowserRouter>
   );
 }
