@@ -16,11 +16,12 @@ function App() {
           </h1>
         </section>
         <section>
-          <h2 className="hf-cyan">Here is something in cyan.</h2>
+          <h2 className="hf-cyan">Here is something in cyan h2!</h2>
         </section>
         <section>
-          <h2 className="hf-dark-blue">Here is something in dark blue.</h2>
+          <h3 className="hf-dark-blue">Here is something in dark blue h3!</h3>
         </section>
+        <p>What about p font?</p>
       </div>
     </BrowserRouter>
   );
