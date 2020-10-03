@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
-function Home() {
+function Home(props) {
   return (
     <>
       <h2>Here is the home page!</h2>

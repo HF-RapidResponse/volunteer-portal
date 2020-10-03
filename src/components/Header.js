@@ -9,7 +9,7 @@ function Header() {
     { displayName: 'Event Calendar', url: '/calendar' },
     { displayName: 'Volunteer Roles', url: '/roles' },
     { displayName: 'About', url: '/about' },
-    { displayName: 'Sign In', url: '/signin' },
+    // { displayName: 'Sign In', url: '/signin' },
   ];
 
   const navLinks = [];

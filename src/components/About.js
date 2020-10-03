@@ -3,7 +3,7 @@ import React from 'react';
 function About() {
   return (
     <>
-      <h2 className="hf-cyan">Here is the about page!</h2>
+      <h2>Here is the about page!</h2>
       <h3>The standard Lorem Ipsum passage, used since the 1500s</h3>
       <p>
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod

@@ -4,7 +4,7 @@ import Home from './components/Home';
 import Calendar from './components/Calendar';
 import Roles from './components/Roles';
 import About from './components/About';
-import Signin from './components/Signin';
+// import Signin from './components/Signin';
 
 import { Container } from 'react-bootstrap';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -21,7 +21,8 @@ function App() {
           <Route path="/calendar" exact component={Calendar} />
           <Route path="/roles" exact component={Roles} />
           <Route path="/about" exact component={About} />
-          <Route path="/signin" exact component={Signin} />
+          {/* <Route path="/signin" exact component={Signin} /> */}
+          <Route path="*" component={() => '404 NOT FOUND'} />
         </Switch>
       </Container>
     </BrowserRouter>

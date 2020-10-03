@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Roles() {
+function Roles(props) {
   return (
     <>
       <h2>Here is the roles page!</h2>
