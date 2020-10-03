@@ -1,6 +1,13 @@
 import React from 'react';
 import Header from './components/Header';
-import { BrowserRouter } from 'react-router-dom';
+import Home from './components/Home';
+import Calendar from './components/Calendar';
+import Roles from './components/Roles';
+import About from './components/About';
+import Signin from './components/Signin';
+
+import { Container } from 'react-bootstrap';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/base.scss';
 
@@ -8,21 +15,15 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
-      <div id="main-content">
-        <section>
-          <h1 className="hf-black">
-            Hello World! This section is black like my soul. We're still on a
-            white background.
-          </h1>
-        </section>
-        <section>
-          <h2 className="hf-cyan">Here is something in cyan h2!</h2>
-        </section>
-        <section>
-          <h3 className="hf-dark-blue">Here is something in dark blue h3!</h3>
-        </section>
-        <p>What about p font?</p>
-      </div>
+      <Container id="main-content">
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/calendar" exact component={Calendar} />
+          <Route path="/roles" exact component={Roles} />
+          <Route path="/about" exact component={About} />
+          <Route path="/signin" exact component={Signin} />
+        </Switch>
+      </Container>
     </BrowserRouter>
   );
 }
