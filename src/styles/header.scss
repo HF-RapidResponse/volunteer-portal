@@ -1,7 +1,17 @@
 #main-header {
   background-color: white;
+  box-shadow: 0 4px 2px -2px rgb(184, 183, 183);
 }
 
 #hf-logo {
-  height: 4.75rem;
+  height: 5rem;
+}
+
+.nav-link {
+  font-size: 1.15rem;
+  font-family: Arial;
+}
+
+#links-container {
+  margin-right: 5rem;
 }

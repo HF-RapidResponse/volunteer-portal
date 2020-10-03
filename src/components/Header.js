@@ -46,7 +46,7 @@ function Header() {
           onClick={() => setExpanded(!expanded)}
         />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">
+          <Nav className="ml-auto" id="links-container">
             <>{navLinks}</>
           </Nav>
         </Navbar.Collapse>
