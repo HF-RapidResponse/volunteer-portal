@@ -15,12 +15,14 @@ function NotFound(props) {
   return (
     <>
       <h1>404</h1>
-      <h3>We couldn't find what you were looking for, but here's some food for thought:</h3>
-      <p>{quote}</p>
-      <p>{author}</p>
+      <div style={{maxWidth: "50vw"}}>
+      <p>We couldn't find what you were looking for, but here's some food for thought:</p>
+      <p class="faint-quote-gray"><i>{quote}</i></p>
+      <p class="faint-quote-gray" style={{textAlign: "right"}}>{author}</p>
+      </div>
       <Link to={'/'}>
         <Button variant="info" className="wide-btn">
-          Let's make change!
+          Forward to the Home Page
         </Button>
       </Link>
     </>
