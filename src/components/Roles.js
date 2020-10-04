@@ -10,7 +10,7 @@ function Roles(props) {
         <LoadingSpinner />
       ) : (
         <>
-          <h2>Browse HF Volunteer Roles</h2>
+          <h1>Browse HF Volunteer Roles</h1>
           <p>
             Some messages about how there are available positions and roles and
             jobs to fill in. Something else about this, too.

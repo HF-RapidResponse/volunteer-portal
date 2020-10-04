@@ -9,13 +9,13 @@ import { Link } from 'react-router-dom';
 function Home() {
   return (
     <>
-      <h2>Welcome to the HF Volunteer Portal!</h2>
+      <h1>Welcome to the HF Volunteer Portal!</h1>
       <p>
         This space is for some motivational text that also explains what this
         dashboard can be used for. Volunteering is fun!
       </p>
       <section>
-        <h3>Attend an Event</h3>
+        <h2>Attend an Event</h2>
         <p>
           Insert a short, one to two sentence blurb about how easy it is to
           attend Humanity Forward events.
@@ -27,7 +27,7 @@ function Home() {
         </Link>
       </section>
       <section>
-        <h3>Browse HF Volunteer Roles</h3>
+        <h2>Browse HF Volunteer Roles</h2>
         <p>
           Insert a short, one to two sentence blurb saying that we have
           available roles that need to be filled.
