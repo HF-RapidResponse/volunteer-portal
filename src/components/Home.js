@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import '../styles/home.scss';
+import { Link } from 'react-router-dom';
 
 function Home(props) {
   return (
@@ -16,9 +17,11 @@ function Home(props) {
           Insert a short, one to two sentence blurb about how easy it is to
           attend Humanity Forward events.
         </p>
-        <Button variant="info" className="wide-btn">
-          View HF Event Calendar
-        </Button>
+        <Link to={'/calendar'}>
+          <Button variant="info" className="wide-btn">
+            View HF Event Calendar
+          </Button>
+        </Link>
       </section>
       <section>
         <h3>Browse HF Volunteer Roles</h3>
@@ -26,9 +29,11 @@ function Home(props) {
           Insert a short, one to two sentence blurb saying that we have
           available roles that need to be filled.
         </p>
-        <Button variant="info" className="wide-btn">
-          View HF Volunteer Roles
-        </Button>
+        <Link to={'/roles'}>
+          <Button variant="info" className="wide-btn">
+            View HF Volunteer Roles
+          </Button>
+        </Link>
       </section>
     </>
   );
