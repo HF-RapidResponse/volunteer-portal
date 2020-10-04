@@ -7,6 +7,7 @@ import Home from './Home';
 import Calendar from './Calendar';
 import Roles from './Roles';
 import About from './About';
+import NotFound from './NotFound';
 
 // initialize GA
 // REACT_APP_GA_TRACKING_ID can be found in .env
@@ -32,7 +33,7 @@ function PageViewSwitch() {
         <Route path="/roles" exact component={Roles} />
         <Route path="/about" exact component={About} />
         {/* <Route path="/signin" exact component={Signin} /> */}
-        <Route path="*" component={() => '404 NOT FOUND'} />
+        <Route path="*" exact component={NotFound} />
       </Switch>
     </Container>
   );
