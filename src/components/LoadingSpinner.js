@@ -12,7 +12,7 @@ function LoadingSpinner() {
       <FontAwesomeIcon
         icon={faSpinner}
         spin
-        style={{ fontSize: '100px', margin: '1.5em auto' }}
+        style={{ fontSize: '3rem', margin: '1.5rem auto' }}
       />
     </div>
   );
