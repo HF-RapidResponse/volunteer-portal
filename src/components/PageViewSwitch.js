@@ -33,7 +33,7 @@ function PageViewSwitch() {
         <Route path="/roles" exact component={Roles} />
         <Route path="/about" exact component={About} />
         {/* <Route path="/signin" exact component={Signin} /> */}
-        <Route path="*" exact component={NotFound} />
+        <Route path="*" component={NotFound} />
       </Switch>
     </Container>
   );
