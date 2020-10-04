@@ -17,8 +17,8 @@ function NotFound(props) {
       <h1>404</h1>
       <div style={{maxWidth: "50vw"}}>
       <p>We couldn't find what you were looking for, but here's some food for thought:</p>
-      <p class="faint-quote-gray"><i>{quote}</i></p>
-      <p class="faint-quote-gray" style={{textAlign: "right"}}>{author}</p>
+      <p className="faint-quote-gray"><i>{quote}</i></p>
+      <p className="faint-quote-gray" style={{textAlign: "right"}}>{author}</p>
       </div>
       <Link to={'/'}>
         <Button variant="info" className="wide-btn">
