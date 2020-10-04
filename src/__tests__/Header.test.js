@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 describe('header component', () => {
   it('displays the proper html and text on mount', () => {
+    // component needs to be mounted and not rendered or else elements some elements can't be found
     const component = mount(
       <BrowserRouter>
         <Header />
@@ -34,7 +35,7 @@ describe('header component', () => {
       '<a class="nav-link" href="/roles">Volunteer Roles</a>'
     );
 
-    // inspect the third anchor tag
+    // inspect the fourth anchor tag
     const fourthATag = aTags.at(3);
     expect(fourthATag.html()).toBe(
       '<a class="nav-link" href="/about">About</a>'
