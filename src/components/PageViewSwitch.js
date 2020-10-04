@@ -18,6 +18,10 @@ function usePageViews() {
   }, [location]);
 }
 
+/**
+ * Component that helps gather Google Analytics
+ * It runs a helper function that records information before rendering the appropriate page.
+ */
 function PageViewSwitch() {
   usePageViews();
   return (

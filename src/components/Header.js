@@ -4,6 +4,11 @@ import { Link } from 'react-router-dom';
 import '../styles/header.scss';
 import HFLogo from '../hfLogo.svg';
 
+/**
+ * Component that displays the top navigation bar present on every page. It allows users to navigate
+ * through different parts of the website. Because it is fixed,
+ * the nav bar will appear even as users scroll down longer pages.
+ */
 function Header() {
   const links = [
     { displayName: 'Event Calendar', url: '/calendar' },

@@ -3,14 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 /**
- * component that displays while an API fetch function is taking place. Uses Font Awesome to display
+ * Component that displays while an API fetch function is taking place. Uses Font Awesome to display
  * the magic. Relies on a loading boolean to render.
- *
- * @component
- * @example
- * return (
- *   <LoadingSpinner />
- * )
  */
 function LoadingSpinner() {
   return (

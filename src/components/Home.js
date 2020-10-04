@@ -3,7 +3,10 @@ import { Button } from 'react-bootstrap';
 import '../styles/home.scss';
 import { Link } from 'react-router-dom';
 
-function Home(props) {
+/**
+ * Component that displays that landing page.
+ */
+function Home() {
   return (
     <>
       <h2>Welcome to the HF Volunteer Portal!</h2>

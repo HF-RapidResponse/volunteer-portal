@@ -7,6 +7,10 @@ import PageViewSwitch from './components/PageViewSwitch';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/base.scss';
 
+/**
+ * Top level component that renders all other components.
+ * Uses React Router DOM to render various pages.
+ */
 function App() {
   return (
     <BrowserRouter>
