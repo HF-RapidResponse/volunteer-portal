@@ -18,6 +18,14 @@ body {
 
 #main-content {
   padding-top: 11rem;
+
+  @media (max-width: 768px) {
+    padding-top: 10rem;
+  }
+
+  @media (max-width: 576px) {
+    padding-top: 9rem;
+  }
 }
 
 h1,
