@@ -14,6 +14,8 @@ function Calendar() {
       <p>
         We can’t wait for you to join us at an event!
         Select an event for more information, and for registration links.
+        If you have joined the HF slack workspace, be sure to check our
+        #announcements channel for updates and event postings.
       </p>
       {loading && <LoadingSpinner />}
       <iframe
