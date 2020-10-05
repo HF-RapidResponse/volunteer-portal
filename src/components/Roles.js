@@ -7,6 +7,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
  */
 function Roles() {
   const [loading, setLoading] = useState(true);
+  document.title = 'HF Volunteer Portal - Volunteer Roles';
   return (
     <>
       <h1>Browse HF Volunteer Roles</h1>
@@ -20,7 +21,7 @@ function Roles() {
         src="https://airtable.com/embed/shrZmR6ahgCsyUBGy?backgroundColor=greenLight&viewControls=on"
         frameBorder="0"
         width="100%"
-        height="533"
+        height="1000"
         onLoad={() => setLoading(false)}
         title="volunteer-listings"
         styles="background: transparent; border: 1px solid #ccc;"

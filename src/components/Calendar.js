@@ -7,6 +7,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
  */
 function Calendar() {
   const [loading, setLoading] = useState(true);
+  document.title = 'HF Volunteer Portal - Calendar';
   return (
     <>
       <h1>Attend an Event</h1>
@@ -21,7 +22,7 @@ function Calendar() {
         src="https://airtable.com/embed/shrGk2bE7oadINvFy?backgroundColor=greenLight&amp;viewControls=on"
         frameBorder="0"
         width="100%"
-        height="533"
+        height="1000"
         onLoad={() => setLoading(false)}
         title="calendar"
         styles="background: transparent; border: 1px solid #ccc;"

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
  * Component that displays that landing page.
  */
 function Home() {
+  document.title = 'HF Volunteer Portal';
   return (
     <>
       <h1>Welcome to the HF Volunteer Portal!</h1>

@@ -4,7 +4,7 @@ This web app serves as a launch point for volunteers who want to get involved wi
 
 ## System Requirements
 
-Running this code requires the developer to have a working computer with a terminal (built-in terminal for Linux/OSX or something like [Git Bash](https://git-scm.com/downloads)), an IDE such as [Visual Studio Code](https://code.visualstudio.com/), and [Node](https://nodejs.org/en/) installed globally. There is no mandated node version in the package files, but for reference, I'm running on version 14.6.
+Running this code requires the developer to have a working computer with a terminal (built-in terminal for Linux/OSX or something like [Git Bash](https://git-scm.com/downloads)), an IDE such as [Visual Studio Code](https://code.visualstudio.com/), and [Node](https://nodejs.org/en/) installed globally. There is no mandated node version in the package files, but the developer team is running on version 14.x.
 
 ## Setup
 
@@ -18,7 +18,7 @@ In the project directory, you can run:
 
 ### `npm install` or `npm i`
 
-Installs the packages required to run this project locally. This is the first command developers must run after clo
+Installs the packages required to run this project locally. This is the first command developers must run after cloning.
 
 ### `npm start`
 
