@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-function Roles(props) {
+/**
+ * Component that displays the vounteer roles page. Currently, we are using an embedded
+ * airtable to render the data.
+ */
+function Roles() {
   const [loading, setLoading] = useState(true);
-
   return (
     <>
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        <>
-          <h1>Browse HF Volunteer Roles</h1>
-          <p>
-            Some messages about how there are available positions and roles and
-            jobs to fill in. Something else about this, too.
-          </p>
-        </>
-      )}
+      <h1>Browse HF Volunteer Roles</h1>
+      <p>
+        Some messages about how there are available positions and roles and jobs
+        to fill in. Something else about this, too.
+      </p>
+      {loading && <LoadingSpinner />}
       <iframe
         className="airtable-embed"
         src="https://airtable.com/embed/shrZmR6ahgCsyUBGy?backgroundColor=greenLight&viewControls=on"
