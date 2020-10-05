@@ -12,8 +12,9 @@ function Roles() {
     <>
       <h1>Browse HF Volunteer Roles</h1>
       <p>
-        Some messages about how there are available positions and roles and jobs
-        to fill in. Something else about this, too.
+        Humanity Forward has many volunteer opportunities available, and we look
+        forward to growing our teams! Please consider applying, and let us know
+        if you have any questions!
       </p>
       {loading && <LoadingSpinner />}
       <iframe
