@@ -12,6 +12,16 @@
   color: $blackText;
 }
 
+.faint-quote-gray {
+  color: $faintQuoteGray;
+}
+
+.quote-container {
+  @media (min-width: 768px) {
+    max-width: 50vw;
+  }
+}
+
 body {
   background-color: $background;
 }
