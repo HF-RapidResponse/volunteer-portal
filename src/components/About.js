@@ -24,6 +24,12 @@ function About() {
         and we are so thankful you are here!
       </p>
       <p>
+        Humanity Forward communicates with volunteers primarily using Slack.&nbsp;
+        <a href="https://on.movehumanityforward.com/join_slack">Sign up here</a>
+        &nbsp;to join the conversation, meet other volunteers, or ask the team
+        questions.
+      </p>
+      <p>
         Forward!
       </p>
     </>
