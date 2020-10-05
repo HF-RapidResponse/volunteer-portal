@@ -12,14 +12,15 @@ function Home() {
     <>
       <h1>Welcome to the HF Volunteer Portal!</h1>
       <p>
-        This space is for some motivational text that also explains what this
-        dashboard can be used for. Volunteering is fun!
+        Humanity Forward is excited you are here! Our volunteers and grassroots
+        supporters are the heart of this human-centered movement. We are hard
+        at work rewriting the rules of the economy to work for us, the people.
       </p>
       <section>
         <h2>Attend an Event</h2>
         <p>
-          Insert a short, one to two sentence blurb about how easy it is to
-          attend Humanity Forward events.
+          There are many opportunities to participate in Humanity Forward events.
+          Take a look at our calendar for more information.
         </p>
         <Link to={'/calendar'}>
           <Button variant="info" className="wide-btn">
@@ -30,8 +31,9 @@ function Home() {
       <section>
         <h2>Browse HF Volunteer Roles</h2>
         <p>
-          Insert a short, one to two sentence blurb saying that we have
-          available roles that need to be filled.
+          Humanity Forward is looking to grow our volunteer teams, and we have
+          many opportunities for you to apply your time, talents and enthusiasm!
+          Take a look at our openings for more information.
         </p>
         <Link to={'/roles'}>
           <Button variant="info" className="wide-btn">

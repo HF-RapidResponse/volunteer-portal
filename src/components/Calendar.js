@@ -12,9 +12,8 @@ function Calendar() {
     <>
       <h1>Attend an Event</h1>
       <p>
-        Message about how we have a lot of exciting HF events, sharing that
-        there are different kinds of events to attend, ranging from this to
-        that.
+        We can’t wait for you to join us at an event!
+        Select an event for more information, and for registration links.
       </p>
       {loading && <LoadingSpinner />}
       <iframe
