@@ -18,7 +18,7 @@ function NotFound(props) {
   return (
     <>
       <h1>404</h1>
-      <div style={{maxWidth: "50vw"}}>
+      <div className="quote-container">
       <p>We couldn't find what you were looking for, but here's some food for thought:</p>
       <p className="faint-quote-gray"><i>{quote}</i></p>
       <p className="faint-quote-gray" style={{textAlign: "right"}}><i>{author}</i></p>
