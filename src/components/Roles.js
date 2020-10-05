@@ -7,7 +7,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
  */
 function Roles() {
   const [loading, setLoading] = useState(true);
-  document.title = 'HF Volunteer Portal - Volunteer Roles';
+  document.title = 'HF Volunteer Portal - Volunteer Openings';
   return (
     <>
       <h1>Browse HF Volunteer Openings</h1>
