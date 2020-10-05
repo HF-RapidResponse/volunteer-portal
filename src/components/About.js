@@ -1,6 +1,7 @@
 import React from 'react';
 
 function About() {
+  document.title = 'HF Volunteer Portal - About Us';
   return (
     <>
       <h1>Here is the about page!</h1>

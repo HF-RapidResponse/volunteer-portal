@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-function Calendar(props) {
+/**
+ * Component that displays the calendar page. Currently, we are using an embedded
+ * airtable to render the data.
+ */
+function Calendar() {
   const [loading, setLoading] = useState(true);
+  document.title = 'HF Volunteer Portal - Calendar';
   return (
     <>
       <h1>Attend an Event</h1>
       <p>
-        Message about how we have a lot of exciting HF events, sharing that there are different kinds of events to attend, ranging from this to that.
+        Message about how we have a lot of exciting HF events, sharing that
+        there are different kinds of events to attend, ranging from this to
+        that.
       </p>
       {loading && <LoadingSpinner />}
       <iframe
@@ -15,10 +22,11 @@ function Calendar(props) {
         src="https://airtable.com/embed/shrGk2bE7oadINvFy?backgroundColor=greenLight&amp;viewControls=on"
         frameBorder="0"
         width="100%"
-        height="533"
+        height="1000"
         onLoad={() => setLoading(false)}
         title="calendar"
-        styles="background: transparent; border: 1px solid #ccc;"></iframe>
+        styles="background: transparent; border: 1px solid #ccc;"
+      ></iframe>
     </>
   );
 }
