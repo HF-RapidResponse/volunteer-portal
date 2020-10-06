@@ -22,6 +22,15 @@
   }
 }
 
+.flex-container {
+  padding: 1rem;
+  display: flex;
+}
+.flex-child {
+  align-self: center;
+  flex: 1;
+}
+
 body {
   background-color: $background;
 }

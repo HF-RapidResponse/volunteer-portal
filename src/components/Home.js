@@ -29,7 +29,7 @@ function Home() {
         </Link>
       </section>
       <section>
-        <h2>Browse HF Volunteer Roles</h2>
+        <h2>HF Volunteer Openings</h2>
         <p>
           Humanity Forward is looking to grow our volunteer teams, and we have
           many opportunities for you to apply your time, talents and enthusiasm!
