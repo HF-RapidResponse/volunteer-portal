@@ -12,7 +12,7 @@ import HFLogo from '../hfLogo.svg';
 function Header() {
   const links = [
     { displayName: 'Event Calendar', url: '/calendar' },
-    { displayName: 'Volunteer Roles', url: '/roles' },
+    { displayName: 'Volunteer Openings', url: '/roles' },
     { displayName: 'About', url: '/about' },
     // { displayName: 'Sign In', url: '/signin' },
   ];
