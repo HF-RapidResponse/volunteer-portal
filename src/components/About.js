@@ -80,7 +80,14 @@ function About() {
 
   return (
     <>
-      <p className="large-text text-center">Rapid Response Volunteer Program</p>
+      <div className="text-center">
+        <img
+          src={require('../assets/HF-horiz-logo.png')}
+          alt="hf-logo-long"
+          className="hf-horiz-logo text-center"
+        />
+        <p className="large-text">Rapid Response Volunteer Program</p>
+      </div>
       <hr className="styled-hr" />
       <p className="med-text">Primary Initiatives for Volunteer Involvement</p>
       <div className="bigger-list">
