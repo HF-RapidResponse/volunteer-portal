@@ -23,7 +23,11 @@ function Home() {
           events. Take a look at our calendar for more information.
         </p>
         <Link to={'/calendar'}>
-          <Button variant="info" className="wide-btn">
+          <Button
+            variant="info"
+            className="wide-btn"
+            style={{ padding: '.5rem 1.75rem' }}
+          >
             View Event Calendar
           </Button>
         </Link>
@@ -36,7 +40,11 @@ function Home() {
           Take a look at our openings for more information.
         </p>
         <Link to={'/roles'}>
-          <Button variant="info" className="wide-btn">
+          <Button
+            variant="info"
+            className="wide-btn"
+            style={{ padding: '.5rem 1.75rem' }}
+          >
             View Volunteer Openings
           </Button>
         </Link>
