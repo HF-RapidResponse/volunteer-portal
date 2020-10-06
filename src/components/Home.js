@@ -24,7 +24,7 @@ function Home() {
         </p>
         <Link to={'/calendar'}>
           <Button variant="info" className="wide-btn">
-            View HF Event Calendar
+            View Event Calendar
           </Button>
         </Link>
       </section>
@@ -37,7 +37,7 @@ function Home() {
         </p>
         <Link to={'/roles'}>
           <Button variant="info" className="wide-btn">
-            View HF Volunteer Openings
+            View Volunteer Openings
           </Button>
         </Link>
       </section>

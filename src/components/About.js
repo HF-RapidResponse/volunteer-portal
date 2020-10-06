@@ -129,7 +129,7 @@ function About() {
         I thank you for being here and look forward to working with you for the
         future.
       </p>
-      <section className="text-center">
+      <section className="about-section text-center">
         <p className="med-text thicc">Team Leads</p>
         <>{teamLeadProfiles}</>
       </section>
