@@ -11,6 +11,9 @@ import TuckerPortrait from '../portraits/tucker_portrait.png';
 import GreyPortrait from '../portraits/grey_portrait.png';
 import '../styles/about.scss';
 
+/**
+ * Component that renders the about page.
+ */
 function About() {
   document.title = 'HF Volunteer Portal - About Us';
 
@@ -27,7 +30,7 @@ function About() {
     },
     {
       roleName: 'Humanity Hangs',
-      name: 'Kimblerly Woods',
+      name: 'Kimberly Woods',
       portrait: KimberlyPortrait,
     },
     {
