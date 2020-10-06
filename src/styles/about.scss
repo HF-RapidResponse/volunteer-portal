@@ -36,5 +36,8 @@ section {
 
 .hf-horiz-logo {
   max-width: 550px;
+  @media (max-width: 600px) {
+    max-width: 90vw;
+  }
   margin: 1rem auto;
 }
