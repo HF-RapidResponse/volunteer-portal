@@ -13,10 +13,75 @@ import '../styles/about.scss';
 
 function About() {
   document.title = 'HF Volunteer Portal - About Us';
+
+  const teamLeads = [
+    {
+      roleName: 'Candidate Support & Congressional Pressure',
+      name: 'Tom Jeffrey',
+      portrait: TomPortrait,
+    },
+    {
+      roleName: 'COVID Relief Calling Program',
+      name: 'Brenna Cully',
+      portrait: BrennaPortrait,
+    },
+    {
+      roleName: 'Humanity Hangs',
+      name: 'Kimblerly Woods',
+      portrait: KimberlyPortrait,
+    },
+    {
+      roleName: 'Onboarding',
+      name: 'Christina Woo',
+      portrait: ChristinaPortrait,
+    },
+    {
+      roleName: 'Email Response',
+      name: 'Lauren Lau',
+      portrait: LaurenPortrait,
+    },
+    {
+      roleName: 'Data',
+      name: 'Tab Dayani',
+      portrait: TabPortrait,
+    },
+    {
+      roleName: 'Data',
+      name: 'Suzanne Eden',
+      portrait: SuzannePortrait,
+    },
+    {
+      roleName: 'Tech',
+      name: 'Tucker Tirven',
+      portrait: TuckerPortrait,
+    },
+    {
+      roleName: 'Outreach & Chapter Relations',
+      name: 'Grey Black',
+      portrait: GreyPortrait,
+    },
+  ];
+  const teamLeadProfiles = [];
+
+  for (let i = 0; i < teamLeads.length; i++) {
+    const teamLead = teamLeads[i];
+    teamLeadProfiles.push(
+      <div className="d-md-flex gap">
+        <div style={{ height: '100%' }} className="flex-child">
+          <h3>{teamLead.roleName}</h3>
+          <h2>{teamLead.name}</h2>
+        </div>
+        <div className="flex-child">
+          <img src={teamLead.portrait} alt={`${teamLead.name} portrait`} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <p className="large-text text-center">Rapid Response Volunteer Program</p>
-      <hr style={{ margin: '2.5rem auto' }} />
+      <hr className="styled-hr" />
       <p className="med-text">Primary Initiatives for Volunteer Involvement</p>
       <div className="bigger-list">
         <ul>
@@ -25,8 +90,8 @@ function About() {
           <li>COVID-19 Relief</li>
         </ul>
       </div>
-      <hr style={{ margin: '2.5rem auto' }} />
-      <div class="d-md-flex justify-content-around">
+      <hr className="styled-hr" />
+      <div class="d-md-flex justify-content-around gap">
         <div className="text-center">
           <p className="med-text">Organizing &amp; Operations Director</p>
           <br />
@@ -58,89 +123,8 @@ function About() {
         future.
       </p>
       <section className="text-center">
-        <p className="med-text thicc gap">Team Leads</p>
-        <hr style={{ margin: '2.5rem auto' }} />
-        <div className="d-md-flex">
-          <div style={{ height: '100%' }} className="flex-child">
-            <h3>Candidate Support &amp; Congressional Pressure</h3>
-            <h2>Tom Jeffrey</h2>
-          </div>
-          <div className="flex-child">
-            <img src={TomPortrait} alt="tom-portrait" />
-          </div>
-        </div>
-        <div className="d-md-flex">
-          <div style={{ height: '100%' }} className="flex-child">
-            <h3>COVID Relief Calling Program</h3>
-            <h2>Brenna Cully</h2>
-          </div>
-          <div className="flex-child">
-            <img src={BrennaPortrait} alt="brenna-portrait" />
-          </div>
-        </div>
-        <div className="d-md-flex">
-          <div style={{ height: '100%' }} className="flex-child">
-            <h3>Humanity Hangs</h3>
-            <h2>Kimblerly Woods</h2>
-          </div>
-          <div className="flex-child">
-            <img src={KimberlyPortrait} alt="kimberly-portrait" />
-          </div>
-        </div>
-        <div className="d-md-flex">
-          <div style={{ height: '100%' }} className="flex-child">
-            <h3>Onboarding</h3>
-            <h2>Christina Woo</h2>
-          </div>
-          <div className="flex-child">
-            <img src={ChristinaPortrait} alt="christina-portrait" />
-          </div>
-        </div>
-        <div className="d-md-flex">
-          <div style={{ height: '100%' }} className="flex-child">
-            <h3>Email Response</h3>
-            <h2>Lauren Lau</h2>
-          </div>
-          <div className="flex-child">
-            <img src={LaurenPortrait} alt="lauren-portrait" />
-          </div>
-        </div>
-        <div className="d-md-flex">
-          <div style={{ height: '100%' }} className="flex-child">
-            <h3>Data</h3>
-            <h2>Tab Dayani</h2>
-          </div>
-          <div className="flex-child">
-            <img src={TabPortrait} alt="tab-portrait" />
-          </div>
-        </div>
-        <div className="d-md-flex">
-          <div style={{ height: '100%' }} className="flex-child">
-            <h3>Data</h3>
-            <h2>Suzanne Eden</h2>
-          </div>
-          <div className="flex-child">
-            <img src={SuzannePortrait} alt="suzanne-portrait" />
-          </div>
-        </div>
-        <div className="d-md-flex">
-          <div style={{ height: '100%' }} className="flex-child">
-            <h3>Tech</h3>
-            <h2>Tucker Tirven</h2>
-          </div>
-          <div className="flex-child">
-            <img src={TuckerPortrait} alt="tucker-portrait" />
-          </div>
-        </div>
-        <div className="d-md-flex">
-          <div style={{ height: '100%' }} className="flex-child">
-            <h3>Outreach &amp; Chapter Relations</h3>
-            <h2>Grey Black</h2>
-          </div>
-          <div className="flex-child">
-            <img src={GreyPortrait} alt="grey-portrait" />
-          </div>
-        </div>
+        <p className="med-text thicc">Team Leads</p>
+        <>{teamLeadProfiles}</>
       </section>
     </>
   );
