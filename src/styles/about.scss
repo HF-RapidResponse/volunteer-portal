@@ -1,0 +1,43 @@
+@import 'variables';
+
+.large-text {
+  font-size: 2.75rem;
+  line-height: 1.25;
+}
+
+.med-text {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.bigger-list {
+  font-size: 1.4rem;
+}
+
+.thicc {
+  font-weight: 600;
+}
+
+.gap {
+  margin: 3rem auto;
+}
+
+section.about-section {
+  margin: 6rem auto;
+}
+
+.styled-hr {
+  height: 1px;
+  border-width: 0;
+  color: gray;
+  background-color: gray;
+  margin: 2.5rem auto;
+}
+
+.hf-horiz-logo {
+  max-width: 550px;
+  @media (max-width: 600px) {
+    max-width: 90vw;
+  }
+  margin: 1rem auto;
+}

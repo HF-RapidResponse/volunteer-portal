@@ -10,7 +10,7 @@ function Roles() {
   document.title = 'HF Volunteer Portal - Volunteer Openings';
   return (
     <>
-      <h1>Browse HF Volunteer Openings</h1>
+      <h1>HF Volunteer Openings</h1>
       <p>
         Humanity Forward has many volunteer opportunities available, and we look
         forward to growing our teams! Please consider applying, and let us know

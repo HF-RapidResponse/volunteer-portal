@@ -32,7 +32,7 @@ describe('header component', () => {
     // inspect the third anchor tag
     const thirdATag = aTags.at(2);
     expect(thirdATag.html()).toBe(
-      '<a class="nav-link" href="/roles">Volunteer Roles</a>'
+      '<a class="nav-link" href="/roles">Volunteer Openings</a>'
     );
 
     // inspect the fourth anchor tag
