@@ -16,6 +16,7 @@ function usePageViews() {
   const location = useLocation();
   useEffect(() => {
     ReactGA.pageview(`${location.pathname}${location.search}`); // Record a pageview for the given page
+    window.scrollTo(0, 0);
   }, [location]);
 }
 
