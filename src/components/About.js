@@ -67,7 +67,7 @@ function About() {
     const teamLead = teamLeads[i];
     teamLeadProfiles.push(
       <div className="d-md-flex gap">
-        <div style={{ height: '100%' }} className="flex-child">
+        <div className="flex-child">
           <h3>{teamLead.roleName}</h3>
           <h2>{teamLead.name}</h2>
         </div>
