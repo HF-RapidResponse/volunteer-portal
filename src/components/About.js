@@ -92,9 +92,9 @@ function About() {
       <p className="med-text">Primary Initiatives for Volunteer Involvement</p>
       <div className="bigger-list">
         <ul>
-          <li>Candidate Support</li>
-          <li>Congressional Pressure</li>
-          <li>COVID-19 Relief</li>
+          <li key="candidateSupp">Candidate Support</li>
+          <li key="congressPress">Congressional Pressure</li>
+          <li key="covidRelief">COVID-19 Relief</li>
         </ul>
       </div>
       <hr className="styled-hr" />
