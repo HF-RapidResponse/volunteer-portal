@@ -30,7 +30,11 @@ function About() {
     },
     {
       roleName: 'Humanity Hangs',
+<<<<<<< HEAD
       name: 'Kimberly Woods',
+=======
+      name: 'Kimblerly Woods',
+>>>>>>> origin/master
       portrait: KimberlyPortrait,
     },
     {
@@ -69,7 +73,11 @@ function About() {
   for (let i = 0; i < teamLeads.length; i++) {
     const teamLead = teamLeads[i];
     teamLeadProfiles.push(
+<<<<<<< HEAD
       <div className="d-md-flex gap" key={teamLead.name + i}>
+=======
+      <div className="d-md-flex gap">
+>>>>>>> origin/master
         <div className="flex-child">
           <h3>{teamLead.roleName}</h3>
           <h2>{teamLead.name}</h2>
@@ -101,7 +109,11 @@ function About() {
         </ul>
       </div>
       <hr className="styled-hr" />
+<<<<<<< HEAD
       <div className="d-md-flex justify-content-around gap">
+=======
+      <div class="d-md-flex justify-content-around gap">
+>>>>>>> origin/master
         <div className="text-center">
           <p className="med-text">Organizing &amp; Operations Director</p>
           <br />
