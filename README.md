@@ -4,9 +4,15 @@ This web app serves as a launch point for volunteers who want to get involved wi
 
 ## System Requirements
 
-Running this code requires the developer to have a working computer with a terminal (built-in terminal for Linux/OSX or something like [Git Bash](https://git-scm.com/downloads)), an IDE such as [Visual Studio Code](https://code.visualstudio.com/), and [Node](https://nodejs.org/en/) installed globally. There is no mandated node version in the package files, but the developer team is running on version 14.x.
+Running this code requires the developer to have a working computer with [git](https://git-scm.com/downloads), an IDE such as [Visual Studio Code](https://code.visualstudio.com/), and [Node](https://nodejs.org/en/) installed globally. There is no mandated node version in the package files, but the developer team is running on version 14.x.
 
-## Setup
+## Machine Setup
+
+We've touched on some things to install on your computer, but for a detailed explanation, [see this page](/docs/setup.md).
+
+## Local Repo Setup
+
+If you're reading this, then you've probably created a GitHub account. As of this writing, the repo is set to private. However, if you somehow got access to this readme without creating an account, please do that first.
 
 To run this code locally, it must first be cloned from GitHub. This can be done with the following command:
 
