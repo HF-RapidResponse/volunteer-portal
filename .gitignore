@@ -117,3 +117,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Ignore pycache
+*.pyc
+*.mypy
