@@ -21,7 +21,7 @@ Feel free to use whichever IDE you'd like. There is no hard requirement for an I
 
 ## Extensions
 
-There are some ESLint files in this repo. For those using VS Code, `ESLint` will allow users to take advantage of these files to handle things like syntax errors and formatting. For more info on ESLint, read [their website](https://eslint.org/). Another helpful add-on is `Prettier` that helps with code formatting.
+There are some ESLint files in this repo. For those using VS Code, `ESLint` will allow users to take advantage of these files to handle things like syntax errors and formatting. For more info on ESLint, read [their website](https://eslint.org/). Another helpful add-on is `Prettier` that helps with code formatting (makes it looks pretty!).
 
 ## Node
 
