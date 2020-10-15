@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import '../styles/header.scss';
-import HFLogo from '../hfLogo.svg';
+import HFLogo from '../assets/HF-square-logo.svg';
 
 /**
  * Component that displays the top navigation bar present on every page. It allows users to navigate
