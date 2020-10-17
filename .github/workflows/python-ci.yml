@@ -15,16 +15,13 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Miniconda
-      run: |
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -q
-        chmod +x Miniconda3-latest-Linux-x86_64.sh
-        ./Miniconda3-latest-Linux-x86_64.sh -b
-    - name: Create conda environment
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Create/Activate conda environment and Lint
       run: |
         conda env create
-    - name: Lint
-      run: |
         source ~/miniconda3/etc/profile.d/conda.sh
         conda activate volunteer-portal
         mypy ./api
