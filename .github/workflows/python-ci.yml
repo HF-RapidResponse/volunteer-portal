@@ -25,7 +25,7 @@ jobs:
     - name: Activate conda environment
       run: |
         conda init bash
-        source ~/.bash_profile
+        source ~/.bashrc
         conda activate volunteer-portal
     - name: Lint
       run: mypy ./api
