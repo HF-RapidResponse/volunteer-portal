@@ -21,10 +21,11 @@ jobs:
         chmod +x Miniconda3-latest-Linux-x86_64.sh
         ./Miniconda3-latest-Linux-x86_64.sh -b
         conda init bash
-        source ~/.bash_profile
     - name: Create conda environment
       run: conda env create
     - name: Activate conda environment
-      run: conda activate volunteer-portal
+      run: |
+        source ~/.bash_profile
+        conda activate volunteer-portal
     - name: Lint
       run: mypy ./api
