@@ -22,6 +22,5 @@ jobs:
     - name: Create/Activate conda environment and Lint
       run: |
         conda env create
-        source ~/miniconda3/etc/profile.d/conda.sh
         conda activate volunteer-portal
         mypy ./api
