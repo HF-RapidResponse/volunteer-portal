@@ -14,9 +14,9 @@ To run this code locally, it must first be cloned from GitHub. This can be done 
 
 The URL for cloning comes from the top right portion of the repo page.
 
-### UI
+### Client
 
-In the project directory, you can run:
+In the _client_ directory, you can run:
 
 #### `npm install` or `npm i`
 
@@ -47,7 +47,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### API
 
-In the project directory you can run:
+In the _api_ directory you can run:
 
 #### `conda env create`
 
@@ -59,10 +59,10 @@ Python packages and environments are managed via [Conda](https://docs.conda.io/e
 
 Activates the virtual environment that the dependencies were installed in to enable you to run the API. This command must be run in a terminal session before running the below commands.
 
-#### `uvicorn app:app --app-dir ./api --reload`
+#### `uvicorn app:app --app-dir . --reload`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:8000](http://localhost:8000/redoc) to view the API docs in the browser.
 
-#### `mypy ./api`
+#### `mypy .`
 Runs linting which validates Python static type hints/annotations
