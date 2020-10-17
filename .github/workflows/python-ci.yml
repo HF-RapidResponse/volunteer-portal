@@ -18,10 +18,11 @@ jobs:
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -q
         chmod +x Miniconda3-latest-Linux-x86_64.sh
         ./Miniconda3-latest-Linux-x86_64.sh -b
-        conda init bash
     - name: Create conda environment
       run: conda env create
     - name: Activate conda environment
-      run: conda activate volunteer-portal
+      run: |
+        conda init bash
+        conda activate volunteer-portal
     - name: Lint
       run: mypy ./api
