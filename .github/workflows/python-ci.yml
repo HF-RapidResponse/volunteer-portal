@@ -19,8 +19,6 @@ jobs:
         chmod +x Miniconda3-latest-Linux-x86_64.sh
         ./Miniconda3-latest-Linux-x86_64.sh -b
     - name: Create conda environment
-      run: conda env 
-    - name: Create conda environment
       run: conda env create
     - name: Activate conda environment
       run: conda activate volunteer-portal
