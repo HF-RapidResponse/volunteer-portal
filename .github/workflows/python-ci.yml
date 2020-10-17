@@ -7,7 +7,7 @@ on:
     branches: [ master, staging ]
 defaults:
   run:
-    shell: bash -l {0}
+    shell: bash
 jobs:
   build:
 
@@ -25,5 +25,4 @@ jobs:
         source ~/miniconda3/etc/profile.d/conda.sh
         conda env create
         conda activate volunteer-portal
-    - name: Lint
-      run: mypy ./api
+        mypy ./api
