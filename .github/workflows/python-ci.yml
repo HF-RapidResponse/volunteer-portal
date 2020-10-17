@@ -5,12 +5,14 @@ on:
     branches: [ master, staging, python-ci ]
   pull_request:
     branches: [ master, staging ]
-
+defaults:
+  run:
+    shell: bash
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v2
     - name: Set up Miniconda
@@ -19,12 +21,10 @@ jobs:
         chmod +x Miniconda3-latest-Linux-x86_64.sh
         ./Miniconda3-latest-Linux-x86_64.sh -b
         conda init bash
+        source ~/.bash_profile
     - name: Create conda environment
-      shell: bash -l {0}
       run: conda env create
     - name: Activate conda environment
-      shell: bash -l {0}
       run: conda activate volunteer-portal
     - name: Lint
-      shell: bash -l {0}
       run: mypy ./api
