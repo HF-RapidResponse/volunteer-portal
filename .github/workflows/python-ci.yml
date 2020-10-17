@@ -15,9 +15,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set up Miniconda
       run: |
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -q
         chmod +x Miniconda3-latest-Linux-x86_64.sh
         ./Miniconda3-latest-Linux-x86_64.sh -b
+        conda init
     - name: Create conda environment
       run: conda env create
     - name: Activate conda environment
