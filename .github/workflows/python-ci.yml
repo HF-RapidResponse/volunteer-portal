@@ -21,6 +21,7 @@ jobs:
         python-version: 3.8
     - name: Create/Activate conda environment and Lint
       run: |
+        conda init bash
         conda env create
         conda activate volunteer-portal
         mypy ./api
