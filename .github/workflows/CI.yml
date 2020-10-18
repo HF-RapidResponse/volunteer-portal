@@ -4,7 +4,7 @@
 name: CI
 on:
   push:
-    branches: [ master, staging ]
+    branches: [ master, staging, python-ci ]
   pull_request:
     branches: [ master, staging ]
 
