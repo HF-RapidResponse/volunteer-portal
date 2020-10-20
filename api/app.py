@@ -38,4 +38,4 @@ async def get_all_volunteer_roles() -> List[VolunteerRole]:
 
 @app.post("/volunteer_roles/", response_model=VolunteerRole)
 async def create_volunteer_role(role: VolunteerRole) -> VolunteerRole:
-    return "role"
+    return role
