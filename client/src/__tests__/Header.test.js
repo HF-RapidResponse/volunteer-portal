@@ -20,7 +20,7 @@ describe('header component', () => {
     // inspect the first anchor tag
     const firstATag = aTags.at(0);
     expect(firstATag.html()).toBe(
-      '<a class="nav-link" href="/"><img src="hfLogo.svg" alt="HF Logo" id="hf-logo"></a>'
+      '<a class="nav-link" href="/"><img src="HF-square-logo.svg" alt="HF Logo" id="hf-logo"></a>'
     );
 
     // inspect the second anchor tag
