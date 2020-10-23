@@ -27,4 +27,4 @@ jobs:
         source $CONDA/etc/profile.d/conda.sh
         conda env create
         conda activate volunteer-portal
-        mypy ./api
+        mypy .
