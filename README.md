@@ -4,9 +4,15 @@ This web app serves as a launch point for volunteers who want to get involved wi
 
 ## System Requirements
 
-Running this code requires the developer to have a working computer with a terminal (built-in terminal for Linux/OSX or something like [Git Bash](https://git-scm.com/downloads)), an IDE such as [Visual Studio Code](https://code.visualstudio.com/), and [Node](https://nodejs.org/en/) installed globally. There is no mandated node version in the package files, but the developer team is running on version 14.x.
+Running this code requires the developer to have a working computer with [git](https://git-scm.com/downloads), an IDE such as [Visual Studio Code](https://code.visualstudio.com/), and [Node](https://nodejs.org/en/) installed globally. There is no mandated node version in the package files, but the developer team is running on version 14.x.
 
-## Setup
+## Machine Setup
+
+We've touched on some things to install on your computer, but for a detailed explanation, [see this page](/docs/setup.md).
+
+## Local Repository Setup
+
+If you're reading this, then you've probably created a GitHub account. As of this writing, the repo is set to private. However, if you somehow got access to this readme without creating an account, please do that first.
 
 To run this code locally, it must first be cloned from GitHub. This can be done with the following command:
 
@@ -14,9 +20,9 @@ To run this code locally, it must first be cloned from GitHub. This can be done 
 
 The URL for cloning comes from the top right portion of the repo page.
 
-### UI
+### Client
 
-In the project directory, you can run:
+In the _client_ directory, you can run:
 
 #### `npm install` or `npm i`
 
@@ -47,7 +53,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### API
 
-In the project directory you can run:
+In the _api_ directory you can run:
 
 #### `conda env create`
 
@@ -59,10 +65,22 @@ Python packages and environments are managed via [Conda](https://docs.conda.io/e
 
 Activates the virtual environment that the dependencies were installed in to enable you to run the API. This command must be run in a terminal session before running the below commands.
 
-#### `uvicorn app:app --app-dir ./api --reload`
+#### `uvicorn app:app --app-dir . --reload`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:8000](http://localhost:8000/redoc) to view the API docs in the browser.
 
-#### `mypy ./api`
+#### `mypy .`
 Runs linting which validates Python static type hints/annotations
+
+## Architecture
+
+To read more about architecture, [see this page](/docs/architecture.md).
+
+## Asana Board
+
+We keep track of tasks through an [Asana board here](https://app.asana.com/0/1196959085120745/board). Tasks are typically added in the `Backlog`, `Humanity Forward Requests`, or `Prioritized To Do` sections. When a task is ready to be worked on, it can then be moved to `In Progress`. Remember to assign yourself to the task (or delegate it to someone else if you're feeling bossy...). When you are done with a task, please move it to `Done` and choose `Mark complete` in the task menu (click on the 3 dots of the task card).
+
+## Branching and GitHub
+
+To read more about branching, [see this page](/docs/branching.md).

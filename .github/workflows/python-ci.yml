@@ -2,12 +2,15 @@ name: Python CI
 
 on:
   push:
-    branches: [ master, staging, python-ci ]
+    branches: [ master, staging ]
   pull_request:
     branches: [ master, staging ]
+
 defaults:
   run:
     shell: bash
+    working-directory: api
+
 jobs:
   build:
 
