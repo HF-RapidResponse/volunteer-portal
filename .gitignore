@@ -10,6 +10,7 @@
 
 # production
 /build
+/client/build
 
 # misc
 .DS_Store
@@ -117,3 +118,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Ignore pycache
+*.pyc
+*.mypy
