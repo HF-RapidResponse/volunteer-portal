@@ -3,16 +3,16 @@ name: Prod API Deployment
 on:
   push:
     branches: [ master ]
+    paths: [ 'api/**' ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2  
+    - uses: actions/checkout@v2
     - name: Deploy
       uses: GoogleCloudPlatform/github-actions/appengine-deploy@master
       with:
         credentials: ${{ secrets.GAE_SERVICE_ACCOUNT }}
         deliverables: ./api/prod-app.yaml
-

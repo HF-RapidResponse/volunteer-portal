@@ -17,13 +17,12 @@ jobs:
         node-version: 12.x
     - name: Install
       run: npm ci
-      working-directory: ./client  
+      working-directory: ./client
     - name: Build
       run: npm run build
-      working-directory: ./client  
+      working-directory: ./client
     - name: Deploy
       uses: GoogleCloudPlatform/github-actions/appengine-deploy@master
       with:
         credentials: ${{ secrets.GAE_SERVICE_ACCOUNT }}
         deliverables: client/staging-client.yaml
-

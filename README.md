@@ -34,6 +34,7 @@ Installs the packages required to run this project locally. This is the first co
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
@@ -65,13 +66,13 @@ Creates an isolated Python environment. This is the first command developers mus
 Python packages and environments are managed via [Conda](https://docs.conda.io/en/latest/miniconda.html)
 
 #### `conda activate volunteer-portal`
-or 
-#### `source dev-env/bin/activate` 
+or
+#### `source dev-env/bin/activate`
 
 Activates the virtual environment that the dependencies were installed in to enable you to run the API. This command must be run in a terminal session before running the below commands.
 
 #### `pip install -r requirements.txt`
-This installs the dependencies for the API. This deviates from the standard Conda way of doing things with an `environment.yaml` file, but as long as the `conda create` command above is run with pip at the end, pip packages installed while the environment is active will be local to the environment and won't affect system wide packages. 
+This installs the dependencies for the API. This deviates from the standard Conda way of doing things with an `environment.yaml` file, but as long as the `conda create` command above is run with pip at the end, pip packages installed while the environment is active will be local to the environment and won't affect system wide packages.
 
 #### `uvicorn app:app --app-dir . --reload`
 
@@ -79,7 +80,6 @@ Runs the app in the development mode.<br />
 Open [http://localhost:8000](http://localhost:8000/redoc) to view the API docs in the browser.
 
 #### `mypy .`
-
 Runs linting which validates Python static type hints/annotations
 
 ## Architecture

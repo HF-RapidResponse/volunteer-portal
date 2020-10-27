@@ -123,4 +123,4 @@ dist
 *.pyc
 *.mypy
 
-api/dev-env  
+api/dev-env
