@@ -13,6 +13,7 @@ function Header() {
   const links = [
     { displayName: 'Event Calendar', url: '/calendar' },
     { displayName: 'Volunteer Openings', url: '/roles' },
+    { displayName: 'Our Candidates', url: '/candidates' },
     { displayName: 'About', url: '/about' },
     // { displayName: 'Sign In', url: '/signin' },
   ];
@@ -25,7 +26,7 @@ function Header() {
     const link = links[i];
     navLinks.push(
       <Link
-        className="nav-link"
+        className="nav-link ml-3 mr-3"
         key={link.displayName + i}
         to={link.url}
         onClick={() => setTimeout(() => setExpanded(false), 100)}
@@ -37,7 +38,7 @@ function Header() {
 
   return (
     <>
-      <Navbar id="main-header" fixed="top" expand="md" expanded={expanded}>
+      <Navbar id="main-header" fixed="top" expand="lg" expanded={expanded}>
         <Link
           className="nav-link"
           key="home-key"

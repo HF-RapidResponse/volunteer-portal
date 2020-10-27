@@ -6,6 +6,7 @@ import { Route, Switch, useLocation } from 'react-router-dom';
 import Home from './Home';
 import Calendar from './Calendar';
 import Roles from './Roles';
+import Candidates from './Candidates';
 import About from './About';
 import NotFound from './NotFound';
 
@@ -32,6 +33,7 @@ function PageViewSwitch() {
         <Route path="/" exact component={Home} />
         <Route path="/calendar" exact component={Calendar} />
         <Route path="/roles" exact component={Roles} />
+        <Route path="/candidates" exact component={Candidates} />
         <Route path="/about" exact component={About} />
         {/* <Route path="/signin" exact component={Signin} /> */}
         <Route path="*" component={NotFound} />
