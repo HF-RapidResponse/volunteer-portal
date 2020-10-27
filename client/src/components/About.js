@@ -9,6 +9,7 @@ import TabPortrait from '../portraits/tab_portrait.png';
 import SuzannePortrait from '../portraits/suzanne_portrait.png';
 import TuckerPortrait from '../portraits/tucker_portrait.png';
 import GreyPortrait from '../portraits/grey_portrait.png';
+import HFLogoLong from '../assets/HF-horiz-logo.png';
 import '../styles/about.scss';
 
 /**
@@ -85,7 +86,7 @@ function About() {
     <>
       <div className="text-center">
         <img
-          src={require('../assets/HF-horiz-logo.png')}
+          src={HFLogoLong}
           alt="hf-logo-long"
           className="hf-horiz-logo text-center"
         />

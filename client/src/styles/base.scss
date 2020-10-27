@@ -35,6 +35,11 @@ body {
   background-color: $background;
 }
 
+#main-content,
+#main-header {
+  min-width: 280px;
+}
+
 #main-content {
   padding-top: 11rem;
 

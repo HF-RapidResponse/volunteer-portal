@@ -28,11 +28,12 @@ In the _client_ directory, you can run:
 
 Installs the packages required to run this project locally. This is the first command developers must run after cloning.
 
-#### `npm start`
+#### `npm run client`
+
+**Note**: normally this would be `npm start`, but `npm start` is being used for something else.
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
@@ -71,6 +72,7 @@ Runs the app in the development mode.<br />
 Open [http://localhost:8000](http://localhost:8000/redoc) to view the API docs in the browser.
 
 #### `mypy .`
+
 Runs linting which validates Python static type hints/annotations
 
 ## Architecture
