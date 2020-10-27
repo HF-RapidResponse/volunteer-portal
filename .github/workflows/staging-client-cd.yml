@@ -1,0 +1,28 @@
+
+name: Deployment
+on:
+  push:
+    branches: [ staging, appengine_cd ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Install
+      run: npm ci
+      working-directory: ./client  
+    - name: Build
+      run: npm run build
+      working-directory: ./client  
+    - name: deploy
+      uses: GoogleCloudPlatform/github-actions/appengine-deploy@master
+      with:
+        credentials: ${{ secrets.GAE_SERVICE_ACCOUNT }}
+        deliverables: client/staging-client.yaml
+
