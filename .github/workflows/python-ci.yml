@@ -1,0 +1,30 @@
+name: Python CI
+
+on:
+  push:
+    branches: [ master, staging ]
+  pull_request:
+    branches: [ master, staging ]
+
+defaults:
+  run:
+    shell: bash
+    working-directory: api
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Lint
+      run: |
+        source $CONDA/etc/profile.d/conda.sh
+        conda env create
+        conda activate volunteer-portal
+        mypy .
