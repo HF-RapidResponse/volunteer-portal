@@ -2,7 +2,7 @@
 name: Deployment
 on:
   push:
-    branches: [ staging, appengine_cd ]
+    branches: [ staging ]
 
 jobs:
   build:
