@@ -2,13 +2,13 @@
 name: Staging Client Deployment
 on:
   push:
-    branches: [ staging ]
+    branches: [ master ]
     paths: [ 'client/**' ]
 
 defaults:
   run:
     working-directory: client
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,4 +27,4 @@ jobs:
       uses: GoogleCloudPlatform/github-actions/appengine-deploy@master
       with:
         credentials: ${{ secrets.GAE_SERVICE_ACCOUNT }}
-        deliverables: client/staging-client.yaml
+        deliverables: client/prod-client.yaml
