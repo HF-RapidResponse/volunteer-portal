@@ -1,0 +1,7 @@
+mypy
+pytest
+faker
+pydantic
+fastapi
+uvicorn[standard]
+gunicorn
