@@ -1,0 +1,11 @@
+dispatch:
+  # The default service is the staging client appengine service  
+  - url: "vol-dev.movehumanityforward.com/*"
+    service: default  
+  - url: "api.vol-dev.movehumanityforward.com/*"
+    service: staging-api
+
+  - url: "volunteers.movehumanityforward.com/*"
+    service: prod-client
+  - url: "api.volunteers.movehumanityforward.com/*"
+    service: prod-api
