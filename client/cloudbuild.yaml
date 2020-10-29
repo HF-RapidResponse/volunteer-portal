@@ -2,6 +2,15 @@
 # See builds here:
 # https://console.cloud.google.com/cloud-build/builds?query=trigger_id%3D%22470d9eab-c7ec-4b6c-bfa6-313214e15107%22&project=humanity-forward
 steps:
+  - name: node
+    entrypoint: npm
+    args:
+    - ci
+  - name: node
+    entrypoint: npm
+    args:
+    - run
+    - build
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: bash
     args:
