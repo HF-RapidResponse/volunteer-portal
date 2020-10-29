@@ -1,0 +1,14 @@
+runtime: nodejs12
+service: portal-ui
+handlers:
+ - url: /
+   static_files: build/index.html
+   upload: build/index.html
+
+ - url: /(favicon.ico|manifest.json|static.*)
+   static_files: build/\1
+   upload: build/(.*)
+
+ - url: .*
+   static_files: build/index.html
+   upload: build/index.html
