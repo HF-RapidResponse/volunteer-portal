@@ -6,6 +6,6 @@ dispatch:
     service: staging-api
 
   - url: "volunteers.movehumanityforward.com/*"
-    service: portal-ui
+    service: volunteer-portal-ui
   - url: "api.volunteers.movehumanityforward.com/*"
     service: prod-api
