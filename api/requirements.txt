@@ -5,3 +5,8 @@ pydantic
 fastapi
 uvicorn[standard]
 gunicorn
+requests
+sqlalchemy
+pybigquery
+pymysql
+google-cloud-secret-manager

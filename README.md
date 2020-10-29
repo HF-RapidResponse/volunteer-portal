@@ -82,6 +82,10 @@ Open [http://localhost:8000](http://localhost:8000/redoc) to view the API docs i
 #### `mypy .`
 Runs linting which validates Python static type hints/annotations
 
+### `python -m pytest tests/`
+
+Runs tests. Some data source tests currently (lazily) use real HF databases and require [authentication through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account).
+
 ## Architecture
 
 To read more about architecture, [see this page](/docs/architecture.md).
