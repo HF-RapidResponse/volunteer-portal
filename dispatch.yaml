@@ -1,0 +1,5 @@
+dispatch:
+  - url: "volunteers.movehumanityforward.com/*"
+    service: volunteer-portal-client
+  - url: "api.volunteers.movehumanityforward.com/*"
+    service: volunteer-portal-api

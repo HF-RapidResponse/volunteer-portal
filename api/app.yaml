@@ -1,0 +1,3 @@
+runtime: python38
+entrypoint: gunicorn app:app -w 4 -k uvicorn.workers.UvicornWorker
+service: volunteer-portal-api
