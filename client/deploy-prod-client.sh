@@ -1,4 +1,5 @@
 #!/bin/bash
+
 branch_name=$(git symbolic-ref --short -q HEAD)
 if [ "$branch_name" = "master" ]; then
     npm ci

@@ -1,5 +1,5 @@
 runtime: nodejs12
-service: volunteer-portal-ui
+service: volunteer-portal-client
 handlers:
  - url: /
    static_files: build/index.html
