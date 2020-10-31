@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Card, CardGroup } from 'react-bootstrap';
 import '../styles/home.scss';
 import { Link } from 'react-router-dom';
 
@@ -49,6 +49,53 @@ function Home() {
           </Button>
         </Link>
       </section>
+      <CardGroup>
+        <Card>
+          <Card.Img variant="top" src="holder.js/100px160" />
+          <Card.Body>
+            <Card.Title>1. Highlighted Initiative</Card.Title>
+            <Card.Text>Here is some text about diving right in.</Card.Text>
+          </Card.Body>
+          <Card.Footer>
+            <Link to={'/roles'}>
+              <Button
+                variant="info"
+                className="wide-btn"
+                style={{ padding: '.5rem 1.75rem' }}
+              >
+                View Volunteer Openings
+              </Button>
+            </Link>
+          </Card.Footer>
+        </Card>
+        <Card>
+          <Card.Img variant="top" src="holder.js/100px160" />
+          <Card.Body>
+            <Card.Title>Card title</Card.Title>
+            <Card.Text>
+              This card has supporting text below as a natural lead-in to
+              additional content.{' '}
+            </Card.Text>
+          </Card.Body>
+          <Card.Footer>
+            <small className="text-muted">Last updated 3 mins ago</small>
+          </Card.Footer>
+        </Card>
+        <Card>
+          <Card.Img variant="top" src="holder.js/100px160" />
+          <Card.Body>
+            <Card.Title>Card title</Card.Title>
+            <Card.Text>
+              This is a wider card with supporting text below as a natural
+              lead-in to additional content. This card has even longer content
+              than the first to show that equal height action.
+            </Card.Text>
+          </Card.Body>
+          <Card.Footer>
+            <small className="text-muted">Last updated 3 mins ago</small>
+          </Card.Footer>
+        </Card>
+      </CardGroup>
     </>
   );
 }
