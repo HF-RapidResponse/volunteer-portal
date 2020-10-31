@@ -6,6 +6,7 @@ import PageViewSwitch from './components/PageViewSwitch';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/base.scss';
+import './styles/bootstrap-overrides.scss';
 
 /**
  * Top level component that renders all other components.

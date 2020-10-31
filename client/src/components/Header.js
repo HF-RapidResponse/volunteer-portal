@@ -73,7 +73,7 @@ function Header() {
         id="main-header"
         className="pt-4 pb-4"
         fixed="top"
-        expand="lg"
+        expand="xl"
         expanded={expanded}
       >
         <Link

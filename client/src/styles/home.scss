@@ -7,3 +7,47 @@ section {
 .wide-btn {
   margin: 0.25rem auto;
 }
+
+.header-2 {
+  color: $hfDarkBlue;
+  font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
+    Helvetica, Arial, 'Lucida Grande', sans-serif;
+  // font-style: normal;
+  // font-weight: 700;
+  // font-size: 32px;
+  // line-height: 140%;
+
+  // /* identical to box height, or 45px */
+  // letter-spacing: -0.02em;
+}
+
+.header-3 {
+  color: $btnCyan;
+  // font-family: Museo;
+  // font-style: normal;
+  // font-weight: 900;
+  // font-size: 24px;
+  // line-height: 140%;
+}
+
+#top-card-txt {
+  @media (max-width: 1199.98px) {
+    margin-top: 1.5rem;
+  }
+}
+
+#bot-group {
+  margin: 3rem auto;
+}
+
+// .info-btn {
+//   padding: 0.4rem 1.6rem;
+//   background: white;
+//   &:hover {
+//     background: #17a2b8;
+//   }
+// }
+
+.btn-outline-info {
+  background-color: white;
+}
