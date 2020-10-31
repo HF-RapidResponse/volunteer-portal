@@ -13,6 +13,7 @@ function Header() {
   const links = [
     { displayName: 'Event Calendar', url: '/calendar' },
     { displayName: 'Volunteer Openings', url: '/roles' },
+    { displayName: 'Register to Volunteer', url: '/volunteer' },
     { displayName: 'Our Candidates', url: '/candidates' },
     { displayName: 'About', url: '/about' },
     // { displayName: 'Sign In', url: '/signin' },

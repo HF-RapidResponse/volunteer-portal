@@ -9,6 +9,7 @@ import Roles from './Roles';
 import Candidates from './Candidates';
 import About from './About';
 import NotFound from './NotFound';
+import Volunteer from './Volunteer';
 
 // initialize GA
 // REACT_APP_GA_TRACKING_ID can be found in .env
@@ -33,6 +34,7 @@ function PageViewSwitch() {
         <Route path="/" exact component={Home} />
         <Route path="/calendar" exact component={Calendar} />
         <Route path="/roles" exact component={Roles} />
+        <Route path="/volunteer" exact component={Volunteer} />
         <Route path="/candidates" exact component={Candidates} />
         <Route path="/about" exact component={About} />
         {/* <Route path="/signin" exact component={Signin} /> */}
