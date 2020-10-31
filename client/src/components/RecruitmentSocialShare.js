@@ -23,10 +23,10 @@ import {
 import '../styles/recruitmentSocialShare.scss';
 
 function RecruitmentSocialShare() {
-  const shareUrl = 'http://localhost:3000/volunteer-share';
+  const shareUrl = process.env.REACT_APP_SOCIAL_SHARE_URL;
   const size = 48;
   const title = 'Volunteer for Hunanity Forward';
-  const description = 'There are many opportunities to support Humanity Forward and spread the vision of Andrew Yang';
+  const description = 'There are many opportunities to support Humanity Forward and spread the vision of Andrew Yang. Join us!';
   return (
     <div className="recruitment-social-share-buttons">
       <TwitterShareButton url={shareUrl} title={title} related={['HumanityForward', 'AndrewYang']}>
