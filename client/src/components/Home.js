@@ -11,26 +11,34 @@ function Home() {
   return (
     <>
       <Container>
-        <h1 className="header-2">It's time to make UBI a reality.</h1>
+        <h1 className="header-2 center-when-small">
+          It's time to make UBI a reality.
+        </h1>
         <Row>
           <Col lg={12} xl={4}>
-            <img
-              src="https://via.placeholder.com/347x264.png"
-              alt="placeholder-home"
-            />
+            <div className="center-when-small">
+              <img
+                src="https://via.placeholder.com/347x264.png"
+                alt="placeholder-home"
+              />
+            </div>
           </Col>
           <Col lg={12} xl={6} id="top-card-txt">
-            <p>Lorem ipsum dolor sit amet,</p>
             <p>
-              Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-              labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-              nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate
-              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-              occaecat cupidatat non proident, sunt in culpa qui officia
-              deserunt mollit anim id est laborum.{' '}
+              Since March, we’ve delivered nearly $10M in cash relief to over
+              20,000 American families impacted by the COVID-19 pandemic. After
+              seeing firsthand how impactful this cash relief has been for these
+              20,000 families, Andrew has decided to launch a national advocacy
+              campaign to get cash relief to every American family during this
+              crisis. That means we will be essentially re-launching Andrew’s
+              presidential campaign — not to elect Andrew as President, but to
+              pass universal basic income in Congress. That will require a
+              national political operation, media blitz, and paid
+              communications. If we are successful, this campaign and everyone
+              who is a part of it would be responsible for saving America from a
+              second Great Depression and for eradicating poverty.
             </p>
-            <p>Andrew and the HF Team</p>
+            <p className="text-right">Andrew and the HF Team</p>
           </Col>
         </Row>
       </Container>
@@ -71,17 +79,16 @@ function Home() {
           </div>
         </Col>
         <Col xs={12} className="mt-5 mb-5">
-          <p>
+          <p className="mb-0">
             Our team is working hard to... Insert message about why we need
             funding and what the money will go towards. All contributions are
             welcomed and highly appreciated... Thank you!
-            <br />
-            <div className="text-center">
-              <Link to="/donate" className="btn-cyan">
-                Donate
-              </Link>
-            </div>
           </p>
+          <div className="text-center">
+            <Link to="/donate" className="btn-cyan">
+              Donate
+            </Link>
+          </div>
         </Col>
         <Col xs={12}>
           <h4>
