@@ -24,6 +24,7 @@ import '../styles/recruitmentSocialShare.scss';
 
 function RecruitmentSocialShare() {
   const shareUrl = process.env.REACT_APP_SOCIAL_SHARE_URL;
+  const fbAppId = process.env.REACT_APP_FB_APP_ID;
   const size = 48;
   const title = 'Volunteer for Hunanity Forward';
   const description = 'There are many opportunities to support Humanity Forward and spread the vision of Andrew Yang. Join us!';
@@ -38,7 +39,7 @@ function RecruitmentSocialShare() {
       <RedditShareButton url={shareUrl} title={title}>
         <RedditIcon size={size} round />
       </RedditShareButton>
-      <FacebookMessengerShareButton url={shareUrl}>
+      <FacebookMessengerShareButton url={shareUrl} appId={fbAppId}>
         <FacebookMessengerIcon size={size} round />
       </FacebookMessengerShareButton>
       <LineShareButton url={shareUrl} title={title}>
