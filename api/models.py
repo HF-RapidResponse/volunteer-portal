@@ -7,6 +7,9 @@ from datetime import datetime
 Url = str
 MarkdownText = str
 
+def generate_placeholder_image() -> Url:
+    return 'https://actblue-indigo-uploads.s3.amazonaws.com/uploads/list-editor/brandings/65454/header/image_url/f7edc334-2217-43b9-b707-5b7eaed92c1b-logo_stacked.svg'
+
 class Person(BaseModel):
     name: str
 
@@ -15,18 +18,18 @@ class Priority(Enum):
     HIGH = 'high'
     MEDIUM = 'medium'
     LOW = 'low'
-    VERY_LOW = 'Could be nice'
     NONE = None
 
 class VolunteerRole(BaseModel):
     role_uuid: UUID = uuid4()
     role_external_id: str
-    details_url: Optional[Url]
-    hero_image_url: Optional[Url]
-    priority: Optional[Priority]
+    name: str
+    hero_image_url: Url = generate_placeholder_image()
     signup_url: Url
+    details_url: Optional[Url]
+    priority: Priority = Priority.LOW
     point_of_contact: Optional[Person]
-    num_openings: Optional[int]
+    num_openings: int = 1
     min_time_commitment: Optional[int]
     max_time_commitment: Optional[int]
     overview: Optional[MarkdownText]
@@ -37,18 +40,23 @@ class VolunteerRole(BaseModel):
 class VolunteerEvent(BaseModel):
     event_uuid: UUID = uuid4()
     event_external_id: str
+    name: str
+    hero_image_url: Url = generate_placeholder_image()
+    signup_url: Url
     details_url: Optional[Url]
     start_datetime: datetime
     end_datetime: Optional[datetime]
     description: Optional[MarkdownText]
     point_of_contact: Optional[Person]
-    sign_up_link: Optional[Url]
 
 class Initiative(BaseModel):
     initiative_uuid: UUID = uuid4()
     initiative_external_id: str
+    name: str
     details_url: Optional[Url]
     title: str
-    hero_image_url: Url
+    hero_image_url: Url = generate_placeholder_image()
     content: MarkdownText
+    roles: Optional[List[VolunteerRole]]
+    events: Optional[List[VolunteerEvent]]
     highlightedItems: Optional[List[Union[VolunteerRole,VolunteerEvent]]]

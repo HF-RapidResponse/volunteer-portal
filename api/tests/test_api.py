@@ -15,13 +15,14 @@ def test_create_model():
     good_event_kwargs = {
         "event_uuid": "3457f844-5a3a-4efe-b16d-443c24961c68",
         "event_external_id": "Medical too same money gas director rule.",
+        "name": "Medical too same money gas director rule.",
         "details_url": "https://time.ca/interest/people.html",
         "hero_image_url": "https://hill.com/category/about.html",
         "start_datetime": "2020-10-25T15:19:51.824283",
         "end_datetime": "2020-11-02T15:19:51.824283",
         "description": "Early sign page pretty heart bring share. Television research agency minute fine Mr together. Each treat strategy director. Detail million guess someone base for upon.",
         "point_of_contact": None,
-        "sign_up_link": "https://moreno.com/post.htm"
+        "signup_url": "https://moreno.com/post.htm"
     }
 
     good_event = VolunteerEvent(**good_event_kwargs)
