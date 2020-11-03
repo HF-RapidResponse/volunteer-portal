@@ -22,9 +22,9 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
+    - name: Setup
+      run:
+        pip install -r requirements.txt
     - name: Lint
-      run: |
-        source $CONDA/etc/profile.d/conda.sh
-        conda env create
-        conda activate volunteer-portal
+      run:
         mypy .
