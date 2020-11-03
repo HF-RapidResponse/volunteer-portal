@@ -24,12 +24,10 @@ function Register() {
       <Col xs={12} lg={9} xl={6} className="shadow-card">
         <h2 className="header-3">Register yourself as a volunteer.</h2>
         <p>
-          Eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
+            Let us keep you up to date on what we have in the works.
         </p>
         <div className="text-center">
-          <Link to="#">
+          <Link to="http://on.movehumanityforward.com/volunteer_signup_short">
             <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
               Register Here
             </Button>
@@ -45,7 +43,7 @@ function Register() {
           strengths.
         </p>
         <div className="text-center">
-          <a href="https://on.movehumanityforward.com/volunteer_hf">
+          <a href="https://on.movehumanityforward.com/volunteer_survey">
             <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
               Go to Survey
             </Button>

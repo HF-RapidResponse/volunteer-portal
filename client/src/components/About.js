@@ -114,28 +114,15 @@ function About() {
           <img src={ErickaPortrait} alt="ericka-portrait" />
         </div>
       </div>
-      <p style={{ paddingTop: '1rem' }}>
-        <i>Hello Everyone!</i> Welcome to Humanity Forward’s Rapid Response
-        Volunteer Program! This program is designed to centralize the above
-        directives from Andrew Yang and provide volunteer opportunities for
-        supporters to invest skills, intellect and humanity. The work of our
-        volunteers and grassroots has the power to increase public awareness of
-        economic solutions such as Universal Basic Income (UBI) as well as
-        support those most affected by the pandemic.
-      </p>
-      <p>
-        Our main initiatives listed above are not the only areas you can be
-        helpful. The operations of the volunteer program needs help too. Every
-        task, no matter how small, has a significant beneficial effect on the
-        bigger picture of building a more human-centered society.
-      </p>
-      <p>
-        I thank you for being here and look forward to working with you for the
-        future.
-      </p>
-      <section className="about-section text-center">
-        <p className="med-text thicc">Team Leads</p>
-        <>{teamLeadProfiles}</>
+        <p style={{ paddingTop: '1rem' }}> Welcome to Humanity Forward Rapid
+        Response. I’m excited to work with you to build the UBI movement
+        nationwide.  We are going to pressure congress, engage elected officials
+        and rally volunteers to make UBI a reality.</p>
+        <p>Our movement is growing; Our message is resonating.</p>
+        <p>This is bigger than politics; This is about building a human-centered
+        society that works for us!</p>
+        <section className="about-section text-center"> <p
+        className="med-text thicc">Team Leads</p> <>{teamLeadProfiles}</>
       </section>
     </>
   );
