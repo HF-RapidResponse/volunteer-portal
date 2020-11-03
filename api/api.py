@@ -7,6 +7,9 @@ from fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_in
     , generate_fake_volunteer_role, generate_fake_volunteer_event, generate_fake_initiative
 from data_sources import Dataset, DataSource, DataSourceType, generate_hf_mysql_db_address
 from data_source_maps import hf_events, hf_volunteer_openings, hf_initiatives
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI()
 

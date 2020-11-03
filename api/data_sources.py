@@ -149,8 +149,8 @@ class Dataset(BaseModel):
             if not self.linked_model:
                 return None
             instance = self.linked_model(**args)
-        except:
-            logger.info(f'create_linked_model_object failed to create model {self.linked_model} with args {args}')
+        except Exception as e:
+            logger.info(f'create_linked_model_object failed to create model {self.linked_model} with args {args}:\n{e}')
             return None
         else:
             return instance
