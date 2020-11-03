@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/home.scss';
 import { Link } from 'react-router-dom';
+// import HFMLKHoriz from '../assets/HF-MLK-horiz.png';
+import UBISquare from '../assets/UBI-square.png';
 
 /**
  * Component that displays that landing page.
@@ -17,10 +19,11 @@ function Home() {
         <Row>
           <Col lg={12} xl={4}>
             <div className="center-when-small">
-              <img
+              {/* <img
                 src="https://via.placeholder.com/347x264.png"
                 alt="placeholder-home"
-              />
+              /> */}
+              <img className="UBI-square" src={UBISquare} alt="UBI-square" />
             </div>
           </Col>
           <Col lg={12} xl={6} id="top-card-txt">
@@ -85,9 +88,13 @@ function Home() {
             welcomed and highly appreciated... Thank you!
           </p>
           <div className="text-center">
-            <Link to="/donate" className="btn-cyan">
+            <a
+              href="https://secure.actblue.com/donate/mhf-main-v2"
+              target="_blank"
+              className="btn-cyan"
+            >
               Donate
-            </Link>
+            </a>
           </div>
         </Col>
         <Col xs={12}>
@@ -97,10 +104,12 @@ function Home() {
             by a now widely discussed measure: the guaranteed income.”
           </h4>
           <br />
-          <p>
-            Martin Luther King Jr. <br />
-            Where Do We Go From Here: Chaos or Community (1967)
+          <p className="text-right">
+            <i>Martin Luther King Jr.</i>
+            <br />
+            <i>Where Do We Go From Here: Chaos or Community (1967)</i>
           </p>
+          {/* <img src={HFMLKHoriz} alt="hf-mlk-horiz" /> */}
         </Col>
       </Container>
     </>

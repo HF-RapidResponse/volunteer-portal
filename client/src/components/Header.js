@@ -22,8 +22,8 @@ function Header() {
     },
     { displayName: 'Event Calendar', url: '/calendar' },
     { displayName: 'Volunteer Roles', url: '/roles' },
+    { displayName: 'About Us', url: '/about' },
     // { displayName: 'Our Candidates', url: '/candidates' },
-    // { displayName: 'About', url: '/about' },
     // { displayName: 'Sign In', url: '/signin' },
   ];
 
@@ -94,7 +94,7 @@ function Header() {
             id="links-container"
           >
             <>{navLinks}</>
-            <Link to={'/volunteer'}>
+            <Link to={'/register'}>
               <Button
                 variant="info"
                 className="wide-btn"

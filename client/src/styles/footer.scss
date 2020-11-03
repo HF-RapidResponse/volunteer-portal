@@ -1,0 +1,38 @@
+@import 'variables';
+
+#main-footer {
+  background-color: $hfDarkBlue;
+  margin: 0;
+  padding: 1rem;
+}
+
+/* Button Text */
+.btn-text,
+.social-icon {
+  //   font-family: Helvetica Medium;
+  //   font-style: normal;
+  //   font-weight: 500;
+  //   font-size: 16px;
+  line-height: 15px;
+
+  //   /* identical to box height */
+  letter-spacing: 0.2px;
+
+  /* Just White */
+  color: white;
+  &:hover {
+    color: white;
+  }
+}
+
+.footer-hr {
+  height: 1px;
+  border: 0;
+  border-top: 1px solid white;
+  width: 130px;
+}
+
+.social-icon {
+  font-size: 1.8rem;
+  margin: 1rem 0.5rem;
+}

@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import Header from './components/Header';
 import PageViewSwitch from './components/PageViewSwitch';
+import Footer from './components/Footer';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/base.scss';
@@ -17,6 +18,7 @@ function App() {
     <BrowserRouter>
       <Header />
       <PageViewSwitch />
+      <Footer />
     </BrowserRouter>
   );
 }
