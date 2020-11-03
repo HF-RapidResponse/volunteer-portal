@@ -8,6 +8,7 @@ import Calendar from './Calendar';
 import Roles from './Roles';
 import Candidates from './Candidates';
 import About from './About';
+import Register from './Register';
 import NotFound from './NotFound';
 
 // initialize GA
@@ -35,6 +36,7 @@ function PageViewSwitch() {
         <Route path="/roles" exact component={Roles} />
         <Route path="/candidates" exact component={Candidates} />
         <Route path="/about" exact component={About} />
+        <Route path="/register" exact component={Register} />
         {/* <Route path="/signin" exact component={Signin} /> */}
         <Route path="*" component={NotFound} />
       </Switch>

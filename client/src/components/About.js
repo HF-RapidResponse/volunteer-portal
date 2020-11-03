@@ -41,7 +41,7 @@ function About() {
     },
     {
       roleName: 'Email Response',
-      name: 'Lauren Lau',
+      name: 'Lauren',
       portrait: LaurenPortrait,
     },
     {
