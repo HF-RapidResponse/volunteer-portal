@@ -8,22 +8,10 @@ section {
   margin: 0.25rem auto;
 }
 
-.header-2 {
-  color: $hfDarkBlue;
-  font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
-    Helvetica, Arial, 'Lucida Grande', sans-serif;
-}
-
 .center-when-small {
   @media (max-width: 1199.98px) {
     text-align: center;
   }
-}
-
-.header-3 {
-  font-family: Museo;
-  font-weight: 900;
-  color: $btnCyan;
 }
 
 #top-card-txt {

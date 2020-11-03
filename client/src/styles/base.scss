@@ -100,6 +100,24 @@ p {
   color: #37352f;
 }
 
+.header-2 {
+  color: $hfDarkBlue;
+  font-family: 'Helvetica STD';
+  font-weight: 900;
+}
+
+.header-3 {
+  font-family: Museo;
+  font-weight: 900;
+  color: $btnCyan;
+}
+
+.top-light-shadow {
+  margin: 2rem auto;
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
 .shadow-card {
   // display: flex;
   // flex-direction: column;

@@ -14,9 +14,9 @@ function Footer() {
     <footer id="main-footer" className="text-center">
       <Container>
         <p className="btn-text">
-          <Link to="/about" className="btn-text">
+          <a href="https://movehumanityforward.com/" className="btn-text">
             Learn more about HF
-          </Link>
+          </a>
         </p>
         <p className="btn-text">
           <Link to="/about" className="btn-text">
@@ -50,7 +50,14 @@ function Footer() {
         </Container>
         <hr className="footer-hr" />
         <p className="btn-text">Made for volunteers by volunteers.</p>
-        <h5 className="btn-text">Join the Vounteer Portal Development Team!</h5>
+        <h5 className="btn-text">
+          <a
+            href="https://on.movehumanityforward.com/volunteer_hf"
+            className="btn-text"
+          >
+            Join the Vounteer Portal Development Team!
+          </a>
+        </h5>
       </Container>
     </footer>
   );

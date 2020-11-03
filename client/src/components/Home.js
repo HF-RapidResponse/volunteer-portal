@@ -11,7 +11,7 @@ function Home() {
   document.title = 'HF Volunteer Portal';
   return (
     <>
-      <Container>
+      <Container className="top-light-shadow">
         <h1 className="header-2 center-when-small">
           It's time to make UBI a reality.
         </h1>
