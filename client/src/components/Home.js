@@ -2,8 +2,7 @@ import React from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/home.scss';
 import { Link } from 'react-router-dom';
-// import HFMLKHoriz from '../assets/HF-MLK-horiz.png';
-import UBISquare from '../assets/UBI-square.png';
+import HFMLKSquare from '../assets/HF-MLK-square.png';
 
 /**
  * Component that displays that landing page.
@@ -19,69 +18,82 @@ function Home() {
         <Row>
           <Col lg={12} xl={4}>
             <div className="center-when-small">
-              {/* <img
+              <img
                 src="https://via.placeholder.com/347x264.png"
                 alt="placeholder-home"
-              /> */}
-              <img className="UBI-square" src={UBISquare} alt="UBI-square" />
+              />
             </div>
           </Col>
           <Col lg={12} xl={6} id="top-card-txt">
             <p>
-              Since March, we’ve delivered nearly $10M in cash relief to over
-              20,000 American families impacted by the COVID-19 pandemic. After
-              seeing firsthand how impactful this cash relief has been for these
-              20,000 families, Andrew has decided to launch a national advocacy
-              campaign to get cash relief to every American family during this
-              crisis. That means we will be essentially re-launching Andrew’s
-              presidential campaign — not to elect Andrew as President, but to
-              pass universal basic income in Congress. That will require a
-              national political operation, media blitz, and paid
-              communications. If we are successful, this campaign and everyone
-              who is a part of it would be responsible for saving America from a
-              second Great Depression and for eradicating poverty.
+              The UBI initiative means getting money where it is needed the most
+              - the hands of the American people. Families all across the United
+              States are struggling to sustain themselves throughout the
+              coronavirus pandemic, as well as the ever changing and challenging
+              environment of the 21st century economy. The best way to insure
+              that no American is left behind is to entrust them with a monthly
+              dividend to be used as they see fit. Whether it is car repairs,
+              medical bills, rent, or the beginning of a new business, UBI will
+              help Americans be more confident in their ability to take control
+              of their lives and make the American dream their own.
             </p>
-            <p className="text-right">Andrew and the HF Team</p>
           </Col>
         </Row>
       </Container>
       <Container id="bot-group">
-        <Col xs={12} className="mt-4 mb-4">
+        <Col xs={12} lg={9} xl={6} className="shadow-card">
           <h2 className="header-3">What can I do right away?</h2>
           <p>
-            Eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur.
+            Register with Humanity Forward to get started and help manifest our
+            goals into reality. Spreading the word to friends and family is a
+            great place to begin, so share your excitement with others, and show
+            them the ways they themselves can get started volunteering with HF.
+          </p>
+          <div className="mt-3 mb-3 text-center">
+            <Link to="/volunteer">
+              <Button
+                variant="outline-info"
+                style={{ padding: '.35rem 1.5rem' }}
+              >
+                Register to Volunteer
+              </Button>
+            </Link>
+          </div>
+          <p>
+            Get involved with our urgent initiatives! Advocate for UBI policy in
+            Congress with our Humanity CALLS and Humanity WRITES initiatives, or
+            help ensure we can continue fighting for UBI by fundraising.
           </p>
           <div className="text-center mt-4 mb-4">
-            <Button variant="outline-info">Our Initiatives</Button>
+            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
+              View Our Initiatives
+            </Button>
           </div>
         </Col>
-        <Col xs={12} className="mt-5 mb-5">
+        <Col xs={12} lg={9} xl={6} className="shadow-card">
           <h2 className="header-3">What if I have more time to help?</h2>
           <p>
-            Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Eiusmod tempor incididunt ut
-            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat.
+            If you have the time and ability to contribute to the cause of UBI,
+            now is the time to step up to the plate and take initiative! There
+            is a lot of work to be done, and every individual can make a
+            difference, no matter how much time you have to help. Register with
+            Humanity Forward to get started and help manifest our goals into
+            reality. Spreading the word to friends and family is a great place
+            to begin, so share your excitement with others, and show them the
+            ways they themselves can get started volunteering with HF.
           </p>
-          <div className="text-center">
-            <div className="mt-4 mb-4">
-              <Link to="/volunteer">
-                <Button variant="outline-info">Register to Volunteer</Button>
-              </Link>
-            </div>
-            <div className="mt-4 mb-4">
-              <Link to="/roles">
-                <Button variant="outline-info">Browse Volunteer Roles</Button>
-              </Link>
-            </div>
+          <div className="text-center mt-4 mb-4">
+            <Link to="/roles">
+              <Button
+                variant="outline-info"
+                style={{ padding: '.35rem 1.5rem' }}
+              >
+                Browse Volunteer Roles
+              </Button>
+            </Link>
           </div>
         </Col>
-        <Col xs={12} className="mt-5 mb-5">
+        <Col xs={12} lg={9} xl={6} className="shadow-card">
           <p className="mb-0">
             Our team is working hard to... Insert message about why we need
             funding and what the money will go towards. All contributions are
@@ -97,20 +109,9 @@ function Home() {
             </a>
           </div>
         </Col>
-        <Col xs={12}>
-          <h4>
-            “I’m now convinced that the simplest approach will prove to be the
-            most effective — the solution to poverty is to abolish it directly
-            by a now widely discussed measure: the guaranteed income.”
-          </h4>
-          <br />
-          <p className="text-right">
-            <i>Martin Luther King Jr.</i>
-            <br />
-            <i>Where Do We Go From Here: Chaos or Community (1967)</i>
-          </p>
-          {/* <img src={HFMLKHoriz} alt="hf-mlk-horiz" /> */}
-        </Col>
+        <div className="text-center">
+          <img src={HFMLKSquare} alt="hf-mlk-square" className="mlk-square" />
+        </div>
       </Container>
     </>
   );

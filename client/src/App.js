@@ -7,7 +7,7 @@ import Footer from './components/Footer';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/base.scss';
-import './styles/bootstrap-overrides.scss';
+// import './styles/bootstrap-overrides.scss';
 
 /**
  * Top level component that renders all other components.

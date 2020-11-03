@@ -40,7 +40,9 @@ section {
   background-color: white;
 }
 
-.UBI-square {
-  max-width: 350px;
-  max-height: 350px;
+.mlk-square {
+  width: 550px;
+  @media (max-width: 767.98px) {
+    width: 100%;
+  }
 }

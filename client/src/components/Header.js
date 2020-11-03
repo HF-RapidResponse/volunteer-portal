@@ -22,7 +22,7 @@ function Header() {
     },
     { displayName: 'Event Calendar', url: '/calendar' },
     { displayName: 'Volunteer Roles', url: '/roles' },
-    { displayName: 'About Us', url: '/about' },
+    // { displayName: 'About Us', url: '/about' },
     // { displayName: 'Our Candidates', url: '/candidates' },
     // { displayName: 'Sign In', url: '/signin' },
   ];
