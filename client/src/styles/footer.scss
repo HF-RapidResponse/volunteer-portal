@@ -1,0 +1,29 @@
+@import 'variables';
+
+#main-footer {
+  background-color: $hfDarkBlue;
+  margin: 0;
+  padding: 1.5rem;
+}
+
+.btn-text,
+.social-icon {
+  line-height: 15px;
+  letter-spacing: 0.2px;
+  color: white;
+  &:hover {
+    color: white;
+  }
+}
+
+.footer-hr {
+  height: 1px;
+  border: 0;
+  border-top: 1px solid white;
+  width: 130px;
+}
+
+.social-icon {
+  font-size: 1.8rem;
+  margin: 1rem 0.5rem;
+}

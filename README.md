@@ -59,7 +59,7 @@ In the _api_ directory you can manage dependencies with conda or virtualenv run:
 
 #### `conda create --name dev-env python=3.8 pip`
 or
-#### `virtualenv venvtest --python=/usr/bin/python3.8`
+#### `virtualenv dev-env --python=/usr/bin/python3.8`
 
 Creates an isolated Python environment. This is the first command developers must run after cloning before working on the API.
 
@@ -74,13 +74,17 @@ Activates the virtual environment that the dependencies were installed in to ena
 #### `pip install -r requirements.txt`
 This installs the dependencies for the API. This deviates from the standard Conda way of doing things with an `environment.yaml` file, but as long as the `conda create` command above is run with pip at the end, pip packages installed while the environment is active will be local to the environment and won't affect system wide packages.
 
-#### `uvicorn app:app --app-dir . --reload`
+#### `uvicorn api:app --app-dir . --reload`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:8000](http://localhost:8000/redoc) to view the API docs in the browser.
 
 #### `mypy .`
 Runs linting which validates Python static type hints/annotations
+
+### `python -m pytest tests/`
+
+Runs tests. Some data source tests currently (lazily) use real HF databases and require [authentication through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account).
 
 ## Architecture
 
