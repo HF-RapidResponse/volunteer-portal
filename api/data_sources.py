@@ -133,7 +133,7 @@ class Dataset(BaseModel):
                 flat_args[k] = row[v]
             elif v and type(v) is dict:
                 # assume the model_key_map contains a custom function for parsing the dataset column
-                name = next(iter(v))
+                name = list(v.keys())[0]
                 dataset_value = row[name]
                 flat_args[k] = v[name](dataset_value) if dataset_value else None
         
