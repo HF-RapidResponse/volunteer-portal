@@ -42,4 +42,4 @@ def get_all_initiatives(fake_data: bool = False) -> List[Initiative]:
 
 @app.get("/initiatives/{initiative_external_id}", response_model=Initiative)
 def get_initiative_by_external_id(initiative_external_id, fake_data: bool = False) -> List[Initiative]:
-    return initiatives_dataset.get_linked_model_object_for_primary_key(initiative_external_id) if not fake_data else generate_fake_initiative()
+    return initiatives_dataset.get_linked_model_object_for_primary_key(initiative_external_id) if not fake_data else generate_fake_initiative() # type: ignore
