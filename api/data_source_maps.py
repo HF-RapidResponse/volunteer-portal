@@ -16,7 +16,7 @@ hf_volunteer_openings = {
     'role_external_id': 'id',
     'name': 'position_id',
     'details_url': None,
-    'hero_image_url': 'team_photo',
+    'hero_image_url': {'team_photo': lambda x: x[0]['url'] if x else None},
     'priority': {'priority_level': lambda x: x.lower().replace(' ','_')},
     'signup_url': 'application_signup_form',
     'point_of_contact': None,
