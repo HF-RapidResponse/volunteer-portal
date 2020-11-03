@@ -46,7 +46,7 @@ class DataSource(BaseModel):
             self.sql_engine = create_engine(f'mysql+pymysql://{self.address}', pool_recycle=300)
             self.sql_conn = self.sql_engine.connect()
 
-datasets: Dict[Tuple[DataSource, str, Optional[Type]], 'Dataset'] = {}
+datasets: Dict[Tuple[Type[DataSource], str, Optional[Type]], 'Dataset'] = {}
 
 class Dataset(BaseModel):
     dataset_uuid: UUID = uuid4()
@@ -100,6 +100,7 @@ class Dataset(BaseModel):
         if self.data_source.sql_engine:            
             results = self.data_source.sql_conn.execute(select([self.sql_table])) # type: ignore
             return results
+        return None
     
     def get_row_for_primary_key(self, key: str) -> Optional[RowProxy]:
         if self.data_source.sql_engine:
@@ -108,12 +109,16 @@ class Dataset(BaseModel):
             if not results:
                 logger.info(f'get_row_for_primary_key returned no results for dataset {(DataSource, self.dataset_key, self.linked_model if self.linked_model else None)} and primary_key {key}')
             return results
+        return None
     
     def get_linked_model_objects(self) -> List[Any]:
         assert self.linked_model and self.model_key_map
 
-        models = []
-        for row in self.get_all_rows():
+        models: List[Any] = []
+        rows = self.get_all_rows()
+        if not rows:
+            return models
+        for row in rows:
             model = self.create_linked_model_object(row)
             if model:
                 models.append(model)
@@ -128,18 +133,21 @@ class Dataset(BaseModel):
     def create_linked_model_object(self, row: ResultProxy) -> Optional[Any]:
         flat_args = {}
 
-        for k,v in self.model_key_map.items():
-            if v and type(v) is str:
-                flat_args[k] = row[v]
-            elif v and type(v) is dict:
-                # assume the model_key_map contains a custom function for parsing the dataset column
-                name = next(iter(v))
-                dataset_value = row[name]
-                flat_args[k] = v[name](dataset_value) if dataset_value else None
+        if self.model_key_map:
+            for k,v in self.model_key_map.items():
+                if v and type(v) is str:
+                    flat_args[k] = row[v]
+                elif v and type(v) is dict:
+                    # assume the model_key_map contains a custom function for parsing the dataset column
+                    name = next(iter(v))
+                    dataset_value = row[name]
+                    flat_args[k] = v[name](dataset_value) if dataset_value else None
         
         args = self._hydrate_linked_model_args_by_introspection(flat_args)
 
         try:
+            if not self.linked_model:
+                return None
             instance = self.linked_model(**args)
         except:
             logger.info(f'create_linked_model_object failed to create model {self.linked_model} with args {args}')
