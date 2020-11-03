@@ -13,7 +13,7 @@ function Header() {
   const links = [
     {
       displayName: 'Our Initiatives',
-      url: '#',
+      url: '/initiatives',
       children: [
         { displayName: 'Congressional Pressure', url: '/pressure' },
         { displayName: 'COVID Relief Calling', url: 'relief' },
