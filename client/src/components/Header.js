@@ -10,6 +10,20 @@ import HFLogo from '../assets/HF-RR-long-logo.png';
  * the nav bar will appear even as users scroll down longer pages.
  */
 function Header() {
+
+  fetch('/initiatives?fake_date=true')
+    .then((response) => response.json())
+    .then(function(initiatives_data) {
+      let initiatives = [];
+      initiatives_data.forEach(function(initiative) {
+        initiatives.push({
+          displayName: initiative.name,
+          url: '/' + initiative.name.toLowerCase().replace(' ','_')
+        });
+      });
+      console.log('parsed initiatives from API', initiatives);
+    });
+
   const links = [
     {
       displayName: 'Our Initiatives',

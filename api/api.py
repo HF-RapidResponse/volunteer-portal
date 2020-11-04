@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from models import Initiative, VolunteerRole, VolunteerEvent
 from fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_initiatives_list, generate_fake_volunteer_events_list \
@@ -12,6 +13,16 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI()
+
+origins = ['*']
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 hf_db = DataSource(data_source_type=DataSourceType.MYSQL,
         address=generate_hf_mysql_db_address('35.188.204.248','airtable_database','no_pii','humanity-forward_hf-db1-mysql_no_pii'))
