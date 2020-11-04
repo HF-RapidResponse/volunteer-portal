@@ -2,10 +2,5 @@ name: volunteer-portal
 dependencies:
   - python=3.8
   - pip
-  - mypy
-  - pytest
-  - faker
-  - pydantic
   - pip:
-    - fastapi
-    - uvicorn
+    - -r requirements.txt
