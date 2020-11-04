@@ -6,7 +6,7 @@ import {
 
 function RecruitmentSocialShare() {
   const shareUrl = process.env.REACT_APP_SOCIAL_SHARE_URL;
-  const title = 'Volunteer for Hunanity Forward';
+  const title = 'Volunteer for Humanity Forward';
   return (
     <>
       <div className="text-center mt-2 mb-3">
