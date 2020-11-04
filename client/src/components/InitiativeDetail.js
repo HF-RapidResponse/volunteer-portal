@@ -97,14 +97,14 @@ function InitiativeDetail(props) {
             {dateElem}
             <p style={{margin: '0.4rem 0', textAlign: 'left'}} className="sm-copy">{evt["description"]}</p>
             <div className="text-center mt-4 mb-4">
-              <Link to={'/initiatives/'}>
+              <a href={evt["signup_url"]}>
                 <Button
                   variant="outline-info"
                   style={{ padding: '.35rem 1.5rem' }}
                 >
-                  View Events &amp; Roles
+                  Sign Up
                 </Button>
-              </Link>
+              </a>
             </div>
           </Col>
         );
@@ -128,7 +128,7 @@ function InitiativeDetail(props) {
                   variant="outline-info"
                   style={{ padding: '.35rem 1.5rem' }}
                 >
-                  Sign Up
+                  Apply Here
                 </Button>
               </a>
             </div>
