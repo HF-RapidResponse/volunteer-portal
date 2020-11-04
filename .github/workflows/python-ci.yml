@@ -28,3 +28,6 @@ jobs:
     - name: Lint
       run:
         mypy .
+    - name: Test
+      run:
+        python -m pytest tests/
