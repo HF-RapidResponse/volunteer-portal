@@ -1,5 +1,10 @@
 @import 'variables';
 
+@font-face {
+  font-family: 'Museo-900';
+  src: url('../assets/fonts/Museo-900.otf') format('opentype');
+}
+
 .hf-cyan {
   color: $hfCyan;
 }
@@ -103,14 +108,32 @@ p {
 
 .header-2 {
   color: $hfDarkBlue;
-  font-family: 'Helvetica STD';
+  /* This is meant to be Helvetica STD */
+  /* Waiting on font assets... */
+  font-family: 'Helvetica';
   font-weight: 900;
 }
 
 .header-3 {
-  font-family: Museo;
+  font-family: 'Museo-900';
   font-weight: 900;
   color: $btnCyan;
+}
+
+.header-3-section-breaker {
+  font-family: 'Museo-900';
+  font-weight: 900;
+  color: $hfDarkBlue;
+}
+
+.header-4 {
+  font-family: Helvetica;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 140%;
+  /* identical to box height, or 28px */
+  letter-spacing: -0.02em;
 }
 
 .top-light-shadow {
@@ -142,4 +165,21 @@ p {
 
   /* Gray 4 */
   color: #555555;
+}
+
+.sm-copy-blue {
+  /* Small Copy */
+  font-family: Helvetica;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 140%;
+  
+  margin: 0 0;
+
+  /* identical to box height, or 20px */
+  letter-spacing: 0.2px;
+
+  /* Gray 4 */
+  color: $btnCyan;
 }
