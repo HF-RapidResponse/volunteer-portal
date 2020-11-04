@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import RecruitmentSocialShare from './RecruitmentSocialShare';
 
 function Register() {
   document.title = 'HF Volunteer Portal - Register';
@@ -62,20 +63,7 @@ function Register() {
           will help not only themselves, but people living in every strata of
           American society.
         </p>
-        <div className="text-center mt-2 mb-3">
-          <a href="https://www.facebook.com/sharer/sharer.php?u=https://volunteers.movehumanityforward.com/">
-            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-              Share on Facebook
-            </Button>
-          </a>
-        </div>
-        <div className="text-center mt-3 mb-2">
-          <a href="https://twitter.com/home?status=https://volunteers.movehumanityforward.com/ ">
-            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-              Share on Twitter
-            </Button>
-          </a>
-        </div>
+        <RecruitmentSocialShare />
       </Col>
       <Col xs={12} lg={9} xl={6} className="shadow-card">
         <h2 className="header-3">Receive a personal ActBlue link.</h2>
