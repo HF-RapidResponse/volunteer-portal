@@ -5,6 +5,11 @@
   src: url('../assets/fonts/Museo-900.otf') format('opentype');
 }
 
+@font-face {
+  font-family: 'Helvetica LT Std';
+  src: url('../assets/fonts/HelveticaLTStd-BlkCond.otf') format('opentype');
+}
+
 .hf-cyan {
   color: $hfCyan;
 }
@@ -108,13 +113,12 @@ p {
 
 .header-2 {
   color: $hfDarkBlue;
-  /* This is meant to be Helvetica STD */
-  /* Waiting on font assets... */
-  font-family: 'Helvetica';
+  font-family: 'Helvetica LT Std';
   font-weight: 900;
 }
 
 .header-3 {
+  padding: 1rem 0;
   font-family: 'Museo-900';
   font-weight: 900;
   color: $btnCyan;
