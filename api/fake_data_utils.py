@@ -70,6 +70,8 @@ def generate_fake_initiative() -> Initiative:
         title = fake.sentence(),
         hero_image_url = fake.uri(),
         content = fake.paragraph(nb_sentences=4),
+        roles = roles,
+        events = events,
         highlightedItems = items
     )
 

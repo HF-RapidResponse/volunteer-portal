@@ -57,6 +57,6 @@ class Initiative(BaseModel):
     title: str
     hero_image_url: Url = generate_placeholder_image()
     content: MarkdownText
-    roles: Optional[List[VolunteerRole]]
-    events: Optional[List[VolunteerEvent]]
-    highlightedItems: Optional[List[Union[VolunteerRole,VolunteerEvent]]]
+    roles: List[VolunteerRole] = []
+    events: List[VolunteerEvent] = []
+    highlightedItems: List[Union[VolunteerRole,VolunteerEvent]] = []
