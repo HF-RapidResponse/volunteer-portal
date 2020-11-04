@@ -23,7 +23,7 @@ function Initiatives() {
   {
     cards.push(
       <Col xs={12} lg={9} xl={6} className="shadow-card" key={initiatives[i]["initiative_external_id"]}>
-        <h2 className="header-3">Initiative {i+1}:</h2>
+        <h2 className="header-3-section-lead">Initiative {i+1}:</h2>
         <h2 className="header-3-section-breaker">{initiatives[i]["title"]}</h2>
         <p>{initiatives[i]["content"]}</p>
         <div className="text-center mt-4 mb-4">

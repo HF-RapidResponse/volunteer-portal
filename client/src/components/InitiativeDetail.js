@@ -46,22 +46,27 @@ function InitiativeDetail(props) {
     console.log("ESLINT HAHAAHAHA");
   }
   
-  function makeCard()
+  function makeCards()
   {
     if (detail.failed)
     {
       return (
         <Col xs={12} lg={9} xl={6} className="shadow-card" key={detail["initiative_external_id"]}>
-          <h2 className="header-3">Oops:</h2>
+          <h2 className="header-3-section-lead">Oops:</h2>
           <h2 className="header-3-section-breaker">Error loading the initiative.</h2>
         </Col>
       );
     }
     else
     {
+      // Build event cards
       const evts = [];
       for (var i = 0; i < detail["events"].length; i++)
       {
+        if (i == 0)
+        {
+          evts.push(<h2 key="evts_header_special" className="header-2" style={{textAlign: 'center'}}>Upcoming Events</h2>);
+        }
         const evt = detail["events"][i];
         const dateOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
         const timeOpts = { formatMatcher: 'basic', dateStyle: undefined, hour: 'numeric', minute: 'numeric' };
@@ -100,10 +105,19 @@ function InitiativeDetail(props) {
           </Col>
         );
       }
+      // Build role cards
+      const roles = [];
+      for (i = 0; i < detail["roles"].length; i++)
+      {
+        if (i == 0)
+        {
+          roles.push(<h2 key="roles_header_special" className="header-2" style={{textAlign: 'center'}}>Volunteer Roles</h2>);
+        }
+      }
       return (
         <>
           <Col xs={12} lg={9} xl={6} className="shadow-card" key={detail["initiative_external_id"]}>
-            <h2 className="header-3">Initiative:</h2>
+            <h2 className="header-3-section-lead">Initiative:</h2>
             <h2 className="header-3-section-breaker">{detail["title"]}</h2>
             <p>{detail["content"]}</p>
             <div className="text-center mt-4 mb-4">
@@ -118,6 +132,7 @@ function InitiativeDetail(props) {
             </div>
           </Col>
           <>{evts}</>
+          <>{roles}</>
         </>
       );
     }
@@ -129,7 +144,7 @@ function InitiativeDetail(props) {
 
   return (
     <>
-      {makeCard()}
+      {makeCards()}
     </>
   );
 }
