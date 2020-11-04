@@ -19,6 +19,7 @@ function Home() {
           <Col lg={12} xl={4}>
             <div className="center-when-small">
               <img
+                className="ubi-square"
                 src="https://via.placeholder.com/347x264.png"
                 alt="placeholder-home"
               />
