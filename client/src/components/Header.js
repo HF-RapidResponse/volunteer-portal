@@ -11,7 +11,7 @@ import HFLogo from '../assets/HF-RR-long-logo.png';
  */
 function Header() {
 
-  fetch('/initiatives?fake_date=true')
+  fetch('/api/initiatives?fake_date=true')
     .then((response) => response.json())
     .then(function(initiatives_data) {
       let initiatives = [];
