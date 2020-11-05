@@ -12,7 +12,7 @@ function InitiativeDetail(props) {
   
   if (!detail.loaded)
   {
-    fetch('http://localhost:8000/initiatives/' + 'id')
+    fetch('/api/initiatives/' + id)
       .then(response =>
       {
         if (!response.ok)
@@ -22,32 +22,24 @@ function InitiativeDetail(props) {
         }
         else
         {
-          const resp = response.json();
-          resp.loaded = true;
-          set(resp);
+          response.json().then(data =>
+          {
+            const resp = data;
+            resp.loaded = true;
+            set(resp);
+          });
         }
       })
       .catch((err) =>
       {
         console.log("COULDNT CONNECT WAAA");
-        const resp = {"initiative_uuid":"9034760c-92a3-4c8f-8c8e-df2354bc51e9","initiative_external_id":"rec0IfCrd2xURUL7j","name":"Candidate Support","details_url":"www.google.com","title":"Candidate Support","hero_image_url":"https://dl.airtable.com/.attachments/92101c485e80da2898b508df293b43e7/17e16d84/yang_gasworks.jpeg","content":"Supporting endorsed candidates ","roles":[],"events":[{"event_uuid":"0944661c-fc05-4baf-b4f3-e4b0f35da444","event_external_id":"recCGlct2t3OqbBEV","name":"So you want to be a Calling Captain... - 10/31/2020","hero_image_url":"https://dl.airtable.com/.attachments/a76ed2d4f2778a6fd1fa723ebfd4af1a/6b802669/action_network_image","signup_url":"https://www.mobilize.us/humanityforward/event/350958/","details_url":null,"start_datetime":"2020-10-31T20:00:00","end_datetime":"2020-10-31T20:30:00","description":"Do you have an HF-endorsed candidate in your area and want to help?\nDo you enjoy building community and talking about Humanity First policies?\nDo you want to mobilize volunteers and make an impact?\n\nThen this training is for you!\n\nWe'll share our strategy for activating volunteers throughout the movement, hosting successful phone banks, and helping our candidates win their races and get into office.\n\nBring a friend (or two!) and join us for a fun and interactive training.\n\nSee you soon!","point_of_contact":null},{"event_uuid":"0944661c-fc05-4baf-b4f3-e4b0f35da444","event_external_id":"recw8E9t1J2zTnBNM","name":"Humanity CALLS for Thearse McCalmon (NYSD-49) - 10/26/2020","hero_image_url":"https://dl.airtable.com/.attachments/2cc8b32f1d58dc2c93cd839aa145748d/54c6bb80/action_network_image","signup_url":"https://www.mobilize.us/humanityforward/event/347260/","details_url":null,"start_datetime":"2020-10-26T22:00:00","end_datetime":"2020-10-27T00:00:00","description":"Voting is underway across the nation, so let's talk to voters about an incredible candidate, Thearse McCalmon\n\nThearse has taken the Humanity Forward pledge and is ready to move Humanity Forward! Will you fight for her so she can fight for us?\n\n~~~~~\n\n\"Thearse is running for state senate in the city where I was born – Schenectady, NY. Thearse recently ran for mayor of Schenectady and came within dozens of votes of upsetting the incumbent. She is a Mom and former nurse fighting for her community. She won her state senate primary because people realize that she is in their corner. As someone who has experienced homelessness in her life, Thearse understands the importance of creating a human-centered society. Her opponent is a 70 year-old incumbent who is on the wrong side of many issues in Albany.\"\n\n-Andrew Yang","point_of_contact":null}],"highlightedItems":null};
-        resp.loaded = true;
-        resp.roles = [{role_external_id: "dklgjsdlgkjsdlgj", name: "Humanity Writer", overview: "You will need to do... the stuff!", signup_url: "https://google.com/"}];
-        set(resp);
-        // we're putting sample data here for testing purposes ^
-        // but once the API is up and running, this should instead run the line below,
-        // letting us know that we failed to connect, and to retry.
-        // set({failed: true});
+        set({failed: true});
       });
   }
 
-  if (!detail.loaded)
+  if (!detail.loaded && !detail.failed)
   {
     return <LoadingSpinner/>;
-  }
-  else
-  {
-    console.log("ESLINT HAHAAHAHA");
   }
   
   function makeCards()
@@ -148,10 +140,6 @@ function InitiativeDetail(props) {
       );
     }
   }
-
-  // using dummy data for now
-  // const detail = {"initiative_uuid":"9034760c-92a3-4c8f-8c8e-df2354bc51e9","initiative_external_id":"rec0IfCrd2xURUL7j","name":"Candidate Support","details_url":"www.google.com","title":"Candidate Support","hero_image_url":"https://dl.airtable.com/.attachments/92101c485e80da2898b508df293b43e7/17e16d84/yang_gasworks.jpeg","content":"Supporting endorsed candidates ","roles":[],"events":[{"event_uuid":"0944661c-fc05-4baf-b4f3-e4b0f35da444","event_external_id":"recCGlct2t3OqbBEV","name":"So you want to be a Calling Captain... - 10/31/2020","hero_image_url":"https://dl.airtable.com/.attachments/a76ed2d4f2778a6fd1fa723ebfd4af1a/6b802669/action_network_image","signup_url":"https://www.mobilize.us/humanityforward/event/350958/","details_url":null,"start_datetime":"2020-10-31T20:00:00","end_datetime":"2020-10-31T20:30:00","description":"Do you have an HF-endorsed candidate in your area and want to help?\nDo you enjoy building community and talking about Humanity First policies?\nDo you want to mobilize volunteers and make an impact?\n\nThen this training is for you!\n\nWe'll share our strategy for activating volunteers throughout the movement, hosting successful phone banks, and helping our candidates win their races and get into office.\n\nBring a friend (or two!) and join us for a fun and interactive training.\n\nSee you soon!","point_of_contact":null},{"event_uuid":"0944661c-fc05-4baf-b4f3-e4b0f35da444","event_external_id":"recw8E9t1J2zTnBNM","name":"Humanity CALLS for Thearse McCalmon (NYSD-49) - 10/26/2020","hero_image_url":"https://dl.airtable.com/.attachments/2cc8b32f1d58dc2c93cd839aa145748d/54c6bb80/action_network_image","signup_url":"https://www.mobilize.us/humanityforward/event/347260/","details_url":null,"start_datetime":"2020-10-26T22:00:00","end_datetime":"2020-10-27T00:00:00","description":"Voting is underway across the nation, so let's talk to voters about an incredible candidate, Thearse McCalmon\n\nThearse has taken the Humanity Forward pledge and is ready to move Humanity Forward! Will you fight for her so she can fight for us?\n\n~~~~~\n\n\"Thearse is running for state senate in the city where I was born – Schenectady, NY. Thearse recently ran for mayor of Schenectady and came within dozens of votes of upsetting the incumbent. She is a Mom and former nurse fighting for her community. She won her state senate primary because people realize that she is in their corner. As someone who has experienced homelessness in her life, Thearse understands the importance of creating a human-centered society. Her opponent is a 70 year-old incumbent who is on the wrong side of many issues in Albany.\"\n\n-Andrew Yang","point_of_contact":null}],"highlightedItems":null};
-  console.log(id);
 
   return (
     <>
