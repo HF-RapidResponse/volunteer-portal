@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import RecruitmentSocialShare from './RecruitmentSocialShare';
@@ -54,8 +55,8 @@ function Register() {
       <Col xs={12} lg={9} xl={6} className="shadow-card">
         <h2 className="header-3">Share this portal with others.</h2>
         <p>
-        Give everyone the opportunity to participate in this historic push for UBI. 
-        The best way to make an impact is to get those around you involved! Every 
+        Give everyone the opportunity to participate in this historic push for UBI.
+        The best way to make an impact is to get those around you involved! Every
         drop of water makes the mighty ocean.
         </p>
         <RecruitmentSocialShare />
@@ -67,7 +68,7 @@ function Register() {
           ActBlue Link, so we can highlight your success in moving Humanity
           Forward!
         </p>
-        <div className="form-group">
+        <div className="form-group" id="donor-link-input-area">
           <input
             type="text"
             className="form-control"
@@ -90,9 +91,13 @@ function Register() {
 }
 
 function SendDonorRequestLink() {
-  const email = document.getElementById('act-blue-email').value;
+  const input = document.getElementById('act-blue-email');
+  const email = input.value;
+  const invalid_email_message = "Please enter a valid email address.";
+  const unknown_error_message = "We're sorry, we are unable to process your request. Our volunteer development team will sort this out as soon as possible";
   if ( !email.includes("@") ) {
-    alert("bruh, emails gotta have an @ sign");
+    alert(invalid_email_message);
+    return;
   }
   const requestOptions = {
     method: 'POST',
@@ -100,7 +105,22 @@ function SendDonorRequestLink() {
     body: JSON.stringify({ email: email })
   };
   fetch('/api/donation_link_requests/?test_db=true', requestOptions)
-    .then(response => { console.log(response); });
+    .then((response) => {
+      if (response.status >= 200 && response.status <= 299) {
+        // This does not work yet I am very bad at javascript and react
+        var thanks = React.createElement("h3", {}, "Thank you!");
+        ReactDOM.render(thanks);
+        var container = document.getElementById("donor-link-input-area");
+        container.replaceChild(thanks, document.getElementById("act-blue-email"));
+      } else if (response.status == 422) {
+        alert(invalid_email_message);
+      } else {
+        alert(unknown_error_message);
+      }
+    }).catch((error) => {
+      alert(unknown_error_message);
+      console.log(error);
+    });
 }
 
 export default Register;
