@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import RecruitmentSocialShare from './RecruitmentSocialShare';
 
 function Register() {
   document.title = 'HF Volunteer Portal - Register';
@@ -24,7 +25,7 @@ function Register() {
       <Col xs={12} lg={9} xl={6} className="shadow-card">
         <h2 className="header-3">Register yourself as a volunteer.</h2>
         <p>
-            Let us keep you up to date on what we have in the works.
+          Let us keep you up to date on what we have in the works.
         </p>
         <div className="text-center">
           <Link to="http://on.movehumanityforward.com/volunteer_signup_short">
@@ -53,27 +54,11 @@ function Register() {
       <Col xs={12} lg={9} xl={6} className="shadow-card">
         <h2 className="header-3">Share this portal with others.</h2>
         <p>
-          UBI is an initiative for the people, so the best way to make an impact
-          is to get the people around you involved! By sharing this portal, you
-          are expressing the importance of UBI and giving other Americans the
-          opportunity to participate in this historic push for a policy that
-          will help not only themselves, but people living in every strata of
-          American society.
+        Give everyone the opportunity to participate in this historic push for UBI. 
+        The best way to make an impact is to get those around you involved! Every 
+        drop of water makes the mighty ocean.
         </p>
-        <div className="text-center mt-2 mb-3">
-          <a href="https://www.facebook.com/sharer/sharer.php?u=https://volunteers.movehumanityforward.com/">
-            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-              Share on Facebook
-            </Button>
-          </a>
-        </div>
-        <div className="text-center mt-3 mb-2">
-          <a href="https://twitter.com/home?status=https://volunteers.movehumanityforward.com/ ">
-            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-              Share on Twitter
-            </Button>
-          </a>
-        </div>
+        <RecruitmentSocialShare />
       </Col>
       <Col xs={12} lg={9} xl={6} className="shadow-card">
         <h2 className="header-3">Receive a personal ActBlue link.</h2>

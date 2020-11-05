@@ -11,15 +11,7 @@ import HFLogo from '../assets/HF-RR-long-logo.png';
  */
 function Header() {
   const links = [
-    {
-      displayName: 'Our Initiatives',
-      url: '/initiatives',
-      children: [
-        { displayName: 'Congressional Pressure', url: '/pressure' },
-        { displayName: 'COVID Relief Calling', url: 'relief' },
-        { displayName: 'Fundraising', url: '/fundraising' },
-      ],
-    },
+    { displayName: 'Our Initiatives', url: '/initiatives' },
     { displayName: 'Event Calendar', url: '/calendar' },
     { displayName: 'Volunteer Roles', url: '/roles' },
     // { displayName: 'About Us', url: '/about' },

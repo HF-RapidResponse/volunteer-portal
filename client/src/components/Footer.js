@@ -52,7 +52,7 @@ function Footer() {
         <p className="btn-text">Made for volunteers by volunteers.</p>
         <h5 className="btn-text">
           <a
-            href="https://on.movehumanityforward.com/volunteer_hf"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSeYVZogpbOYuaawzJQvlHlfdklfUBlrwfhyqeDlkG4g_wXMPg/viewform?usp=sf_link"
             className="btn-text"
           >
             Join the Vounteer Portal Development Team!

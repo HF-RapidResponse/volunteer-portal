@@ -70,13 +70,11 @@ function About() {
   for (let i = 0; i < teamLeads.length; i++) {
     const teamLead = teamLeads[i];
     teamLeadProfiles.push(
-      <div className="d-md-flex gap" key={teamLead.name + i}>
-        <div className="flex-child">
-          <h3>{teamLead.roleName}</h3>
-          <h2>{teamLead.name}</h2>
-        </div>
+      <div className="teamlead d-md-flex gap" key={teamLead.name + i}>
         <div className="flex-child">
           <img src={teamLead.portrait} alt={`${teamLead.name} portrait`} />
+          <h3>{teamLead.roleName}</h3>
+          <h2>{teamLead.name}</h2>
         </div>
       </div>
     );
@@ -93,6 +91,25 @@ function About() {
         <p className="large-text">Rapid Response Volunteer Program</p>
       </div>
       <hr className="styled-hr" />
+      <p style={{ paddingTop: '1rem' }}>
+        Welcome to Humanity Forward Rapid
+        Response. I’m excited to work with you to build the UBI movement
+        nationwide.  We are going to pressure congress, engage elected officials
+        and rally volunteers to make UBI a reality.
+      </p>
+      <p>Our movement is growing; our message is resonating.</p>
+      <p>This is bigger than politics; this is about building a human-centered
+        society that works for us!</p>
+      <div className="teamlead d-md-flex justify-content-around gap">
+        <div className="text-center">
+          <img src={ErickaPortrait} alt="ericka-portrait" />
+          <div className="text-center">
+            <h3>Organizing &amp; Operations Director</h3>
+            <h2>Ericka McLeod</h2>
+          </div>
+        </div>
+      </div>
+      <hr className="styled-hr" />
       <p className="med-text">Primary Initiatives for Volunteer Involvement</p>
       <div className="bigger-list">
         <ul>
@@ -102,27 +119,9 @@ function About() {
         </ul>
       </div>
       <hr className="styled-hr" />
-      <div className="d-md-flex justify-content-around gap">
-        <div className="text-center">
-          <p className="med-text">Organizing &amp; Operations Director</p>
-          <br />
-          <h3 style={{ fontSize: '1.5rem' }}>
-            <i>Ericka McLeod</i>
-          </h3>
-        </div>
-        <div className="text-center">
-          <img src={ErickaPortrait} alt="ericka-portrait" />
-        </div>
-      </div>
-        <p style={{ paddingTop: '1rem' }}> Welcome to Humanity Forward Rapid
-        Response. I’m excited to work with you to build the UBI movement
-        nationwide.  We are going to pressure congress, engage elected officials
-        and rally volunteers to make UBI a reality.</p>
-        <p>Our movement is growing; Our message is resonating.</p>
-        <p>This is bigger than politics; This is about building a human-centered
-        society that works for us!</p>
-        <section className="about-section text-center"> <p
-        className="med-text thicc">Team Leads</p> <>{teamLeadProfiles}</>
+      <section className="about-section text-center">
+        <p className="med-text thicc">Our Team Leads</p>
+        <>{teamLeadProfiles}</>
       </section>
     </>
   );

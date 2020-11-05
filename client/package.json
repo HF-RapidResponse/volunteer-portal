@@ -19,6 +19,7 @@
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.0",
+    "react-share": "^4.3.1",
     "serve": "^11.3.2"
   },
   "scripts": {
@@ -46,5 +47,6 @@
   "devDependencies": {
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5"
-  }
+  },
+  "proxy": "http://localhost:8000"
 }
