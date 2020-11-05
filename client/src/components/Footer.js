@@ -26,7 +26,7 @@ function Footer() {
         <p className="btn-text">
           <a
             className="btn-text"
-            href="https://secure.actblue.com/donate/mhf-main-v2"
+            href="https://secure.actblue.com/donate/hf-vol-portal"
           >
             Donate
           </a>
@@ -52,7 +52,7 @@ function Footer() {
         <p className="btn-text">Made for volunteers by volunteers.</p>
         <h5 className="btn-text">
           <a
-            href="https://on.movehumanityforward.com/volunteer_hf"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSeYVZogpbOYuaawzJQvlHlfdklfUBlrwfhyqeDlkG4g_wXMPg/viewform?usp=sf_link"
             className="btn-text"
           >
             Join the Vounteer Portal Development Team!

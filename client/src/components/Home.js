@@ -31,7 +31,7 @@ function Home() {
               - the hands of the American people. Families all across the United
               States are struggling to sustain themselves throughout the
               coronavirus pandemic, as well as the ever changing and challenging
-              environment of the 21st century economy. The best way to insure
+              environment of the 21st century economy. The best way to ensure
               that no American is left behind is to entrust them with a monthly
               dividend to be used as they see fit. Whether it is car repairs,
               medical bills, rent, or the beginning of a new business, UBI will
@@ -45,13 +45,11 @@ function Home() {
         <Col xs={12} lg={9} xl={6} className="shadow-card">
           <h2 className="header-3">What can I do right away?</h2>
           <p>
-            Register with Humanity Forward to get started and help manifest our
-            goals into reality. Spreading the word to friends and family is a
-            great place to begin, so share your excitement with others, and show
-            them the ways they themselves can get started volunteering with HF.
+          Connect with like-minded people. Shape the grassroots efforts as we grow.
+          Let’s build something better together. 
           </p>
           <div className="mt-3 mb-3 text-center">
-            <Link to="/volunteer">
+            <Link to="/register">
               <Button
                 variant="outline-info"
                 style={{ padding: '.35rem 1.5rem' }}
@@ -66,9 +64,11 @@ function Home() {
             help ensure we can continue fighting for UBI by fundraising.
           </p>
           <div className="text-center mt-4 mb-4">
-            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-              View Our Initiatives
-            </Button>
+            <Link to="/initiatives">
+              <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
+                View Our Initiatives
+              </Button>
+            </Link>
           </div>
         </Col>
         <Col xs={12} lg={9} xl={6} className="shadow-card">
@@ -96,13 +96,13 @@ function Home() {
         </Col>
         <Col xs={12} lg={9} xl={6} className="shadow-card">
           <p className="mb-0">
-            Our team is working hard to... Insert message about why we need
-            funding and what the money will go towards. All contributions are
-            welcomed and highly appreciated... Thank you!
+          Our team is working hard to advocate for cash relief in a big way. 
+          Building a voice for the people requires financial support. All 
+          contributions are welcomed and highly appreciated... Thank you!
           </p>
           <div className="text-center">
             <a
-              href="https://secure.actblue.com/donate/mhf-main-v2"
+              href="https://secure.actblue.com/donate/hf-vol-portal"
               target="_blank"
               className="btn-cyan"
             >
