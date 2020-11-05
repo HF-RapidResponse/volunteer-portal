@@ -15,7 +15,8 @@ section {
 }
 
 .ubi-square {
-  @media (max-width: 450px) {
+  width: 320px;
+  @media (max-width: 420px) {
     width: 100%;
   }
 }
