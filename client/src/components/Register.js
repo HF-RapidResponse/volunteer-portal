@@ -91,7 +91,7 @@ function Register() {
 }
 
 function SendDonorRequestLink() {
-  const input = document.getElementById('act-blue-email');
+  var input = document.getElementById('act-blue-email');
   const email = input.value;
   const invalid_email_message = "Please enter a valid email address.";
   const unknown_error_message = "We're sorry, we are unable to process your request. Our volunteer development team will sort this out as soon as possible";
@@ -107,11 +107,7 @@ function SendDonorRequestLink() {
   fetch('/api/donation_link_requests/?test_db=true', requestOptions)
     .then((response) => {
       if (response.status >= 200 && response.status <= 299) {
-        // This does not work yet I am very bad at javascript and react
-        var thanks = React.createElement("h3", {}, "Thank you!");
-        ReactDOM.render(thanks);
-        var container = document.getElementById("donor-link-input-area");
-        container.replaceChild(thanks, document.getElementById("act-blue-email"));
+        input.value = "Thank you!";
       } else if (response.status == 422) {
         alert(invalid_email_message);
       } else {
