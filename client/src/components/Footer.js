@@ -26,7 +26,7 @@ function Footer() {
         <p className="btn-text">
           <a
             className="btn-text"
-            href="https://secure.actblue.com/donate/mhf-main-v2"
+            href="https://secure.actblue.com/donate/hf-vol-portal"
           >
             Donate
           </a>

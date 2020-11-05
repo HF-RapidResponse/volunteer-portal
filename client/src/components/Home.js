@@ -31,7 +31,7 @@ function Home() {
               - the hands of the American people. Families all across the United
               States are struggling to sustain themselves throughout the
               coronavirus pandemic, as well as the ever changing and challenging
-              environment of the 21st century economy. The best way to insure
+              environment of the 21st century economy. The best way to ensure
               that no American is left behind is to entrust them with a monthly
               dividend to be used as they see fit. Whether it is car repairs,
               medical bills, rent, or the beginning of a new business, UBI will
@@ -102,7 +102,7 @@ function Home() {
           </p>
           <div className="text-center">
             <a
-              href="https://secure.actblue.com/donate/mhf-main-v2"
+              href="https://secure.actblue.com/donate/hf-vol-portal"
               target="_blank"
               className="btn-cyan"
             >
