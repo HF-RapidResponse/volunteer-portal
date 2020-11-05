@@ -104,7 +104,7 @@ function SendDonorRequestLink() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: email })
   };
-  fetch('/api/donation_link_requests/?test_db=true', requestOptions)
+  fetch('/api/donation_link_requests/', requestOptions)
     .then((response) => {
       if (response.status >= 200 && response.status <= 299) {
         input.value = "Thank you!";
