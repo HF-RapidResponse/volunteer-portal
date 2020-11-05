@@ -48,7 +48,7 @@ def test_create_model_error():
 
 def test_get_initiatives_api():
     # because Initiatives contain VolunteerEvents and VolunteerRoles, this will test field validations on all three models
-    response = client.get('/initiatives')
+    response = client.get('api/initiatives')
     assert response.status_code == 200
 
     initiatives = [Initiative(**initiative_kwargs) for initiative_kwargs in response.json()]

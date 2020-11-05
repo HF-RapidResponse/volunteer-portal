@@ -1,5 +1,10 @@
 dispatch:
   - url: "volunteers.movehumanityforward.com/*"
     service: volunteer-portal-client
-  - url: "api.volunteers.movehumanityforward.com/*"
+  - url: "volunteers.movehumanityforward.com/api/*"
     service: volunteer-portal-api
+
+  - url: "vol-dev.movehumanityforward.com/api/*"
+    service: volunteer-portal-api-staging
+  - url: "vol-dev.movehumanityforward.com/*"
+    service: volunteer-portal-client-staging
