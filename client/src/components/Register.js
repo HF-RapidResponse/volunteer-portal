@@ -28,11 +28,11 @@ function Register() {
           Let us keep you up to date on what we have in the works.
         </p>
         <div className="text-center">
-          <Link to="http://on.movehumanityforward.com/volunteer_signup_short">
+          <a href="http://on.movehumanityforward.com/volunteer_signup_short">
             <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
               Register Here
             </Button>
-          </Link>
+          </a>
         </div>
       </Col>
       <Col xs={12} lg={9} xl={6} className="shadow-card">
