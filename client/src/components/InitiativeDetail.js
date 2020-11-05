@@ -17,7 +17,7 @@ function InitiativeDetail(props) {
       {
         if (!response.ok)
         {
-          console.log("ASASASA");
+          // load failed, try reconnect
           set({failed: true});
         }
         else
@@ -32,7 +32,7 @@ function InitiativeDetail(props) {
       })
       .catch((err) =>
       {
-        console.log("COULDNT CONNECT WAAA");
+        // load failed, try reconnect
         set({failed: true});
       });
   }
@@ -69,7 +69,6 @@ function InitiativeDetail(props) {
         const startDate = new Date(evt["start_datetime"]);
         const startDateStr = startDate.toLocaleDateString(undefined, dateOpts);
         const startTimeStr = new Intl.DateTimeFormat('default', timeOpts).format(startDate);
-        console.log(startTimeStr);
         const endDate = new Date(evt["end_datetime"]);
         const endDateStr = endDate.toLocaleDateString(undefined, dateOpts);
         const endTimeStr = new Intl.DateTimeFormat('default', timeOpts).format(endDate);

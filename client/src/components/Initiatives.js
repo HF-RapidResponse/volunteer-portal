@@ -18,14 +18,13 @@ function Initiatives() {
       {
         if (!response.ok)
         {
-          console.log("ASASASA");
+          // load failed, try reconnect
           set({failed: true});
         }
         else
         {
           response.json().then(data =>
           {
-            console.log(data);
             const resp = data;
             resp.loaded = true;
             set(resp);
@@ -34,7 +33,7 @@ function Initiatives() {
       })
       .catch((err) =>
       {
-        console.log("COULDNT CONNECT WAAA");
+        // load failed, try reconnect
         set({failed: true});
       });
   }
