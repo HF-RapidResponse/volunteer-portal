@@ -3,6 +3,7 @@ import { Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/home.scss';
 import { Link } from 'react-router-dom';
 import HFMLKSquare from '../assets/HF-MLK-square.png';
+import EconGrowSquare from '../assets/HF-square-econ-growth.png';
 
 /**
  * Component that displays that landing page.
@@ -19,9 +20,9 @@ function Home() {
           <Col lg={12} xl={4}>
             <div className="center-when-small">
               <img
+                src={EconGrowSquare}
+                alt="econ-growth"
                 className="ubi-square"
-                src="https://via.placeholder.com/347x264.png"
-                alt="placeholder-home"
               />
             </div>
           </Col>
@@ -45,8 +46,8 @@ function Home() {
         <Col xs={12} lg={9} xl={6} className="shadow-card">
           <h2 className="header-3">What can I do right away?</h2>
           <p>
-          Connect with like-minded people. Shape the grassroots efforts as we grow.
-          Let’s build something better together. 
+            Connect with like-minded people. Shape the grassroots efforts as we
+            grow. Let’s build something better together.
           </p>
           <div className="mt-3 mb-3 text-center">
             <Link to="/register">
@@ -65,7 +66,10 @@ function Home() {
           </p>
           <div className="text-center mt-4 mb-4">
             <Link to="/initiatives">
-              <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
+              <Button
+                variant="outline-info"
+                style={{ padding: '.35rem 1.5rem' }}
+              >
                 View Our Initiatives
               </Button>
             </Link>
@@ -96,9 +100,9 @@ function Home() {
         </Col>
         <Col xs={12} lg={9} xl={6} className="shadow-card">
           <p className="mb-0">
-          Our team is working hard to advocate for cash relief in a big way. 
-          Building a voice for the people requires financial support. All 
-          contributions are welcomed and highly appreciated... Thank you!
+            Our team is working hard to advocate for cash relief in a big way.
+            Building a voice for the people requires financial support. All
+            contributions are welcomed and highly appreciated... Thank you!
           </p>
           <div className="text-center">
             <a
