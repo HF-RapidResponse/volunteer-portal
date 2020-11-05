@@ -29,7 +29,6 @@ class DataSource(BaseModel):
     address: str
     data_source_type: DataSourceType
     sql_engine: Optional[Engine]
-    sql_conn: Optional[Connection]
 
     # required for non-pydantic SQLAlchemy classes
     class Config:
@@ -41,11 +40,32 @@ class DataSource(BaseModel):
         #maybe this can/should be addressed with inheritance/another pattern? 
         if self.data_source_type is DataSourceType.BIGQUERY:
             self.sql_engine = create_engine(f'bigquery://{self.address}')
-            self.sql_conn = self.sql_engine.connect()
         elif self.data_source_type is DataSourceType.MYSQL:
             self.sql_engine = create_engine(f'mysql+pymysql://{self.address}', pool_recycle=300)
-            self.sql_conn = self.sql_engine.connect()
 
+class DataSink(BaseModel):
+    data_sink_uuid: UUID = uuid4()
+    address: str
+    data_base_type: DataSourceType
+    sql_engine: Optional[Engine]
+    sql_table: Optional[Table]
+
+    # required for non-pydantic SQLAlchemy classes
+    class Config:
+        arbitrary_types_allowed = True
+
+    def __init__(self, address: str, table: str, data_base_type: DataSourceType, **data) -> None:
+        super().__init__(address=address, data_base_type=data_base_type, **data)
+
+        if self.data_base_type is DataSourceType.MYSQL:
+            self.sql_engine = create_engine(f'mysql+pymysql://{self.address}', pool_recycle=3600)
+            self.sql_table = Table(table, MetaData(bind=self.sql_engine), autoload=True)
+        else:
+            raise Exception("Unsupported db type")
+
+    def insert(self, row: Any):
+        self.sql_engine.execute(self.sql_table.insert(), row.dict())
+        
 datasets: Dict[Tuple[Type[DataSource], str, Optional[Type]], 'Dataset'] = {}
 
 class Dataset(BaseModel):
@@ -97,15 +117,19 @@ class Dataset(BaseModel):
             assert all(value in expected_values for value in model_key_map_values), 'one or more values of model_map_key are not a valid column of the dataset'
     
     def get_all_rows(self) -> Optional[ResultProxy]:
-        if self.data_source.sql_engine:            
-            results = self.data_source.sql_conn.execute(select([self.sql_table])) # type: ignore
+        if self.data_source.sql_engine:
+            results = []
+            try:
+                results = self.data_source.sql_engine.execute(select([self.sql_table])) # type: ignore
+            except Exception as e:
+                logging.warning(f'failed to get all rows for {self.dataset_key}:\n{e}')
             return results
         return None
     
     def get_row_for_primary_key(self, key: str) -> Optional[RowProxy]:
         if self.data_source.sql_engine:
             query = select([self.sql_table]).where(self.sql_table.c[self.primary_key] == key) # type: ignore
-            results = self.data_source.sql_conn.execute(query).fetchone() # type: ignore
+            results = self.data_source.sql_engine.execute(query).fetchone() # type: ignore
             if not results:
                 logger.info(f'get_row_for_primary_key returned no results for dataset {(DataSource, self.dataset_key, self.linked_model if self.linked_model else None)} and primary_key {key}')
             return results

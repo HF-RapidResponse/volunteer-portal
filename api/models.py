@@ -2,10 +2,12 @@ from pydantic import BaseModel
 from typing import Optional, Union, List
 from enum import Enum
 from uuid import UUID, uuid4
-from datetime import datetime
+from datetime import datetime, timezone
 
 Url = str
 MarkdownText = str
+
+NowUtc = lambda: datetime.now(tz=timezone.utc)
 
 def generate_placeholder_image() -> Url:
     return 'https://actblue-indigo-uploads.s3.amazonaws.com/uploads/list-editor/brandings/65454/header/image_url/f7edc334-2217-43b9-b707-5b7eaed92c1b-logo_stacked.svg'
@@ -60,3 +62,7 @@ class Initiative(BaseModel):
     roles: List[VolunteerRole] = []
     events: List[VolunteerEvent] = []
     highlightedItems: List[Union[VolunteerRole,VolunteerEvent]] = []
+
+class PersonalDonationLinkRequest(BaseModel):
+    email: str
+    request_sent: datetime = NowUtc()
