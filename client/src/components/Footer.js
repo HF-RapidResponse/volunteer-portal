@@ -55,7 +55,7 @@ function Footer() {
             href="https://docs.google.com/forms/d/e/1FAIpQLSeYVZogpbOYuaawzJQvlHlfdklfUBlrwfhyqeDlkG4g_wXMPg/viewform?usp=sf_link"
             className="btn-text"
           >
-            Join the Vounteer Portal Development Team!
+            Join the Volunteer Portal Development Team!
           </a>
         </h5>
       </Container>
