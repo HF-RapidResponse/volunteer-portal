@@ -59,7 +59,7 @@ Running the API locally requires connecting to HF's databases. Make sure you hav
 
 In the _api_ directory you can manage dependencies with conda or virtualenv run:
 
-#### `conda create --name dev-env -f environment.yml`
+#### `conda create -f environment.yml`
 or
 #### `virtualenv dev-env --python=/usr/bin/python3.8`
 
