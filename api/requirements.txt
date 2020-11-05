@@ -1,7 +1,7 @@
 mypy
 pytest
 faker
-pydantic
+pydantic[email]
 fastapi
 uvicorn[standard]
 gunicorn

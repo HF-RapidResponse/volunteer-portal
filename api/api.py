@@ -3,14 +3,14 @@ from typing import List, Optional
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from models import Initiative, VolunteerRole, VolunteerEvent
+from models import Initiative, VolunteerRole, VolunteerEvent, PersonalDonationLinkRequest
 from fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_initiatives_list, generate_fake_volunteer_events_list \
     , generate_fake_volunteer_role, generate_fake_volunteer_event, generate_fake_initiative
-from data_sources import Dataset, DataSource, DataSourceType, generate_hf_mysql_db_address
+from data_sources import Dataset, DataSource, DataSourceType, generate_hf_mysql_db_address, DataSink
 from data_source_maps import hf_events, hf_volunteer_openings, hf_initiatives
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
 
@@ -26,6 +26,16 @@ app.add_middleware(
 
 hf_db = DataSource(data_source_type=DataSourceType.MYSQL,
         address=generate_hf_mysql_db_address('35.188.204.248','airtable_database','no_pii','humanity-forward_hf-db1-mysql_no_pii'))
+
+link_db_addr = generate_hf_mysql_db_address('35.188.204.248','donation_link_requests','hf','humanity-forward_hf-db1-mysql_hf')
+test_link_db_addr = generate_hf_mysql_db_address('35.188.204.248','airtable_database','no_pii','humanity-forward_hf-db1-mysql_no_pii')
+donation_link_db: Optional[DataSink] = None
+
+try:
+    donation_link_db = DataSink(data_base_type=DataSourceType.MYSQL, address=link_db_addr, table='link_requests')
+except Exception as e:
+    logging.warning(f'cannot connect to prod email db (likely permissions issue)')
+donation_link_test_db = DataSink(data_base_type=DataSourceType.MYSQL, address=test_link_db_addr, table='link_requests')
 initiatives_dataset = Dataset(data_source = hf_db, dataset_key='initiatives', primary_key='id', linked_model=Initiative, model_key_map=hf_initiatives)
 events_dataset = Dataset(data_source = hf_db, dataset_key='events', primary_key='id', linked_model=VolunteerEvent, model_key_map=hf_events)
 roles_dataset = Dataset(data_source = hf_db, dataset_key='volunteer_openings', primary_key='id', linked_model=VolunteerRole, model_key_map=hf_volunteer_openings)
@@ -57,3 +67,16 @@ def get_all_initiatives(fake_data: bool = False) -> List[Initiative]:
 @app.get("/api/initiatives/{initiative_external_id}", response_model=Initiative)
 def get_initiative_by_external_id(initiative_external_id, fake_data: bool = False) -> List[Initiative]:
     return initiatives_dataset.get_linked_model_object_for_primary_key(initiative_external_id) if not fake_data else generate_fake_initiative() # type: ignore
+
+@app.post("/api/donation_link_requests/")
+def request_personal_donation_link(
+        link_request: PersonalDonationLinkRequest,
+        test_db: bool = False) -> PersonalDonationLinkRequest:
+    if test_db:
+        donation_link_test_db.insert(link_request)
+    elif not donation_link_db:
+        logging.error('Cannot insert to donation link DB, connecting failed.')
+    else:
+        donation_link_db.insert(link_request)
+        logging.debug(f'Inserting {link_request} to test db')
+    return link_request

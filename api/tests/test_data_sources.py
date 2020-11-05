@@ -3,12 +3,13 @@ from datetime import datetime
 
 from sqlalchemy.engine import ResultProxy
 
-from data_sources import Dataset, DataSource, DataSourceType, generate_hf_mysql_db_address
-from models import VolunteerEvent, Initiative
+from data_sources import Dataset, DataSource, DataSourceType, generate_hf_mysql_db_address, DataSink
+from models import VolunteerEvent, Initiative, PersonalDonationLinkRequest
 from data_source_maps import hf_events, hf_initiatives
 
 hf_mysql = DataSource(data_source_type=DataSourceType.MYSQL,
         address=generate_hf_mysql_db_address('35.188.204.248','airtable_database','no_pii','humanity-forward_hf-db1-mysql_no_pii'))
+test_link_db_addr = generate_hf_mysql_db_address('35.188.204.248','airtable_database','no_pii','humanity-forward_hf-db1-mysql_no_pii')
 
 def test_bigquery_data_source():
     # we need to mock this out instead of hitting HF's BigQuery for lots of reasons...but I'm moving fast
@@ -85,3 +86,9 @@ def test_get_nested_model_objects():
     
     event = initiative.events[0]
     assert type(event) is VolunteerEvent
+
+
+def test_data_sink_insert():
+    donation_link_test_db = DataSink(data_base_type=DataSourceType.MYSQL, address=test_link_db_addr, table='link_requests')
+    request = PersonalDonationLinkRequest(email="test@gmail.com", test_db=True)
+    donation_link_test_db.insert(request)
