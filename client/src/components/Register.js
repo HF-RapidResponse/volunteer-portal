@@ -28,7 +28,7 @@ function Register() {
           Let us keep you up to date on what we have in the works.
         </p>
         <div className="text-center">
-          <Link to="#">
+          <Link to="http://on.movehumanityforward.com/volunteer_signup_short">
             <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
               Register Here
             </Button>
@@ -44,7 +44,7 @@ function Register() {
           strengths.
         </p>
         <div className="text-center">
-          <a href="https://on.movehumanityforward.com/volunteer_hf">
+          <a href="https://on.movehumanityforward.com/volunteer_survey">
             <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
               Go to Survey
             </Button>
