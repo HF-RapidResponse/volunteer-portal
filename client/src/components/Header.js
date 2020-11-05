@@ -10,30 +10,37 @@ import HFLogo from '../assets/HF-RR-long-logo.png';
  * the nav bar will appear even as users scroll down longer pages.
  */
 function Header() {
+  // const [initiatives, initiativesSet] = useState([]);
+  // fetch('/api/initiatives')
+  //   .then((response) => response.json())
+  //   .then(data =>
+  //   {
+  //     let initiativesArr = [];
+  //     for (var i = 0; i < data.length; i++)
+  //     {
+  //       const initiative = data[i];
+  //       initiativesArr.push({
+  //         displayName: initiative.name,
+  //         url: '/initiatives/' + initiative.initiative_external_id
+  //       });
+  //     }
+  //     initiativesSet(initiativesArr);
+  //   });
 
-  fetch('/api/initiatives?fake_date=true')
-    .then((response) => response.json())
-    .then(function(initiatives_data) {
-      let initiatives = [];
-      initiatives_data.forEach(function(initiative) {
-        initiatives.push({
-          displayName: initiative.name,
-          url: '/' + initiative.name.toLowerCase().replace(' ','_')
-        });
-      });
-      console.log('parsed initiatives from API', initiatives);
-    });
-
+  // const links = [
+  //   {
+  //     displayName: 'Our Initiatives',
+  //     url: '/initiatives',
+  //     children: initiatives,
+  //   },
+  //   { displayName: 'Event Calendar', url: '/calendar' },
+  //   { displayName: 'Volunteer Roles', url: '/roles' },
+  //   // { displayName: 'About Us', url: '/about' },
+  //   // { displayName: 'Our Candidates', url: '/candidates' },
+  //   // { displayName: 'Sign In', url: '/signin' },
+  // ];
   const links = [
-    {
-      displayName: 'Our Initiatives',
-      url: '/initiatives',
-      children: [
-        { displayName: 'Congressional Pressure', url: '/pressure' },
-        { displayName: 'COVID Relief Calling', url: 'relief' },
-        { displayName: 'Fundraising', url: '/fundraising' },
-      ],
-    },
+    { displayName: 'Our Initiatives', url: '/initiatives' },
     { displayName: 'Event Calendar', url: '/calendar' },
     { displayName: 'Volunteer Roles', url: '/roles' },
     // { displayName: 'About Us', url: '/about' },
