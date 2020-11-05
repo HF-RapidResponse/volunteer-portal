@@ -47,8 +47,8 @@ class DataSink(BaseModel):
     data_sink_uuid: UUID = uuid4()
     address: str
     data_base_type: DataSourceType
-    sql_engine: Optional[Engine]
-    sql_table: Optional[Table]
+    sql_engine: Engine
+    sql_table: Table
 
     # required for non-pydantic SQLAlchemy classes
     class Config:
@@ -64,6 +64,7 @@ class DataSink(BaseModel):
             raise Exception("Unsupported db type")
 
     def insert(self, row: Any):
+        
         self.sql_engine.execute(self.sql_table.insert(), row.dict())
         
 datasets: Dict[Tuple[Type[DataSource], str, Optional[Type]], 'Dataset'] = {}
