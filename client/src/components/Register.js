@@ -79,15 +79,28 @@ function Register() {
           You’ll get a follow-up email with your personal ActBlue link.
         </p>
         <div className="text-center">
-          <Link to="#">
-            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-              Submit Request
-            </Button>
-          </Link>
+          <Button onClick={SendDonorRequestLink}
+            variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
+            Submit Request
+          </Button>
         </div>
       </Col>
     </Container>
   );
+}
+
+function SendDonorRequestLink() {
+  const email = document.getElementById('act-blue-email').value;
+  if ( !email.includes("@") ) {
+    alert("bruh, emails gotta have an @ sign");
+  }
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  };
+  fetch('/api/donation_link_requests/?test_db=true', requestOptions)
+    .then(response => { console.log(response); });
 }
 
 export default Register;
