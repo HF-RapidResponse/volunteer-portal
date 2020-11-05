@@ -47,8 +47,8 @@ class DataSink(BaseModel):
     data_sink_uuid: UUID = uuid4()
     address: str
     data_base_type: DataSourceType
-    sql_engine: Engine
-    sql_table: Table
+    sql_engine: Engine = None
+    sql_table: Table = None
 
     # required for non-pydantic SQLAlchemy classes
     class Config:
@@ -56,15 +56,10 @@ class DataSink(BaseModel):
 
     def __init__(self, address: str, table: str, data_base_type: DataSourceType, **data) -> None:
         super().__init__(address=address, data_base_type=data_base_type, **data)
-
-        if self.data_base_type is DataSourceType.MYSQL:
-            self.sql_engine = create_engine(f'mysql+pymysql://{self.address}', pool_recycle=3600)
-            self.sql_table = Table(table, MetaData(bind=self.sql_engine), autoload=True)
-        else:
-            raise Exception("Unsupported db type")
+        self.sql_engine = create_engine(f'mysql+pymysql://{self.address}', pool_recycle=3600)
+        self.sql_table = Table(table, MetaData(bind=self.sql_engine), autoload=True)
 
     def insert(self, row: Any):
-        
         self.sql_engine.execute(self.sql_table.insert(), row.dict())
         
 datasets: Dict[Tuple[Type[DataSource], str, Optional[Type]], 'Dataset'] = {}

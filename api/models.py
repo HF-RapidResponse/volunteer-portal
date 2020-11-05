@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional, Union, List
 from enum import Enum
 from uuid import UUID, uuid4
@@ -64,5 +64,5 @@ class Initiative(BaseModel):
     highlightedItems: List[Union[VolunteerRole,VolunteerEvent]] = []
 
 class PersonalDonationLinkRequest(BaseModel):
-    email: str
+    email: EmailStr
     request_sent: datetime = NowUtc()

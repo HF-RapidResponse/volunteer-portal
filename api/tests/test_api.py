@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 from pydantic import error_wrappers
 
 from api import app
-from models import Initiative, VolunteerEvent, VolunteerRole
+from models import Initiative, VolunteerEvent, VolunteerRole, PersonalDonationLinkRequest
 
 client = TestClient(app)
 
@@ -54,3 +54,19 @@ def test_get_initiatives_api():
     initiatives = [Initiative(**initiative_kwargs) for initiative_kwargs in response.json()]
 
     assert type(initiatives[-1]) is Initiative
+
+def test_create_link_request_error():
+    with pytest.raises(error_wrappers.ValidationError):
+        bad_link_request_kwargs = {
+            "email": "name@gmail"
+        }
+        PersonalDonationLinkRequest(**bad_link_request_kwargs)
+
+def test_create_link_request_error():
+    good_link_request_kwargs = {
+        "email": "name@gmail.com"
+    }
+    good_request = PersonalDonationLinkRequest(**good_link_request_kwargs)
+    assert good_request
+    assert type(good_request) is PersonalDonationLinkRequest
+    assert type(good_request.request_sent) is datetime
