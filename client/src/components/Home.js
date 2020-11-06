@@ -101,18 +101,16 @@ function Home() {
         <Col xs={12} lg={9} xl={6} className="shadow-card">
           <p className="mb-0">
             Our team is working hard to advocate for cash relief in a big way.
-            Building a voice for the people requires financial support. All
-            contributions are welcomed and highly appreciated... Thank you!
-          </p>
-          <div className="text-center">
+            Building a voice for the people requires financial support. If you 
+            can’t contribute time, you can still help out! We take donations
             <a
               href="https://secure.actblue.com/donate/hf-vol-portal"
               target="_blank"
-              className="btn-cyan"
             >
-              Donate
-            </a>
-          </div>
+              <b> here</b>
+            </a>. Thank you!
+          </p>
+
         </Col>
         <div className="text-center">
           <img src={HFMLKSquare} alt="hf-mlk-square" className="mlk-square" />

@@ -30,6 +30,10 @@
   color: $faintQuoteGray;
 }
 
+b, strong {
+  color: $btnCyan;
+}
+
 .quote-container {
   @media (min-width: 992px) {
     max-width: 50vw;
