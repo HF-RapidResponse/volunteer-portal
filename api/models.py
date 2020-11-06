@@ -16,20 +16,26 @@ class Person(BaseModel):
     name: str
 
 class Priority(Enum):
-    TOP_PRIORITY = 'top_priority'
+    TOP_PRIORITY = 'Top Priority'
     HIGH = 'high'
     MEDIUM = 'medium'
     LOW = 'low'
+    COULD_BE_NICE = 'Could Be Nice'
     NONE = None
 
+class RoleType(Enum):
+    REQUIRES_APPLICATION = 'Requires Application'
+    OPEN_TO_ALL = 'Open to All'
+    
 class VolunteerRole(BaseModel):
     role_uuid: UUID = uuid4()
     role_external_id: str
     name: str
     hero_image_url: Url = generate_placeholder_image()
-    signup_url: Url
+    signup_url: Optional[Url]
     details_url: Optional[Url]
     priority: Priority = Priority.LOW
+    role_type: RoleType
     point_of_contact: Optional[Person]
     num_openings: int = 1
     min_time_commitment: Optional[int]

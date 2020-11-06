@@ -109,22 +109,42 @@ function InitiativeDetail(props) {
           roles.push(<h2 key="roles_header_special" className="header-2" style={{textAlign: 'center'}}>Volunteer Roles</h2>);
         }
         const role = detail["roles"][i];
-        roles.push(
-          <Col xs={12} lg={9} xl={6} className="shadow-card" key={role["role_external_id"]}>
-            <h2 style={{margin: "0 0"}} className="header-4">{role["name"]}</h2>
-            <p className="sm-copy">{role["overview"]}</p>
-            <div className="text-center mt-4 mb-4">
-              <a href={role["signup_url"]}>
-                <Button
-                  variant="outline-info"
-                  style={{ padding: '.35rem 1.5rem' }}
-                >
-                  Apply Here
-                </Button>
-              </a>
-            </div>
-          </Col>
-        );
+        if (role["role_type"]=="Requires Application") {
+          roles.push(
+            <Col xs={12} lg={9} xl={6} className="shadow-card" key={role["role_external_id"]}>
+              <h2 style={{margin: "0 0"}} className="header-4">{role["name"]}</h2>
+              <p className="sm-copy">{role["overview"]}</p>
+              <div className="text-center mt-4 mb-4">
+                <a href={role["signup_url"]}>
+                  <Button
+                    variant="outline-info"
+                    style={{ padding: '.35rem 1.5rem' }}
+                  >
+                    Apply Here
+                  </Button>
+                </a>
+              </div>
+            </Col>
+          );
+        } else {
+          console.log(role["details_url"]);
+          roles.push(
+            <Col xs={12} lg={9} xl={6} className="shadow-card" key={role["role_external_id"]}>
+              <h2 style={{margin: "0 0"}} className="header-4">{role["name"]}</h2>
+              <p className="sm-copy">{role["overview"]}</p>
+              <div className="text-center mt-4 mb-4">
+                <a href={role["details_url"]}>
+                  <Button
+                    variant="outline-info"
+                    style={{ padding: '.35rem 1.5rem' }}
+                  >
+                    Tell me more!
+                  </Button>
+                </a>
+              </div>
+            </Col>
+          );
+        }
       }
       return (
         <>
