@@ -1,7 +1,21 @@
 @import 'variables';
 
+@font-face {
+  font-family: 'Museo-900';
+  src: url('../assets/fonts/Museo-900.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Helvetica LT Std';
+  src: url('../assets/fonts/HelveticaLTStd-BlkCond.otf') format('opentype');
+}
+
 .hf-cyan {
   color: $hfCyan;
+}
+
+.btn-cyan {
+  color: $btnCyan;
 }
 
 .hf-dark-blue {
@@ -14,6 +28,10 @@
 
 .faint-quote-gray {
   color: $faintQuoteGray;
+}
+
+b, strong {
+  color: $btnCyan;
 }
 
 .quote-container {
@@ -42,6 +60,7 @@ body {
 
 #main-content {
   padding-top: 11rem;
+  min-height: 80vh;
 
   @media (max-width: 768px) {
     padding-top: 10rem;
@@ -70,20 +89,111 @@ h4 {
 }
 
 h1 {
-  font-size: 1.75rem;
+  font-size: 2rem;
   line-height: 1.5;
 }
 
 h2 {
-  font-size: 1.4rem;
+  font-size: 1.75rem;
 }
 
 h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
   font-size: 1.3rem;
 }
 
 p {
+  /* Body Copy */
+  font-family: Helvetica;
+  font-style: normal;
   font-weight: normal;
-  line-height: 21px;
-  color: $blackText;
+  font-size: 16px;
+  line-height: 140%;
+  color: #37352f;
+}
+
+.header-2 {
+  color: $hfDarkBlue;
+  font-family: 'Helvetica LT Std';
+  font-weight: 900;
+}
+
+.header-3 {
+  padding: 1rem 0;
+  font-family: 'Museo-900';
+  font-weight: 900;
+  color: $btnCyan;
+}
+
+.header-3-section-lead {
+  font-family: 'Museo-900';
+  font-weight: 900;
+  color: $btnCyan;
+}
+
+.header-3-section-breaker {
+  font-family: 'Museo-900';
+  font-weight: 900;
+  color: $hfDarkBlue;
+}
+
+.header-4 {
+  font-family: Helvetica;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 140%;
+  /* identical to box height, or 28px */
+  letter-spacing: -0.02em;
+}
+
+.top-light-shadow {
+  margin: 2rem auto;
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  background: #ffffff;
+}
+
+.shadow-card {
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 4px;
+}
+
+.sm-copy {
+  /* Small Copy */
+  font-family: Helvetica;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 140%;
+
+  /* identical to box height, or 20px */
+  text-align: center;
+  letter-spacing: 0.2px;
+
+  /* Gray 4 */
+  color: #555555;
+}
+
+.sm-copy-blue {
+  /* Small Copy */
+  font-family: Helvetica;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 140%;
+  
+  margin: 0 0;
+
+  /* identical to box height, or 20px */
+  letter-spacing: 0.2px;
+
+  /* Gray 4 */
+  color: $btnCyan;
 }
