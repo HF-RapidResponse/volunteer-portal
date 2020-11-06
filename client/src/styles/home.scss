@@ -7,3 +7,38 @@ section {
 .wide-btn {
   margin: 0.25rem auto;
 }
+
+.center-when-small {
+  @media (max-width: 1199.98px) {
+    text-align: center;
+  }
+}
+
+.ubi-square {
+  width: 320px;
+  @media (max-width: 420px) {
+    width: 100%;
+  }
+}
+
+#top-card-txt {
+  @media (max-width: 1199.98px) {
+    margin-top: 1.5rem;
+  }
+}
+
+#bot-group {
+  margin: 3rem auto;
+}
+
+.btn-outline-info {
+  background-color: white;
+}
+
+.mlk-square {
+  width: 550px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  @media (max-width: 767.98px) {
+    width: 100%;
+  }
+}

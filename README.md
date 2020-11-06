@@ -54,26 +54,44 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### API
 
-In the _api_ directory you can run:
+Running the API locally requires connecting to HF's databases. Make sure you have been given the correct permissions in GCP and have [authenticated through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account)
 
-#### `conda env create`
+In the _api_ directory you can manage dependencies with conda or virtualenv run:
 
-Creates an isolated Python environment and installs the packages required to run this project locally. This is the first command developers must run after cloning before working on the API.
+#### `conda env create -f environment.yml`
+
+or
+
+#### `virtualenv dev-env --python=/usr/bin/python3.8`
+
+Creates an isolated Python environment. This is the first command developers must run after cloning before working on the API.
 
 Python packages and environments are managed via [Conda](https://docs.conda.io/en/latest/miniconda.html)
 
 #### `conda activate volunteer-portal`
 
+or
+
+#### `source dev-env/bin/activate`
+
 Activates the virtual environment that the dependencies were installed in to enable you to run the API. This command must be run in a terminal session before running the below commands.
 
-#### `uvicorn app:app --app-dir . --reload`
+#### `pip install -r requirements.txt`
+
+If you created your virtual environment using `conda create` then this has already been done for you (and you can always reinstall dependencies by running `conda env update` or `pip install -r requirements.txt` from within the conda virtual environment). If you created your virtual environment using `virtualenv` then this required step installs the dependencies for the API.
+
+#### `uvicorn api:app --app-dir . --reload`
 
 Runs the app in the development mode.<br />
-Open [http://localhost:8000](http://localhost:8000/redoc) to view the API docs in the browser.
+Open [http://localhost:8000/redoc](http://localhost:8000/redoc) to view the API docs in the browser.
 
 #### `mypy .`
 
 Runs linting which validates Python static type hints/annotations
+
+### `python -m pytest tests/`
+
+Runs tests. Some data source tests currently (lazily) use real HF databases and require [authentication through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account).
 
 ## Architecture
 

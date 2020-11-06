@@ -20,31 +20,31 @@ describe('header component', () => {
     // inspect the first anchor tag
     const firstATag = aTags.at(0);
     expect(firstATag.html()).toBe(
-      '<a class="nav-link" href="/"><img src="HF-square-logo.svg" alt="HF Logo" id="hf-logo"></a>'
+      '<a class="nav-link" href="/"><img src="HF-RR-long-logo.png" alt="HF Logo" id="hf-logo"></a>'
     );
 
     // inspect the second anchor tag
     const secondATag = aTags.at(1);
     expect(secondATag.html()).toBe(
-      '<a class="nav-link ml-3 mr-3" href="/calendar">Event Calendar</a>'
+      '<a class="nav-link ml-3 mr-3" href="/initiatives">Our Initiatives</a>'
     );
 
     // inspect the third anchor tag
     const thirdATag = aTags.at(2);
     expect(thirdATag.html()).toBe(
-      '<a class="nav-link ml-3 mr-3" href="/roles">Volunteer Openings</a>'
+      '<a class="nav-link ml-3 mr-3" href="/calendar">Event Calendar</a>'
     );
 
     // inspect the fourth anchor tag
     const fourthATag = aTags.at(3);
     expect(fourthATag.html()).toBe(
-      '<a class="nav-link ml-3 mr-3" href="/candidates">Our Candidates</a>'
+      '<a class="nav-link ml-3 mr-3" href="/roles">Volunteer Roles</a>'
     );
 
     // inspect the fifth anchor tag
     const fifthATag = aTags.at(4);
     expect(fifthATag.html()).toBe(
-      '<a class="nav-link ml-3 mr-3" href="/about">About</a>'
+      '<a href="/register"><button style="padding: .4rem 2.25rem;" type="button" class="wide-btn btn btn-info">Register to Volunteer</button></a>'
     );
   });
 });
