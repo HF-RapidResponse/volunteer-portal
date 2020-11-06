@@ -26,7 +26,6 @@ class Priority(Enum):
 class RoleType(Enum):
     REQUIRES_APPLICATION = 'Requires Application'
     OPEN_TO_ALL = 'Open to All'
-    NONE = None
     
 class VolunteerRole(BaseModel):
     role_uuid: UUID = uuid4()
@@ -36,7 +35,7 @@ class VolunteerRole(BaseModel):
     signup_url: Optional[Url]
     details_url: Optional[Url]
     priority: Priority = Priority.LOW
-    role_type: RoleType = None
+    role_type: RoleType
     point_of_contact: Optional[Person]
     num_openings: int = 1
     min_time_commitment: Optional[int]
