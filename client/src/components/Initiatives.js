@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/initiatives.scss';
 import { Link } from 'react-router-dom';
@@ -9,62 +9,63 @@ import LoadingSpinner from './LoadingSpinner';
  * Component that displays the initiatives page.
  */
 function Initiatives() {
-  const [initiatives, set] = useState({});
+  const [initiatives, setInitiatives] = useState(null);
+  const [fetched, setFetched] = useState(false);
   document.title = 'HF Volunteer Portal - Initiatives';
-  if (!initiatives.loaded)
-  {
+
+  useEffect(() => {
     fetch('/api/initiatives')
-      .then(response =>
-      {
-        if (!response.ok)
-        {
-          // load failed, try reconnect
-          set({failed: true});
-        }
-        else
-        {
-          response.json().then(data =>
-          {
-            const resp = data;
-            resp.loaded = true;
-            set(resp);
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            setInitiatives(data);
           });
+        } else {
+          console.error(response);
         }
+        setFetched(true);
       })
-      .catch((err) =>
-      {
-        // load failed, try reconnect
-        set({failed: true});
+      .catch((err) => {
+        console.error(err);
+        setFetched(true);
       });
-  }
-  if (!initiatives.loaded && !initiatives.failed)
-  {
-    return <LoadingSpinner/>;
+  }, []);
+
+  if (!fetched) {
+    return <LoadingSpinner />;
   }
 
-  if (initiatives.failed)
-  {
+  if (!initiatives) {
     return (
-      <Col xs={12} lg={9} xl={6} className="shadow-card" key="initiatives_special_failed">
+      <Col
+        xs={12}
+        lg={9}
+        xl={6}
+        className="shadow-card"
+        key="initiatives_special_failed"
+      >
         <h2 className="header-3-section-lead">Oops:</h2>
         <h2 className="header-3-section-breaker">Error loading initiatives.</h2>
+        <p>Please try again later.</p>
       </Col>
     );
   }
   const cards = [];
-  for (var i = 0; i < initiatives.length; i++)
-  {
+  for (var i = 0; i < initiatives.length; i++) {
     cards.push(
-      <Col xs={12} lg={9} xl={6} className="shadow-card" key={initiatives[i]["initiative_external_id"]}>
-        <h2 className="header-3-section-lead">Initiative {i+1}:</h2>
-        <h2 className="header-3-section-breaker">{initiatives[i]["title"]}</h2>
-        <p>{initiatives[i]["content"]}</p>
+      <Col
+        xs={12}
+        lg={9}
+        xl={6}
+        className="shadow-card"
+        key={initiatives[i]['initiative_external_id']}
+      >
+        <h2 className="header-3-section-lead">Initiative {i + 1}:</h2>
+        <h2 className="header-3-section-breaker">{initiatives[i]['title']}</h2>
+        <p>{initiatives[i]['content']}</p>
         <div className="text-center mt-4 mb-4">
-          <Link to={'/initiatives/' + initiatives[i]["initiative_external_id"]}>
-            <Button
-              variant="outline-info"
-              style={{ padding: '.35rem 1.5rem' }}
-            >
+          <Link to={'/initiatives/' + initiatives[i]['initiative_external_id']}>
+            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
               View Events &amp; Roles
             </Button>
           </Link>
