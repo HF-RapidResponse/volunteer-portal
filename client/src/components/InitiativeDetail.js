@@ -63,6 +63,7 @@ function InitiativeDetail(props) {
           <h2 className="header-3-section-breaker">
             Error loading the initiative.
           </h2>
+          <p>Please try again later.</p>
         </Col>
       );
     } else {
@@ -202,7 +203,7 @@ function InitiativeDetail(props) {
         }
 
         if (i % 2 === 1) {
-          roles.push(<Row>{currRow}</Row>);
+          roles.push(<Row key={`role-row-${i}`}>{currRow}</Row>);
           currRow = [];
         }
       }
