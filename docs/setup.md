@@ -25,6 +25,6 @@ There are some ESLint files in this repo. For those using VS Code, `ESLint` will
 
 ## Node
 
-To run this app locally, node must be installed. There is no mandated node version in the package files, but version 14.x is recommended. THe recommended and latest versions can [downloaded from here](https://nodejs.org/en/). As of now, there is only a front end client running on node, but that may change later on with the introduction of an API.
+To run this app locally, node must be installed. There is no mandated node version in the package files, but version 12.x is recommended since that's what the website runs on when deployed. THe recommended and latest versions can [downloaded from here](https://nodejs.org/en/). As of now, there is only a front end client running on node, but that may change later on with the introduction of an API.
 
 [Return to Main Readme](../README.md)

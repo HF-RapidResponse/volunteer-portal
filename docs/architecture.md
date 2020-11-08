@@ -2,7 +2,7 @@
 
 ## Front End
 
-The front end client is running on Node and using React. As of now, it is using React 16.x, and the recommended version of Node is 14.x (installed globally). The scaffold was created from `Create React App` and then the unnecessary files were removed (we're not hosting a spinning React logo). Unless you're sure of what you're doing, please do not edit the files in the public folder. Most of the editing will be doing within the src folder.
+The front end client is running on Node and using React. As of now, it is using React 16.x, and the recommended version of Node is (installed globally). The scaffold was created from `Create React App` and then the unnecessary files were removed (we're not hosting a spinning React logo). Unless you're sure of what you're doing, please do not edit the files in the public folder. Most of the editing will be doing within the src folder.
 
 React allows to make interactive UIs, divide different parts of our website into components, and respond to changes in state. To learn more about React, [take a look at their docs](https://reactjs.org/docs/getting-started.html).
 
