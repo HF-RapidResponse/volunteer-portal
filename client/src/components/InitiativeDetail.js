@@ -148,59 +148,35 @@ function InitiativeDetail(props) {
 
       for (let i = 0; i < detail['roles'].length; i++) {
         const role = detail['roles'][i];
+        var button_text = "Tell me more!";
         if (role['role_type'] == 'Requires Application') {
-          currRow.push(
-            <Col
-              xs={12}
-              md={9}
-              lg={7}
-              xl={5}
-              className="shadow-card"
-              key={role['role_external_id']}
-            >
-              <h2 style={{ margin: '0 0' }} className="header-4">
-                {role['name']}
-              </h2>
-              <p className="sm-copy">{role['overview']}</p>
-              <div className="text-center mt-4 mb-4">
-                <a href={role['signup_url']}>
-                  <Button
-                    variant="outline-info"
-                    style={{ padding: '.35rem 1.5rem' }}
-                  >
-                    Apply Here
-                  </Button>
-                </a>
-              </div>
-            </Col>
-          );
-        } else {
-          currRow.push(
-            <Col
-              xs={12}
-              md={9}
-              lg={7}
-              xl={5}
-              className="shadow-card"
-              key={role['role_external_id']}
-            >
-              <h2 style={{ margin: '0 0' }} className="header-4">
-                {role['name']}
-              </h2>
-              <p className="sm-copy">{role['overview']}</p>
-              <div className="text-center mt-4 mb-4">
-                <a href={role['details_url']}>
-                  <Button
-                    variant="outline-info"
-                    style={{ padding: '.35rem 1.5rem' }}
-                  >
-                    Tell me more!
-                  </Button>
-                </a>
-              </div>
-            </Col>
-          );
+          button_text = "Apply Here";
         }
+        currRow.push(
+          <Col
+            xs={12}
+            md={9}
+            lg={7}
+            xl={5}
+            className="shadow-card"
+            key={role['role_external_id']}
+          >
+            <h2 style={{ margin: '0 0' }} className="header-4">
+              {role['name']}
+            </h2>
+            <p className="sm-copy">{role['overview']}</p>
+            <div className="text-center mt-4 mb-4">
+              <a href={role['signup_url']}>
+                <Button
+                  variant="outline-info"
+                  style={{ padding: '.35rem 1.5rem' }}
+                >
+                  {button_text}
+                </Button>
+              </a>
+            </div>
+          </Col>
+        );
 
         if (i % 2 === 1) {
           roles.push(<Row key={`role-row-${i}`}>{currRow}</Row>);
