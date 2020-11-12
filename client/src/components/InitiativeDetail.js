@@ -164,6 +164,15 @@ function InitiativeDetail(props) {
           currRow = [];
         }
       }
+      var button = null;
+      if (detail['details_url']) {
+        button = (
+          <a href={detail['details_url']}>
+            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
+              Learn more
+            </Button>
+          </a>);
+      }
       return (
         <>
           <Col
@@ -176,6 +185,9 @@ function InitiativeDetail(props) {
             <h2 className="header-3-section-lead">Initiative:</h2>
             <h2 className="header-3-section-breaker">{detail['title']}</h2>
             <p>{detail['content']}</p>
+            <div className="text-center mt-4 mb-4">
+              {button}
+            </div>
           </Col>
           {evts.length ? (
             <>
