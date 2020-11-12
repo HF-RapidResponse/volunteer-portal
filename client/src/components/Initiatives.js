@@ -66,7 +66,7 @@ function Initiatives() {
       button = (
         <a href={initiative['details_url']}>
           <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-            Learn more
+            Learn More
           </Button>
         </a>);
     }
@@ -80,8 +80,8 @@ function Initiatives() {
         key={initiative['initiative_external_id']}
       >
         <h2 className="header-3-section-lead">Initiative {i + 1}:</h2>
-        <h2 className="header-3-section-breaker">{initiatives[i]['title']}</h2>
-        <p>{initiatives[i]['content']}</p>
+        <h2 className="header-3-section-breaker">{initiative['title']}</h2>
+        <p>{initiative['content']}</p>
         <div className="text-center mt-4 mb-4">
           {button}
         </div>

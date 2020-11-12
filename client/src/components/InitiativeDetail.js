@@ -117,7 +117,7 @@ function InitiativeDetail(props) {
           </Col>
         );
 
-        if (i % 2 === 1 || detail['events'].length === 1) {
+        if (i % 2 === 1 || detail['events'].length - 1 === i) {
           evts.push(<Row>{currRow}</Row>);
           currRow = [];
         }
@@ -131,7 +131,7 @@ function InitiativeDetail(props) {
         const button_text =
           role['role_type'] === 'Requires Application'
             ? 'Apply Here'
-            : 'Tell me more!';
+            : 'Learn More';
 
         currRow.push(
           <Col
@@ -159,7 +159,7 @@ function InitiativeDetail(props) {
           </Col>
         );
 
-        if (i % 2 === 1 || detail['roles'].length === 1) {
+        if (i % 2 === 1 || detail['roles'].length - 1 === i) {
           roles.push(<Row key={`role-row-${i}`}>{currRow}</Row>);
           currRow = [];
         }
@@ -169,7 +169,7 @@ function InitiativeDetail(props) {
         button = (
           <a href={detail['details_url']}>
             <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-              Learn more
+              Learn More
             </Button>
           </a>);
       }
