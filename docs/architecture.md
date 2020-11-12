@@ -6,6 +6,8 @@ The front end client is running on Node and using React. As of now, it is using 
 
 React allows to make interactive UIs, divide different parts of our website into components, and respond to changes in state. To learn more about React, [take a look at their docs](https://reactjs.org/docs/getting-started.html).
 
+In addition to vanilla React, we've added [React Redux](https://react-redux.js.org/) along with [Redux Toolkit](https://redux-toolkit.js.org/) to help with state persistence of logged in user accounts. By wrapping a Redux store provider, we can ensure that any of the child components (as in pretty much the rest of the app in this case) can grab the properties of a logged in user as needed.
+
 ### Components
 
 The main component is in `App.js`. It renders the child components, and these files are located in the `components` folder. For now, we have two major child components from `App`: `Header` and `PageViewSwitch`. If we end up adding a footer that appears on every page, we would place it here as well. We may branch off files within this folder as the website grows, but for now, all child components are in the same folder.
