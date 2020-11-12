@@ -49,7 +49,7 @@ function InitiativeDetail(props) {
     } else {
       // Build event cards
       const evts = [];
-      let currRow;
+      let currRow = [];
       for (var i = 0; i < detail['events'].length; i++) {
         const evt = detail['events'][i];
         const dateOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
@@ -128,10 +128,11 @@ function InitiativeDetail(props) {
 
       for (let i = 0; i < detail['roles'].length; i++) {
         const role = detail['roles'][i];
-        var button_text = 'Tell me more!';
-        if (role['role_type'] == 'Requires Application') {
-          button_text = 'Apply Here';
-        }
+        const button_text =
+          role['role_type'] === 'Requires Application'
+            ? 'Apply Here'
+            : 'Tell me more!';
+
         currRow.push(
           <Col
             xs={12}
@@ -146,7 +147,7 @@ function InitiativeDetail(props) {
             </h2>
             <p className="sm-copy">{role['overview']}</p>
             <div className="text-center mt-4 mb-4">
-              <a href={role['signup_url']}>
+              <a href={role['signup_url'] || role['details_url']}>
                 <Button
                   variant="outline-info"
                   style={{ padding: '.35rem 1.5rem' }}
