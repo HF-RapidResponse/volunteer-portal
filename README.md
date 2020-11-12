@@ -54,7 +54,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### API
 
-Running the API locally requires connecting to HF's databases. Make sure you have been given the correct permissions in GCP and have [authenticated through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account)
+Running the API locally requires connecting to HF's databases. Make sure you have been given the correct permissions in GCP and have [authenticated through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account). In order for the API to use GCP, setup a local environment variable, `GOOGLE_APPLICATION_CREDENTIALS`. Set it to the full local path to the Google Application Credentials JSON file provided to you as a volunteer. You can setup this variable either in a local `.env` file, or as an environment variable.
 
 In the _api_ directory you can manage dependencies with conda or virtualenv run:
 
