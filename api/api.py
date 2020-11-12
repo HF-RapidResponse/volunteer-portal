@@ -31,8 +31,8 @@ test_link_db_addr = generate_hf_mysql_db_address('35.188.204.248','airtable_data
 donation_link_db: Optional[DataSink] = None
 
 try:
-    donation_link_db = DataSink(data_base_type=DataSourceType.MYSQL, address=link_db_addr, table='link_requests')
     link_db_addr = generate_hf_mysql_db_address('35.188.204.248','donation_link_requests','hf','humanity-forward_hf-db1-mysql_hf')
+    donation_link_db = DataSink(data_base_type=DataSourceType.MYSQL, address=link_db_addr, table='link_requests')
 except Exception as e:
     logging.warning(f'cannot connect to prod email db (likely permissions issue)')
 donation_link_test_db = DataSink(data_base_type=DataSourceType.MYSQL, address=test_link_db_addr, table='link_requests')
