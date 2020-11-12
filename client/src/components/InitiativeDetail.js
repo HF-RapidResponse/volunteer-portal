@@ -11,26 +11,6 @@ function InitiativeDetail(props) {
   const [detail, setDetail] = useState(null);
   const [fetched, setFetched] = useState(false);
 
-  // if (!detail.loaded) {
-  //   fetch('/api/initiatives/' + id)
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         // load failed, try reconnect
-  //         set({ failed: true });
-  //       } else {
-  //         response.json().then((data) => {
-  //           const resp = data;
-  //           resp.loaded = true;
-  //           set(resp);
-  //         });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       // load failed, try reconnect
-  //       set({ failed: true });
-  //     });
-  // }
-
   document.title = 'HF Volunteer Portal - Initiative Details';
 
   useEffect(() => {
@@ -137,7 +117,7 @@ function InitiativeDetail(props) {
           </Col>
         );
 
-        if (i % 2 === 1) {
+        if (i % 2 === 1 || detail['events'].length === 1) {
           evts.push(<Row>{currRow}</Row>);
           currRow = [];
         }
@@ -148,9 +128,9 @@ function InitiativeDetail(props) {
 
       for (let i = 0; i < detail['roles'].length; i++) {
         const role = detail['roles'][i];
-        var button_text = "Tell me more!";
+        var button_text = 'Tell me more!';
         if (role['role_type'] == 'Requires Application') {
-          button_text = "Apply Here";
+          button_text = 'Apply Here';
         }
         currRow.push(
           <Col
@@ -178,7 +158,7 @@ function InitiativeDetail(props) {
           </Col>
         );
 
-        if (i % 2 === 1) {
+        if (i % 2 === 1 || detail['roles'].length === 1) {
           roles.push(<Row key={`role-row-${i}`}>{currRow}</Row>);
           currRow = [];
         }
