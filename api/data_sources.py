@@ -151,19 +151,17 @@ class Dataset(BaseModel):
         return(self.create_linked_model_object(row) if row else None)
 
     def create_linked_model_object(self, row: ResultProxy) -> Optional[Any]:
-        flat_args = {}
+        args = {}
 
         if self.model_key_map:
             for k,v in self.model_key_map.items():
                 if v and type(v) is str:
-                    flat_args[k] = row[v]
+                    args[k] = row[v]
                 elif v and type(v) is dict:
                     # assume the model_key_map contains a custom function for parsing the dataset column
                     name = list(v.keys())[0] # type: ignore
                     dataset_value = row[name]
-                    flat_args[k] = v[name](dataset_value) if dataset_value else None # type: ignore
-        
-        args = self._hydrate_linked_model_args_by_introspection(flat_args)
+                    args[k] = v[name](dataset_value) if dataset_value else None # type: ignore
 
         try:
             if not self.linked_model:
@@ -175,52 +173,14 @@ class Dataset(BaseModel):
         else:
             return instance
 
-    def _hydrate_linked_model_args_by_introspection(self, flat_args) -> Dict[str,Any]:
-        existing_linked_datasets = {k[2]:v for k,v in datasets.items() if k[2]}
-        args = {}
-
-        # iterate over the parameters of the model class
-        for model_param_name, model_param in signature(self.linked_model).parameters.items(): # type: ignore
-            if model_param_name in flat_args.keys() and flat_args[model_param_name]:
-                # there absolutely has to be a better way to determine the builtins in a class signature but I haven't found a reliable one yet. need to figure out how FastAPI does this introspection for the OpenAPI docs
-                try:
-                    _ = signature(model_param.annotation)
-                except ValueError as err:
-                    # this model parameter expects a primitive builtin type
-                    if 'no signature found for builtin type' in str(err):
-                        # pass corresponding value directly to the model's constructor
-                        args[model_param_name] = flat_args[model_param_name]
-                else:
-                    # this model parameter expects a more complex type. attempt to unpack it.
-                    unpacked = False
-                    is_iterable = False
-                    nested_model = model_param.annotation
-                    while not unpacked:
-                        try:
-                            nested_model.__args__
-                        except:
-                            unpacked = True
-                        else:
-                            # if this isn't an Optional and it's nested, then assume it's a list
-                            is_iterable = nested_model.__args__[-1] is not None
-                            # assuming first arg is the one we want, is true in most cases
-                            nested_model = nested_model.__args__[0]
-
-                    if nested_model in existing_linked_datasets.keys():
-                        # if a dataset linked to this model exists, assume passed value is a primary key for that model
-                        dataset_for_nested_model = existing_linked_datasets[nested_model]
-
-                        if is_iterable:
-                            args[model_param_name] = [instance for key in flat_args[model_param_name] if (instance := dataset_for_nested_model.get_linked_model_object_for_primary_key(key))]
-                        else:
-                            args[model_param_name] = dataset_for_nested_model.get_linked_model_object_for_primary_key(flat_args[model_param_name])
-                    else:
-                        # if a dataset linked to this model does not exist, attempt to pass value directly to this model's constructor
-                        args[model_param_name] = flat_args[model_param_name]
-
-        return args
-
 def generate_hf_mysql_db_address(db_ip: str, db_name: str, db_user: str, db_secret_key: str) -> str:
     secret_path = f'projects/humanity-forward/secrets/{db_secret_key}/versions/latest'
     db_pass = secret_client.access_secret_version(request={"name": secret_path}).payload.data.decode('UTF-8')
     return f'{db_user}:{db_pass}@{db_ip}/{db_name}'
+
+def get_dataset_for_model(model: Type) -> Optional[Dataset]:
+    existing_linked_datasets = {k[2]:v for k,v in datasets.items() if k[2]}
+    if model in existing_linked_datasets.keys():
+        return existing_linked_datasets[model]
+    else:
+        return None
