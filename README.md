@@ -109,21 +109,19 @@ If you are looking to contribute to this project, please first familiarize yours
 
 #### Development branches
 
-The `develop` branch is the main development branch, it contains the project's working codebase, with newly developed features that are ready for implementation in production. Think of it as 'beta' code, hte features are there but haven't been given a proper testing before being pushed to production.
+The `develop` branch is the main development branch, it contains the project's working codebase, with newly developed features that are ready for implementation in production. Think of it as 'beta' code, the features are there but haven't been given a proper testing before being pushed to production.
 
 If you are working on a new feature, component, fix, or whatnot, you will want to create a branch off `develop`, referred to as a feature branch. The easiest way to do this from the command line is `git checkout -b {branch name} develop`. A feature branch can be named whatever you want, but should not contain `master`, `develop`, `release`, or `hotfix` in the branch name.
 
-All development work should be done on a feature branch, and when it is ready to be integrated into the development code base, a pull request should be created to merge the changes into `develop`. Make sure to include in the pull request a copy of the results of running unit tests, as well as adding the apropriate reviewers to the pull request. Once the feature branch is merged into `develop` it may be deleted.
-
-**Note**: A pull request should not fail any unit tests without also including a rationale for any failures.
+All development work should be done on a feature branch, and when it is ready to be integrated into the development code base, a pull request should be created to merge the changes into `develop`. Make sure to add at least one reviewer to the pull request. Once the feature branch is merged into `develop` it may be deleted.
 
 #### Production branches
 
 Once `develop` has reached a release-ready state (most likely this will be once a release featureset target has been met) a new branch should be created off of `develop` named `release-{version}`, where `{version}` is whatever version number is applicable for the release. See [Semantic Versioning](https://semver.org/) for guidance on what version numbering to use for any particular release. Generally release branches will bump the minor version number, unless there are breaking changes, in which case the major version number will be bumped. Pre-release (below v1.0.0) versioning is more informal and can generally follow any numbering scheme.
 
-Release branches are dedicated specifically to rigorus testing and fixing of the code prior to it reaching production. All commits on a release branch should be for this purpose and this purpose alone. Make sure to add all apropriate reviewers to the pull request as well.
+Release branches are dedicated specifically to rigorous testing and fixing of the code prior to it reaching production. All commits on a release branch should be for this purpose and this purpose alone. Make sure to add all apropriate reviewers to the pull request as well.
 
-Once a release branch has passed all applicable tests a pull request should be made from the release branch into `master`. Like with support branches, a copy of the test results (unit test and otherwise) should be included in the pull request, and any test failures must include a rationale.
+Once a release branch is ready to merge into `master` a pull request should be made for this with at least two reviewers.
 
 After a successful pull request is made from a release branch to `master`, any applicable deployment steps should commence. The release branch should then be merged into the `develop` branch to catch `develop` up on any changes that were made in the release branch. After this is done, the release branch can be deleted.
 
@@ -131,4 +129,4 @@ After a successful pull request is made from a release branch to `master`, any a
 
 If bug(s) are identified in `master` that cannot wait for a regular release cycle then a hotfix branch should be created off of `master`, named `hotfix-{version}`. Versioning of hotfixes should follow the same [Semantic Versioning](https://semver.org/) guidelines as releases do, however should be limited to bumping the patch version only.
 
-Once the bugfix(es) are complete in the hotfix branch, a pull request should be created to merge it back into `master`, with the same test information as would be found in a release branch pull request, and all apropriate reviewers. The process after the pull request is sucessfully merged for a hotfix branch is the same as with a release branch: deployment processes & merge the hotfix into `develop`, then the hotfix branch can be deleted.
+Once the bugfix(es) are complete in the hotfix branch, a pull request should be created to merge it back into `master`, with at least two reviewers. The process after the pull request is sucessfully merged for a hotfix branch is the same as with a release branch: deployment processes & merge the hotfix into `develop`, then the hotfix branch can be deleted.
