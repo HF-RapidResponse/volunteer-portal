@@ -9,4 +9,6 @@ requests
 sqlalchemy
 pybigquery
 pymysql
+psycopg2-binary
+pyyaml
 google-cloud-secret-manager
