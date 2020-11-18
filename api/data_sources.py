@@ -5,7 +5,6 @@ from uuid import UUID, uuid4
 from inspect import signature
 import logging
 
-
 from sqlalchemy.sql import select  # type: ignore
 from sqlalchemy.engine import create_engine, Engine, Connection, ResultProxy, RowProxy  # type: ignore
 from sqlalchemy.schema import Table, MetaData  # type: ignore
@@ -37,7 +36,7 @@ class DataSource(BaseModel):
     def __init__(self, address: str, data_source_type: DataSourceType, **data) -> None:
         super().__init__(address=address, data_source_type=data_source_type, **data)
 
-        #maybe this can/should be addressed with inheritance/another pattern? 
+        #maybe this can/should be addressed with inheritance/another pattern?
         if self.data_source_type is DataSourceType.BIGQUERY:
             self.sql_engine = create_engine(f'bigquery://{self.address}')
         elif self.data_source_type is DataSourceType.MYSQL:
@@ -61,7 +60,7 @@ class DataSink(BaseModel):
 
     def insert(self, row: Any):
         self.sql_engine.execute(self.sql_table.insert(), row.dict())
-        
+
 datasets: Dict[Tuple[Type[DataSource], str, Optional[Type]], 'Dataset'] = {}
 
 class Dataset(BaseModel):
@@ -71,12 +70,12 @@ class Dataset(BaseModel):
     primary_key: str
     linked_model: Optional[Type]
     model_key_map: Optional[Dict[str, Union[Optional[str],Optional[Dict[str,Callable]]]]]
-    sql_table: Optional[Table] 
+    sql_table: Optional[Table]
 
     # required for non-pydantic SQLAlchemy classes
     class Config:
         arbitrary_types_allowed = True
-    
+
     # in the future should enforce not creating duplicate instances
     # def __new__(cls, data_source: DataSource, dataset_key: str, *args, **kwargs) -> 'Dataset':
     #     hash_key = tuple(DataSource, dataset_key, kwargs['mapped_model'] if kwargs['mapped_model'] else None)
@@ -84,8 +83,8 @@ class Dataset(BaseModel):
     #     if hash_key in datasets.keys():
     #         return datasets[hash_key]
     #     else:
-    #         dataset = 
-    
+    #         dataset =
+
     def __init__(self, data_source: DataSource, dataset_key: str, primary_key: str, **data) -> None:
         super().__init__(data_source=data_source, dataset_key=dataset_key, primary_key=primary_key, **data)
 
@@ -94,7 +93,7 @@ class Dataset(BaseModel):
 
         if self.data_source.sql_engine:
             self.sql_table = Table(self.dataset_key, MetaData(bind=self.data_source.sql_engine), autoload=True)
-        
+
         # ensure model_key_map match both mapped_model and the corresponding table
         assert (self.linked_model and self.model_key_map) or (not self.linked_model and not self.model_key_map), 'if using linked_model and model_map_key, both are required'
         if self.linked_model and self.model_key_map:
@@ -111,7 +110,7 @@ class Dataset(BaseModel):
                     model_key_map_values.append(next(iter(v)))
 
             assert all(value in expected_values for value in model_key_map_values), 'one or more values of model_map_key are not a valid column of the dataset'
-    
+
     def get_all_rows(self) -> Optional[ResultProxy]:
         if self.data_source.sql_engine:
             results = []
@@ -121,7 +120,7 @@ class Dataset(BaseModel):
                 logging.warning(f'failed to get all rows for {self.dataset_key}:\n{e}')
             return results
         return None
-    
+
     def get_row_for_primary_key(self, key: str) -> Optional[RowProxy]:
         if self.data_source.sql_engine:
             query = select([self.sql_table]).where(self.sql_table.c[self.primary_key] == key) # type: ignore
@@ -130,7 +129,7 @@ class Dataset(BaseModel):
                 logger.info(f'get_row_for_primary_key returned no results for dataset {(DataSource, self.dataset_key, self.linked_model if self.linked_model else None)} and primary_key {key}')
             return results
         return None
-    
+
     def get_linked_model_objects(self) -> List[Any]:
         assert self.linked_model and self.model_key_map
 
@@ -144,7 +143,7 @@ class Dataset(BaseModel):
                 models.append(model)
 
         return(models)
-    
+
     def get_linked_model_object_for_primary_key(self, key: str) -> Optional[Any]:
         assert self.linked_model and self.model_key_map
         row = self.get_row_for_primary_key(key)
@@ -172,11 +171,6 @@ class Dataset(BaseModel):
             return None
         else:
             return instance
-
-def generate_hf_mysql_db_address(db_ip: str, db_name: str, db_user: str, db_secret_key: str) -> str:
-    secret_path = f'projects/humanity-forward/secrets/{db_secret_key}/versions/latest'
-    db_pass = secret_client.access_secret_version(request={"name": secret_path}).payload.data.decode('UTF-8')
-    return f'{db_user}:{db_pass}@{db_ip}/{db_name}'
 
 def get_dataset_for_model(model: Type) -> Optional[Dataset]:
     existing_linked_datasets = {k[2]:v for k,v in datasets.items() if k[2]}

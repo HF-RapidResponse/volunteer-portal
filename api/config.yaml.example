@@ -1,0 +1,44 @@
+production_server_defaults: &production_server_defaults
+    adapter: mysql
+    host: 35.188.204.248
+
+test:
+    main: &test_main
+      adapter: mysql
+      host: localhost
+      database: hf_volunteer_portal_test
+      user: root
+      password:
+    donations:
+      <<: *test_main
+development:
+    main: &development_main
+      adapter: mysql
+      host: localhost
+      database: hf_volunteer_portal
+      user: root
+      password:
+    donations:
+      <<: *development_main
+staging:
+    main:
+        <<: *production_server_defaults
+        database: airtable_database
+        user: no_pii
+        password: humanity-forward_hf-db1-mysql_no_pii
+    donations:
+        <<: *production_server_defaults
+        database: donation_link_requests
+        user: hf
+        password: humanity-forward_hf-db1-mysql_hf
+production:
+    main:
+        <<: *production_server_defaults
+        database: airtable_database
+        user: no_pii
+        password: humanity-forward_hf-db1-mysql_no_pii
+    donations:
+        <<: *production_server_defaults
+        database: donation_link_requests
+        user: hf
+        password: humanity-forward_hf-db1-mysql_hf

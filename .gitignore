@@ -123,6 +123,7 @@ dist
 *.pyc
 *.mypy
 
+api/config.yaml
 api/dev-env
 
 ## Jupyter checkpoints
