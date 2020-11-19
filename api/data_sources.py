@@ -98,7 +98,7 @@ class Dataset(BaseModel):
         # ensure model_key_map match both mapped_model and the corresponding table
         assert (self.linked_model and self.model_key_map) or (not self.linked_model and not self.model_key_map), 'if using linked_model and model_map_key, both are required'
         if self.linked_model and self.model_key_map:
-            expected_keys = list(signature(self.linked_model).parameters)
+            expected_keys = [key for key in list(signature(self.linked_model).parameters) if key != 'fields_to_self_hydrate']
             assert set(expected_keys) == set(self.model_key_map.keys()), 'keys of model_map_key do not match the parameters of linked_model'
 
             expected_values = [c.name for c in self.sql_table.c] # type: ignore

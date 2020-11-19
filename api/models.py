@@ -4,7 +4,7 @@ from enum import Enum
 from uuid import UUID, uuid4
 from datetime import datetime, timezone
 
-from data_sources import get_dataset_for_model
+from self_hydrating_model import SelfHydratingModel
 
 Url = str
 MarkdownText = str
@@ -29,7 +29,7 @@ class RoleType(Enum):
     REQUIRES_APPLICATION = 'Requires Application'
     OPEN_TO_ALL = 'Open to All'
     
-class VolunteerRole(BaseModel):
+class VolunteerRole(SelfHydratingModel):
     role_uuid: UUID = uuid4()
     role_external_id: str
     name: str
@@ -47,11 +47,14 @@ class VolunteerRole(BaseModel):
     responsibilites: Optional[MarkdownText]
     qualifications: Optional[MarkdownText]
 
-    @validator('point_of_contact', pre=True)
-    def fetch_point_of_contact(cls, v):
-        return fetch_model_for_field(cls, v, Person)
+    def __init__(self, **kwargs):
+        fields_to_self_hydrate = {
+            'point_of_contact': Person
+        }
 
-class VolunteerEvent(BaseModel):
+        super().__init__(fields_to_self_hydrate=fields_to_self_hydrate, **kwargs)
+
+class VolunteerEvent(SelfHydratingModel):
     event_uuid: UUID = uuid4()
     event_external_id: str
     name: str
@@ -63,11 +66,14 @@ class VolunteerEvent(BaseModel):
     description: Optional[MarkdownText]
     point_of_contact: Optional[Person]
 
-    @validator('point_of_contact', pre=True)
-    def fetch_point_of_contact(cls, v):
-        return fetch_model_for_field(cls, v, Person)
+    def __init__(self, **kwargs):
+        fields_to_self_hydrate = {
+            'point_of_contact': Person
+        }
 
-class Initiative(BaseModel):
+        super().__init__(fields_to_self_hydrate=fields_to_self_hydrate, **kwargs)
+
+class Initiative(SelfHydratingModel):
     initiative_uuid: UUID = uuid4()
     initiative_external_id: str
     name: str
@@ -79,17 +85,17 @@ class Initiative(BaseModel):
     events: Optional[List[VolunteerEvent]] = []
     highlightedItems: List[Union[VolunteerRole,VolunteerEvent]] = []
 
-    @validator('roles', pre=True)
-    def fetch_roles(cls, v):
-        return fetch_model_for_field(cls, v, VolunteerRole)
+    def __init__(self, **kwargs):
+        fields_to_self_hydrate = {
+            'roles': VolunteerRole,
+            'events': VolunteerEvent
+        }
+
+        super().__init__(fields_to_self_hydrate=fields_to_self_hydrate, **kwargs)
 
     @validator('roles')
     def guarantee_non_none_roles(cls, v):
         return v if v else []
-    
-    @validator('events', pre=True)
-    def fetch_events(cls, v):
-        return fetch_model_for_field(cls, v, VolunteerEvent)
 
     @validator('events')
     def guarantee_non_none_events(cls, v):
@@ -98,26 +104,3 @@ class Initiative(BaseModel):
 class PersonalDonationLinkRequest(BaseModel):
     email: EmailStr
     request_sent: datetime = NowUtc()
-
-def fetch_model_for_field(cls: Type, v: Any, field_model: Type) -> Any:
-    def get_model_for_primary_key(v: Any, field_model: Type) -> Any:
-        dataset = get_dataset_for_model(field_model)
-        if dataset:
-            return dataset.get_linked_model_object_for_primary_key(v)
-        else:
-            return v
-    
-    if type(v) is str:
-        # v is a primitive string, attempt to fetch pydantic object by ID
-        return get_model_for_primary_key(v, field_model)
-    elif type(v) is list:
-        if v and type(v[-1]) is str:
-            # v is a list of primitive strings, attempt to fetch list of pydantic objects
-            # this filters out nested objects that fail validation
-            return [instance for key in v if (instance := get_model_for_primary_key(key, field_model))]
-        else:
-            return v
-    else:
-        # v is either a pydantic object, a valid dict of keys for that model, or an invalid input
-        # Let pydantic field validation handle organically
-        return v
