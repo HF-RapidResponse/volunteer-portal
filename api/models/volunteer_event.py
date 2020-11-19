@@ -6,9 +6,8 @@ from sqlalchemy.dialects.postgresql import UUID
 class VolunteerEvent(Base):
     __tablename__ = 'events'
 
-    # Todo: Move the UID table to UUID
     event_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    event_external_id = Column('id', Integer)
+    event_external_id = Column('id', String(255))
     name = Column('event_id', String(255))
     # hero_image_url: Url = placeholder_image()
     # 'hero_image_url': {'event_graphics': lambda x: x[0]['url'] if x else None},

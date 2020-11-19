@@ -8,7 +8,7 @@ class Initiative(Base):
     __tablename__ = 'initiatives'
 
     initiative_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    initiative_external_id = Column('id', Integer)
+    initiative_external_id = Column('id', String(255))
     name = Column('initiative_name', String(255))
     details_url = Column('details_link', String(255), nullable=True)
     title = synonym("name")
