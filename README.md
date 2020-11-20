@@ -111,7 +111,7 @@ If you are looking to contribute to this project, please first familiarize yours
 
 The `develop` branch is the main development branch, it contains the project's working codebase, with newly developed features that are ready for implementation in production. Think of it as 'beta' code, the features are there but haven't been given a proper testing before being pushed to production.
 
-If you are working on a new feature, component, fix, or whatnot, you will want to create a branch off `develop`, referred to as a feature branch. The easiest way to do this from the command line is `git checkout -b {branch name} develop`. A feature branch can be named whatever you want, but should not contain `master`, `develop`, `release`, or `hotfix` in the branch name.
+If you are working on a new feature, component, fix, or whatnot, you will want to create a branch off `develop`, referred to as a feature branch. The easiest way to do this from the command line is `git checkout -b {branch name} develop`. A feature branch can be named whatever you want, but should not contain `production`, `develop`, `release`, or `hotfix` in the branch name.
 
 All development work should be done on a feature branch, and when it is ready to be integrated into the development code base, a pull request should be created to merge the changes into `develop`. Make sure to add at least one reviewer to the pull request. Once the feature branch is merged into `develop` it may be deleted.
 
@@ -121,12 +121,12 @@ Once `develop` has reached a release-ready state (most likely this will be once 
 
 Release branches are dedicated specifically to rigorous testing and fixing of the code prior to it reaching production. All commits on a release branch should be for this purpose and this purpose alone. Make sure to add all apropriate reviewers to the pull request as well.
 
-Once a release branch is ready to merge into `master` a pull request should be made for this with at least two reviewers.
+Once a release branch is ready to merge into `production` a pull request should be made for this with at least two reviewers.
 
-After a successful pull request is made from a release branch to `master`, any applicable deployment steps should commence. The release branch should then be merged into the `develop` branch to catch `develop` up on any changes that were made in the release branch. After this is done, the release branch can be deleted.
+After a successful pull request is made from a release branch to `production`, any applicable deployment steps should commence. The release branch should then be merged into the `develop` branch to catch `develop` up on any changes that were made in the release branch. After this is done, the release branch can be deleted.
 
 #### Hotfix branches
 
-If bug(s) are identified in `master` that cannot wait for a regular release cycle then a hotfix branch should be created off of `master`, named `hotfix-{version}`. Versioning of hotfixes should follow the same [Semantic Versioning](https://semver.org/) guidelines as releases do, however should be limited to bumping the patch version only.
+If bug(s) are identified in `production` that cannot wait for a regular release cycle then a hotfix branch should be created off of `production`, named `hotfix-{version}`. Versioning of hotfixes should follow the same [Semantic Versioning](https://semver.org/) guidelines as releases do, however should be limited to bumping the patch version only.
 
-Once the bugfix(es) are complete in the hotfix branch, a pull request should be created to merge it back into `master`, with at least two reviewers. The process after the pull request is sucessfully merged for a hotfix branch is the same as with a release branch: deployment processes & merge the hotfix into `develop`, then the hotfix branch can be deleted.
+Once the bugfix(es) are complete in the hotfix branch, a pull request should be created to merge it back into `production`, with at least two reviewers. The process after the pull request is sucessfully merged for a hotfix branch is the same as with a release branch: deployment processes & merge the hotfix into `develop`, then the hotfix branch can be deleted.
