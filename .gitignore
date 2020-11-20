@@ -124,3 +124,6 @@ dist
 *.mypy
 
 api/dev-env
+
+## Jupyter checkpoints
+.ipynb_checkpoints
