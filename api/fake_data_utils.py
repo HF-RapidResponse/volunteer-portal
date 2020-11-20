@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from faker import Faker # type: ignore
 
-from models import Person, Initiative, VolunteerRole, Priority, VolunteerEvent
+from models import Person, Initiative, VolunteerRole, Priority, VolunteerEvent, RoleType
 
 fake = Faker()
 seed(1000)
@@ -26,7 +26,8 @@ def generate_fake_volunteer_role() -> VolunteerRole:
         overview = fake.paragraph(nb_sentences=4),
         benefits = fake.paragraph(nb_sentences=4),
         responsibilites = fake.paragraph(nb_sentences=4),
-        qualifications = fake.paragraph(nb_sentences=4)
+        qualifications = fake.paragraph(nb_sentences=4),
+        role_type = choice(list(RoleType))
     )
 
 def generate_fake_volunteer_roles_list(min_number: int = 1, max_number: int = 10) -> List[VolunteerRole]:
