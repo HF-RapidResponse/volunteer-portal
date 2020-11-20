@@ -52,23 +52,38 @@ function Initiatives() {
   }
   const cards = [];
   for (var i = 0; i < initiatives.length; i++) {
+    const initiative = initiatives[i];
+    console.log(initiative);
+    var button = null;
+    if (initiative['roles'].length > 0 || initiative['events'].length > 0) {
+      button = (
+        <Link to={'/initiatives/' + initiative['initiative_external_id']}>
+          <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
+            View Events & Roles
+          </Button>
+        </Link>);
+    } else if (initiative['details_url']) {
+      button = (
+        <a href={initiative['details_url']}>
+          <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
+            Learn More
+          </Button>
+        </a>);
+    }
+
     cards.push(
       <Col
         xs={12}
         lg={9}
         xl={6}
         className="shadow-card"
-        key={initiatives[i]['initiative_external_id']}
+        key={initiative['initiative_external_id']}
       >
         <h2 className="header-3-section-lead">Initiative {i + 1}:</h2>
-        <h2 className="header-3-section-breaker">{initiatives[i]['title']}</h2>
-        <p>{initiatives[i]['content']}</p>
+        <h2 className="header-3-section-breaker">{initiative['title']}</h2>
+        <p>{initiative['content']}</p>
         <div className="text-center mt-4 mb-4">
-          <Link to={'/initiatives/' + initiatives[i]['initiative_external_id']}>
-            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-              View Events &amp; Roles
-            </Button>
-          </Link>
+          {button}
         </div>
       </Col>
     );

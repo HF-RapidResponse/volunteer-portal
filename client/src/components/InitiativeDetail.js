@@ -117,7 +117,7 @@ function InitiativeDetail(props) {
           </Col>
         );
 
-        if (i % 2 === 1 || detail['events'].length === 1) {
+        if (i % 2 === 1 || detail['events'].length - 1 === i) {
           evts.push(<Row>{currRow}</Row>);
           currRow = [];
         }
@@ -131,7 +131,7 @@ function InitiativeDetail(props) {
         const button_text =
           role['role_type'] === 'Requires Application'
             ? 'Apply Here'
-            : 'Tell me more!';
+            : 'Learn More';
 
         currRow.push(
           <Col
@@ -159,10 +159,19 @@ function InitiativeDetail(props) {
           </Col>
         );
 
-        if (i % 2 === 1 || detail['roles'].length === 1) {
+        if (i % 2 === 1 || detail['roles'].length - 1 === i) {
           roles.push(<Row key={`role-row-${i}`}>{currRow}</Row>);
           currRow = [];
         }
+      }
+      var button = null;
+      if (detail['details_url']) {
+        button = (
+          <a href={detail['details_url']}>
+            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
+              Learn More
+            </Button>
+          </a>);
       }
       return (
         <>
@@ -176,6 +185,9 @@ function InitiativeDetail(props) {
             <h2 className="header-3-section-lead">Initiative:</h2>
             <h2 className="header-3-section-breaker">{detail['title']}</h2>
             <p>{detail['content']}</p>
+            <div className="text-center mt-4 mb-4">
+              {button}
+            </div>
           </Col>
           {evts.length ? (
             <>
