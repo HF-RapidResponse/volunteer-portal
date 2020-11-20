@@ -2,9 +2,11 @@
 
 ## Front End
 
-The front end client is running on Node and using React. As of now, it is using React 16.x, and the recommended version of Node is 14.x (installed globally). The scaffold was created from `Create React App` and then the unnecessary files were removed (we're not hosting a spinning React logo). Unless you're sure of what you're doing, please do not edit the files in the public folder. Most of the editing will be doing within the src folder.
+The front end client is running on Node and using React. As of now, it is using React 16.x, and the recommended version of Node is 12.x (installed globally). The scaffold was created from `Create React App` and then the unnecessary files were removed (we're not hosting a spinning React logo). Unless you're sure of what you're doing, please do not edit the files in the public folder. Most of the editing will be doing within the src folder.
 
 React allows to make interactive UIs, divide different parts of our website into components, and respond to changes in state. To learn more about React, [take a look at their docs](https://reactjs.org/docs/getting-started.html).
+
+In addition to vanilla React, we've added [React Redux](https://react-redux.js.org/) along with [Redux Toolkit](https://redux-toolkit.js.org/) to help with state persistence of logged in user accounts. By wrapping a Redux store provider, we can ensure that any of the child components (as in pretty much the rest of the app in this case) can grab the properties of a logged in user as needed.
 
 ### Components
 
