@@ -8,13 +8,11 @@
 #     Create all tables needed for the volunteer portal to run.
 #     Populate it with fake data.
 
-import yaml
-import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from models import Base, Initiative, VolunteerEvent, VolunteerRole
-from settings import Connections, Session
+from settings import Connections, Session, ENV
 from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_volunteer_events_list, generate_fake_initiatives_list
 # from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_initiatives_list
 
@@ -68,10 +66,10 @@ Session = sessionmaker(binds={
 Base.metadata.create_all(engines['database'])
 
 
-
-# Generate and save fake data to the database
-session = Session()
-session.add_all(generate_fake_volunteer_roles_list(10, 10))
-session.add_all(generate_fake_volunteer_events_list(10, 10))
-session.add_all(generate_fake_initiatives_list(3, 3))
-session.commit()
+if ENV == 'development':
+    # Generate and save fake data to the database
+    session = Session()
+    session.add_all(generate_fake_volunteer_roles_list(10, 10))
+    session.add_all(generate_fake_volunteer_events_list(10, 10))
+    session.add_all(generate_fake_initiatives_list(3, 3))
+    session.commit()
