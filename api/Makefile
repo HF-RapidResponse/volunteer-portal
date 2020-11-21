@@ -1,12 +1,14 @@
 .PHONY: test
 
-test:
+validate:
 	mypy .
+test:
+	ENV=test python -m pytest tests/
 bootstrap:
-	ENV=development python bootstrap.py
+	python bootstrap.py
 setup:
 	virtualenv dev-env && source dev-env/bin/activate && pip install -r requirements.txt
 setup-conva:
 	conda env create -f environment.yml && conda activate volunteer-portal
 dev:
-	ENV=development uvicorn api:app --app-dir . --reload
+	uvicorn api:app --app-dir . --reload

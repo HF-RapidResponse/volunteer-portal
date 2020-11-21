@@ -30,7 +30,6 @@ def root() -> str:
 @app.get("/api/volunteer_roles/", response_model=List[VolunteerRoleSchema])
 def get_all_volunteer_roles(db: Session = Depends(get_db)) -> List[VolunteerRoleSchema]:
     roles = db.query(VolunteerRole).all()
-    print(roles)
     return roles
 
 @app.get("/api/volunteer_roles/{role_external_id}", response_model=VolunteerRoleSchema)
