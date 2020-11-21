@@ -6,12 +6,15 @@
 }
 
 #hf-logo {
-  height: 3.25rem;
+  height: auto;
+  max-height: 3.25rem;
+  max-width:100%;
 }
 
 .nav-link {
   font-size: 1.15rem;
   font-family: Arial;
+  max-width: 80%;
 }
 
 #links-container {
