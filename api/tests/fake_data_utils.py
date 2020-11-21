@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from faker import Faker # type: ignore
 
 # from models import Person, Initiative, VolunteerRole, Priority, VolunteerEvent
-from models import Initiative, VolunteerRole, VolunteerEvent
+from models import Initiative, Person, Priority, VolunteerRole, VolunteerEvent
 
 fake = Faker()
 seed(1000)
@@ -14,10 +14,10 @@ def generate_fake_volunteer_role() -> VolunteerRole:
     return VolunteerRole(
         name  = fake.sentence(),
         details_url = fake.uri(),
-        # hero_image_url = fake.image_url(),
-        # priority = Priority.MEDIUM,
+        hero_image_urls = [ { 'url': fake.image_url() }],
+        priority = Priority.MEDIUM,
         signup_url = fake.uri(),
-        point_of_contact = fake.name() if choice([True, False]) else None,
+        point_of_contact_name = (fake.name() if choice([True, False]) else None),
         num_openings = randint(1,10),
         min_time_commitment = randint(1,10),
         max_time_commitment = randint(1,10),

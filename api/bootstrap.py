@@ -34,6 +34,7 @@ for key in Connections:
     engine = create_engine(db_url)
     conn = engine.connect()
     conn.execute("commit")
+    conn.execute(f"SELECT 'DROP DATABASE {Connections[key]['database']}' WHERE EXISTS (SELECT FROM pg_database WHERE datname = '{Connections[key]['database']}')")
     conn.execute(f"SELECT 'CREATE DATABASE {Connections[key]['database']}' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '{Connections[key]['database']}')")
     conn.close()
 
@@ -56,11 +57,7 @@ Base.metadata.create_all(engines['database'])
 
 
 
-# Generate fake data.
-# initiatives = generate_fake_initiatives_list(3)
-# session.add_all(initiatives)
-
-
+# Generate and save fake data to the database
 session = Session()
 session.add_all(generate_fake_volunteer_roles_list(10, 10))
 session.add_all(generate_fake_volunteer_events_list(10, 10))
