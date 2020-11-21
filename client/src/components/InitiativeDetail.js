@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Container, Row, Col, Card, CardDeck } from 'react-bootstrap';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -59,17 +59,21 @@ function InitiativeDetail(props) {
           hour: 'numeric',
           minute: 'numeric',
         };
-        const startDate = new Date(evt['start_datetime']);
+        const startDate = new Date(evt['start_datetime']+ "+0000");
         const startDateStr = startDate.toLocaleDateString(undefined, dateOpts);
         const startTimeStr = new Intl.DateTimeFormat(
           'default',
           timeOpts
         ).format(startDate);
-        const endDate = new Date(evt['end_datetime']);
-        const endDateStr = endDate.toLocaleDateString(undefined, dateOpts);
-        const endTimeStr = new Intl.DateTimeFormat('default', timeOpts).format(
-          endDate
-        );
+        const endDate = evt['end_datetime']
+          ? new Date(evt['end_datetime'] + "+0000")
+          : null;
+        const endDateStr = endDate
+          ? endDate.toLocaleDateString(undefined, dateOpts)
+          : null;
+        const endTimeStr = endDate
+          ? new Intl.DateTimeFormat('default', timeOpts).format(endDate)
+          : null; // dunno if we're gonna use this but leaving it here
         const dateElem =
           startDateStr == endDateStr ? (
             <>
@@ -81,7 +85,8 @@ function InitiativeDetail(props) {
             <>
               <h3 className="sm-copy-blue">Begins at {startTimeStr}</h3>
               <h3 className="sm-copy-blue">
-                {startDateStr} - {endDateStr}
+                {startDateStr}
+                {endDateStr ? ` - ${endDateStr}` : null}
               </h3>
             </>
           );
