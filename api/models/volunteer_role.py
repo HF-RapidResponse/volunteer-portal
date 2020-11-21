@@ -8,7 +8,7 @@ class VolunteerRole(Base):
     __tablename__ = 'volunteer_openings'
 
     role_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    role_external_id = Column('id', Integer)
+    role_external_id = Column('id', String(255))
     name = Column('position_id', String(255))
     details_url = Column('more_info_link', Text)
     hero_image_urls = Column('team_photo', ARRAY(JSON))
@@ -30,7 +30,7 @@ class VolunteerRole(Base):
 
     @hybrid_property
     def point_of_contact(self):
-        return Person(name=self.n                   )
+        return Person(name=self.name)
 
     def __repr__(self):
         return "<VolunteerRole(role_external_id='%s', name='%s')>" % (

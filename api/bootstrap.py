@@ -27,15 +27,27 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 # Create database(s) and tables
 for key in Connections:
-    print(f'Bootstrapping connection {key}')
-
     # Connect with `echo` so we can see what's being run
     db_url = Connections[key]['url'].replace(f'/{Connections[key]["database"]}', '/postgres')
     engine = create_engine(db_url)
     conn = engine.connect()
     conn.execute("commit")
-    conn.execute(f"SELECT 'DROP DATABASE {Connections[key]['database']}' WHERE EXISTS (SELECT FROM pg_database WHERE datname = '{Connections[key]['database']}')")
-    conn.execute(f"SELECT 'CREATE DATABASE {Connections[key]['database']}' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '{Connections[key]['database']}')")
+
+    # conn.execute(f"SELECT 'DROP DATABASE {Connections[key]['database']}' WHERE EXISTS (SELECT FROM pg_database WHERE datname = '{Connections[key]['database']}')")
+    try:
+        print(f'\n\nBootstrapping connection {key}')
+        conn.execute(f"DROP DATABASE {Connections[key]['database']}")
+    except:
+        print(f'---- Could not drop database connection {key}')
+    finally:
+        conn.execute("commit")
+
+    try:
+        conn.execute(f"CREATE DATABASE {Connections[key]['database']}")
+    except:
+        print(f'---- Could not create database connection {key}')
+    finally:
+        conn.execute("commit")
     conn.close()
 
 # Connect to all databases

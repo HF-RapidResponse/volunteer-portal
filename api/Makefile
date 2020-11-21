@@ -3,7 +3,7 @@
 test:
 	mypy .
 bootstrap:
-	python bootstrap.py
+	ENV=development python bootstrap.py
 setup:
 	virtualenv dev-env && source dev-env/bin/activate && pip install -r requirements.txt
 setup-conva:

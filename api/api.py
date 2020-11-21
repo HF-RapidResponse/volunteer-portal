@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 # from models import Initiative, PersonalDonationLinkRequest, VolunteerEvent, VolunteerRole
@@ -15,19 +15,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Dependency
+def get_db():
+    try:
+        db = Session()
+        yield db
+    finally:
+        db.close()
+
 @app.get("/api/", response_model=str)
 def root() -> str:
     return "Hello from the Humanity Forward Volunteer Portal Dev Team"
 
 @app.get("/api/volunteer_roles/", response_model=List[VolunteerRoleSchema])
-def get_all_volunteer_roles() -> List[VolunteerRoleSchema]:
-    statement = Session.select(VolunteerRole)
-    return Session.execute(statement).scalars().all()
+def get_all_volunteer_roles(db: Session = Depends(get_db)) -> List[VolunteerRoleSchema]:
+    roles = db.query(VolunteerRole).all()
+    print(roles)
+    return roles
 
 @app.get("/api/volunteer_roles/{role_external_id}", response_model=VolunteerRoleSchema)
-def get_volunteer_role_by_external_id(role_external_id) -> Optional[VolunteerRoleSchema]:
-    statement = Session.select(VolunteerRole).filter_by(role_external_id=role_external_id)
-    return Session.execute(statement).scalars().first()
+def get_volunteer_role_by_external_id(role_external_id, db: Session = Depends(get_db)) -> Optional[VolunteerRoleSchema]:
+    return db.query(VolunteerRole).filter(role_external_id=role_external_id).first()
 
 # @app.get("/api/volunteer_events/", response_model=List[VolunteerEvent])
 # def get_all_volunteer_events() -> List[VolunteerEvent]:
