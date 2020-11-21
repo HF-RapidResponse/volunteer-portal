@@ -9,4 +9,4 @@ setup:
 setup-conva:
 	conda env create -f environment.yml && conda activate volunteer-portal
 dev:
-	uvicorn api:app --app-dir . --reload
+	ENV=development uvicorn api:app --app-dir . --reload
