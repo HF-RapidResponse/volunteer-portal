@@ -5,13 +5,14 @@ from datetime import datetime, timedelta
 from faker import Faker # type: ignore
 
 # from models import Person, Initiative, VolunteerRole, Priority, VolunteerEvent
-from models import Initiative, Person, Priority, VolunteerRole, VolunteerEvent
+from models import Initiative, Person, Priority, RoleType, VolunteerRole, VolunteerEvent
 
 fake = Faker()
 seed(1000)
 
 def generate_fake_volunteer_role() -> VolunteerRole:
     return VolunteerRole(
+        role_external_id = fake.name(),
         name  = fake.sentence(),
         details_url = fake.uri(),
         hero_image_urls = [ { 'url': fake.image_url() }],
@@ -24,7 +25,8 @@ def generate_fake_volunteer_role() -> VolunteerRole:
         overview = fake.paragraph(nb_sentences=4),
         benefits = fake.paragraph(nb_sentences=4),
         responsibilites = fake.paragraph(nb_sentences=4),
-        qualifications = fake.paragraph(nb_sentences=4)
+        qualifications = fake.paragraph(nb_sentences=4),
+        role_type = (RoleType.REQUIRES_APPLICATION if choice([True, False]) else RoleType.OPEN_TO_ALL)
     )
 
 def generate_fake_volunteer_roles_list(min_number: int = 1, max_number: int = 10) -> List[VolunteerRole]:
