@@ -8,9 +8,6 @@ from models import Initiative, VolunteerEvent, VolunteerRole
 
 ENV = os.environ.get('ENV') if os.environ.get('ENV') else "development"
 
-def placeholder_image() -> str:
-    return 'https://actblue-indigo-uploads.s3.amazonaws.com/uploads/list-editor/brandings/65454/header/image_url/f7edc334-2217-43b9-b707-5b7eaed92c1b-logo_stacked.svg'
-
 # Create a dict object with URLs for all DB connection strings
 @lru_cache()
 def read_config():

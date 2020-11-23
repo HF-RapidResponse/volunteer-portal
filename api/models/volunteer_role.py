@@ -1,4 +1,5 @@
 from models import Base, Person, Priority, RoleType
+from constants import placeholder_image
 from sqlalchemy import Column, Enum, String, Integer, Text
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -26,12 +27,12 @@ class VolunteerRole(Base):
 
     @hybrid_property
     def hero_image_url(self):
-        return self.hero_image_urls[0]['url'] if self.hero_image_urls else None
+        return self.hero_image_urls[0]['url'] if self.hero_image_urls else placeholder_image()
 
     @hybrid_property
     def point_of_contact(self):
         return Person(name=self.name)
 
     def __repr__(self):
-        return "<VolunteerRole(role_external_id='%s', name='%s')>" % (
-                                self.role_external_id, self.name)
+        return "<VolunteerRole(role_uuid='%s', role_external_id='%s', name='%s')>" % (
+                                self.role_uuid, self.role_external_id, self.name)
