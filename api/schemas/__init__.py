@@ -1,1 +1,2 @@
+from schemas.volunteer_event import VolunteerEventSchema
 from schemas.volunteer_role import VolunteerRoleSchema

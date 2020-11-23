@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 # from models import Initiative, PersonalDonationLinkRequest, VolunteerEvent, VolunteerRole
 from models import Initiative, VolunteerEvent, VolunteerRole
-from schemas import VolunteerRoleSchema
+from schemas import VolunteerEventSchema, VolunteerRoleSchema
 from settings import Session
 
 app = FastAPI()
@@ -35,14 +35,14 @@ def get_all_volunteer_roles(db: Session = Depends(get_db)) -> List[VolunteerRole
 def get_volunteer_role_by_external_id(role_external_id, db: Session = Depends(get_db)) -> Optional[VolunteerRoleSchema]:
     return db.query(VolunteerRole).filter_by(role_external_id=role_external_id).first()
 
-# @app.get("/api/volunteer_events/", response_model=List[VolunteerEvent])
-# def get_all_volunteer_events() -> List[VolunteerEvent]:
-#     return []
-#
-# @app.get("/api/volunteer_events/{event_external_id}", response_model=VolunteerEvent)
-# def get_volunteer_event_by_external_id(event_external_id) -> Optional[VolunteerEvent]:
-#     return {}
-#
+@app.get("/api/volunteer_events/", response_model=List[VolunteerEventSchema])
+def get_all_volunteer_events(db: Session = Depends(get_db)) -> List[VolunteerEventSchema]:
+    return db.query(VolunteerEvent).all()
+
+@app.get("/api/volunteer_events/{event_external_id}", response_model=VolunteerEventSchema)
+def get_volunteer_event_by_external_id(event_external_id, db: Session = Depends(get_db)) -> Optional[VolunteerEventSchema]:
+    return db.query(VolunteerEvent).filter_by(event_external_id=event_external_id).first()
+
 # @app.get("/api/initiatives/", response_model=List[Initiative])
 # def get_all_initiatives() -> List[Initiative]:
 #     return []
