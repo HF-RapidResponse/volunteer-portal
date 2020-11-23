@@ -29,12 +29,11 @@ def root() -> str:
 
 @app.get("/api/volunteer_roles/", response_model=List[VolunteerRoleSchema])
 def get_all_volunteer_roles(db: Session = Depends(get_db)) -> List[VolunteerRoleSchema]:
-    roles = db.query(VolunteerRole).all()
-    return roles
+    return db.query(VolunteerRole).all()
 
 @app.get("/api/volunteer_roles/{role_external_id}", response_model=VolunteerRoleSchema)
 def get_volunteer_role_by_external_id(role_external_id, db: Session = Depends(get_db)) -> Optional[VolunteerRoleSchema]:
-    return db.query(VolunteerRole).filter(role_external_id=role_external_id).first()
+    return db.query(VolunteerRole).filter_by(role_external_id=role_external_id).first()
 
 # @app.get("/api/volunteer_events/", response_model=List[VolunteerEvent])
 # def get_all_volunteer_events() -> List[VolunteerEvent]:
