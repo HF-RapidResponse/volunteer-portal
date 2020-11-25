@@ -2,7 +2,7 @@ import uuid
 from constants import placeholder_image
 from models.base import Base
 from models.volunteer_role import VolunteerRole
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import func, select, Column, String, Integer
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
 from sqlalchemy.orm import column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -35,10 +35,6 @@ class Initiative(Base):
         return self.hero_image_urls[0]['url'] if self.hero_image_urls else placeholder_image()
 
 
-from sqlalchemy import *
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import *
 initiaitves_roles_selection = select([func.unnest(Initiative.role_ids).label("role_external_id"), Initiative.initiative_external_id.label("initiative_external_id")]).alias()
 # Todo: Figure out how to set roles on an initiative and have them save in the same transaction
 Initiative.roles = relationship(VolunteerRole, secondary=initiaitves_roles_selection,
