@@ -15,7 +15,7 @@ function Header() {
     { displayName: 'Event Calendar', url: '/calendar' },
     { displayName: 'Volunteer Roles', url: '/roles' },
     {
-      displayName: 'Return to Main HF Site',
+      displayName: 'Return to Parent Site',
       url: 'https://movehumanityforward.com/',
     },
     // { displayName: 'About Us', url: '/about' },
@@ -96,10 +96,7 @@ function Header() {
           onClick={() => setExpanded(!expanded)}
         />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav
-            className="ml-auto d-lg-flex align-items-center"
-            id="links-container"
-          >
+          <Nav className="ml-auto d-lg-flex align-items-center">
             <>{navLinks}</>
             <Link to={'/register'}>
               <Button
