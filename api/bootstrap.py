@@ -34,7 +34,7 @@ for key in Connections:
     # conn.execute(f"SELECT 'DROP DATABASE {Connections[key]['database']}' WHERE EXISTS (SELECT FROM pg_database WHERE datname = '{Connections[key]['database']}')")
     try:
         print(f'\n\nBootstrapping connection {key}')
-        # conn.execute(f"DROP DATABASE {Connections[key]['database']}")
+        conn.execute(f"DROP DATABASE {Connections[key]['database']}")
     except:
         print(f'---- Could not drop database connection {key}')
     finally:
@@ -42,7 +42,7 @@ for key in Connections:
 
     try:
         print('Creating DB')
-        # conn.execute(f"CREATE DATABASE {Connections[key]['database']}")
+        conn.execute(f"CREATE DATABASE {Connections[key]['database']}")
     except:
         print(f'---- Could not create database connection {key}')
     finally:
