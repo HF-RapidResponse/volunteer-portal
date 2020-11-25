@@ -1,7 +1,11 @@
-from models import Base, Person, Priority, RoleType
+from models.base import Base
+from models.person import Person
+from models.priority import Priority
+from models.role_type import RoleType
 from constants import placeholder_image
 from sqlalchemy import Column, Enum, String, Integer, Text
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
+from sqlalchemy.orm import column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
 import uuid
 

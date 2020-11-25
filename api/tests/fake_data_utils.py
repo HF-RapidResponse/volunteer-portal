@@ -29,10 +29,12 @@ def generate_fake_volunteer_role() -> VolunteerRole:
         role_type = (RoleType.REQUIRES_APPLICATION if choice([True, False]) else RoleType.OPEN_TO_ALL)
     )
 
-def generate_fake_volunteer_roles_list(min_number: int = 1, max_number: int = 10) -> List[VolunteerRole]:
+def generate_fake_volunteer_roles_list(session, count: int = 1) -> List[VolunteerRole]:
     roles = []
-    for _ in range(randint(min_number, max_number)):
-        roles.append(generate_fake_volunteer_role())
+    for _ in range(count):
+        role = generate_fake_volunteer_role()
+        session.add(role)
+        roles.append(role)
     return roles
 
 def generate_fake_volunteer_event() -> VolunteerEvent:
@@ -50,16 +52,26 @@ def generate_fake_volunteer_event() -> VolunteerEvent:
         point_of_contact_name = fake.name() if choice([True, False]) else None
     )
 
-def generate_fake_volunteer_events_list(min_number: int = 1, max_number: int = 10) -> List[VolunteerEvent]:
+def generate_fake_volunteer_events_list(session, count: int = 1) -> List[VolunteerEvent]:
     events = []
-    for _ in range(randint(min_number, max_number)):
-        events.append(generate_fake_volunteer_event())
+    for _ in range(count):
+        event = generate_fake_volunteer_event()
+        session.add(event)
+        events.append(event)
     return events
 
-def generate_fake_initiative() -> Initiative:
-    roles = generate_fake_volunteer_roles_list(0,2)
-    events = generate_fake_volunteer_events_list(0,2)
-    items = [*roles, *events]
+def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 1) -> Initiative:
+    roles = generate_fake_volunteer_roles_list(session, roles_count)
+    role_ids = []
+    for role in roles:
+        role_ids.append(role.role_external_id)
+
+    events = generate_fake_volunteer_events_list(session, events_count)
+    event_ids = []
+    for event in events:
+        event_ids.append(event.event_external_id)
+
+    items = [*role_ids, *event_ids]
     shuffle(items)
 
     return Initiative(
@@ -69,13 +81,15 @@ def generate_fake_initiative() -> Initiative:
         title = fake.sentence(),
         hero_image_urls = ([ { 'url': fake.image_url() }] if choice([True, False]) else []),
         content = fake.paragraph(nb_sentences=4),
-        # roles = roles,
+        role_ids = role_ids
         # events = events,
         # highlightedItems = items
     )
 
-def generate_fake_initiatives_list(min_number: int = 1, max_number: int = 10) -> List[Initiative]:
+def generate_fake_initiatives_list(session, count: int = 1, roles_count: int = 2, events_count: int = 2) -> List[Initiative]:
     initiatives = []
-    for _ in range(randint(min_number, max_number)):
-        initiatives.append(generate_fake_initiative())
+    for _ in range(count):
+        initiative = generate_fake_initiative(session, roles_count, events_count)
+        session.add(initiative)
+        initiatives.append(initiative)
     return initiatives

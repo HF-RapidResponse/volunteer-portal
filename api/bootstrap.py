@@ -34,14 +34,15 @@ for key in Connections:
     # conn.execute(f"SELECT 'DROP DATABASE {Connections[key]['database']}' WHERE EXISTS (SELECT FROM pg_database WHERE datname = '{Connections[key]['database']}')")
     try:
         print(f'\n\nBootstrapping connection {key}')
-        conn.execute(f"DROP DATABASE {Connections[key]['database']}")
+        # conn.execute(f"DROP DATABASE {Connections[key]['database']}")
     except:
         print(f'---- Could not drop database connection {key}')
     finally:
         conn.execute("commit")
 
     try:
-        conn.execute(f"CREATE DATABASE {Connections[key]['database']}")
+        print('Creating DB')
+        # conn.execute(f"CREATE DATABASE {Connections[key]['database']}")
     except:
         print(f'---- Could not create database connection {key}')
     finally:
@@ -69,7 +70,13 @@ Base.metadata.create_all(engines['database'])
 if ENV == 'development':
     # Generate and save fake data to the database
     session = Session()
-    session.add_all(generate_fake_volunteer_roles_list(10, 10))
-    session.add_all(generate_fake_volunteer_events_list(10, 10))
-    session.add_all(generate_fake_initiatives_list(3, 3))
+
+    session.query(VolunteerRole).delete()
+    generate_fake_volunteer_roles_list(session, 5)
+
+    session.query(VolunteerEvent).delete()
+    generate_fake_volunteer_events_list(session, 5)
+
+    session.query(Initiative).delete()
+    generate_fake_initiatives_list(session, 3, 2, 3)
     session.commit()
