@@ -1,6 +1,7 @@
 import uuid
 from constants import placeholder_image
 from models.base import Base
+from models.volunteer_role import VolunteerRole
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
 from sqlalchemy.orm import column_property, relationship, synonym
@@ -17,8 +18,10 @@ class Initiative(Base):
     hero_image_urls = Column('hero_image_urls', ARRAY(JSON))
     content = Column('description', String(255))
 
+    role_ids = Column('roles', ARRAY(String))
+
+
     # Todo
-    # roles = relationship('volunteer_openings', "VolunteerRole")
     # events = relationship('events', "VolunteerEvent")
     # highlightedItems = relationship('events', "VolunteerEvent")
     # highlightedItems: List[Union[VolunteerRole,VolunteerEvent]] = []
@@ -30,3 +33,22 @@ class Initiative(Base):
     @hybrid_property
     def hero_image_url(self):
         return self.hero_image_urls[0]['url'] if self.hero_image_urls else placeholder_image()
+
+
+from sqlalchemy import *
+from sqlalchemy.dialects import postgresql
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import *
+initiaitves_roles_selection = select([func.unnest(Initiative.role_ids).label("role_external_id"), Initiative.initiative_external_id.label("initiative_external_id")]).alias()
+# Todo: Figure out how to set roles on an initiative and have them save in the same transaction
+Initiative.roles = relationship(VolunteerRole, secondary=initiaitves_roles_selection,
+                          primaryjoin=VolunteerRole.role_external_id == initiaitves_roles_selection.c.role_external_id,
+                          secondaryjoin=initiaitves_roles_selection.c.initiative_external_id == Initiative.initiative_external_id,
+                          lazy='dynamic',
+                          viewonly=True)
+
+VolunteerRole.initiatives = relationship(Initiative, secondary=initiaitves_roles_selection,
+                          primaryjoin=VolunteerRole.role_external_id == initiaitves_roles_selection.c.role_external_id,
+                          secondaryjoin=initiaitves_roles_selection.c.initiative_external_id == Initiative.initiative_external_id,
+                          lazy='dynamic',
+                          viewonly=True)

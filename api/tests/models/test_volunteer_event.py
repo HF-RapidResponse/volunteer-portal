@@ -19,7 +19,7 @@ def setup(db):
 
 def test_volunteer_event_create_types(db):
     event = generate_fake_volunteer_event()
-    event_external_id = db.add(event)
+    db.add(event)
     new_event = db.query(VolunteerEvent).filter_by(event_external_id=event.event_external_id).scalar()
 
     assert new_event

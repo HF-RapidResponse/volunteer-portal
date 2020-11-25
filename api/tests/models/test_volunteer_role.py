@@ -19,7 +19,7 @@ def setup(db):
 
 def test_volunteer_role_create_types(db):
     role = generate_fake_volunteer_role()
-    role_external_id = db.add(role)
+    db.add(role)
     new_role = db.query(VolunteerRole).filter_by(role_external_id=role.role_external_id).scalar()
 
     assert new_role
