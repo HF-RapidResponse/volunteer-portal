@@ -3,8 +3,9 @@ production_server_defaults: &production_server_defaults
     host: 35.188.204.248
 
 test:
-    main: &test_main
-      adapter: mysql
+    database: &test_main
+      generator: db_url_generator
+      adapter: postgresql
       host: localhost
       database: hf_volunteer_portal_test
       user: root
@@ -12,8 +13,9 @@ test:
     donations:
       <<: *test_main
 development:
-    main: &development_main
-      adapter: mysql
+    database: &development_main
+      generator: db_url_generator
+      adapter: postgresql
       host: localhost
       database: hf_volunteer_portal
       user: root
@@ -21,7 +23,7 @@ development:
     donations:
       <<: *development_main
 staging:
-    main:
+    database:
         <<: *production_server_defaults
         database: airtable_database
         user: no_pii
@@ -32,7 +34,7 @@ staging:
         user: hf
         password: humanity-forward_hf-db1-mysql_hf
 production:
-    main:
+    database:
         <<: *production_server_defaults
         database: airtable_database
         user: no_pii
