@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from models import Initiative, VolunteerEvent, VolunteerRole
 from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema
+from sqlalchemy.orm import lazyload
 from settings import Session
 
 app = FastAPI()
@@ -13,6 +14,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+import logging
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 # Dependency
 def get_db():
@@ -44,7 +49,7 @@ def get_volunteer_event_by_external_id(event_external_id, db: Session = Depends(
 
 @app.get("/api/initiatives/", response_model=List[NestedInitiativeSchema])
 def get_all_initiatives(db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
-    return db.query(Initiative).all()
+    return db.query(Initiative).options(lazyload(Initiative.roles_rel)).all()
 
 @app.get("/api/initiatives/{initiative_external_id}", response_model=NestedInitiativeSchema)
 def get_initiative_by_external_id(initiative_external_id, db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
