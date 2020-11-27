@@ -16,6 +16,7 @@ class InitiativeSchema(BaseModel):
     title: str
     hero_image_url: Optional[Url]
     content: MarkdownText
+    role_ids: List
 
     class Config:
         orm_mode = True

@@ -3,7 +3,8 @@ from datetime import datetime
 from models import VolunteerEvent, Person
 from settings import Session
 from tests.fake_data_utils import generate_fake_volunteer_event
-from uuid import UUID
+# TODO: Add back when we migrate to Postgresql
+# from uuid import UUID
 
 @pytest.fixture
 def db():
@@ -25,7 +26,8 @@ def test_volunteer_event_create_types(db):
     assert new_event
 
     # Validate types
-    assert type(new_event.event_uuid) is UUID # todo
+    # TODO: Add back when we migrate to Postgresql
+    # assert type(new_event.event_uuid) is UUID # todo
     assert type(new_event.event_external_id) is str
     assert type(new_event.name) is str
     assert type(new_event.signup_url) is str
