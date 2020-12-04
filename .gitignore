@@ -125,3 +125,6 @@ dist
 
 api/config.yaml
 api/dev-env
+
+## Custom ignores (jcherry)
+.ipynb_checkpoints/
