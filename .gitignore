@@ -126,5 +126,5 @@ dist
 api/config.yaml
 api/dev-env
 
-## Jupyter checkpoints
-.ipynb_checkpoints
+## Custom ignores (jcherry)
+.ipynb_checkpoints/
