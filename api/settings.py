@@ -1,4 +1,5 @@
 import yaml
+import copy
 from functools import lru_cache
 import os
 from sqlalchemy import create_engine
@@ -30,19 +31,15 @@ db_url_generators = {
     "db_url_generator" : generate_db_url
 }
 
-
 # Create a dict of all connection strings
 def create_connections(generators, config):
-    connections = {}
-    for key in config:
-        connections[key] = config[key]
-        connections[key]['url'] = generators[config[key]['generator']](config[key])
+    connections = copy.deepcopy(config)
+    connections['url'] = generators[config['generator']](config)
     return connections
 Connections = create_connections(db_url_generators, Config)
 
-
 # Create session connection to the database connections
-engine = create_engine(Connections['database']['url'])
+engine = create_engine(Connections['url'])
 Session = sessionmaker(binds={
     Initiative: engine,
     VolunteerEvent: engine,

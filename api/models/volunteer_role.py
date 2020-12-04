@@ -4,8 +4,7 @@ from models.priority import Priority
 from models.role_type import RoleType
 from constants import placeholder_image
 from sqlalchemy import Column, Enum, String, Integer, Text
-# from sqlalchemy.dialects.postgresql import UUID # TODO: Add back when we migrate to Postgresql
-from sqlalchemy.dialects.postgresql import ARRAY, JSON
+from sqlalchemy.dialects.postgresql import  UUID, ARRAY, JSON, JSONB
 from sqlalchemy.orm import column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
 from uuid import uuid4
@@ -13,13 +12,11 @@ from uuid import uuid4
 class VolunteerRole(Base):
     __tablename__ = 'volunteer_openings'
 
-    # TODO: Add back when we migrate to Postgresql
-    # role_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
-    # TODO: Remove `primary_key=True` when we migrate to Postgresql and use the uuid as the primary key
-    role_external_id = Column('id', String(255), primary_key=True)
+    role_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
+    role_external_id = Column('id', String(255))
     name = Column('position_id', String(255))
     details_url = Column('more_info_link', Text)
-    hero_image_urls = Column('team_photo', ARRAY(JSON))
+    hero_image_urls = Column('team_photo', JSON)
     signup_url = Column('application_signup_form', Text)
     priority = Column('priority_level', Enum(Priority))
     point_of_contact_name = Column('point_of_contact_name', String(255))
@@ -31,11 +28,6 @@ class VolunteerRole(Base):
     responsibilites = Column('responsibilities_and_duties', Text)
     qualifications = Column('qualifications', Text)
     role_type = Column('role_type', Enum(RoleType))
-
-    # TODO: Remove when we migrate to Postgresql
-    @hybrid_property
-    def initiative_uuid(self):
-        return uuid4
 
     @hybrid_property
     def hero_image_url(self):

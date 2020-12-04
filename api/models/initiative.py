@@ -3,7 +3,6 @@ from constants import placeholder_image
 from models.base import Base
 from models.volunteer_role import VolunteerRole
 from sqlalchemy import func, select, Column, String, Integer
-# from sqlalchemy.dialects.postgresql import UUID # TODO: Add back when we migrate to Postgresql
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
 from sqlalchemy.orm import backref, column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -12,14 +11,12 @@ from pydantic import validator
 class Initiative(Base):
     __tablename__ = 'initiatives'
 
-    # TODO: Add back when we migrate to Postgresql
-    # initiative_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    # TODO: Remove `primary_key=True` when we migrate to Postgresql and use the uuid as the primary key
-    initiative_external_id = Column('id', String(255), primary_key=True)
+    initiative_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    initiative_external_id = Column('id', String(255))
     name = Column('initiative_name', String(255))
     title = synonym('name')
     details_url = Column('details_link', String(255), nullable=True)
-    hero_image_urls = Column('hero_image_urls', ARRAY(JSON))
+    hero_image_urls = Column('hero_image_urls', JSON)
     content = Column('description', String(255))
     role_ids = Column('roles', ARRAY(String))
     event_ids = Column('events', ARRAY(String))
@@ -33,11 +30,6 @@ class Initiative(Base):
     def __repr__(self):
         return "<Initiative(initiative_uuid='%s', initiative_external_id='%s', name='%s')>" % (
                                 self.initiative_uuid, self.initiative_external_id, self.name)
-
-    # TODO: Remove when we migrate to Postgresql
-    @hybrid_property
-    def initiative_uuid(self):
-        return uuid.uuid4
 
     @hybrid_property
     def hero_image_url(self):

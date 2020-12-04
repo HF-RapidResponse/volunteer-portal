@@ -10,6 +10,7 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils import database_exists, create_database
 
 from models import Base, Initiative, VolunteerEvent, VolunteerRole
 from settings import Connections, Session, ENV
@@ -20,39 +21,21 @@ from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_f
 import logging
 
 logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-
+# Set to logging.INFO to see full SQL command set
+logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
+print ("Setting up DB and tables...")
 
 # Create database(s) and tables
-for key in Connections:
-    # Connect with `echo` so we can see what's being run
-    db_url = Connections[key]['url'].replace(f'/{Connections[key]["database"]}', '/postgres')
-    engine = create_engine(db_url)
-    conn = engine.connect()
-    conn.execute("commit")
-
-    # conn.execute(f"SELECT 'DROP DATABASE {Connections[key]['database']}' WHERE EXISTS (SELECT FROM pg_database WHERE datname = '{Connections[key]['database']}')")
-    try:
-        print(f'\n\nBootstrapping connection {key}')
-        conn.execute(f"DROP DATABASE {Connections[key]['database']}")
-    except:
-        print(f'---- Could not drop database connection {key}')
-    finally:
-        conn.execute("commit")
-
-    try:
-        print('Creating DB')
-        conn.execute(f"CREATE DATABASE {Connections[key]['database']}")
-    except:
-        print(f'---- Could not create database connection {key}')
-    finally:
-        conn.execute("commit")
-    conn.close()
+db_url = Connections['url']
+engine = create_engine(db_url)
+if not database_exists(engine.url):
+    create_database(engine.url)
+conn = engine.connect()
+conn.execute("commit")
 
 # Connect to all databases
-engines = {}
-for key in Connections:
-    engines[key] = create_engine(Connections[key]['url'])
+
+engines = {'database': create_engine(Connections['url'])}
 
 # Map each table to it's database connection
 # (to be used later when using multiple databases)
@@ -80,3 +63,4 @@ if ENV == 'development':
     session.query(Initiative).delete()
     generate_fake_initiatives_list(session, 3, 2, 3)
     session.commit()
+print("Done.")
