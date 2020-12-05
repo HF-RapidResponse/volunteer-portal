@@ -14,7 +14,6 @@ class Initiative(Base):
     initiative_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     initiative_external_id = Column('id', String(255))
     name = Column('initiative_name', String(255))
-    title = synonym('name')
     details_url = Column('details_link', String(255), nullable=True)
     hero_image_urls = Column('hero_image_urls', JSON)
     content = Column('description', String(255))
@@ -37,7 +36,7 @@ class Initiative(Base):
 
     @hybrid_property
     def roles(self):
-        found_roles = self.roles_rel.filter_by(VolunteerRole.role_external_id.in_(self.role_ids)).all()
+        found_roles = self.roles_rel.filter_by(role_external_id=VolunteerRole.role_external_id.in_(self.role_ids)).all()
         print(f'IDS LENGTH: {len(self.role_ids)} / ROLES LENGTH: {len(found_roles)}')
         return found_roles
 

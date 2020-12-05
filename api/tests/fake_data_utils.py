@@ -78,7 +78,6 @@ def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 
         initiative_external_id = fake.sentence(),
         name = fake.name(),
         details_url = fake.uri(),
-        title = fake.sentence(),
         hero_image_urls = ([ { 'url': fake.image_url() }] if choice([True, False]) else []),
         content = fake.paragraph(nb_sentences=4),
         role_ids = role_ids

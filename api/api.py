@@ -49,6 +49,7 @@ def get_volunteer_event_by_external_id(event_external_id, db: Session = Depends(
 
 @app.get("/api/initiatives/", response_model=List[NestedInitiativeSchema])
 def get_all_initiatives(db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
+    
     return db.query(Initiative).options(lazyload(Initiative.roles_rel)).all()
 
 @app.get("/api/initiatives/{initiative_external_id}", response_model=NestedInitiativeSchema)
