@@ -103,6 +103,7 @@ function Header() {
                 variant="info"
                 className="wide-btn"
                 style={{ padding: '.4rem 2.25rem' }}
+                onClick={() => setExpanded(!expanded)}
               >
                 Register to Volunteer
               </Button>
