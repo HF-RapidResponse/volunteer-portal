@@ -20,7 +20,7 @@ class Initiative(Base):
     role_ids = Column('roles', ARRAY(String))
     event_ids = Column('events', ARRAY(String))
 
-
+    
     # Todo
     # events = relationship('events', "VolunteerEvent")
     # highlightedItems = relationship('events', "VolunteerEvent")
@@ -36,7 +36,7 @@ class Initiative(Base):
 
     @hybrid_property
     def roles(self):
-        found_roles = self.roles_rel.filter_by(role_external_id=VolunteerRole.role_external_id.in_(self.role_ids)).all()
+        found_roles = self.roles_rel.filter(VolunteerRole.role_external_id.in_(self.role_ids)).all()
         print(f'IDS LENGTH: {len(self.role_ids)} / ROLES LENGTH: {len(found_roles)}')
         return found_roles
 
