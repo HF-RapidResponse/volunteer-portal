@@ -29,8 +29,6 @@ def test_initiative_create_types(db):
     assert type(new_initiative.initiative_uuid) is UUID
     assert type(new_initiative.initiative_external_id) is str
     assert type(new_initiative.name) is str
-    assert type(new_initiative.title) is str
-    assert new_initiative.name == new_initiative.title
     assert type(new_initiative.hero_image_url) is str
     assert type(new_initiative.content) is str
     assert type(new_initiative.role_ids) is list
@@ -40,7 +38,7 @@ def test_initiative_create_types(db):
     # Validate equality
     assert initiative.name == new_initiative.name
     assert new_initiative.role_ids == initiative.role_ids
-    assert type(new_initiative.roles.first()) is VolunteerRole
+    assert type(new_initiative.roles[0]) is VolunteerRole
 
 
 

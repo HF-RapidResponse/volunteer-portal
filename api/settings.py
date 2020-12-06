@@ -20,6 +20,7 @@ Config = read_config()
 
 # Generate Database URLs based on the DB connection information
 def generate_hf_mysql_db_address(connection) -> str:
+    # TODO: finish configuration for GCP DB address
     secret_path = f'projects/humanity-forward/secrets/{db_secret_key}/versions/latest'
     db_pass = secret_client.access_secret_version(request={"name": secret_path}).payload.data.decode('UTF-8')
     return f'{connection["adapter"]}://{connection["user"]}:{db_pass}@{connection["host"]}/{connection["database"]}'

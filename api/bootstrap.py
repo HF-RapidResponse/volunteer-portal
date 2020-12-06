@@ -28,6 +28,7 @@ print ("Setting up DB and tables...")
 # Create database(s) and tables
 db_url = Connections['url']
 engine = create_engine(db_url)
+print(engine.url)
 if not database_exists(engine.url):
     create_database(engine.url)
 conn = engine.connect()

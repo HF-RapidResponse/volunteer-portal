@@ -13,7 +13,7 @@ seed(1000)
 def generate_fake_volunteer_role() -> VolunteerRole:
     return VolunteerRole(
         role_external_id = fake.name(),
-        name  = fake.sentence(),
+        name = fake.sentence(),
         details_url = fake.uri(),
         hero_image_urls = ([ { 'url': fake.image_url() }] if choice([True, False]) else []),
         priority = Priority.MEDIUM,
@@ -38,7 +38,8 @@ def generate_fake_volunteer_roles_list(session, count: int = 1) -> List[Voluntee
     return roles
 
 def generate_fake_volunteer_event() -> VolunteerEvent:
-    start_datetime = datetime.today() + timedelta(days=randint(-10,10))
+    start_datetime = datetime.today() + timedelta(days=randint(-10,10),
+                                                  minutes=randint(-100,100))
 
     return VolunteerEvent(
         event_external_id = fake.name(),
@@ -80,8 +81,8 @@ def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 
         details_url = fake.uri(),
         hero_image_urls = ([ { 'url': fake.image_url() }] if choice([True, False]) else []),
         content = fake.paragraph(nb_sentences=4),
-        role_ids = role_ids
-        # events = events,
+        role_ids = role_ids,
+        event_ids = event_ids,
         # highlightedItems = items
     )
 

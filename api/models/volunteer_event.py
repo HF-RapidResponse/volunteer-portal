@@ -1,5 +1,6 @@
 from constants import placeholder_image
-from models import Base, Person
+from models.person import Person
+from models.base import Base
 from sqlalchemy import Column, String, Integer, Text, DateTime
 from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
 from sqlalchemy.ext.hybrid import hybrid_property
