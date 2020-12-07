@@ -9,6 +9,7 @@ import HFLogo from '../assets/HF-RR-long-logo.png';
  * through different parts of the website. Because it is fixed,
  * the nav bar will appear even as users scroll down longer pages.
  */
+
 function Header() {
   const links = [
     { displayName: 'Our Initiatives', url: '/initiatives' },
@@ -27,6 +28,8 @@ function Header() {
 
   const [expanded, setExpanded] = useState(false);
 
+  function collapse() { setTimeout(() => setExpanded(false), 100); }
+
   for (let i = 0; i < links.length; i++) {
     const link = links[i];
     if (link.children) {
@@ -38,7 +41,7 @@ function Header() {
             className="nav-link ml-5 mr-5"
             to={child.url}
             key={`nav-child-${j}`}
-            onClick={() => setTimeout(() => setExpanded(false), 100)}
+            onClick={collapse}
           >
             {child.displayName}
           </Link>
@@ -56,7 +59,7 @@ function Header() {
             className="nav-link ml-3 mr-3 text-center"
             key={link.displayName + i}
             to={link.url}
-            onClick={() => setTimeout(() => setExpanded(false), 100)}
+            onClick={collapse}
           >
             {link.displayName}
           </Link>
@@ -65,7 +68,7 @@ function Header() {
             className="nav-link ml-3 mr-3 text-center"
             href={link.url}
             key={`nav-child-${i}`}
-            onClick={() => setTimeout(() => setExpanded(false), 100)}
+            onClick={collapse}
           >
             {link.displayName}
           </a>
@@ -87,7 +90,7 @@ function Header() {
           className="nav-link"
           key="home-key"
           to="/"
-          onClick={() => setTimeout(() => setExpanded(false), 100)}
+          onClick={collapse}
         >
           <img src={HFLogo} alt="HF Logo" id="hf-logo" />
         </Link>
@@ -103,7 +106,7 @@ function Header() {
                 variant="info"
                 className="wide-btn"
                 style={{ padding: '.4rem 2.25rem' }}
-                onClick={() => setExpanded(!expanded)}
+                onClick={collapse}
               >
                 Register to Volunteer
               </Button>
