@@ -4,9 +4,9 @@
 name: Node CI
 on:
   push:
-    branches: [master, staging]
+    branches: [production, develop]
   pull_request:
-    branches: [master, staging]
+    branches: [production, develop]
 
 defaults:
   run:
