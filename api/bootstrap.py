@@ -10,9 +10,9 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy_utils import database_exists, create_database
+from sqlalchemy_utils import database_exists, create_database, drop_database
 
-from models import Base, Initiative, VolunteerEvent, VolunteerRole
+from models import Base, Initiative, VolunteerEvent, VolunteerRole, PersonalDonationLinkRequest
 from settings import Connections, Session, ENV
 from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_volunteer_events_list, generate_fake_initiatives_list
 # from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_initiatives_list
@@ -29,8 +29,8 @@ print ("Setting up DB and tables...")
 db_url = Connections['url']
 engine = create_engine(db_url)
 print(engine.url)
-if not database_exists(engine.url):
-    create_database(engine.url)
+drop_database(engine.url)
+create_database(engine.url)
 conn = engine.connect()
 conn.execute("commit")
 
@@ -43,7 +43,8 @@ engines = {'database': create_engine(Connections['url'])}
 Session = sessionmaker(binds={
     Initiative: engines['database'],
     VolunteerEvent: engines['database'],
-    VolunteerRole: engines['database']
+    VolunteerRole: engines['database'],
+    PersonalDonationLinkRequest: engines['database'],
     # Todo: Map other tables to connections
 })
 

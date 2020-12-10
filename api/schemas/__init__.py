@@ -1,3 +1,4 @@
 from schemas.volunteer_event import VolunteerEventSchema
 from schemas.volunteer_role import VolunteerRoleSchema
 from schemas.initiative import InitiativeSchema, NestedInitiativeSchema
+from schemas.personal_donation_link_request import PersonalDonationLinkRequestSchema

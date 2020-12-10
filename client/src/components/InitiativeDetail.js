@@ -188,7 +188,7 @@ function InitiativeDetail(props) {
             key={detail['initiative_external_id']}
           >
             <h2 className="header-3-section-lead">Initiative:</h2>
-            <h2 className="header-3-section-breaker">{detail['title']}</h2>
+            <h2 className="header-3-section-breaker">{detail['name']}</h2>
             <p>{detail['content']}</p>
             <div className="text-center mt-4 mb-4">
               {button}

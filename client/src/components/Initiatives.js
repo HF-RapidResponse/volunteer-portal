@@ -80,7 +80,7 @@ function Initiatives() {
         key={initiative['initiative_external_id']}
       >
         <h2 className="header-3-section-lead">Initiative {i + 1}:</h2>
-        <h2 className="header-3-section-breaker">{initiative['title']}</h2>
+        <h2 className="header-3-section-breaker">{initiative['name']}</h2>
         <p>{initiative['content']}</p>
         <div className="text-center mt-4 mb-4">
           {button}
