@@ -35,7 +35,7 @@ class VolunteerRole(Base):
 
     @hybrid_property
     def point_of_contact(self):
-        return Person(name=self.name)
+        return Person(name=self.point_of_contact_name) if self.point_of_contact_name else None
 
     def __repr__(self):
         return "<VolunteerRole(role_uuid='%s', role_external_id='%s', name='%s')>" % (

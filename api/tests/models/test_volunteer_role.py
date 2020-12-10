@@ -3,8 +3,7 @@ from models import VolunteerRole, Person, Priority, RoleType
 from settings import Session
 from typing import List
 from tests.fake_data_utils import generate_fake_volunteer_role
-# TODO: Add back when we migrate to Postgresql
-# from uuid import UUID
+from uuid import UUID
 
 @pytest.fixture
 def db():
@@ -26,14 +25,13 @@ def test_volunteer_role_create_types(db):
     assert new_role
 
     # Validate types
-    # TODO: Add back when we migrate to Postgresql
-    # assert type(new_role.role_uuid) is UUID # todo
+    assert type(new_role.role_uuid) is UUID 
     assert type(new_role.role_external_id) is str
     assert type(new_role.name) is str
     assert type(new_role.details_url) is str
     assert type(new_role.hero_image_url) is str
     assert type(new_role.priority) is Priority
-    assert type(new_role.point_of_contact) is Person
+    assert type(new_role.point_of_contact) is Person or new_role.point_of_contact is None
     assert type(new_role.num_openings) is int
     assert type(new_role.min_time_commitment) is int
     assert type(new_role.max_time_commitment) is int
