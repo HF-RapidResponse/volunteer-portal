@@ -101,3 +101,15 @@ def test_create_link_request():
     assert good_request
     assert type(good_request) is PersonalDonationLinkRequestSchema
     assert type(good_request.request_sent) is datetime
+
+def test_post_link_request(db):
+    requests_in_db_pre = len(db.query(PersonalDonationLinkRequest).all())
+    good_link_request_kwargs = {
+        "email": "name@gmail.com"
+    }
+    resp = client.post('api/donation_link_requests/', json=good_link_request_kwargs)
+
+    assert resp.status_code == 200
+
+    requests_in_db_post = len(db.query(PersonalDonationLinkRequest).all())
+    assert requests_in_db_post - requests_in_db_pre == 1
