@@ -1,5 +1,5 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.ext.declarative import declarative_base # type: ignore
+from sqlalchemy.dialects.postgresql import ARRAY # type: ignore
 
 Base = declarative_base()
 

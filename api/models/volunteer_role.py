@@ -3,10 +3,10 @@ from models.person import Person
 from models.priority import Priority
 from models.role_type import RoleType
 from constants import placeholder_image
-from sqlalchemy import Column, Enum, String, Integer, Text
-from sqlalchemy.dialects.postgresql import  UUID, ARRAY, JSON, JSONB
-from sqlalchemy.orm import column_property, relationship, synonym
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy import Column, Enum, String, Integer, Text # type: ignore
+from sqlalchemy.dialects.postgresql import  UUID, ARRAY, JSON, JSONB # type: ignore
+from sqlalchemy.orm import column_property, relationship, synonym # type: ignore
+from sqlalchemy.ext.hybrid import hybrid_property # type: ignore
 from uuid import uuid4
 
 class VolunteerRole(Base):

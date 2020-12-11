@@ -2,12 +2,14 @@ import yaml
 import copy
 from functools import lru_cache
 import os
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine # type: ignore
+from sqlalchemy.ext.declarative import declarative_base # type: ignore
+from sqlalchemy.orm import sessionmaker # type: ignore
+from google.cloud import secretmanager  # type: ignore
 from models import Initiative, VolunteerEvent, VolunteerRole, PersonalDonationLinkRequest
 
 ENV = os.environ.get('ENV') if os.environ.get('ENV') else "development"
+secret_client = secretmanager.SecretManagerServiceClient()
 
 # Create a dict object with URLs for all DB connection strings
 @lru_cache()
@@ -20,7 +22,7 @@ Config = read_config()
 
 # Generate Database URLs based on the DB connection information
 def generate_hf_mysql_db_address(connection) -> str:
-    # TODO: finish configuration for GCP DB address
+    db_secret_key = connection['password']
     secret_path = f'projects/humanity-forward/secrets/{db_secret_key}/versions/latest'
     db_pass = secret_client.access_secret_version(request={"name": secret_path}).payload.data.decode('UTF-8')
     return f'{connection["adapter"]}://{connection["user"]}:{db_pass}@{connection["host"]}/{connection["database"]}'
@@ -45,5 +47,5 @@ Session = sessionmaker(binds={
     Initiative: engine,
     VolunteerEvent: engine,
     VolunteerRole: engine,
-    PersonalDonationLinkRequest: engine,
+#    PersonalDonationLinkRequest: engine,
 })

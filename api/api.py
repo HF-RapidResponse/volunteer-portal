@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from models import Initiative, VolunteerEvent, VolunteerRole, PersonalDonationLinkRequest
 from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, PersonalDonationLinkRequestSchema
-from sqlalchemy.orm import lazyload
+from sqlalchemy.orm import lazyload  # type: ignore
 from settings import Session
 
 app = FastAPI()

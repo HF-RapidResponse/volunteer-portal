@@ -1,7 +1,7 @@
 from models.base import Base
 from datetime import datetime, timezone
-from sqlalchemy import Column, String, DateTime, Boolean
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, DateTime, Boolean # type: ignore
+from sqlalchemy.dialects.postgresql import UUID # type: ignore
 from uuid import uuid4
 
 class PersonalDonationLinkRequest(Base):

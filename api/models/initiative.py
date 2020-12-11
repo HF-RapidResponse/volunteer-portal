@@ -3,10 +3,10 @@ from constants import placeholder_image
 from models.base import Base
 from models.volunteer_event import VolunteerEvent
 from models.volunteer_role import VolunteerRole
-from sqlalchemy import func, select, Column, String, Integer
-from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
-from sqlalchemy.orm import backref, column_property, relationship, synonym
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy import func, select, Column, String, Integer # type: ignore
+from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON # type: ignore
+from sqlalchemy.orm import backref, column_property, relationship, synonym # type: ignore
+from sqlalchemy.ext.hybrid import hybrid_property # type: ignore
 from pydantic import validator
 
 class Initiative(Base):
