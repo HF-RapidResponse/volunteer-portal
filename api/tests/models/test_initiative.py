@@ -41,6 +41,25 @@ def test_initiative_create_types(db):
     assert type(new_initiative.roles[0]) is VolunteerRole
 
 
+def test_initiative_roles_scoped(db):
+    roles_count = 3
+
+    # Add an additional initiative with it's own roles to make sure queries are scoped
+    db.add(generate_fake_initiative(db, roles_count, 1))
+
+    initiative = generate_fake_initiative(db, roles_count, 1)
+    db.add(initiative)
+    new_initiative = db.query(Initiative).filter_by(initiative_external_id=initiative.initiative_external_id).options(joinedload(Initiative.roles_rel)).scalar()
+
+
+    assert new_initiative
+    assert type(new_initiative.role_ids) is list
+    assert len(new_initiative.role_ids) == roles_count
+    assert len(new_initiative.roles) == roles_count
+
+    for role in new_initiative.roles:
+        assert role.role_external_id in new_initiative.role_ids
+
 
 # def test_volunteer_role_attributes():
 
