@@ -49,7 +49,7 @@ def test_initiative_roles_scoped(db):
 
     initiative = generate_fake_initiative(db, roles_count, 1)
     db.add(initiative)
-    new_initiative = db.query(Initiative).filter_by(initiative_external_id=initiative.initiative_external_id).options(joinedload(Initiative.roles_rel)).scalar()
+    new_initiative = db.query(Initiative).filter_by(initiative_external_id=initiative.initiative_external_id).scalar()
 
 
     assert new_initiative
