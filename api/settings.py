@@ -14,11 +14,10 @@ secret_client = secretmanager.SecretManagerServiceClient()
 # Create a dict object with URLs for all DB connection strings
 @lru_cache()
 def read_config():
-    with open("config.yaml", 'r') as f:
+    with open("config.yml", 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)[ENV]
     return config
 Config = read_config()
-
 
 # Generate Database URLs based on the DB connection information
 def generate_hf_mysql_db_address(connection) -> str:
@@ -34,15 +33,10 @@ db_url_generators = {
     "db_url_generator" : generate_db_url
 }
 
-# Create a dict of all connection strings
-def create_connections(generators, config):
-    connections = copy.deepcopy(config)
-    connections['url'] = generators[config['generator']](config)
-    return connections
-Connections = create_connections(db_url_generators, Config)
+Connection = generate_db_url(Config['database'])
 
 # Create session connection to the database connections
-engine = create_engine(Connections['url'])
+engine = create_engine(Connection)
 Session = sessionmaker(binds={
     Initiative: engine,
     VolunteerEvent: engine,

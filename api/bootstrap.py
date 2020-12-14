@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker # type: ignore
 from sqlalchemy_utils import database_exists, create_database, drop_database # type: ignore
 
 from models import Base, Initiative, VolunteerEvent, VolunteerRole, PersonalDonationLinkRequest
-from settings import Connections, Session, ENV
+from settings import Connection, Session, ENV
 from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_volunteer_events_list, generate_fake_initiatives_list
 
 import logging
@@ -24,7 +24,7 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
 print ("Setting up DB and tables...")
 
 # Create database(s) and tables
-db_url = Connections['url']
+db_url = Connection
 engine = create_engine(db_url)
 print(engine.url)
 drop_database(engine.url)
@@ -34,7 +34,7 @@ conn.execute("commit")
 
 # Connect to all databases
 
-engines = {'database': create_engine(Connections['url'])}
+engines = {'database': create_engine(Connection)}
 
 # Map each table to it's database connection
 # (to be used later when using multiple databases)
