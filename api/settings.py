@@ -14,7 +14,7 @@ secret_client = secretmanager.SecretManagerServiceClient()
 # Create a dict object with URLs for all DB connection strings
 @lru_cache()
 def read_config():
-    with open("config.yml", 'r') as f:
+    with open("config.yaml", 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)[ENV]
     return config
 Config = read_config()

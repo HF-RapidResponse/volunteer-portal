@@ -128,4 +128,3 @@ api/dev-env
 
 ## Custom ignores (jcherry)
 .ipynb_checkpoints/
-.secrets

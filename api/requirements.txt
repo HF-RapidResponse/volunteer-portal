@@ -16,3 +16,4 @@ google-cloud-secret-manager
 itsdangerous
 authlib
 httpx
+fastapi_jwt_auth
