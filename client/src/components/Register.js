@@ -107,7 +107,8 @@ function SendDonorRequestLink() {
   fetch('/api/donation_link_requests/', requestOptions)
     .then((response) => {
       if (response.status >= 200 && response.status <= 299) {
-        input.value = "Thank you!";
+        input.value = "";
+        input.placeholder = "Thank you!";
       } else if (response.status == 422) {
         alert(invalid_email_message);
       } else {

@@ -150,19 +150,23 @@ class Dataset(BaseModel):
         return(self.create_linked_model_object(row) if row else None)
 
     def create_linked_model_object(self, row: ResultProxy) -> Optional[Any]:
-        flat_args = {}
+        args = {}
 
         if self.model_key_map:
             for k,v in self.model_key_map.items():
                 if v and type(v) is str:
-                    flat_args[k] = row[v]
+                    args[k] = row[v]
                 elif v and type(v) is dict:
                     # assume the model_key_map contains a custom function for parsing the dataset column
                     name = list(v.keys())[0] # type: ignore
                     dataset_value = row[name]
+<<<<<<< HEAD
                     flat_args[k] = v[name](dataset_value) if dataset_value else None # type: ignore
 
         args = self._hydrate_linked_model_args_by_introspection(flat_args)
+=======
+                    args[k] = v[name](dataset_value) if dataset_value else None # type: ignore
+>>>>>>> bf691df59a9d50ced83c5fe9b6e77a5205f5b100
 
         try:
             if not self.linked_model:
@@ -174,6 +178,7 @@ class Dataset(BaseModel):
         else:
             return instance
 
+<<<<<<< HEAD
     def _hydrate_linked_model_args_by_introspection(self, flat_args) -> Dict[str,Any]:
         existing_linked_datasets = {k[2]:v for k,v in datasets.items() if k[2]}
         args = {}
@@ -218,3 +223,11 @@ class Dataset(BaseModel):
                         args[model_param_name] = flat_args[model_param_name]
 
         return args
+=======
+def get_dataset_for_model(model: Type) -> Optional[Dataset]:
+    existing_linked_datasets = {k[2]:v for k,v in datasets.items() if k[2]}
+    if model in existing_linked_datasets.keys():
+        return existing_linked_datasets[model]
+    else:
+        return None
+>>>>>>> bf691df59a9d50ced83c5fe9b6e77a5205f5b100

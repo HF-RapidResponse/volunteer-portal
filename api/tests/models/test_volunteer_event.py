@@ -33,7 +33,11 @@ def test_volunteer_event_create_types(db):
     assert type(new_event.signup_url) is str
     assert type(new_event.hero_image_url) is str
     assert type(new_event.details_url) is str
+<<<<<<< HEAD
     assert type(new_event.point_of_contact) is Person
+=======
+    assert type(new_event.point_of_contact) is Person or new_event.point_of_contact is None
+>>>>>>> bf691df59a9d50ced83c5fe9b6e77a5205f5b100
     assert type(new_event.start_datetime) is datetime
     assert type(new_event.end_datetime) is datetime
     assert type(new_event.description) is str
