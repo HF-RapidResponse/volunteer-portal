@@ -4,14 +4,41 @@ services:
   db:
     build:
       context: ./
-      dockerfile: ./postgres/Dockerfile
+      dockerfile: ./db/Dockerfile
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
     ports:
-    - 5432:5432
+    - 8082:5432
 
-  adminer:
-    image: adminer
+  api:
+    build:
+      context: ./api
+      dockerfile: ./Dockerfile
     ports:
     - 8080:8080
+    - 5432:8082
+
+  # adminer:
+  #   image: adminer
+  #   ports:
+  #   - 8080:8080
+  #
+  # client:
+  #   image: node
+  #   environment:
+  #   - "DANGEROUSLY_DISABLE_HOST_CHECK=true"
+  #   volumes:
+  #   - ./client:/home/node/app
+  #   working_dir: /home/node/app
+  #   command: ["npm", "run", "client"]
+  #
+  #
+
+  #
+  # proxy:
+  #   image: nginx
+  #   volumes:
+  #   - ./nginx:/etc/nginx/conf.d
+  #   ports:
+  #   - 55433:80

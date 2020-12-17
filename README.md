@@ -2,17 +2,19 @@
 
 This web app serves as a launch point for volunteers who want to get involved with [Humanity Forward](https://movehumanityforward.com/).
 
-## System Requirements
+## Setup
 
-Running this code requires the developer to have a working computer with [git](https://git-scm.com/downloads), an IDE such as [Visual Studio Code](https://code.visualstudio.com/), and [Node](https://nodejs.org/en/) installed globally. There is no mandated node version in the package files, but the developer team is running on version 14.x.
+Running this code requires the developer to have a working computer with [git](https://git-scm.com/downloads), an IDE such as [Visual Studio Code](https://code.visualstudio.com/), and [Docker](https://www.docker.com/) installed globally. Everything application specific – Python, Node, Postgres, etc – will be setup inside Docker and doesn't require any local installation.
 
-## Machine Setup
+### Setup: Local Machine
 
-We've touched on some things to install on your computer, but for a detailed explanation, [see this page](/docs/setup.md).
+We've touched on some things to install on your computer, but for a detailed explanation, [see this page](/docs/setup.md). Make sure you install the following:
 
-## Local Repository Setup
+* [Git](https://git-scm.com/downloads)
+* [Docker](https://www.docker.com/)
+* An IDE such as [Visual Studio Code](https://code.visualstudio.com/) or [Atom](https://atom.io/)
 
-If you're reading this, then you've probably created a GitHub account. As of this writing, the repo is set to private. However, if you somehow got access to this readme without creating an account, please do that first.
+### Setup: Application
 
 To run this code locally, it must first be cloned from GitHub. This can be done with the following command:
 
@@ -20,78 +22,39 @@ To run this code locally, it must first be cloned from GitHub. This can be done 
 
 The URL for cloning comes from the top right portion of the repo page.
 
-### Client
+Once that's downloaded, open up a terminal to the root `volunteer-portal` directory. In that directory, run the following command:
 
-In the _client_ directory, you can run:
+`docker-compose up`
 
-#### `npm install` or `npm i`
+That command will take a while to run the first time you run it. It'll download a few OS images, set them up with the code in this repository and start the needed servers.
 
-Installs the packages required to run this project locally. This is the first command developers must run after cloning.
+If that command works, you'll see the following message:
 
-#### `npm run client`
+```
+```
 
-**Note**: normally this would be `npm start`, but `npm start` is being used for something else.
+This will create
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Testing
 
-#### `npm test`
+_Todo_
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-#### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### API
-
-Running the API locally requires connecting to HF's databases. Make sure you have been given the correct permissions in GCP and have [authenticated through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account). In order for the API to use GCP, setup a local environment variable, `GOOGLE_APPLICATION_CREDENTIALS`. Set it to the full local path to the Google Application Credentials JSON file provided to you as a volunteer. You can setup this variable either in a local `.env` file, or as an environment variable.
-
-In the _api_ directory you can manage dependencies with conda or virtualenv run:
-
-#### `conda env create -f environment.yml`
-
-or
-
-#### `virtualenv dev-env --python=/usr/bin/python3.8`
-
-Creates an isolated Python environment. This is the first command developers must run after cloning before working on the API.
-
-Python packages and environments are managed via [Conda](https://docs.conda.io/en/latest/miniconda.html)
-
-#### `conda activate volunteer-portal`
-
-or
-
-#### `source dev-env/bin/activate`
-
-Activates the virtual environment that the dependencies were installed in to enable you to run the API. This command must be run in a terminal session before running the below commands.
-
-#### `pip install -r requirements.txt`
-
-If you created your virtual environment using `conda create` then this has already been done for you (and you can always reinstall dependencies by running `conda env update` or `pip install -r requirements.txt` from within the conda virtual environment). If you created your virtual environment using `virtualenv` then this required step installs the dependencies for the API.
-
-#### `uvicorn api:app --app-dir . --reload`
-
-Runs the app in the development mode.<br />
-Open [http://localhost:8000/redoc](http://localhost:8000/redoc) to view the API docs in the browser.
-
-#### `mypy .`
+`mypy .`
 
 Runs linting which validates Python static type hints/annotations
 
-### `python -m pytest tests/`
+`python -m pytest tests/`
 
 Runs tests. Some data source tests currently (lazily) use real HF databases and require [authentication through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account).
+
+
+## Using the Application
+
+Once the docker has started the application, a few endpoints will start up:
+
+[http://localhost:8000/redoc](http://localhost:8000/redoc) - The API runs on port 8000.
+
+
 
 ## Architecture
 
