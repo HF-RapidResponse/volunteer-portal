@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, timezone
 NowUtc = lambda: datetime.now(tz=timezone.utc)
@@ -24,18 +23,3 @@ def db():
     d = DataSink(data_base_type=donations['engine'], address=connections['donations'], table='link_requests')
     d: Optional[DataSink] = None
     return d
-=======
-from models.base import Base
-from datetime import datetime, timezone
-from sqlalchemy import Column, String, DateTime, Boolean # type: ignore
-from sqlalchemy.dialects.postgresql import UUID # type: ignore
-from uuid import uuid4
-
-class PersonalDonationLinkRequest(Base):
-    __tablename__ = 'link_requests'
-
-    request_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
-    email = Column('email', String(255))
-    request_sent = Column('request_sent', DateTime)
-    link_delivered = Column('link_delivered', Boolean)
->>>>>>> bf691df59a9d50ced83c5fe9b6e77a5205f5b100

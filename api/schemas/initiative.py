@@ -13,10 +13,7 @@ class InitiativeSchema(BaseModel):
     initiative_external_id: str
     name: str
     details_url: Optional[Url]
-<<<<<<< HEAD
     title: str
-=======
->>>>>>> bf691df59a9d50ced83c5fe9b6e77a5205f5b100
     hero_image_url: Optional[Url]
     content: MarkdownText
     role_ids: List

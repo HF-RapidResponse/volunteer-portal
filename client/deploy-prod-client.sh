@@ -1,10 +1,10 @@
 #!/bin/bash
 
 branch_name=$(git symbolic-ref --short -q HEAD)
-if [ "$branch_name" = "production" ]; then
+if [ "$branch_name" = "master" ]; then
     npm ci
     npm run build
     gcloud app deploy --quiet app.yaml
 else
-    echo "Please deploy the prod client from the production branch only"
+    echo "Please deploy the prod client from the master branch only"
 fi

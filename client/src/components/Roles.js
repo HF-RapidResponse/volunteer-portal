@@ -10,7 +10,7 @@ function Roles() {
   document.title = 'HF Volunteer Portal - Volunteer Openings';
   return (
     <>
-      <h1>Volunteer Openings</h1>
+      <h1>HF Volunteer Openings</h1>
       <p>
         Humanity Forward has many volunteer opportunities available, and we look
         forward to growing our teams! Please consider applying, and let us know
@@ -19,7 +19,7 @@ function Roles() {
       {loading && <LoadingSpinner />}
       <iframe
         className="airtable-embed"
-        src="https://airtable.com/embed/shrZmR6ahgCsyUBGy?backgroundColor=greenLight&amp;viewControls=on"
+        src="https://airtable.com/embed/shrZmR6ahgCsyUBGy?backgroundColor=greenLight&viewControls=on"
         frameBorder="0"
         width="100%"
         height="1000"

@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy.engine import ResultProxy
 
 from data_sources import Dataset, DataSource, DataSourceType, generate_hf_mysql_db_address, DataSink
-from models import VolunteerRole, VolunteerEvent, Initiative, PersonalDonationLinkRequest
+from models import VolunteerEvent, Initiative, PersonalDonationLinkRequest
 from data_source_maps import hf_events, hf_initiatives
 
 hf_mysql = DataSource(data_source_type=DataSourceType.MYSQL,
@@ -83,17 +83,10 @@ def test_get_nested_model_objects():
 
     initiative = initiatives[0]
     assert type(initiative) is Initiative
-    assert type(initiative.roles) is list
-    assert type(initiative.events) is list
     
-    # test is brittle because it relies on unpredictable production data
-    if initiative.roles:
-        role = initiative.roles[-1]
-        assert type(role) is VolunteerRole
-    
-    if initiative.events:
-        event = initiative.events[-1]
-        assert type(event) is VolunteerEvent
+    event = initiative.events[0]
+    assert type(event) is VolunteerEvent
+
 
 def test_data_sink_insert():
     donation_link_test_db = DataSink(data_base_type=DataSourceType.MYSQL, address=test_link_db_addr, table='link_requests')

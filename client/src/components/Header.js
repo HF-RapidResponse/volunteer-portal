@@ -14,10 +14,6 @@ function Header() {
     { displayName: 'Our Initiatives', url: '/initiatives' },
     { displayName: 'Event Calendar', url: '/calendar' },
     { displayName: 'Volunteer Roles', url: '/roles' },
-    {
-      displayName: 'Return to Parent Site',
-      url: 'https://movehumanityforward.com/',
-    },
     // { displayName: 'About Us', url: '/about' },
     // { displayName: 'Our Candidates', url: '/candidates' },
     // { displayName: 'Sign In', url: '/signin' },
@@ -51,25 +47,14 @@ function Header() {
       );
     } else {
       navLinks.push(
-        link && link[0] === '/' ? (
-          <Link
-            className="nav-link ml-3 mr-3 text-center"
-            key={link.displayName + i}
-            to={link.url}
-            onClick={() => setTimeout(() => setExpanded(false), 100)}
-          >
-            {link.displayName}
-          </Link>
-        ) : (
-          <a
-            className="nav-link ml-3 mr-3 text-center"
-            href={link.url}
-            key={`nav-child-${i}`}
-            onClick={() => setTimeout(() => setExpanded(false), 100)}
-          >
-            {link.displayName}
-          </a>
-        )
+        <Link
+          className="nav-link ml-3 mr-3"
+          key={link.displayName + i}
+          to={link.url}
+          onClick={() => setTimeout(() => setExpanded(false), 100)}
+        >
+          {link.displayName}
+        </Link>
       );
     }
   }
@@ -96,7 +81,10 @@ function Header() {
           onClick={() => setExpanded(!expanded)}
         />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ml-auto d-lg-flex align-items-center">
+          <Nav
+            className="ml-auto d-lg-flex align-items-center"
+            id="links-container"
+          >
             <>{navLinks}</>
             <Link to={'/register'}>
               <Button

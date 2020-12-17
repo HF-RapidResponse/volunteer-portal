@@ -30,8 +30,7 @@
   color: $faintQuoteGray;
 }
 
-b,
-strong {
+b, strong {
   color: $btnCyan;
 }
 
@@ -62,7 +61,6 @@ body {
 #main-content {
   padding-top: 11rem;
   min-height: 80vh;
-  padding-bottom: 1rem;
 
   @media (max-width: 768px) {
     padding-top: 10rem;
@@ -190,7 +188,7 @@ p {
   font-weight: normal;
   font-size: 14px;
   line-height: 140%;
-
+  
   margin: 0 0;
 
   /* identical to box height, or 20px */

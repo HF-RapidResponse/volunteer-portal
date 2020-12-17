@@ -4,12 +4,8 @@ from models import Initiative, VolunteerRole
 from settings import Session
 from sqlalchemy.orm import lazyload
 from tests.fake_data_utils import generate_fake_initiative
-<<<<<<< HEAD
 # TODO: Add back when we migrate to Postgresql
 # from uuid import UUID
-=======
-from uuid import UUID
->>>>>>> bf691df59a9d50ced83c5fe9b6e77a5205f5b100
 
 @pytest.fixture
 def db():
@@ -31,18 +27,12 @@ def test_initiative_create_types(db):
     assert new_initiative
 
     # Validate types
-<<<<<<< HEAD
     # TODO: Add back when we migrate to Postgresql
     # assert type(new_initiative.initiative_uuid) is UUID # todo
     assert type(new_initiative.initiative_external_id) is str
     assert type(new_initiative.name) is str
     assert type(new_initiative.title) is str
     assert new_initiative.name == new_initiative.title
-=======
-    assert type(new_initiative.initiative_uuid) is UUID
-    assert type(new_initiative.initiative_external_id) is str
-    assert type(new_initiative.name) is str
->>>>>>> bf691df59a9d50ced83c5fe9b6e77a5205f5b100
     assert type(new_initiative.hero_image_url) is str
     assert type(new_initiative.content) is str
     assert type(new_initiative.role_ids) is list
@@ -52,34 +42,9 @@ def test_initiative_create_types(db):
     # Validate equality
     assert initiative.name == new_initiative.name
     assert new_initiative.role_ids == initiative.role_ids
-<<<<<<< HEAD
     assert type(new_initiative.roles.first()) is VolunteerRole
 
 
-=======
-    assert type(new_initiative.roles[0]) is VolunteerRole
-
-
-def test_initiative_roles_scoped(db):
-    roles_count = 3
-
-    # Add an additional initiative with it's own roles to make sure queries are scoped
-    db.add(generate_fake_initiative(db, roles_count, 1))
-
-    initiative = generate_fake_initiative(db, roles_count, 1)
-    db.add(initiative)
-    new_initiative = db.query(Initiative).filter_by(initiative_external_id=initiative.initiative_external_id).scalar()
-
-
-    assert new_initiative
-    assert type(new_initiative.role_ids) is list
-    assert len(new_initiative.role_ids) == roles_count
-    assert len(new_initiative.roles) == roles_count
-
-    for role in new_initiative.roles:
-        assert role.role_external_id in new_initiative.role_ids
-
->>>>>>> bf691df59a9d50ced83c5fe9b6e77a5205f5b100
 
 # def test_volunteer_role_attributes():
 

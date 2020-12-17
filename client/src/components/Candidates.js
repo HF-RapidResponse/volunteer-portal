@@ -15,7 +15,7 @@ function Candidates() {
       {loading && <LoadingSpinner />}
       <iframe
         className="airtable-embed"
-        src="https://airtable.com/embed/shrmkdEXjXXBzpyl6?backgroundColor=green&amp;viewControls=on"
+        src="https://airtable.com/embed/shrmkdEXjXXBzpyl6?backgroundColor=green&viewControls=on"
         frameBorder="0"
         width="100%"
         height="1000"
