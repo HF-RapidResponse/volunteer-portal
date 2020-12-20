@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import '../styles/header.scss';
@@ -11,8 +11,34 @@ import HFLogo from '../assets/HF-RR-long-logo.png';
  */
 
 function Header() {
+  const [expanded, setExpanded] = useState(false);
+  const [initiatives, setInitiatives] = useState([]);
+  const [fetched, setFetched] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/initiatives')
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            setInitiatives(data);
+          });
+        } else {
+          console.error(response);
+        }
+        setFetched(true);
+      })
+      .catch((err) => {
+        console.error(err);
+        setFetched(true);
+      });
+  }, []);
+
   const links = [
-    { displayName: 'Our Initiatives', url: '/initiatives' },
+    {
+      displayName: 'Our Initiatives',
+      url: '/initiatives',
+      children: initiatives,
+    },
     { displayName: 'Event Calendar', url: '/calendar' },
     { displayName: 'Volunteer Roles', url: '/roles' },
     {
@@ -26,24 +52,24 @@ function Header() {
 
   const navLinks = [];
 
-  const [expanded, setExpanded] = useState(false);
-
-  function collapse() { setTimeout(() => setExpanded(false), 100); }
+  function collapse() {
+    setTimeout(() => setExpanded(false), 100);
+  }
 
   for (let i = 0; i < links.length; i++) {
     const link = links[i];
-    if (link.children) {
+    if (link.children && link.children.length) {
       const dropdownItems = [];
       for (let j = 0; j < link.children.length; j++) {
         const child = link.children[j];
         dropdownItems.push(
           <Link
             className="nav-link ml-5 mr-5"
-            to={child.url}
+            to={`/initiatives/${child.initiative_external_id}`}
             key={`nav-child-${j}`}
             onClick={collapse}
           >
-            {child.displayName}
+            {child.name}
           </Link>
         );
       }
@@ -81,17 +107,12 @@ function Header() {
     <>
       <Navbar
         id="main-header"
-        className="pt-4 pb-4"
+        className="pt-3 pb-3"
         fixed="top"
         expand="xl"
         expanded={expanded}
       >
-        <Link
-          className="nav-link"
-          key="home-key"
-          to="/"
-          onClick={collapse}
-        >
+        <Link className="nav-link" key="home-key" to="/" onClick={collapse}>
           <img src={HFLogo} alt="HF Logo" id="hf-logo" />
         </Link>
         <Navbar.Toggle
@@ -99,18 +120,28 @@ function Header() {
           onClick={() => setExpanded(!expanded)}
         />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ml-auto d-lg-flex align-items-center">
+          <Nav className="d-lg-flex align-items-center mr-auto">
             <>{navLinks}</>
+          </Nav>
+          <Nav>
             <Link to={'/register'}>
               <Button
                 variant="info"
-                className="wide-btn"
-                style={{ padding: '.4rem 2.25rem' }}
+                className="wide-btn ml-3 mr-3"
+                style={{ padding: '.4rem 1.8rem' }}
                 onClick={collapse}
               >
-                Register to Volunteer
+                Create an Account
               </Button>
             </Link>
+
+            <Button
+              variant="outline-info"
+              className="wide-btn ml-3 mr-3"
+              style={{ padding: '.4rem 1.8rem' }}
+            >
+              Login
+            </Button>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga';
 import { Container } from 'react-bootstrap';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Route, Switch, useLocation, withRouter } from 'react-router-dom';
 
 import Home from './Home';
 import Calendar from './Calendar';
@@ -40,7 +40,11 @@ function PageViewSwitch() {
         <Route path="/about" exact component={About} />
         <Route path="/register" exact component={Register} />
         <Route path="/initiatives" exact component={Initiatives} />
-        <Route path="/initiatives/:ext_id" component={InitiativeDetail} />
+        <Route
+          path="/initiatives/:ext_id"
+          exact
+          component={withRouter(InitiativeDetail)}
+        />
         {/* <Route path="/signin" exact component={Signin} /> */}
         <Route path="*" component={NotFound} />
       </Switch>
