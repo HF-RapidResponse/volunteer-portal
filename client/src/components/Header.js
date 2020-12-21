@@ -136,8 +136,8 @@ function Header() {
           <Nav className="d-lg-flex align-items-center mr-auto">
             <>{navLinks}</>
           </Nav>
-          <Nav>
-            <Link to={'/register'}>
+          <Nav className="text-center">
+            <Link to={'/register'} className="mt-1 mb-1">
               <Button
                 variant="info"
                 className="wide-btn ml-3 mr-3"
@@ -147,14 +147,15 @@ function Header() {
                 Create an Account
               </Button>
             </Link>
-
-            <Button
-              variant="outline-info"
-              className="wide-btn ml-3 mr-3"
-              style={{ padding: '.4rem 1.8rem' }}
-            >
-              Login
-            </Button>
+            <Link to={'/login'} className="mt-1 mb-1">
+              <Button
+                variant="outline-info"
+                className="wide-btn ml-3 mr-3"
+                style={{ padding: '.4rem 1.8rem' }}
+              >
+                Login
+              </Button>
+            </Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
