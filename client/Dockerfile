@@ -1,27 +1,13 @@
+# Based on https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html
+
 # Use gcloud nodejs image.
 FROM launcher.gcr.io/google/nodejs
 
-# Set working directory.
-WORKDIR /usr/src/app/
+RUN mkdir /srv/client
 
-# Copy application info.
-COPY package.json .
-COPY package-lock.json .
+WORKDIR /srv/client
 
-# Install dependencies.
-RUN npm install
+COPY . ./
 
-# Install serve as a global.
-RUN npm install -g serve
-
-# Make default hosting port available.
-EXPOSE 8080
-
-# Sets the serve command as the container's main instruction.
-CMD ["serve", "-s", "build"]
-
-# Copy remaining application code.
-COPY . .
-
-# Build the static site.
+RUN npm install --quiet
 RUN npm run build
