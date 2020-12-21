@@ -73,6 +73,19 @@ function Header() {
           </Link>
         );
       }
+      dropdownItems.push(
+        <>
+          <NavDropdown.Divider />
+          <Link
+            className="nav-link ml-5 mr-5"
+            to={`/initiatives/`}
+            key={`nav-child-${links.children ? links.children.length : -1}`}
+            onClick={collapse}
+          >
+            See All Initiatives
+          </Link>
+        </>
+      );
       navLinks.push(
         <NavDropdown title={link.displayName} key={`nav-dropdown-${i}`}>
           {dropdownItems}
