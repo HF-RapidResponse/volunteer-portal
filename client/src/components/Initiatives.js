@@ -9,6 +9,62 @@ import LoadingSpinner from './LoadingSpinner';
  * Component that displays the initiatives page.
  */
 function Initiatives() {
+  function format(content) {
+    var ret = [""];
+    var special = "";
+    var openCtr = 0;
+    var startIndex = 0;
+    for (var i = 0; i < content.length; i++) {
+      // special rule parsing
+      if (content[i] == "[" || special != "") {
+        if (content[i] == "[")
+          openCtr++;
+        else if (content[i] == "]")
+          openCtr--;
+        special += content[i];
+        if (openCtr == 0) {
+          var text = "";
+          // what did we parse?
+          if (special == "[[b]]")
+            startIndex = i + 1;
+          else if (special.endsWith("[[/b]]")) {
+            // clear special
+            special = "";
+            // get bolded text
+            text = content.substring(startIndex, i - "[[/b]]".length + 1);
+            console.log("SPEICALALALSD: " + text);
+            ret.push(<span style={{fontWeight: "bold"}}>{text}</span>);
+            // push "spacer" again
+            ret.push("");
+          }
+          else if (special == "[[i]]")
+            startIndex = i + 1;
+          else if (special.endsWith("[[/i]]")) {
+            // clear special
+            special = "";
+            // get bolded text
+            text = content.substring(startIndex, i - "[[/i]]".length + 1);
+            ret.push(<span style={{fontStyle: "italic"}}>{text}</span>);
+            // push "spacer" again
+            ret.push("");
+          }
+          else if (special == "[[br]]") {
+            // clear special
+            special = "";
+            // push break line
+            ret.push(<p></p>);
+            // push "spacer" again
+            ret.push("");
+          }
+        }
+      }
+      else {
+        ret[ret.length - 1] = ret[ret.length - 1] + content[i];
+      }
+    }
+    return ret;
+  }
+
   const [initiatives, setInitiatives] = useState(null);
   const [fetched, setFetched] = useState(false);
   document.title = 'HF Volunteer Portal - Initiatives';
@@ -71,6 +127,12 @@ function Initiatives() {
         </a>);
     }
 
+    var extraContentTesting = " ";
+    extraContentTesting += "[[b]]This is some bold, in-line, text![[/b]]" + "[[br]]";
+    extraContentTesting += "[[i]]And this is some italic text. Yay![[/i]]" + "[[br]]";
+    extraContentTesting += "[[b]]Line breaks work, too.[[/b]]" + "[[br]]";
+    extraContentTesting += "Now we're back to normal. :)";
+
     cards.push(
       <Col
         xs={12}
@@ -81,7 +143,7 @@ function Initiatives() {
       >
         <h2 className="header-3-section-lead">Initiative {i + 1}:</h2>
         <h2 className="header-3-section-breaker">{initiative['title']}</h2>
-        <p>{initiative['content']}</p>
+        <p>{format(initiative['content'] + extraContentTesting)}</p>
         <div className="text-center mt-4 mb-4">
           {button}
         </div>
