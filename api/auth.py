@@ -14,7 +14,9 @@ router = APIRouter()
 @AuthJWT.load_config
 def get_config():
     return [
-        ('authjwt_secret_key', Config['auth']['jwt']['secret'])
+        ('authjwt_secret_key', Config['auth']['jwt']['secret']),
+        ('authjwt_token_location', {"cookies"}),
+        ('authjwt_cookie_csrf_protect', False)
     ]
 
 class OAuthProvider(Enum):
@@ -80,6 +82,26 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends()):
     user = resp.json()
     return create_token_for_user(Authorize, user['login'])
 
+@router.delete("/logout")
+def logout(Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+
+    Authorize.unset_jwt_cookies()
+    return {"msg":"Successfully logged out"}
+
+# To test logout without a client, paste the following JS code into the console inside of dev tools in your browser with an active session
+
+'''
+const Http = new XMLHttpRequest();
+const url='http://localhost:8000/api/logout';
+Http.open("DELETE", url);
+Http.send();
+'''
+
 def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     access_token = Authorize.create_access_token(subject=user_id)
-    return {'access_token': access_token}
+    # refresh_token = Authorize.create_refresh_token(subject=user_id)
+
+    Authorize.set_access_cookies(access_token)
+    # Authorize.set_refresh_cookies(refresh_token)
+    return {'msg': f'Successfully logged in user {user_id}'}
