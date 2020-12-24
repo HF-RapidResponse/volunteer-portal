@@ -10,6 +10,7 @@ const userSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.user = action.payload;
+      console.log('Here is the user on login:', state.user);
     },
     logout: (state, action) => {
       state.user = null;

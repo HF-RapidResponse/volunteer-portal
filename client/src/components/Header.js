@@ -66,7 +66,7 @@ function Header() {
           <Link
             className="nav-link ml-5 mr-5"
             to={`/initiatives/${child.initiative_external_id}`}
-            key={`nav-child-${j}`}
+            key={`nav-dropdown-child-${j}`}
             onClick={collapse}
           >
             {child.name}
@@ -79,7 +79,7 @@ function Header() {
           <Link
             className="nav-link ml-5 mr-5"
             to={`/initiatives/`}
-            key={`nav-child-${links.children ? links.children.length : -1}`}
+            key={`nav-dropdown-child-${link.children.length}`}
             onClick={collapse}
           >
             See All Initiatives
@@ -87,16 +87,16 @@ function Header() {
         </>
       );
       navLinks.push(
-        <NavDropdown title={link.displayName} key={`nav-dropdown-${i}`}>
+        <NavDropdown title={link.displayName} key={`nav-top-item-${i}`}>
           {dropdownItems}
         </NavDropdown>
       );
     } else {
       navLinks.push(
-        link && link[0] === '/' ? (
+        link && link.url[0] === '/' ? (
           <Link
             className="nav-link ml-3 mr-3 text-center"
-            key={link.displayName + i}
+            key={`nav-top-item-${i}`}
             to={link.url}
             onClick={collapse}
           >
@@ -106,7 +106,7 @@ function Header() {
           <a
             className="nav-link ml-3 mr-3 text-center"
             href={link.url}
-            key={`nav-child-${i}`}
+            key={`nav-top-item-${i}`}
             onClick={collapse}
           >
             {link.displayName}

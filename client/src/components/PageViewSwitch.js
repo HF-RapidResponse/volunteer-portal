@@ -12,6 +12,7 @@ import Register from './Register';
 import Initiatives from './Initiatives';
 import InitiativeDetail from './InitiativeDetail';
 import NotFound from './NotFound';
+import Login from './Login';
 
 // initialize GA
 // REACT_APP_GA_TRACKING_ID can be found in .env
@@ -45,7 +46,7 @@ function PageViewSwitch() {
           exact
           component={withRouter(InitiativeDetail)}
         />
-        {/* <Route path="/signin" exact component={Signin} /> */}
+        <Route path="/login" exact component={Login} />
         <Route path="*" component={NotFound} />
       </Switch>
     </Container>
