@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 function Dashboard(props) {
-  return <h2>This is the dashboard!</h2>;
+  const { attemptLogin, user } = props;
+
+  return user ? (
+    <>
+      <h2>This is the dashboard!</h2>
+    </>
+  ) : (
+    <Redirect push to="/" />
+  );
 }
 
-export default Dashboard;
+const mapStateToProps = (state) => {
+  return {
+    user: state.userStore.user,
+  };
+};
+
+export default connect(mapStateToProps)(Dashboard);

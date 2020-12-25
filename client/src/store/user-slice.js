@@ -15,14 +15,14 @@ const userSlice = createSlice({
       state.user = payload;
       console.log('Here is the user on login:', state.user);
     },
-    logout: (state, action) => {
+    completeLogout: (state) => {
       state.user = null;
     },
     register: (state, action) => {},
   },
 });
 
-export const { completeLogin, logout } = userSlice.actions;
+export const { completeLogin, completeLogout } = userSlice.actions;
 
 export const attemptLogin = (payload) => async (dispatch) => {
   // const response = await axios.post('/api/login-or-something-like-that/', payload);
@@ -36,4 +36,8 @@ export const attemptLogin = (payload) => async (dispatch) => {
   return true;
 };
 
+export const startLogout = (payload) => async (dispatch) => {
+  // const response = await axios.post('/api/logout-and-clear-tokens?/', payload);
+  dispatch(completeLogout());
+};
 export default userSlice.reducer;

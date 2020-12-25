@@ -32,7 +32,6 @@ function Login(props) {
     }
   }
 
-  console.log('Do we have a user?', user);
   return (validated && submitted) || user ? (
     <Redirect push to="/dashboard" />
   ) : (

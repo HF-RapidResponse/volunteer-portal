@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import '../styles/header.scss';
 import HFLogo from '../assets/HF-RR-long-logo.png';
+import { attemptLogin, startLogout } from '../store/user-slice.js';
 
 /**
  * Component that displays the top navigation bar present on every page. It allows users to navigate
@@ -10,10 +12,11 @@ import HFLogo from '../assets/HF-RR-long-logo.png';
  * the nav bar will appear even as users scroll down longer pages.
  */
 
-function Header() {
+function Header(props) {
   const [expanded, setExpanded] = useState(false);
   const [initiatives, setInitiatives] = useState([]);
   const [fetched, setFetched] = useState(false);
+  const { attemptLogin, startLogout, user } = props;
 
   useEffect(() => {
     fetch('/api/initiatives')
@@ -137,25 +140,41 @@ function Header() {
             <>{navLinks}</>
           </Nav>
           <Nav className="text-center">
-            <Link to={'/register'} className="mt-1 mb-1">
-              <Button
-                variant="info"
-                className="wide-btn ml-3 mr-3"
-                style={{ padding: '.4rem 1.8rem' }}
-                onClick={collapse}
-              >
-                Create an Account
-              </Button>
-            </Link>
-            <Link to={'/login'} className="mt-1 mb-1">
-              <Button
-                variant="outline-info"
-                className="wide-btn ml-3 mr-3"
-                style={{ padding: '.4rem 1.8rem' }}
-              >
-                Login
-              </Button>
-            </Link>
+            {user ? (
+              <>
+                <Navbar.Text>Welcome back, {user.username}!</Navbar.Text>
+                <Button
+                  variant="outline-danger"
+                  className="wide-btn ml-3 mr-3"
+                  style={{ padding: '.4rem 1.8rem' }}
+                  onClick={() => startLogout()}
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to={'/register'} className="mt-1 mb-1">
+                  <Button
+                    variant="info"
+                    className="wide-btn ml-3 mr-3"
+                    style={{ padding: '.4rem 1.8rem' }}
+                    onClick={collapse}
+                  >
+                    Create an Account
+                  </Button>
+                </Link>
+                <Link to={'/login'} className="mt-1 mb-1">
+                  <Button
+                    variant="outline-info"
+                    className="wide-btn ml-3 mr-3"
+                    style={{ padding: '.4rem 1.8rem' }}
+                  >
+                    Login
+                  </Button>
+                </Link>
+              </>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -163,4 +182,12 @@ function Header() {
   );
 }
 
-export default Header;
+const mapStateToProps = (state) => {
+  return {
+    user: state.userStore.user,
+  };
+};
+
+const mapDispatchToProps = { attemptLogin, startLogout };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
