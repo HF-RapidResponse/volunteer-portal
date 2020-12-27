@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import '../styles/header.scss';
 import HFLogo from '../assets/HF-RR-long-logo.png';
+import placeholderImg from '../assets/andy-placeholder.jpg';
 import { attemptLogin, startLogout } from '../store/user-slice.js';
 
 /**
@@ -77,17 +78,19 @@ function Header(props) {
         );
       }
       dropdownItems.push(
-        <>
-          <NavDropdown.Divider />
-          <Link
-            className="nav-link ml-5 mr-5"
-            to={`/initiatives/`}
-            key={`nav-dropdown-child-${link.children.length}`}
-            onClick={collapse}
-          >
-            See All Initiatives
-          </Link>
-        </>
+        <NavDropdown.Divider
+          key={`nav-dropdown-child-${link.children.length}`}
+        />
+      );
+      dropdownItems.push(
+        <Link
+          className="nav-link ml-5 mr-5"
+          to={`/initiatives/`}
+          key={`nav-dropdown-child-${link.children.length + 1}`}
+          onClick={collapse}
+        >
+          See All Initiatives
+        </Link>
       );
       navLinks.push(
         <NavDropdown title={link.displayName} key={`nav-top-item-${i}`}>
@@ -119,6 +122,29 @@ function Header(props) {
     }
   }
 
+  const profileLinks = [
+    { displayName: 'My profile', url: '/account/profile' },
+    { displayName: 'Manage my involvement', url: '/account/involvement' },
+    { displayName: 'Account Settings', url: '/account/settings' },
+  ];
+
+  const profileDropdown = [];
+
+  for (let i = 0; i < profileLinks.length; i++) {
+    const link = profileLinks[i];
+    profileDropdown.push(
+      <Link
+        className="nav-link ml-3 mr-3"
+        key={`nav-profile-dropdown-${i}`}
+        to={link.url}
+        // style={{ padding: '0 8rem' }}
+        onClick={collapse}
+      >
+        {link.displayName}
+      </Link>
+    );
+  }
+
   return (
     <>
       <Navbar
@@ -139,18 +165,24 @@ function Header(props) {
           <Nav className="d-lg-flex align-items-center mr-auto">
             <>{navLinks}</>
           </Nav>
-          <Nav className="text-center">
+          <Nav className="account-container">
             {user ? (
               <>
-                <Navbar.Text>Welcome back, {user.username}!</Navbar.Text>
-                <Button
-                  variant="outline-danger"
-                  className="wide-btn ml-3 mr-3"
-                  style={{ padding: '.4rem 1.8rem' }}
-                  onClick={() => startLogout()}
+                <NavDropdown
+                  title={`Welcome back, ${user.username}!`}
+                  key={`nav-top-profile`}
                 >
-                  Logout
-                </Button>
+                  {profileDropdown}
+                  <Button
+                    variant="danger"
+                    className="wide-btn ml-3 mr-3"
+                    style={{ padding: '.4rem 1.8rem' }}
+                    onClick={() => startLogout()}
+                  >
+                    Log Out
+                  </Button>
+                </NavDropdown>
+                <Image src={placeholderImg} roundedCircle fluid />
               </>
             ) : (
               <>
