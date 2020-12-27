@@ -19,5 +19,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-//   const mapDispatchToProps = { attemptLogin };
 export default connect(mapStateToProps)(Settings);

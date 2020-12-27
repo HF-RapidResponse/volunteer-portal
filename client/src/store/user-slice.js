@@ -40,4 +40,9 @@ export const startLogout = (payload) => async (dispatch) => {
   // const response = await axios.post('/api/logout-and-clear-tokens?/', payload);
   dispatch(completeLogout());
 };
+
+export const loadLoggedInUser = (payload) => (dispatch) => {
+  dispatch(completeLogin(payload));
+};
+
 export default userSlice.reducer;

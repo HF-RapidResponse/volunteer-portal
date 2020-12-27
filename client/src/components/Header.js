@@ -2,10 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { withCookies, Cookies } from 'react-cookie';
+
 import '../styles/header.scss';
 import HFLogo from '../assets/HF-RR-long-logo.png';
 import placeholderImg from '../assets/andy-placeholder.jpg';
-import { attemptLogin, startLogout } from '../store/user-slice.js';
+import {
+  attemptLogin,
+  startLogout,
+  loadLoggedInUser,
+} from '../store/user-slice.js';
 
 /**
  * Component that displays the top navigation bar present on every page. It allows users to navigate
@@ -17,9 +23,22 @@ function Header(props) {
   const [expanded, setExpanded] = useState(false);
   const [initiatives, setInitiatives] = useState([]);
   const [fetched, setFetched] = useState(false);
-  const { attemptLogin, startLogout, user } = props;
+  const { attemptLogin, startLogout, user, cookies, loadLoggedInUser } = props;
 
   useEffect(() => {
+    console.log('user here?', user);
+    if (!user) {
+      // cookies.set(
+      //   'user',
+      //   { email: 'bob@test.com', password: 'asdf2342' },
+      //   { path: '/' }
+      // );
+      const userCookie = cookies.get('user');
+      console.log('What is this?', userCookie);
+      if (userCookie) {
+        loadLoggedInUser(userCookie);
+      }
+    }
     fetch('/api/initiatives')
       .then((response) => {
         if (response.ok) {
@@ -36,6 +55,13 @@ function Header(props) {
         setFetched(true);
       });
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      console.log('user exists in useEffect', user);
+      cookies.set('user', user, { path: '/' });
+    }
+  }, [user]);
 
   const links = [
     {
@@ -178,7 +204,10 @@ function Header(props) {
                       variant="danger"
                       className="wide-btn ml-3 mr-3 mt-3 mb-3"
                       style={{ padding: '.4rem 5rem' }}
-                      onClick={() => startLogout()}
+                      onClick={() => {
+                        startLogout();
+                        cookies.remove('user');
+                      }}
                     >
                       Log Out
                     </Button>
@@ -204,7 +233,7 @@ function Header(props) {
                     className="wide-btn ml-3 mr-3"
                     style={{ padding: '.4rem 1.8rem' }}
                   >
-                    Login
+                    Log In
                   </Button>
                 </Link>
               </>
@@ -222,6 +251,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { attemptLogin, startLogout };
+const mapDispatchToProps = { attemptLogin, startLogout, loadLoggedInUser };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withCookies(Header));

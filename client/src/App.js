@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { withCookies, Cookies } from 'react-cookie';
 
 import Header from './components/Header';
 import PageViewSwitch from './components/PageViewSwitch';
@@ -14,11 +15,13 @@ import './styles/base.scss';
  * Top level component that renders all other components.
  * Uses React Router DOM to render various pages.
  */
-function App() {
+function App(props) {
+  const { cookies } = props;
+  console.log('do we have cookies?', cookies);
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <Header />
+        <Header cookies={cookies} />
         <PageViewSwitch />
         <Footer />
       </BrowserRouter>
@@ -26,4 +29,4 @@ function App() {
   );
 }
 
-export default App;
+export default withCookies(App);
