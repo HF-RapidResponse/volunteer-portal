@@ -53,7 +53,6 @@ function Initiatives() {
   const cards = [];
   for (var i = 0; i < initiatives.length; i++) {
     const initiative = initiatives[i];
-    console.log(initiative);
     var button = null;
     if (initiative['roles'].length > 0 || initiative['events'].length > 0) {
       button = (
@@ -61,14 +60,16 @@ function Initiatives() {
           <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
             View Events & Roles
           </Button>
-        </Link>);
+        </Link>
+      );
     } else if (initiative['details_url']) {
       button = (
         <a href={initiative['details_url']}>
           <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
             Learn More
           </Button>
-        </a>);
+        </a>
+      );
     }
 
     cards.push(
@@ -82,9 +83,7 @@ function Initiatives() {
         <h2 className="header-3-section-lead">Initiative {i + 1}:</h2>
         <h2 className="header-3-section-breaker">{initiative['title']}</h2>
         <p>{initiative['content']}</p>
-        <div className="text-center mt-4 mb-4">
-          {button}
-        </div>
+        <div className="text-center mt-4 mb-4">{button}</div>
       </Col>
     );
   }

@@ -33,7 +33,7 @@ function Login(props) {
   }
 
   return (validated && submitted) || user ? (
-    <Redirect push to="/dashboard" />
+    <Redirect push to="/account/profile" />
   ) : (
     <>
       <h2>Welcome to the portal!</h2>

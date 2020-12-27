@@ -25,9 +25,7 @@ function Register() {
       </Col>
       <Col xs={12} lg={9} xl={6} className="shadow-card">
         <h2 className="header-3">Register yourself as a volunteer.</h2>
-        <p>
-          Let us keep you up to date on what we have in the works.
-        </p>
+        <p>Let us keep you up to date on what we have in the works.</p>
         <div className="text-center">
           <a href="http://on.movehumanityforward.com/volunteer_signup_short">
             <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
@@ -55,9 +53,9 @@ function Register() {
       <Col xs={12} lg={9} xl={6} className="shadow-card">
         <h2 className="header-3">Share this portal with others.</h2>
         <p>
-        Give everyone the opportunity to participate in this historic push for UBI.
-        The best way to make an impact is to get those around you involved! Every
-        drop of water makes the mighty ocean.
+          Give everyone the opportunity to participate in this historic push for
+          UBI. The best way to make an impact is to get those around you
+          involved! Every drop of water makes the mighty ocean.
         </p>
         <RecruitmentSocialShare />
       </Col>
@@ -80,8 +78,11 @@ function Register() {
           You’ll get a follow-up email with your personal ActBlue link.
         </p>
         <div className="text-center">
-          <Button onClick={SendDonorRequestLink}
-            variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
+          <Button
+            onClick={SendDonorRequestLink}
+            variant="outline-info"
+            style={{ padding: '.35rem 1.5rem' }}
+          >
             Submit Request
           </Button>
         </div>
@@ -93,29 +94,31 @@ function Register() {
 function SendDonorRequestLink() {
   var input = document.getElementById('act-blue-email');
   const email = input.value;
-  const invalid_email_message = "Please enter a valid email address.";
-  const unknown_error_message = "We're sorry, we are unable to process your request. Our volunteer development team will sort this out as soon as possible";
-  if ( !email.includes("@") ) {
+  const invalid_email_message = 'Please enter a valid email address.';
+  const unknown_error_message =
+    "We're sorry, we are unable to process your request. Our volunteer development team will sort this out as soon as possible";
+  if (!email.includes('@')) {
     alert(invalid_email_message);
     return;
   }
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email })
+    body: JSON.stringify({ email: email }),
   };
   fetch('/api/donation_link_requests/', requestOptions)
     .then((response) => {
       if (response.status >= 200 && response.status <= 299) {
-        input.value = "Thank you!";
+        input.value = 'Thank you!';
       } else if (response.status == 422) {
         alert(invalid_email_message);
       } else {
         alert(unknown_error_message);
       }
-    }).catch((error) => {
+    })
+    .catch((error) => {
       alert(unknown_error_message);
-      console.log(error);
+      console.error(error);
     });
 }
 

@@ -173,14 +173,16 @@ function Header(props) {
                   key={`nav-top-profile`}
                 >
                   {profileDropdown}
-                  <Button
-                    variant="danger"
-                    className="wide-btn ml-3 mr-3"
-                    style={{ padding: '.4rem 1.8rem' }}
-                    onClick={() => startLogout()}
-                  >
-                    Log Out
-                  </Button>
+                  <div className="text-center">
+                    <Button
+                      variant="danger"
+                      className="wide-btn ml-3 mr-3 mt-3 mb-3"
+                      style={{ padding: '.4rem 5rem' }}
+                      onClick={() => startLogout()}
+                    >
+                      Log Out
+                    </Button>
+                  </div>
                 </NavDropdown>
                 <Image src={placeholderImg} roundedCircle fluid />
               </>
