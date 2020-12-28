@@ -101,7 +101,7 @@ Http.send();
 def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     access_token = Authorize.create_access_token(subject=user_id)
     # refresh_token = Authorize.create_refresh_token(subject=user_id)
-
-    Authorize.set_access_cookies(access_token)
+    response = RedirectResponse(f'{Config["routes"]["client"]}/auth_callback')
+    Authorize.set_access_cookies(access_token, response)
     # Authorize.set_refresh_cookies(refresh_token)
-    return RedirectResponse(f'{Config["routes"]["client"]}/auth_callback')
+    return response

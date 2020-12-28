@@ -26,7 +26,7 @@ class Signin extends React.Component {
 
   checkIfSignedIn() {
     fetch('/api/profile')
-      .then(response => this.setState({ isSignedIn: response.status !== 401, isLoading: false }));
+      .then(response => this.setState({ isSignedIn: response.status === 200, isLoading: false }));
   }
 }
 
