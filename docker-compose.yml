@@ -1,6 +1,5 @@
 version: "3.7"
 
-
 services:
   db:
     build: ./db
@@ -10,47 +9,30 @@ services:
     ports:
     - 8082:5432
 
-  # api:
-  #   build:
-  #     context: ./api
-  #     dockerfile: ./Dockerfile
-  #   environment:
-  #   - "ENV=development"
-  #   ports:
-  #   - 8081:8080
-  #   - 5432:8082
+  api:
+    build: ./api
+    environment:
+    - "ENV=development"
+    ports:
+    - 8081:8080
+    - 5432:8082
+    command: ["./wait-for-it.sh", "db:5432", "--", "uvicorn", "--host", "0.0.0.0", "api:app", "--app-dir", ".", "--reload"]
 
-  # Used for the API web endpoint and for running tests
-  # api:
-  #   build:
-  #     context: ./
-  #     dockerfile: ./api/Dockerfile
-  #   volumes:
-  #     - './api:/api'
-  #   depends_on:
-  #     - "db"
-  #   command: ["./wait-for-it.sh", "db:5432", "--", "uvicorn", "--host", "0.0.0.0", "api:app", "--app-dir", ".", "--reload"]
-  #   ports:
-  #   - "8081:8080"
-  #   - "5432:8082"
-
-  # adminer:
-  #   image: adminer
-  #   ports:
-  #   - 8080:8080
-  #
+  adminer:
+    image: adminer
+#    ports:
+#    - 8080:8080
+  
   client:
     build: ./client
     command: npm run start
     environment:
-      - "DANGEROUSLY_DISABLE_HOST_CHECK=true"
+    - "DANGEROUSLY_DISABLE_HOST_CHECK=true"
     volumes:
-      - ./client:/srv/client
-      - client_node_modules:/srv/client/node_modules
+    - ./client:/srv/client
+    - client_node_modules:/srv/client/node_modules
     ports:
-      - '8080:8080'
-  #
-  #
+    - 8080:8080
 
   #
   # proxy:
