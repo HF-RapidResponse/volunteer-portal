@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { withCookies, Cookies } from 'react-cookie';
 
 import '../styles/header.scss';
 import HFLogo from '../assets/HF-RR-long-logo.png';
@@ -253,7 +252,4 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = { attemptLogin, startLogout, loadLoggedInUser };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withCookies(Header));
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
