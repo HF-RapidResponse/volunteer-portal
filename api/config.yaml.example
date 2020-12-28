@@ -8,20 +8,32 @@ test:
       adapter: postgresql
       host: localhost
       database: hf_volunteer_portal_test
-      user: root
-      password:
+      user: admin
+      password: password
     donations:
       <<: *test_main
 development:
+    routes:
+      client: 'http://localhost:3000'
+      api: 'http://localhost:8000'
     database: &development_main
       generator: db_url_generator
       adapter: postgresql
       host: localhost
       database: hf_volunteer_portal
-      user: root
-      password:
+      user: admin
+      password: password
     donations:
       <<: *development_main
+    auth:
+      jwt:
+        secret: 'secret'
+      google:
+        client_id: 
+        client_secret: 
+      github:
+        client_id: 
+        client_secret: 
 staging:
     database:
         <<: *production_server_defaults

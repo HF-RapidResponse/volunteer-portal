@@ -104,4 +104,4 @@ def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
 
     Authorize.set_access_cookies(access_token)
     # Authorize.set_refresh_cookies(refresh_token)
-    return {'msg': f'Successfully logged in user {user_id}'}
+    return RedirectResponse(f'{Config["routes"]["client"]}/auth_callback')
