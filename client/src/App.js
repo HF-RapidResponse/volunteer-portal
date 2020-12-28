@@ -17,7 +17,6 @@ import './styles/base.scss';
  */
 function App(props) {
   const { cookies } = props;
-  console.log('do we have cookies?', cookies);
   return (
     <Provider store={store}>
       <BrowserRouter>

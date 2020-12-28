@@ -1,0 +1,23 @@
+@import 'variables';
+
+#account-nav {
+  a {
+    color: black;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  a.active-profile-nav {
+    font-weight: bold;
+  }
+
+  a.active-profile-nav:before {
+    height: 1.5rem;
+    width: 0.3rem;
+    margin-right: 0.5rem;
+    display: block;
+    content: '';
+    float: left;
+    background-color: $hfCyan;
+  }
+}

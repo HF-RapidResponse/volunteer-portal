@@ -25,15 +25,8 @@ function Header(props) {
   const { attemptLogin, startLogout, user, cookies, loadLoggedInUser } = props;
 
   useEffect(() => {
-    console.log('user here?', user);
     if (!user) {
-      // cookies.set(
-      //   'user',
-      //   { email: 'bob@test.com', password: 'asdf2342' },
-      //   { path: '/' }
-      // );
       const userCookie = cookies.get('user');
-      console.log('What is this?', userCookie);
       if (userCookie) {
         loadLoggedInUser(userCookie);
       }
@@ -57,7 +50,6 @@ function Header(props) {
 
   useEffect(() => {
     if (user) {
-      console.log('user exists in useEffect', user);
       cookies.set('user', user, { path: '/' });
     }
   }, [user]);

@@ -2,18 +2,33 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
+
 import AccountNav from './AccountNav';
 import placeholderImg from '../../assets/andy-placeholder.jpg';
 import Profile from './Profile';
+import Involvement from './Involvement';
+import Settings from './Settings';
+import Data from './Data';
+
+import '../../styles/account.scss';
 
 function AccountIndex(props) {
   const { user } = props;
   let mainContent;
-  console.log('What is pathname?', window.location.pathname);
+
   /* eslint-disable indent */
   switch (window.location.pathname) {
     case '/account/profile':
       mainContent = <Profile />;
+      break;
+    case '/account/settings':
+      mainContent = <Settings />;
+      break;
+    case '/account/involvement':
+      mainContent = <Involvement />;
+      break;
+    case '/account/data':
+      mainContent = <Data />;
       break;
     default:
       break;
@@ -32,7 +47,7 @@ function AccountIndex(props) {
               style={{ maxWidth: '80px' }}
             />
           </Col>
-          <Col xs={12} md={5} className="align-self-center">
+          <Col xs={12} md={10} xl={5} className="align-self-center">
             <h2>{user.username} / Account</h2>
           </Col>
         </Row>

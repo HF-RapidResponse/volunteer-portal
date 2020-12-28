@@ -1,36 +1,24 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Nav } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 
-function AccountNav(props) {
-  const { user } = props;
-  const path = window.location.pathname;
-  console.log(
-    'What is window.location.pathname in account nav?',
-    window.location.pathname
-  );
+function AccountNav() {
   return (
-    <Nav defaultActiveKey="/home" className="flex-column">
-      <Link
-        to="/account/profile"
-        active={path === '/account/profile' ? 'active' : null}
-      >
+    <Nav defaultActiveKey="/home" className="flex-column" id="account-nav">
+      <NavLink to="/account/profile" activeClassName="active-profile-nav">
         Profile
-      </Link>
-      <Link to="/account/settings" className={window}>
+      </NavLink>
+      <NavLink to="/account/settings" activeClassName="active-profile-nav">
         Account Settings
-      </Link>
-      <Link to="/account/involvement">Manage my Involvement</Link>
-      <Link to="/account/data">See my data</Link>
+      </NavLink>
+      <NavLink to="/account/involvement" activeClassName="active-profile-nav">
+        Manage my Involvement
+      </NavLink>
+      <NavLink to="/account/data" activeClassName="active-profile-nav">
+        See my data
+      </NavLink>
     </Nav>
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.userStore.user,
-  };
-};
-
-export default connect(mapStateToProps)(AccountNav);
+export default AccountNav;
