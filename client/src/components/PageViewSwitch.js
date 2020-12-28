@@ -11,6 +11,7 @@ import About from './About';
 import Register from './Register';
 import Initiatives from './Initiatives';
 import InitiativeDetail from './InitiativeDetail';
+import Signin from './Signin';
 import NotFound from './NotFound';
 
 // initialize GA
@@ -41,7 +42,7 @@ function PageViewSwitch() {
         <Route path="/register" exact component={Register} />
         <Route path="/initiatives" exact component={Initiatives} />
         <Route path="/initiatives/:ext_id" component={InitiativeDetail} />
-        {/* <Route path="/signin" exact component={Signin} /> */}
+        <Route path="/signin" exact component={Signin} />
         <Route path="*" component={NotFound} />
       </Switch>
     </Container>
