@@ -26,7 +26,7 @@ app.add_middleware(
 
 donation_link_db: Optional[DataSink] = None
 
-cloudsql_db_addr = '34.66.203.222'
+cloudsql_db_addr = '10.17.0.3'
 try:
     link_db_addr = generate_hf_mysql_db_address(cloudsql_db_addr,'donation_link_requests','hf','humanity-forward_hf-db1-mysql_hf')
     donation_link_db = DataSink(data_base_type=DataSourceType.MYSQL, address=link_db_addr, table='link_requests')
