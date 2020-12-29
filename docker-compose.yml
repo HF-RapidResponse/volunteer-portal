@@ -6,6 +6,8 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
+    ports:
+    - 8082:5432 # For local connection via a Postgres client
 
   api:
     build: ./api
@@ -26,7 +28,7 @@ services:
     - 8080:8080
     volumes:
     - ./client:/client
-    - client_node_modules:/srv/client/node_modules
+    - client_node_modules:/client/node_modules
 
   # adminer:
   #   image: adminer
