@@ -6,37 +6,39 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
-    ports:
-    - 8082:5432
 
   api:
     build: ./api
-    environment:
-    - "ENV=development"
+    command: uvicorn --host 0.0.0.0 api:app --app-dir . --port 8081
+    depends_on:
+    - db
     ports:
-    - 8081:8080
-    - 5432:8082
-    command: ["./wait-for-it.sh", "db:5432", "--", "uvicorn", "--host", "0.0.0.0", "api:app", "--app-dir", ".", "--reload"]
+    - 8081:8081
+    volumes:
+    - ./api:/api
 
-  adminer:
-    image: adminer
-#    ports:
-#    - 8080:8080
-  
   client:
     build: ./client
     command: npm run start
     environment:
     - "DANGEROUSLY_DISABLE_HOST_CHECK=true"
-    volumes:
-    - ./client:/srv/client
-    - client_node_modules:/srv/client/node_modules
     ports:
     - 8080:8080
+    volumes:
+    - ./client:/client
+    - client_node_modules:/srv/client/node_modules
 
-  #
+  # adminer:
+  #   image: adminer
+  #  ports:
+  #  - 8080:8080
+
+
   # proxy:
   #   image: nginx
+  #   depends_on:
+  #   - api
+  #   - client
   #   volumes:
   #   - ./nginx:/etc/nginx/conf.d
   #   ports:

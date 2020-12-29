@@ -10,7 +10,7 @@ test:
     database:
         generator: db_url_generator
         adapter: postgresql
-        host: localhost
+        host: db
         database: hf_volunteer_portal_test
         user: admin
         password: password
@@ -18,7 +18,7 @@ development:
     database:
         generator: db_url_generator
         adapter: postgresql
-        host: localhost
+        host: db
         database: hf_volunteer_portal_development
         user: admin
         password: password

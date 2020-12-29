@@ -1,12 +1,12 @@
 # Based on https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html
 
 # Use gcloud nodejs image.
-#FROM launcher.gcr.io/google/nodejs
-FROM node
+FROM launcher.gcr.io/google/nodejs
 
-WORKDIR /srv/client
+RUN mkdir /client
+WORKDIR /client
 
 COPY . ./
 
-RUN npm install
-#RUN npm run build
+RUN npm install -g serve && npm install --quiet
+RUN npm run build
