@@ -3,10 +3,11 @@
 # Use gcloud nodejs image.
 FROM launcher.gcr.io/google/nodejs
 
-RUN mkdir /client
 WORKDIR /client
 
 COPY . ./
 
-RUN npm install -g serve && npm install --quiet
+RUN rm -rf node_modules \
+    && npm install -g serve \
+    && npm install --quiet
 RUN npm run build
