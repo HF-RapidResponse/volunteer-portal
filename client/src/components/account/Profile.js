@@ -7,7 +7,6 @@ function Profile(props) {
   const { user } = props;
   return user ? (
     <>
-      {/* <h2>{user.username} / Account</h2> */}
       <Form className="p-4" style={{ background: 'white' }}>
         <h4>Account Info</h4>
         <Form.Group controlId="formName" className="mt-4 mb-4">

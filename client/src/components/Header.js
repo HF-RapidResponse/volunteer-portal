@@ -141,8 +141,9 @@ function Header(props) {
 
   const profileLinks = [
     { displayName: 'My profile', url: '/account/profile' },
-    { displayName: 'Manage my involvement', url: '/account/involvement' },
     { displayName: 'Account Settings', url: '/account/settings' },
+    { displayName: 'Manage my involvement', url: '/account/involvement' },
+    { displayName: 'See my data', url: '/account/data' },
   ];
 
   const profileDropdown = [];
@@ -154,7 +155,6 @@ function Header(props) {
         className="nav-link ml-3 mr-3"
         key={`nav-profile-dropdown-${i}`}
         to={link.url}
-        // style={{ padding: '0 8rem' }}
         onClick={collapse}
       >
         {link.displayName}
@@ -162,6 +162,22 @@ function Header(props) {
     );
   }
 
+  profileDropdown.push(
+    <NavDropdown.Divider key={`nav-profile-dropdown-${profileLinks.length}`} />
+  );
+  profileDropdown.push(
+    <Link
+      to="/"
+      className="nav-link ml-3 mr-3"
+      key={`nav-profile-dropdown-${profileLinks.length + 1}`}
+      onClick={() => {
+        startLogout();
+        cookies.remove('user');
+      }}
+    >
+      Log Out
+    </Link>
+  );
   return (
     <>
       <Navbar
@@ -175,10 +191,10 @@ function Header(props) {
           <img src={HFLogo} alt="HF Logo" id="hf-logo" />
         </Link>
         <Navbar.Toggle
-          aria-controls="basic-navbar-nav"
+          aria-controls="main-nav"
           onClick={() => setExpanded(!expanded)}
         />
-        <Navbar.Collapse id="basic-navbar-nav">
+        <Navbar.Collapse id="main-nav">
           <Nav className="d-lg-flex align-items-center mr-auto">
             <>{navLinks}</>
           </Nav>
@@ -190,19 +206,6 @@ function Header(props) {
                   key={`nav-top-profile`}
                 >
                   {profileDropdown}
-                  <div className="text-center">
-                    <Button
-                      variant="danger"
-                      className="wide-btn ml-3 mr-3 mt-3 mb-3"
-                      style={{ padding: '.4rem 5rem' }}
-                      onClick={() => {
-                        startLogout();
-                        cookies.remove('user');
-                      }}
-                    >
-                      Log Out
-                    </Button>
-                  </div>
                 </NavDropdown>
                 <Image src={placeholderImg} roundedCircle fluid />
               </>

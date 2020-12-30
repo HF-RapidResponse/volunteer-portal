@@ -51,7 +51,7 @@ function AccountIndex(props) {
             <h2>{user.username} / Account</h2>
           </Col>
         </Row>
-        <Row className="mt-5 mb-5">
+        <Row className="mt-lg-5 mb-lg-5">
           <Col xs={12} lg={4} className="mt-5">
             <AccountNav />
           </Col>
