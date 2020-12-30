@@ -13,7 +13,7 @@ function Initiatives() {
   document.title = 'HF Volunteer Portal - Initiatives';
   if (!initiatives.loaded)
   {
-    fetch('/api/initiatives')
+    fetch('/api/initiatives/')
       .then(response =>
       {
         if (!response.ok)

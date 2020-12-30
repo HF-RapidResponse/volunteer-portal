@@ -45,9 +45,21 @@ class Initiative(Base):
 
     @hybrid_property
     def roles(self):
+        return [] # todo: fix
         found_roles = self.roles_rel.filter_by(VolunteerRole.role_external_id.in_(self.role_ids)).all()
         print(f'IDS LENGTH: {len(self.role_ids)} / ROLES LENGTH: {len(found_roles)}')
         return found_roles
+
+    @hybrid_property
+    def events(self):
+        return [] # todo: fix
+        found_roles = self.roles_rel.filter_by(VolunteerRole.role_external_id.in_(self.role_ids)).all()
+        print(f'IDS LENGTH: {len(self.role_ids)} / ROLES LENGTH: {len(found_roles)}')
+        return found_roles
+
+    @hybrid_property
+    def highlightedItems(self):
+        return []
 
 
 
