@@ -24,8 +24,8 @@ class VolunteerEvent(Base):
 
     # TODO: Remove when we migrate to Postgresql
     @hybrid_property
-    def initiative_uuid(self):
-        return uuid4
+    def event_uuid(self):
+        return uuid4()
 
     @hybrid_property
     def hero_image_url(self):

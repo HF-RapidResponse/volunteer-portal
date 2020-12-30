@@ -1,9 +1,9 @@
 --
--- adminQL database dump
+-- PostgreSQL database dump
 --
 
--- Dumped from database version 12.4
--- Dumped by pg_dump version 12.4
+-- Dumped from database version 13.1 (Debian 13.1-1.pgdg100+1)
+-- Dumped by pg_dump version 13.1 (Debian 13.1-1.pgdg100+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,7 +20,7 @@ SET row_security = off;
 -- Name: hf_volunteer_portal_test; Type: DATABASE; Schema: -; Owner: admin
 --
 
-CREATE DATABASE hf_volunteer_portal_test WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8';
+CREATE DATABASE hf_volunteer_portal_test WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.utf8';
 
 
 ALTER DATABASE hf_volunteer_portal_test OWNER TO admin;
@@ -75,10 +75,9 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.events (
-    event_uuid uuid NOT NULL,
-    id character varying(255),
+    id character varying(255) NOT NULL,
     event_id character varying(255),
-    event_graphics json,
+    event_graphics json[],
     signup_link text,
     details_url text,
     start timestamp without time zone,
@@ -95,11 +94,10 @@ ALTER TABLE public.events OWNER TO admin;
 --
 
 CREATE TABLE public.initiatives (
-    initiative_uuid uuid NOT NULL,
-    id character varying(255),
+    id character varying(255) NOT NULL,
     initiative_name character varying(255),
     details_link character varying(255),
-    hero_image_urls json,
+    hero_image_urls json[],
     description character varying(255),
     roles character varying[],
     events character varying[]
@@ -109,29 +107,14 @@ CREATE TABLE public.initiatives (
 ALTER TABLE public.initiatives OWNER TO admin;
 
 --
--- Name: link_requests; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.link_requests (
-    request_uuid uuid NOT NULL,
-    email character varying(255),
-    request_sent timestamp without time zone,
-    link_delivered boolean
-);
-
-
-ALTER TABLE public.link_requests OWNER TO admin;
-
---
 -- Name: volunteer_openings; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.volunteer_openings (
-    role_uuid uuid NOT NULL,
-    id character varying(255),
+    id character varying(255) NOT NULL,
     position_id character varying(255),
     more_info_link text,
-    team_photo json,
+    team_photo json[],
     application_signup_form text,
     priority_level public.priority,
     point_of_contact_name character varying(255),
@@ -153,7 +136,7 @@ ALTER TABLE public.volunteer_openings OWNER TO admin;
 --
 
 ALTER TABLE ONLY public.events
-    ADD CONSTRAINT events_pkey PRIMARY KEY (event_uuid);
+    ADD CONSTRAINT events_pkey PRIMARY KEY (id);
 
 
 --
@@ -161,15 +144,7 @@ ALTER TABLE ONLY public.events
 --
 
 ALTER TABLE ONLY public.initiatives
-    ADD CONSTRAINT initiatives_pkey PRIMARY KEY (initiative_uuid);
-
-
---
--- Name: link_requests link_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.link_requests
-    ADD CONSTRAINT link_requests_pkey PRIMARY KEY (request_uuid);
+    ADD CONSTRAINT initiatives_pkey PRIMARY KEY (id);
 
 
 --
@@ -177,9 +152,10 @@ ALTER TABLE ONLY public.link_requests
 --
 
 ALTER TABLE ONLY public.volunteer_openings
-    ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (role_uuid);
+    ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (id);
 
 
 --
--- adminQL database dump complete
+-- PostgreSQL database dump complete
 --
+

@@ -1,4 +1,3 @@
-import uuid
 from constants import placeholder_image
 from models.base import Base
 from models.volunteer_role import VolunteerRole
@@ -8,6 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
 from sqlalchemy.orm import backref, column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
 from pydantic import validator
+from uuid import uuid4
 
 class Initiative(Base):
     __tablename__ = 'initiatives'
@@ -37,7 +37,7 @@ class Initiative(Base):
     # TODO: Remove when we migrate to Postgresql
     @hybrid_property
     def initiative_uuid(self):
-        return uuid.uuid4
+        return uuid4()
 
     @hybrid_property
     def hero_image_url(self):

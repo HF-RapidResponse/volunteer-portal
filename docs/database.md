@@ -2,11 +2,15 @@
 # To create a development database dump:
 
 ```
-pg_dump --create hf_volunteer_portal_development > data.development.sql
+make db-save-dev
 ```
 
-# To create a test database schema :
+This will update the `db/data/data.development.sql` file with whatever is in your db container's development database and all of it's data.
+
+# To create a development database dump:
 
 ```
-pg_dump --create --schema-only hf_volunteer_portal_test > data.sql
+make db-save-test
 ```
+
+This will update the `db/data/data.test.sql` file with whatever is in your db container's test database. This will take a snapshot of the ***schema only*** not the data. Tests should create their own data then roll it back after – leaving the database itself empty when tests aren't actively running.

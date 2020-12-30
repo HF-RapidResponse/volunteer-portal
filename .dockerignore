@@ -1,6 +1,10 @@
 .git
 .dockerignore
 .github/*
+Dockerfile
+.DS_Store
 log/*
-build/*
+client/build
+build
+client/node_modules
 node_modules/*
