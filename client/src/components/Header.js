@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import '../styles/header.scss';
 import HFLogo from '../assets/HF-RR-long-logo.png';
@@ -84,14 +84,14 @@ function Header(props) {
       for (let j = 0; j < link.children.length; j++) {
         const child = link.children[j];
         dropdownItems.push(
-          <Link
+          <NavLink
             className="nav-link ml-5 mr-5"
             to={`/initiatives/${child.initiative_external_id}`}
             key={`nav-dropdown-child-${j}`}
             onClick={collapse}
           >
             {child.name}
-          </Link>
+          </NavLink>
         );
       }
       dropdownItems.push(
@@ -100,14 +100,14 @@ function Header(props) {
         />
       );
       dropdownItems.push(
-        <Link
+        <NavLink
           className="nav-link ml-5 mr-5"
           to={`/initiatives/`}
           key={`nav-dropdown-child-${link.children.length + 1}`}
           onClick={collapse}
         >
           See All Initiatives
-        </Link>
+        </NavLink>
       );
       navLinks.push(
         <NavDropdown title={link.displayName} key={`nav-top-item-${i}`}>
@@ -117,14 +117,14 @@ function Header(props) {
     } else {
       navLinks.push(
         link && link.url[0] === '/' ? (
-          <Link
+          <NavLink
             className="nav-link ml-3 mr-3 text-center"
             key={`nav-top-item-${i}`}
             to={link.url}
             onClick={collapse}
           >
             {link.displayName}
-          </Link>
+          </NavLink>
         ) : (
           <a
             className="nav-link ml-3 mr-3 text-center"
@@ -151,14 +151,14 @@ function Header(props) {
   for (let i = 0; i < profileLinks.length; i++) {
     const link = profileLinks[i];
     profileDropdown.push(
-      <Link
+      <NavLink
         className="nav-link ml-3 mr-3"
         key={`nav-profile-dropdown-${i}`}
         to={link.url}
         onClick={collapse}
       >
         {link.displayName}
-      </Link>
+      </NavLink>
     );
   }
 
@@ -166,8 +166,7 @@ function Header(props) {
     <NavDropdown.Divider key={`nav-profile-dropdown-${profileLinks.length}`} />
   );
   profileDropdown.push(
-    <Link
-      to="/"
+    <Nav.Link
       className="nav-link ml-3 mr-3"
       key={`nav-profile-dropdown-${profileLinks.length + 1}`}
       onClick={() => {
@@ -176,7 +175,7 @@ function Header(props) {
       }}
     >
       Log Out
-    </Link>
+    </Nav.Link>
   );
   return (
     <>
@@ -187,9 +186,9 @@ function Header(props) {
         expand="xl"
         expanded={expanded}
       >
-        <Link className="nav-link" key="home-key" to="/" onClick={collapse}>
+        <NavLink className="nav-link" key="home-key" to="/" onClick={collapse}>
           <img src={HFLogo} alt="HF Logo" id="hf-logo" />
-        </Link>
+        </NavLink>
         <Navbar.Toggle
           aria-controls="main-nav"
           onClick={() => setExpanded(!expanded)}

@@ -12,6 +12,9 @@ const userSlice = createSlice({
     completeLogin: (state, action) => {
       const { payload } = action;
       payload.username = payload.username || 'andyfromtheblock'; // using this as placeholder for now
+      payload.name = payload.name || 'Andie Yang'; // placeholder
+      payload.city = payload.city || 'New York City'; // placeholder
+      payload.state = payload.state || 'NY'; // placeholder
       state.user = payload;
       console.log('Here is the user on login:', state.user);
     },

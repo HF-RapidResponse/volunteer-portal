@@ -51,11 +51,11 @@ function AccountIndex(props) {
             <h2>{user.username} / Account</h2>
           </Col>
         </Row>
-        <Row className="mt-lg-5 mb-lg-5">
-          <Col xs={12} lg={4} className="mt-5">
+        <Row className="mt-2 mb-2 mt-lg-5 mb-lg-5">
+          <Col xs={12} lg={4}>
             <AccountNav />
           </Col>
-          <Col xs={12} lg={6}>
+          <Col xs={12} lg={6} className="ml-lg-5">
             {mainContent}
           </Col>
         </Row>

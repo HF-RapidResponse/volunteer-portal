@@ -5,22 +5,63 @@ import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
 
 function Profile(props) {
   const { user } = props;
+  console.log('What is user here?', user);
   return user ? (
     <>
       <Form className="p-4" style={{ background: 'white' }}>
-        <h4>Account Info</h4>
-        <Form.Group controlId="formName" className="mt-4 mb-4">
-          <Form.Label>Name</Form.Label>
-          <Form.Control type="name" />
-        </Form.Group>
-        <Form.Group controlId="formUsername" className="mt-4 mb-4">
-          <Form.Label>Username</Form.Label>
-          <Form.Control type="username" />
-        </Form.Group>
-        <Form.Group controlId="formEmail" className="mt-4 mb-4">
-          <Form.Label>Email</Form.Label>
-          <Form.Control type="email" />
-        </Form.Group>
+        <h4>My Info</h4>
+        <Row className="mt-4 mb-4">
+          <Col xs={12} md={8}>
+            <Form.Group controlId="formName">
+              <Form.Label>Name</Form.Label>
+              <Form.Control defaultValue={user.name} />
+            </Form.Group>
+          </Col>
+          <Col xs={12} md={4} className="align-self-center">
+            <label class="text-muted">Show on Profile</label>
+            <Form.Switch id="show-on-profile-name-switch" defaultChecked />
+          </Col>
+        </Row>
+        <Row className="mt-4 mb-4">
+          <Col xs={12} md={8}>
+            <Form.Group controlId="formUsername">
+              <Form.Label>Username (always shown on Profile)</Form.Label>
+              <Form.Control type="username" defaultValue={user.username} />
+            </Form.Group>
+          </Col>
+        </Row>
+        <Row className="mt-4 mb-4">
+          <Col xs={12} md={8}>
+            <Form.Group controlId="formEmail">
+              <Form.Label>Email</Form.Label>
+              <Form.Control type="email" defaultValue={user.email} />
+            </Form.Group>
+          </Col>
+          <Col xs={12} md={4} className="align-self-center">
+            <Form.Switch id="show-on-profile-email-switch" defaultChecked />
+          </Col>
+        </Row>
+        <Row className="mt-4 mb-4">
+          <Col xs={12} md={4}>
+            <Form.Group controlId="formCity">
+              <Form.Label>City</Form.Label>
+              <Form.Control type="email" defaultValue={user.email} />
+            </Form.Group>
+          </Col>
+          <Col xs={12} md={4}>
+            <Form.Group controlId="formState">
+              <Form.Label>State</Form.Label>
+              <Form.Control type="state" defaultValue={user.state} />
+            </Form.Group>
+          </Col>
+          <Col xs={12} md={4} className="align-self-center">
+            <Form.Switch
+              id="show-on-profile-location-switch"
+              defaultChecked
+              size="lg"
+            />
+          </Col>
+        </Row>
       </Form>
     </>
   ) : (
