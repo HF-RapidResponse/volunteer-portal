@@ -45,7 +45,7 @@ function Profile(props) {
           <Col xs={12} md={4}>
             <Form.Group controlId="formCity">
               <Form.Label>City</Form.Label>
-              <Form.Control type="email" defaultValue={user.email} />
+              <Form.Control type="city" defaultValue={user.city} />
             </Form.Group>
           </Col>
           <Col xs={12} md={4}>

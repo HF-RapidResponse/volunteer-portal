@@ -15,7 +15,7 @@ import '../../styles/account.scss';
 function AccountIndex(props) {
   const { user } = props;
   let mainContent;
-
+  console.log('What is pathname?', window.location.pathname);
   /* eslint-disable indent */
   switch (window.location.pathname) {
     case '/account/profile':
