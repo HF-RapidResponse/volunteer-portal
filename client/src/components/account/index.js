@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
+import { withCookies } from 'react-cookie';
 
 import AccountNav from './AccountNav';
 import placeholderImg from '../../assets/andy-placeholder.jpg';
@@ -9,15 +10,21 @@ import Profile from './Profile';
 import Involvement from './Involvement';
 import Settings from './Settings';
 import Data from './Data';
-
+import {
+  attemptLogin,
+  startLogout,
+  loadLoggedInUser,
+} from '../../store/user-slice.js';
 import '../../styles/account.scss';
 
 function AccountIndex(props) {
-  const { user } = props;
+  const { user, cookies } = props;
+  const path = window.location.pathname;
+
   let mainContent;
-  console.log('What is pathname?', window.location.pathname);
+  console.log('What is pathname?', path, user, cookies);
   /* eslint-disable indent */
-  switch (window.location.pathname) {
+  switch (path) {
     case '/account/profile':
       mainContent = <Profile />;
       break;
@@ -68,10 +75,14 @@ function AccountIndex(props) {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
     user: state.userStore.user,
+    cookies: ownProps.cookies,
   };
 };
+const mapDispatchToProps = { attemptLogin, startLogout, loadLoggedInUser };
 
-export default connect(mapStateToProps)(AccountIndex);
+export default withCookies(
+  connect(mapStateToProps, mapDispatchToProps)(AccountIndex)
+);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
 import { Link, NavLink } from 'react-router-dom';
+import { withCookies } from 'react-cookie';
 
 import '../styles/header.scss';
 import HFLogo from '../assets/HF-RR-long-logo.png';
@@ -21,8 +22,8 @@ import {
 function Header(props) {
   const [expanded, setExpanded] = useState(false);
   const [initiatives, setInitiatives] = useState([]);
-  const [fetched, setFetched] = useState(false);
-  const { attemptLogin, startLogout, user, cookies, loadLoggedInUser } = props;
+  const { startLogout, user, cookies, loadLoggedInUser } = props;
+  const path = window.location.pathname;
 
   useEffect(() => {
     if (!user) {
@@ -40,11 +41,9 @@ function Header(props) {
         } else {
           console.error(response);
         }
-        setFetched(true);
       })
       .catch((err) => {
         console.error(err);
-        setFetched(true);
       });
   }, []);
 
@@ -170,8 +169,8 @@ function Header(props) {
       className="nav-link ml-3 mr-3"
       key={`nav-profile-dropdown-${profileLinks.length + 1}`}
       onClick={() => {
+        cookies.remove('user', { path: '/' });
         startLogout();
-        cookies.remove('user');
       }}
     >
       Log Out
@@ -238,12 +237,16 @@ function Header(props) {
   );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
     user: state.userStore.user,
+    cookies: ownProps.cookies,
   };
 };
 
 const mapDispatchToProps = { attemptLogin, startLogout, loadLoggedInUser };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withCookies(Header));

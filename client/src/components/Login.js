@@ -11,6 +11,7 @@ function Login(props) {
   const [validated, setValidated] = useState(false);
   const { attemptLogin, user } = props;
   const { handleSubmit, handleChange } = useForm(attemptLogin);
+  const path = window.location.pathname;
   /**
    * simple helper function that handles form submission by calling several other functions
    * @param {*} e - event object

@@ -21,7 +21,7 @@ function App(props) {
     <Provider store={store}>
       <BrowserRouter>
         <Header cookies={cookies} />
-        <PageViewSwitch />
+        <PageViewSwitch cookies={cookies} />
         <Footer />
       </BrowserRouter>
     </Provider>

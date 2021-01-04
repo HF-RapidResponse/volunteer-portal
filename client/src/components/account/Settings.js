@@ -5,6 +5,7 @@ import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
 
 function Settings(props) {
   const { user } = props;
+  console.log('user in settings?', user);
   return user ? (
     <Form className="p-4" style={{ background: 'white' }}>
       <h4 className="mb-5">Change Account</h4>
@@ -41,9 +42,18 @@ function Settings(props) {
           <Form.Control type="password" />
         </div>
       </Form.Group>
-      <Button variant="danger" className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4">
-        Delete my account
-      </Button>
+      <Row>
+        <Col xs={12} xl={6} className="text-center">
+          <Button variant="info" className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4">
+            Update Password
+          </Button>
+        </Col>
+        <Col xs={12} xl={6} className="text-center">
+          <Button variant="danger" className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4">
+            Delete my Account
+          </Button>
+        </Col>
+      </Row>
     </Form>
   ) : (
     <Redirect push to="/login" />

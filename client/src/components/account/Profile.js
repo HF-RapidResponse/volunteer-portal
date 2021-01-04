@@ -5,7 +5,6 @@ import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
 
 function Profile(props) {
   const { user } = props;
-  console.log('What is user here?', user);
   return user ? (
     <>
       <Form className="p-4" style={{ background: 'white' }}>
@@ -18,7 +17,7 @@ function Profile(props) {
             </Form.Group>
           </Col>
           <Col xs={12} md={4} className="align-self-center">
-            <label class="text-muted">Show on Profile</label>
+            <label className="text-muted">Show on Profile</label>
             <Form.Switch id="show-on-profile-name-switch" defaultChecked />
           </Col>
         </Row>
