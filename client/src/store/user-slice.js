@@ -15,6 +15,10 @@ const userSlice = createSlice({
       payload.name = payload.name || 'Andie Yang'; // placeholder
       payload.city = payload.city || 'New York City'; // placeholder
       payload.state = payload.state || 'NY'; // placeholder
+      payload.roles = payload.roles || [
+        'President of Andy Club and the Superintendent',
+        'Mr. Grinch',
+      ]; // placeholder
       state.user = payload;
       console.log('Here is the user on login:', state.user);
     },

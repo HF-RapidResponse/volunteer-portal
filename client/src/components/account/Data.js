@@ -6,7 +6,7 @@ function Data(props) {
   const { user } = props;
   return user ? (
     <>
-      <h2>This is the settings page!</h2>
+      <h2>This is the data page!</h2>
     </>
   ) : (
     <Redirect push to="/login" />
