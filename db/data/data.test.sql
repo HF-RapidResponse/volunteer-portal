@@ -71,6 +71,19 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: donation_emails; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.donation_emails (
+    donation_uuid uuid NOT NULL,
+    email text,
+    request_sent_date timestamp without time zone
+);
+
+
+ALTER TABLE public.donation_emails OWNER TO admin;
+
+--
 -- Name: events; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -133,6 +146,14 @@ CREATE TABLE public.volunteer_openings (
 
 
 ALTER TABLE public.volunteer_openings OWNER TO admin;
+
+--
+-- Name: donation_emails donation_emails_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.donation_emails
+    ADD CONSTRAINT donation_emails_pkey PRIMARY KEY (donation_uuid);
+
 
 --
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: admin

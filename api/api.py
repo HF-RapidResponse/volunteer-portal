@@ -1,8 +1,8 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
-from models import Initiative, VolunteerEvent, VolunteerRole
-from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema
+from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail
+from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, DonationEmailSchema
 from sqlalchemy.orm import lazyload
 from settings import Session
 
@@ -55,6 +55,6 @@ def get_all_initiatives(db: Session = Depends(get_db)) -> List[NestedInitiativeS
 def get_initiative_by_external_id(initiative_external_id, db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
     return db.query(Initiative).filter_by(initiative_external_id=initiative_external_id).first()
 
-# @app.post("/api/donation_link_requests/")
-# def request_personal_donation_link(link_request: PersonalDonationLinkRequest) -> PersonalDonationLinkRequest:
-#     return {}
+@app.post("/api/donation_link_requests/", response_model=DonationEmailSchema)
+def create_donation_link_request(donationEmail: DonationEmail, db: Session = Depends(get_db)) -> donationEmail:
+    return PersonalDonationLinkRequest.insert(db, donationEmail)
