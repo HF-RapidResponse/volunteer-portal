@@ -28,33 +28,28 @@ Once that's downloaded, open up a terminal to the root `volunteer-portal` direct
 
 That command will take a while to run the first time you run it. It'll download a few OS images, set them up with the code in this repository and start the needed servers.
 
-If that command works, you'll see the following message:
-
-```
-```
-
-This will create
+Once that's done, open up [http://localhost:8000](http://localhost:8000) and you should see the application!
 
 ## Testing
 
-_Todo_
+You can enter the api docker container to run tests in there, or use the handy make tasks. For these to work you'll need to have `docker-compse up` running.
 
-`mypy .`
+`make test`
 
 Runs linting which validates Python static type hints/annotations
 
-`python -m pytest tests/`
+`make validate`
 
 Runs tests. Some data source tests currently (lazily) use real HF databases and require [authentication through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account).
 
 
 ## Using the Application
 
-Once the docker has started the application, a few endpoints will start up:
+The ***client*** application (React) runs at [http://localhost:8080](http://localhost:8080).
 
-[http://localhost:8000/redoc](http://localhost:8000/redoc) - The API runs on port 8000.
+The ***api*** (Python) runs at [http://localhost:8081](http://localhost:8081). You can view the API documentation at [http://localhost:8081/redoc](http://localhost:8081/redoc).
 
-
+The ***database*** (Postgres) runs on port 8082 with username "admin" and password "password". You can connect to it locally for debugging purposes.
 
 ## Architecture
 
