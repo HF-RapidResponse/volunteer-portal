@@ -56,5 +56,7 @@ def get_initiative_by_external_id(initiative_external_id, db: Session = Depends(
     return db.query(Initiative).filter_by(initiative_external_id=initiative_external_id).first()
 
 @app.post("/api/donation_link_requests/", response_model=DonationEmailSchema)
-def create_donation_link_request(donationEmail: DonationEmail, db: Session = Depends(get_db)) -> DonationEmail:
-    return PersonalDonationLinkRequest.insert(db, donationEmail)
+def create_donation_link_request(email: str, db: Session = Depends(get_db)) -> Optional[DonationEmailSchema]:
+    donationEmail = DonationEmail(email=email)
+    DonationEmail.insert(donationEmail)
+    return donationEmail
