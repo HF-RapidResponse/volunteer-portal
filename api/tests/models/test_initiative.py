@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from models import Initiative, VolunteerRole
+from models import Initiative, VolunteerRole, VolunteerEvent
 from settings import Session
 from sqlalchemy.orm import lazyload
 from tests.fake_data_utils import generate_fake_initiative
@@ -19,7 +19,7 @@ def setup(db):
     db.rollback()
 
 def test_initiative_create_types(db):
-    initiative = generate_fake_initiative(db, 2, 1)
+    initiative = generate_fake_initiative(db, 2, 3)
     db.add(initiative)
     new_initiative = db.query(Initiative).filter_by(initiative_external_id=initiative.initiative_external_id).scalar()
 
@@ -33,27 +33,35 @@ def test_initiative_create_types(db):
     assert new_initiative.name == new_initiative.title
     assert type(new_initiative.hero_image_url) is str
     assert type(new_initiative.content) is str
+
+    # Validate Role
     assert type(new_initiative.role_ids) is list
     assert len(new_initiative.role_ids) == 2
     assert len(new_initiative.roles) == 2
+    assert type(new_initiative.roles[0]) is VolunteerRole
+
+    # Validate Event
+    assert type(new_initiative.event_ids) is list
+    assert len(new_initiative.event_ids) == 3
+    assert len(new_initiative.events) == 3
+    assert type(new_initiative.events[0]) is VolunteerEvent
 
     # Validate equality
     assert initiative.name == new_initiative.name
     assert new_initiative.role_ids == initiative.role_ids
-    assert type(new_initiative.roles[0]) is VolunteerRole
+    assert new_initiative.event_ids == initiative.event_ids
 
 
+def test_initiatives_relationships_scoped(db):
+    initiative = generate_fake_initiative(db, 5, 5)
+    db.add(initiative)
 
-# def test_volunteer_role_attributes():
+    initiative = generate_fake_initiative(db, 2, 3)
+    db.add(initiative)
+    new_initiative = db.query(Initiative).filter_by(initiative_external_id=initiative.initiative_external_id).scalar()
 
+    assert len(new_initiative.role_ids) == 2
+    assert len(new_initiative.roles) == 2
 
-
-# def test_volunteer_role_list_result():
-#
-#     query_results = db.query(VolunteerRole).all()
-#     assert type(query_results) is ResultProxy
-#
-#     row = query_results.fetchone()
-#     assert row
-#     assert type(row['AirtableData.events_event_id']) is str
-#     assert type(row['AirtableData.events_start']) is datetime
+    assert len(new_initiative.event_ids) == 3
+    assert len(new_initiative.events) == 3

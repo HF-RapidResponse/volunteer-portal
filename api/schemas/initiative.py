@@ -17,6 +17,7 @@ class InitiativeSchema(BaseModel):
     hero_image_url: Optional[Url]
     content: MarkdownText
     role_ids: List
+    event_ids: List
 
     class Config:
         orm_mode = True
@@ -26,7 +27,6 @@ class InitiativeSchema(BaseModel):
 class NestedInitiativeSchema(InitiativeSchema):
     roles: Optional[List[VolunteerRoleSchema]] = []
     events: Optional[List[VolunteerEventSchema]] = []
-    highlightedItems: List[Union[VolunteerRoleSchema,VolunteerEventSchema]] = []
 
     class Config:
         orm_mode = True

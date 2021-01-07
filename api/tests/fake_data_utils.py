@@ -81,9 +81,8 @@ def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 
         title = fake.sentence(),
         hero_image_urls = ([ { 'url': fake.image_url() }] if choice([True, False]) else []),
         content = fake.paragraph(nb_sentences=4),
-        role_ids = role_ids
-        # events = events,
-        # highlightedItems = items
+        role_ids = role_ids,
+        event_ids = event_ids
     )
 
 def generate_fake_initiatives_list(session, count: int = 1, roles_count: int = 2, events_count: int = 2) -> List[Initiative]:
