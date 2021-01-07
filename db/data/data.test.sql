@@ -75,7 +75,8 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.events (
-    id character varying(255) NOT NULL,
+    event_uuid uuid NOT NULL,
+    id character varying(255),
     event_id character varying(255),
     event_graphics json[],
     signup_link text,
@@ -94,7 +95,8 @@ ALTER TABLE public.events OWNER TO admin;
 --
 
 CREATE TABLE public.initiatives (
-    id character varying(255) NOT NULL,
+    initiative_uuid uuid NOT NULL,
+    id character varying(255),
     initiative_name character varying(255),
     details_link character varying(255),
     hero_image_urls json[],
@@ -111,7 +113,8 @@ ALTER TABLE public.initiatives OWNER TO admin;
 --
 
 CREATE TABLE public.volunteer_openings (
-    id character varying(255) NOT NULL,
+    role_uuid uuid NOT NULL,
+    id character varying(255),
     position_id character varying(255),
     more_info_link text,
     team_photo json[],
@@ -136,7 +139,7 @@ ALTER TABLE public.volunteer_openings OWNER TO admin;
 --
 
 ALTER TABLE ONLY public.events
-    ADD CONSTRAINT events_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT events_pkey PRIMARY KEY (event_uuid);
 
 
 --
@@ -144,7 +147,7 @@ ALTER TABLE ONLY public.events
 --
 
 ALTER TABLE ONLY public.initiatives
-    ADD CONSTRAINT initiatives_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT initiatives_pkey PRIMARY KEY (initiative_uuid);
 
 
 --
@@ -152,7 +155,7 @@ ALTER TABLE ONLY public.initiatives
 --
 
 ALTER TABLE ONLY public.volunteer_openings
-    ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (role_uuid);
 
 
 --

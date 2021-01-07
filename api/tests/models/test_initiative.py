@@ -4,8 +4,7 @@ from models import Initiative, VolunteerRole
 from settings import Session
 from sqlalchemy.orm import lazyload
 from tests.fake_data_utils import generate_fake_initiative
-# TODO: Add back when we migrate to Postgresql
-# from uuid import UUID
+from uuid import UUID
 
 @pytest.fixture
 def db():
@@ -27,8 +26,7 @@ def test_initiative_create_types(db):
     assert new_initiative
 
     # Validate types
-    # TODO: Add back when we migrate to Postgresql
-    # assert type(new_initiative.initiative_uuid) is UUID # todo
+    assert type(new_initiative.initiative_uuid) is UUID
     assert type(new_initiative.initiative_external_id) is str
     assert type(new_initiative.name) is str
     assert type(new_initiative.title) is str
@@ -42,7 +40,7 @@ def test_initiative_create_types(db):
     # Validate equality
     assert initiative.name == new_initiative.name
     assert new_initiative.role_ids == initiative.role_ids
-    assert type(new_initiative.roles.first()) is VolunteerRole
+    assert type(new_initiative.roles[0]) is VolunteerRole
 
 
 

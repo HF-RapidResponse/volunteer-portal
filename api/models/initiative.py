@@ -2,8 +2,7 @@ from constants import placeholder_image
 from models.base import Base
 from models.volunteer_role import VolunteerRole
 from sqlalchemy import func, select, Column, String, Integer
-# from sqlalchemy.dialects.postgresql import UUID # TODO: Add back when we migrate to Postgresql
-from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON
+from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
 from sqlalchemy.orm import backref, column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
 from pydantic import validator
@@ -12,10 +11,8 @@ from uuid import uuid4
 class Initiative(Base):
     __tablename__ = 'initiatives'
 
-    # TODO: Add back when we migrate to Postgresql
-    # initiative_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    # TODO: Remove `primary_key=True` when we migrate to Postgresql and use the uuid as the primary key
-    initiative_external_id = Column('id', String(255), primary_key=True)
+    initiative_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
+    initiative_external_id = Column('id', String(255))
     name = Column('initiative_name', String(255))
     title = synonym('name')
     details_url = Column('details_link', String(255), nullable=True)
@@ -34,27 +31,21 @@ class Initiative(Base):
         return "<Initiative(initiative_uuid='%s', initiative_external_id='%s', name='%s')>" % (
                                 self.initiative_uuid, self.initiative_external_id, self.name)
 
-    # TODO: Remove when we migrate to Postgresql
-    @hybrid_property
-    def initiative_uuid(self):
-        return uuid4()
-
     @hybrid_property
     def hero_image_url(self):
         return self.hero_image_urls[0]['url'] if self.hero_image_urls else placeholder_image()
 
     @hybrid_property
     def roles(self):
-        return [] # todo: fix
-        found_roles = self.roles_rel.filter_by(VolunteerRole.role_external_id.in_(self.role_ids)).all()
-        print(f'IDS LENGTH: {len(self.role_ids)} / ROLES LENGTH: {len(found_roles)}')
+        # print(f'IDS LENGTH: {len(self.role_ids)}')
+        found_roles = self.roles_rel.filter(VolunteerRole.role_external_id.in_(self.role_ids)).all()
+        # print(f'ROLES LENGTH: {len(found_roles)}')
         return found_roles
 
     @hybrid_property
     def events(self):
-        return [] # todo: fix
-        found_roles = self.roles_rel.filter_by(VolunteerRole.role_external_id.in_(self.role_ids)).all()
-        print(f'IDS LENGTH: {len(self.role_ids)} / ROLES LENGTH: {len(found_roles)}')
+        found_roles = self.roles_rel.filter(VolunteerRole.role_external_id.in_(self.role_ids)).all()
+        # print(f'IDS LENGTH: {len(self.role_ids)} / ROLES LENGTH: {len(found_roles)}')
         return found_roles
 
     @hybrid_property

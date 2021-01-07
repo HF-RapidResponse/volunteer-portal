@@ -3,13 +3,13 @@ from pydantic import BaseModel
 from typing import List, Optional, Union
 from schemas.volunteer_event import VolunteerEventSchema
 from schemas.volunteer_role import VolunteerRoleSchema
-import uuid
+from uuid import UUID
 
 Url = str
 MarkdownText = str
 
 class InitiativeSchema(BaseModel):
-    initiative_uuid: uuid.UUID
+    initiative_uuid: UUID
     initiative_external_id: str
     name: str
     details_url: Optional[Url]
