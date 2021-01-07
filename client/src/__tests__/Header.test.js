@@ -15,7 +15,7 @@ describe('header component', () => {
 
     const aTags = component.find('a');
     expect(aTags).toBeDefined();
-    expect(aTags).toHaveLength(5);
+    expect(aTags).toHaveLength(6);
 
     // inspect the first anchor tag
     const firstATag = aTags.at(0);
@@ -26,25 +26,31 @@ describe('header component', () => {
     // inspect the second anchor tag
     const secondATag = aTags.at(1);
     expect(secondATag.html()).toBe(
-      '<a class="nav-link ml-3 mr-3" href="/initiatives">Our Initiatives</a>'
+      '<a class="nav-link ml-3 mr-3 text-center" href="/initiatives">Our Initiatives</a>'
     );
 
     // inspect the third anchor tag
     const thirdATag = aTags.at(2);
     expect(thirdATag.html()).toBe(
-      '<a class="nav-link ml-3 mr-3" href="/calendar">Event Calendar</a>'
+      '<a class="nav-link ml-3 mr-3 text-center" href="/calendar">Event Calendar</a>'
     );
 
     // inspect the fourth anchor tag
     const fourthATag = aTags.at(3);
     expect(fourthATag.html()).toBe(
-      '<a class="nav-link ml-3 mr-3" href="/roles">Volunteer Roles</a>'
+      '<a class="nav-link ml-3 mr-3 text-center" href="/roles">Volunteer Roles</a>'
     );
 
     // inspect the fifth anchor tag
     const fifthATag = aTags.at(4);
     expect(fifthATag.html()).toBe(
-      '<a href="/register"><button style="padding: .4rem 2.25rem;" type="button" class="wide-btn btn btn-info">Register to Volunteer</button></a>'
+      '<a class="nav-link ml-3 mr-3 text-center" href="https://movehumanityforward.com/">Return to Parent Site</a>'
     );
+
+    // inspect the sixth anchor tag
+    const sixthATag = aTags.at(5);
+    expect(sixthATag.html()).toBe(
+      '<a href="/register"><button style="padding: .4rem 2.25rem;" type="button" class="wide-btn btn btn-info">Register to Volunteer</button></a>'
+    );      
   });
 });
