@@ -18,6 +18,7 @@ function useForm(callback, initObj) {
   function handleChange(key, val) {
     const newData = { ...data };
     newData[key] = val;
+    console.log('What is newData now?', newData);
     setData(newData);
   }
 
@@ -31,13 +32,18 @@ function useForm(callback, initObj) {
     e.preventDefault();
     e.stopPropagation();
     if (form.checkValidity() === false) {
-      return false;
+      console.log('in the if');
+      return null;
     } else {
       // callback();
-      callback(data).then((response) => {
-        console.log('any response here?', response);
-        return response;
-      });
+      console.log('in the else');
+      // callback(data).then((response) => {
+      //   console.log('any response here?', response);
+      //   return response;
+      // });
+      const callbackRes = callback(data);
+      console.log('what is callbackRes?', callbackRes);
+      return callbackRes;
     }
   }
 

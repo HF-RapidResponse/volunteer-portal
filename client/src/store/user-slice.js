@@ -6,6 +6,7 @@ const userSlice = createSlice({
 
   initialState: {
     user: null,
+    shownSettings: {},
   },
 
   reducers: {
@@ -49,7 +50,28 @@ export const startLogout = (payload) => async (dispatch) => {
 };
 
 export const loadLoggedInUser = (payload) => (dispatch) => {
+  // const response = await axios.post('/api/login', payload);
   dispatch(completeLogin(payload));
+};
+
+// export const verifyPassword = (payload) => async (dispatch) => {
+//   //const response = await axios.get(`/users/${userSlice.user.ID}`);
+//   //return response.password === (base64blah blah blah) && payload.oldPass === payload.newPass;
+//   console.log('Do we ever hit verifyPassword?', payload);
+//   return dispatch(
+//     completeVerifyPassword(payload.newPass === payload.retypePass)
+//   );
+// };
+
+export const verifyPassword = (payload) => {
+  //const response = await axios.get(`/users/${userSlice.user.ID}`);
+  //return response.password === (base64blah blah blah) && payload.oldPass === payload.newPass;
+  console.log('Do we ever hit verifyPassword?', payload);
+  const responsePayload = {
+    currPassValid: true,
+    newAndRetypeMatch: payload.newPass === payload.retypePass,
+  };
+  return responsePayload;
 };
 
 export default userSlice.reducer;
