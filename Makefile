@@ -10,6 +10,8 @@ shell-api:
 	docker-compose run --rm api bash
 test:
 	docker-compose run --rm api python -m pytest tests/
+test-debug:
+	docker-compose run --rm api python -m pytest tests/ -s --capture=no -vv
 validate:
 	docker-compose run --rm api mypy /api
 db-reload-dev:
