@@ -14,7 +14,7 @@ client = TestClient(app)
 def test_create_model():
     good_event_kwargs = {
         "event_uuid": "3457f844-5a3a-4efe-b16d-443c24961c68",
-        "event_external_id": "Medical too same money gas director rule.",
+        "external_id": "Medical too same money gas director rule.",
         "name": "Medical too same money gas director rule.",
         "details_url": "https://time.ca/interest/people.html",
         "hero_image_url": "https://hill.com/category/about.html",
@@ -36,7 +36,7 @@ def test_create_model_error():
     with pytest.raises(error_wrappers.ValidationError):
         bad_event_kwargs = {
             "event_uuid": 1234,
-            "event_external_id": "Medical too same money gas director rule.",
+            "external_id": "Medical too same money gas director rule.",
             "hero_image_url": "https://hill.com/category/about.html",
             "start_datetime": "2020-10-25T15:19:51.824283",
             "description": "Early sign page pretty heart bring share. Television research agency minute fine Mr together. Each treat strategy director. Detail million guess someone base for upon.",

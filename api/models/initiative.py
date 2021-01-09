@@ -36,7 +36,7 @@ class Initiative(Base):
 
     @hybrid_property
     def events(self):
-        return self.events_rel.filter(VolunteerEvent.event_external_id.in_(self.event_ids)).all()
+        return self.events_rel.filter(VolunteerEvent.external_id.in_(self.event_ids)).all()
 
 # Initiative & Roles
 initiaitves_roles_selection = select([func.unnest(Initiative.role_ids).label("role_external_id"), Initiative.initiative_external_id.label("initiative_external_id")]).alias()
@@ -57,13 +57,13 @@ VolunteerRole.initiatives_rel = relationship(Initiative, secondary=initiaitves_r
 initiaitves_events_selection = select([func.unnest(Initiative.event_ids).label("event_external_id"), Initiative.initiative_external_id.label("initiative_external_id")]).alias()
 # Todo: Figure out how to set events on an initiative and have them save in the same transaction
 Initiative.events_rel = relationship(VolunteerEvent, secondary=initiaitves_events_selection,
-                          primaryjoin=VolunteerEvent.event_external_id == initiaitves_events_selection.c.event_external_id,
+                          primaryjoin=VolunteerEvent.external_id == initiaitves_events_selection.c.event_external_id,
                           secondaryjoin=initiaitves_events_selection.c.initiative_external_id == Initiative.initiative_external_id,
                           lazy='dynamic',
                           viewonly=True)
 
 VolunteerEvent.initiatives_rel = relationship(Initiative, secondary=initiaitves_events_selection,
-                          primaryjoin=VolunteerEvent.event_external_id == initiaitves_events_selection.c.event_external_id,
+                          primaryjoin=VolunteerEvent.external_id == initiaitves_events_selection.c.event_external_id,
                           secondaryjoin=initiaitves_events_selection.c.initiative_external_id == Initiative.initiative_external_id,
                           # lazy='dynamic',
                           viewonly=True)

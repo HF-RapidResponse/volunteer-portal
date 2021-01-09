@@ -41,15 +41,15 @@ def generate_fake_volunteer_event() -> VolunteerEvent:
     start_datetime = datetime.today() + timedelta(days=randint(-10,10))
 
     return VolunteerEvent(
-        event_external_id = fake.name(),
-        name = fake.sentence(),
+        external_id = fake.name(),
+        event_name = fake.sentence(),
         signup_url = fake.uri(),
-        details_url = fake.uri(),
         hero_image_urls = ([ { 'url': fake.image_url() }] if choice([True, False]) else []),
         start_datetime = start_datetime,
         end_datetime = start_datetime + timedelta(days=randint(1,10)),
         description = fake.paragraph(nb_sentences=4),
-        point_of_contact_name = fake.name() if choice([True, False]) else None
+        airtable_last_modified = start_datetime - timedelta(days=randint(10,12)),
+        db_last_modified = start_datetime - timedelta(days=randint(6,8))
     )
 
 def generate_fake_volunteer_events_list(session, count: int = 1) -> List[VolunteerEvent]:
@@ -69,7 +69,7 @@ def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 
     events = generate_fake_volunteer_events_list(session, events_count)
     event_ids = []
     for event in events:
-        event_ids.append(event.event_external_id)
+        event_ids.append(event.external_id)
 
     items = [*role_ids, *event_ids]
     shuffle(items)

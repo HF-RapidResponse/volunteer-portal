@@ -8,8 +8,8 @@ Url = str
 MarkdownText = str
 
 class VolunteerEventSchema(BaseModel):
-    event_uuid: UUID
-    event_external_id: str
+    uuid: UUID
+    external_id: str
     name: str
     signup_url: str
     hero_image_url: Url

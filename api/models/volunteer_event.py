@@ -1,7 +1,6 @@
 from constants import placeholder_image
-from models.base import Base
-from models.person import Person
-from sqlalchemy import Column, String, Integer, Text, DateTime
+from models import Base
+from sqlalchemy import Column, String, Integer, Text, DateTime, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 from uuid import uuid4
@@ -9,25 +8,22 @@ from uuid import uuid4
 class VolunteerEvent(Base):
     __tablename__ = 'events'
 
-    event_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
-    event_external_id = Column('id', String(255))
-    name = Column('event_id', String(255))
+    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
+    external_id = Column('id', String(255))
+    event_name = Column('event_name', String(255))
     hero_image_urls = Column('event_graphics', ARRAY(JSON))
     signup_url = Column('signup_link', Text)
-    details_url = Column('details_url', Text)
     start_datetime = Column('start', DateTime)
     end_datetime = Column('end', DateTime)
     description = Column('description', Text)
-    point_of_contact_name = Column('point_of_contact_name', Text)
-
+    airtable_last_modified = Column('airtable_last_modified', DateTime, nullable=False)
+    db_last_modified = Column('db_last_modified', DateTime, nullable=False)
+    is_deleted = Column('is_deleted', Boolean, nullable=False, default=False)
+    
     @hybrid_property
     def hero_image_url(self):
         return self.hero_image_urls[0]['url'] if self.hero_image_urls else placeholder_image()
 
-    @hybrid_property
-    def point_of_contact(self):
-        return Person(name=self.name)
-
     def __repr__(self):
-        return "<VolunteerEvent(event_uuid='%s', event_external_id='%s', name='%s')>" % (
-                                self.event_uuid, self.event_external_id, self.name)
+        return "<VolunteerEvent(uuid='%s', external_id='%s', name='%s')>" % (
+                                self.uuid, self.external_id, self.event_name)

@@ -43,9 +43,9 @@ def get_volunteer_role_by_external_id(role_external_id, db: Session = Depends(ge
 def get_all_volunteer_events(db: Session = Depends(get_db)) -> List[VolunteerEventSchema]:
     return db.query(VolunteerEvent).all()
 
-@app.get("/api/volunteer_events/{event_external_id}", response_model=VolunteerEventSchema)
-def get_volunteer_event_by_external_id(event_external_id, db: Session = Depends(get_db)) -> Optional[VolunteerEventSchema]:
-    return db.query(VolunteerEvent).filter_by(event_external_id=event_external_id).first()
+@app.get("/api/volunteer_events/{external_id}", response_model=VolunteerEventSchema)
+def get_volunteer_event_by_external_id(external_id, db: Session = Depends(get_db)) -> Optional[VolunteerEventSchema]:
+    return db.query(VolunteerEvent).filter_by(external_id=external_id).first()
 
 @app.get("/api/initiatives/", response_model=List[NestedInitiativeSchema])
 def get_all_initiatives(db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:

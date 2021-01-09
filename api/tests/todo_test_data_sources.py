@@ -39,7 +39,7 @@ def test_mysql_data_source():
 def test_ensure_model_key_map_contains_all_keys_and_values():
     good_model_key_map = {
         'event_uuid': None,
-        'event_external_id': 'id',
+        'external_id': 'id',
         'name': 'event_id',
         'hero_image_url': 'event_graphics',
         'details_url': None,
@@ -56,7 +56,7 @@ def test_ensure_model_key_map_contains_all_keys_error():
     with pytest.raises(AssertionError):
             bad_model_key_map = {
                 'event_uuid': None,
-                'event_external_id': 'event_id',
+                'external_id': 'event_id',
                 'start_datetime': 'end',
                 'end_datetime': 'start',
                 'description': 'description',

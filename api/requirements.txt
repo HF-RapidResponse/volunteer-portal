@@ -12,3 +12,4 @@ pymysql
 psycopg2-binary
 pyyaml
 google-cloud-secret-manager
+airtable-python-wrapper

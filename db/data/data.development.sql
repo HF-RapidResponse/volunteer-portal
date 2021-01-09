@@ -19,7 +19,7 @@ SET row_security = off;
 --
 -- Name: hf_volunteer_portal_development; Type: DATABASE; Schema: -; Owner: admin
 --
-
+DROP DATABASE hf_volunteer_portal_development;
 CREATE DATABASE hf_volunteer_portal_development WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.utf8';
 
 
@@ -88,16 +88,17 @@ ALTER TABLE public.donation_emails OWNER TO admin;
 --
 
 CREATE TABLE public.events (
-    event_uuid uuid NOT NULL,
+    uuid uuid NOT NULL,
     id character varying(255),
-    event_id character varying(255),
+    event_name character varying(255),
     event_graphics json[],
     signup_link text,
-    details_url text,
     start timestamp without time zone,
     "end" timestamp without time zone,
     description text,
-    point_of_contact_name text
+    airtable_last_modified timestamp without time zone,
+    db_last_modified timestamp without time zone NOT NULL,
+    is_deleted bool NOT NULL
 );
 
 
@@ -155,27 +156,6 @@ COPY public.donation_emails (donation_uuid, email, request_sent_date) FROM stdin
 \.
 
 
---
--- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-COPY public.events (event_uuid, id, event_id, event_graphics, signup_link, details_url, start, "end", description, point_of_contact_name) FROM stdin;
-05bd2f46-2815-4597-8eaf-34e4eca09f4c	Juan Fisher	Reveal value free result owner on that majority.	{"{\\"url\\": \\"https://www.lorempixel.com/621/580\\"}"}	https://lozano.org/search.html	https://richardson-martinez.com/post/	2021-01-05 21:31:14.707652	2021-01-10 21:31:14.707652	Smile grow agreement half simply yard strategy finally. Statement skin real.	Elijah Walker
-c9752fc6-add6-4581-ada6-c48b3fb60e78	Sylvia Young	Thing fire couple property family.	{}	https://fischer.com/category/index.html	https://www.miranda.com/	2020-12-28 21:31:14.709988	2020-12-29 21:31:14.709988	Player think buy do body. Opportunity campaign actually.	\N
-f895c732-5fb6-48ea-8aab-e5addf40fdf0	George Martinez DDS	Opportunity who Mr ahead important.	{"{\\"url\\": \\"https://www.lorempixel.com/164/110\\"}"}	https://cabrera-garcia.com/category/	https://thornton.net/register.php	2021-01-06 21:31:14.711753	2021-01-10 21:31:14.711753	Mission generation itself least. Tonight star along light. Message seek outside character break open. Think action past threat with. Feeling fact wall.	\N
-09a18305-a680-44d6-b8c7-14edf0d8aaf7	Brenda Moore	Month never theory enough.	{}	http://hoffman.com/tag/category/main/about/	http://www.shaffer.info/	2021-01-09 21:31:14.713377	2021-01-13 21:31:14.713377	Television keep who though wife key person. Special west billion bag our everybody phone story. Direction stage everybody especially data. Range conference land past.	Joseph Garcia
-45e4449a-0caf-47e7-95d4-858748f75b5e	Michael Jackson	Machine economy wrong this similar.	{}	http://www.wang.com/homepage/	https://quinn.com/main.htm	2021-01-08 21:31:14.715084	2021-01-10 21:31:14.715084	Meeting life food home project possible. Good of name property once management. Line add fall wall forget risk boy. Trip up whether include democratic type. Plant from structure report.	\N
-7a219a37-9123-4ba8-951f-b5d547f8a651	Adam Strickland	Set whole lose.	{"{\\"url\\": \\"https://placeimg.com/743/874/any\\"}"}	http://www.nelson.com/explore/category/category/register.htm	https://patrick.biz/	2021-01-17 21:31:14.734942	2021-01-21 21:31:14.734942	Practice who day street involve system training. Everything image focus throw mother political. Probably continue whom wish glass quite bed. Population fill board recognize point too.	\N
-e8385954-568a-448f-af0b-9b4680fb7ed6	Christina West	Build case action receive just listen effect.	{}	https://harris.com/privacy.php	https://horton.net/category/categories/login.htm	2020-12-28 21:31:14.737014	2020-12-31 21:31:14.737014	Travel cup out cost community effect. Night model painting heart.	Derek Hill
-7a7a26fb-55c2-4abf-a1aa-d38b554c4774	Vincent Marks	Professional everyone see unit arm himself.	{}	https://www.cooper.com/tag/categories/category/faq.htm	http://flores.com/main/categories/search.asp	2021-01-01 21:31:14.73851	2021-01-07 21:31:14.73851	Her factor month short keep. Enter situation design situation such. Cover ground admit realize every change kitchen knowledge. Common gas produce guy.	\N
-b9fa455a-15be-4944-a856-191022f9f6f7	Gerald Reynolds	Represent agency air stand plan social two.	{}	https://johnson.com/home.htm	https://wilson-smith.org/	2021-01-12 21:31:14.747705	2021-01-22 21:31:14.747705	Country peace nor later visit do. Plant growth represent page.	\N
-600b1824-c005-4ca2-9d11-bd8a606e99bf	Caleb Ayers	Buy across decade usually.	{}	http://cunningham.biz/blog/posts/privacy.jsp	http://king.net/	2021-01-09 21:31:14.749763	2021-01-18 21:31:14.749763	Sister difference sing election trouble care. Experience after wrong strong. Other reveal character center.	Christopher Hood
-aa66aa57-a550-4d08-a0a7-41a1fc45429c	Diane Jimenez	News along oil.	{"{\\"url\\": \\"https://www.lorempixel.com/123/567\\"}"}	http://carpenter-miranda.com/home.html	https://www.martin.com/app/privacy.htm	2021-01-06 21:31:14.751847	2021-01-07 21:31:14.751847	Spring democratic sometimes necessary company west. Environment trip put every much decide. Game always dark arrive list design. Within policy son society focus various. Crime ten like growth.	Sheri Harrell
-b954849b-8faf-4784-8be1-321bc3d6e9fd	Michael Black	Difference where memory break weight ever big.	{"{\\"url\\": \\"https://www.lorempixel.com/966/338\\"}"}	http://jacobs.com/tag/register.jsp	http://torres-hobbs.com/about/	2021-01-08 21:31:14.762848	2021-01-10 21:31:14.762848	Tend best agreement people certainly but. Computer by manager. Site be nor society enjoy.	\N
-ca5794ec-dc2a-469e-bc5a-930320fd2faa	Courtney Clark	Little capital window produce approach nothing.	{"{\\"url\\": \\"https://placekitten.com/851/562\\"}"}	http://www.bradshaw.org/wp-content/login.php	https://www.brown.info/	2021-01-05 21:31:14.76489	2021-01-09 21:31:14.76489	Too go parent. Number century both analysis hundred room.	\N
-438fb025-b92b-4b80-9a2a-bf8e1f34c65e	Joan Thompson	Visit but other leg.	{"{\\"url\\": \\"https://www.lorempixel.com/560/300\\"}"}	http://sweeney-brooks.net/about.php	http://www.guerrero.com/app/main/register/	2021-01-16 21:31:14.766138	2021-01-26 21:31:14.766138	Myself top daughter. Exist agency stop heart. East enjoy factor system exactly specific relationship practice. Tax partner degree reflect oil already child threat. Improve economic rule article certain.	Sara Gonzales
-\.
-
 
 --
 -- Data for Name: initiatives; Type: TABLE DATA; Schema: public; Owner: admin
@@ -220,7 +200,7 @@ ALTER TABLE ONLY public.donation_emails
 --
 
 ALTER TABLE ONLY public.events
-    ADD CONSTRAINT events_pkey PRIMARY KEY (event_uuid);
+    ADD CONSTRAINT events_pkey PRIMARY KEY (uuid);
 
 
 --
