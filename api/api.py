@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail
 from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, DonationEmailSchema
+from db_sync_pipelines.pipelines import RunEventsSync
 from sqlalchemy.orm import lazyload
 from settings import Session
 
@@ -60,3 +61,11 @@ def create_donation_link_request(email: str, db: Session = Depends(get_db)) -> O
     donationEmail = DonationEmail(email=email)
     DonationEmail.insert(donationEmail)
     return donationEmail
+
+@app.get("/api/run_events_sync/")
+def run_events_sync(db: Session = Depends(get_db)) -> str:
+    try:
+        RunEventsSync(db)
+    except Exception:
+        return "Failed to sync"
+    return "Done"
