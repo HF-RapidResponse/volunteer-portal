@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import ReactDOM from 'react-dom';
+import { Button, Container, Row, Col, Form } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import RecruitmentSocialShare from './RecruitmentSocialShare';
 import useForm from './hooks/useForm';
-import { Button, Form } from 'react-bootstrap';
-// import { Form as FormWrapper, Field } from 'react-final-form';
-import { attemptLogin } from '../store/user-slice.js';
-import { Redirect } from 'react-router-dom';
 
-function Login(props) {
+function CreateAccount(props) {
+  document.title = 'HF Volunteer Portal - Create an Account';
   const [submitted, setSubmitted] = useState(false);
   const [validated, setValidated] = useState(false);
-  const { attemptLogin, user, firstAcctPage } = props;
+  const { attemptLogin, user } = props;
   const { handleSubmit, handleChange } = useForm(attemptLogin);
   const path = window.location.pathname;
   /**
@@ -33,9 +33,8 @@ function Login(props) {
     }
   }
 
-  console.log('What is firstAcctPage before return?', firstAcctPage);
   return (validated && submitted) || user ? (
-    <Redirect push to={firstAcctPage || '/account/profile'} />
+    <Redirect push to="/account/profile" />
   ) : (
     <>
       <h2>Welcome to the portal!</h2>
@@ -79,12 +78,4 @@ function Login(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.userStore.user,
-    firstAcctPage: state.userStore.firstAcctPage,
-  };
-};
-
-const mapDispatchToProps = { attemptLogin };
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default CreateAccount;

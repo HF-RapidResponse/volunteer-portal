@@ -7,6 +7,7 @@ const userSlice = createSlice({
   initialState: {
     user: null,
     shownSettings: {},
+    firstAcctPage: null,
   },
 
   reducers: {
@@ -27,10 +28,19 @@ const userSlice = createSlice({
       state.user = null;
     },
     register: (state, action) => {},
+    setFirstAcctPage: (state, action) => {
+      const { payload } = action;
+      state.firstAcctPage = payload;
+      console.log('setting setFirstAcctPage to:', payload);
+    },
   },
 });
 
-export const { completeLogin, completeLogout } = userSlice.actions;
+export const {
+  completeLogin,
+  completeLogout,
+  setFirstAcctPage,
+} = userSlice.actions;
 
 export const attemptLogin = (payload) => async (dispatch) => {
   // const response = await axios.post('/api/login-or-something-like-that/', payload);

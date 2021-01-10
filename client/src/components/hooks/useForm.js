@@ -8,6 +8,8 @@ import { useState } from 'react';
  */
 function useForm(callback, initObj) {
   const [data, setData] = useState(initObj || {});
+  const [submitted, setSubmitted] = useState(false);
+  const [validated, setValidated] = useState(false);
 
   /**
    * event handler function of sorts that handles form change
@@ -52,6 +54,10 @@ function useForm(callback, initObj) {
     handleSubmit,
     data,
     setData,
+    submitted,
+    setSubmitted,
+    validated,
+    setValidated,
   };
 }
 

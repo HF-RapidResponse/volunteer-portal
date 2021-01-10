@@ -11,6 +11,7 @@ import {
   attemptLogin,
   startLogout,
   loadLoggedInUser,
+  setFirstAcctPage,
 } from '../store/user-slice.js';
 
 /**
@@ -22,8 +23,21 @@ import {
 function Header(props) {
   const [expanded, setExpanded] = useState(false);
   const [initiatives, setInitiatives] = useState([]);
-  const { startLogout, user, cookies, loadLoggedInUser } = props;
-  const path = window.location.pathname;
+  // const [currPath, setCurrPath] = useState(window.location.pathname);
+  const {
+    startLogout,
+    user,
+    firstAcctPage,
+    cookies,
+    loadLoggedInUser,
+    setFirstAcctPage,
+  } = props;
+
+  const firstPath = window.location.pathname;
+  // console.log('What is firstPath?', firstPath, firstAcctPage);
+  if (firstPath.includes('/account') && !firstAcctPage) {
+    setFirstAcctPage(firstPath);
+  }
 
   useEffect(() => {
     if (!user) {
@@ -48,6 +62,7 @@ function Header(props) {
   }, []);
 
   useEffect(() => {
+    console.log('inside the user useEffect?', user);
     if (user) {
       cookies.set('user', user, { path: '/' });
     }
@@ -241,10 +256,16 @@ const mapStateToProps = (state, ownProps) => {
   return {
     user: state.userStore.user,
     cookies: ownProps.cookies,
+    firstAcctPage: state.userStore.firstAcctPage,
   };
 };
 
-const mapDispatchToProps = { attemptLogin, startLogout, loadLoggedInUser };
+const mapDispatchToProps = {
+  attemptLogin,
+  startLogout,
+  loadLoggedInUser,
+  setFirstAcctPage,
+};
 
 export default connect(
   mapStateToProps,

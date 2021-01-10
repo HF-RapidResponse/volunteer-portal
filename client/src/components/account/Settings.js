@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
@@ -6,28 +6,50 @@ import useForm from '../hooks/useForm';
 import { verifyPassword } from '../../store/user-slice';
 
 function Settings(props) {
-  const [submitted, setSubmitted] = useState(false);
-  const [validated, setValidated] = useState(false);
   const [currPassValid, setCurrPassValid] = useState(false);
   const [newAndRetypeMatch, setNewAndReypteMatch] = useState(false);
+  const {
+    handleChange,
+    handleSubmit,
+    data,
+    setData,
+    submitted,
+    setSubmitted,
+    validated,
+    setValidated,
+  } = useForm(verifyPassword);
   const { user } = props;
 
-  // const handlePasswords = (oldPass, newPass, retypePass) => {
-  //   const verifyPayload = { oldPass, newPass, retypePass };
-  //   return verifyPassword(verifyPayload);
-  // };
-
   const handleSubmitResponse = (e) => {
-    const userSliceResponse = handleSubmit(e);
+    const userSliceResponse = handleSubmit(e) || {
+      currPassValid: false,
+      userSliceResponse: false,
+    };
     setCurrPassValid(userSliceResponse.currPassValid);
     setNewAndReypteMatch(userSliceResponse.newAndRetypeMatch);
-    setValidated(currPassValid && newAndRetypeMatch);
+    setSubmitted(true);
+    setValidated(
+      userSliceResponse.currPassValid && userSliceResponse.newAndRetypeMatch
+    );
   };
 
-  const { handleChange, handleSubmit } = useForm(verifyPassword);
-  //console.log('user in settings?', user);
+  useEffect(() => {
+    if (validated) {
+      const formComponent = document.getElementById('acct-settings-form');
+      formComponent.reset();
+      setData({});
+      setSubmitted(false);
+      setValidated(false);
+      setTimeout(() => {
+        setCurrPassValid(false);
+        setNewAndReypteMatch(false);
+      }, 3000);
+    }
+  }, [submitted]);
+
   return user ? (
     <Form
+      id="acct-settings-form"
       className="p-4"
       style={{ background: 'white' }}
       noValidate
@@ -63,7 +85,7 @@ function Settings(props) {
             id="old-pass"
             onChange={(e) => handleChange('oldPass', e.target.value)}
             isValid={currPassValid}
-            isInvalid={!newAndRetypeMatch}
+            isInvalid={submitted && !currPassValid}
             required
           />
           <Form.Control.Feedback type="invalid">
@@ -77,7 +99,7 @@ function Settings(props) {
             id="new-pass"
             onChange={(e) => handleChange('newPass', e.target.value)}
             isValid={newAndRetypeMatch}
-            isInvalid={!newAndRetypeMatch}
+            isInvalid={submitted && !newAndRetypeMatch}
             required
           />
         </div>
@@ -88,7 +110,7 @@ function Settings(props) {
             id="retype-pass"
             onChange={(e) => handleChange('retypePass', e.target.value)}
             isValid={newAndRetypeMatch}
-            isInvalid={!newAndRetypeMatch}
+            isInvalid={submitted && !newAndRetypeMatch}
             required
           />
           <Form.Control.Feedback type="invalid">
