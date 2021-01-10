@@ -1,12 +1,35 @@
 import React, { useState, forwardRef } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
+import {
+  Button,
+  Form,
+  Container,
+  Col,
+  Row,
+  Image,
+  Dropdown,
+  DropdownButton,
+} from 'react-bootstrap';
+import VerticalDots from '../VerticalDots';
 
 function Involvement(props) {
   const { user } = props;
 
   const rolesToRender = [];
+  const CustomToggle = forwardRef(({ children, onClick }, ref) => (
+    <a
+      href=""
+      ref={ref}
+      style={{ color: 'gray' }}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick(e);
+      }}
+    >
+      {children}
+    </a>
+  ));
 
   if (user) {
     for (let i = 0; i < user.roles.length; i++) {
@@ -17,16 +40,18 @@ function Involvement(props) {
             <p>{role}</p>
           </Col>
           <Col xs={2} md={3}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-three-dots-vertical"
-              viewBox="0 0 16 16"
-            >
-              <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-            </svg>
+            <Dropdown drop="right">
+              <Dropdown.Toggle
+                as={CustomToggle}
+                id="dropdown-custom-components"
+              >
+                <VerticalDots />
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item eventKey="1">Delete</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </Col>
         </Row>
       );
