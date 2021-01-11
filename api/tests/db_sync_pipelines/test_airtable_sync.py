@@ -48,10 +48,11 @@ def test_event_sync(db):
   assert type(event1.hero_image_urls) == list
   assert event1.hero_image_url == 'https://dl.airtable.com/.attachments/8d182ef5b3020efc193dd465814f5117/5b4ccc77/07.28.20Humanity_Hang.jpg'
   assert event1.signup_url == 'https://movehumanityforward.zoom.us/meeting/register/tJYlcuipqj8oGNKH7oLiW5ma3rBBsBxFXA4Q'
-  assert event1.start_datetime == datetime(2020, 7, 25, 4, 0, tzinfo=timezone.utc)
-  assert event1.end_datetime == datetime(2020, 7, 25, 19, 0, tzinfo=timezone.utc)
+  # Timezone is stripped by inserting it into the DB ("timestamp without time zone" type field)
+  assert event1.start_datetime == datetime(2020, 7, 25, 4, 0)
+  assert event1.end_datetime == datetime(2020, 7, 25, 19, 0)
   assert event1.description == 'Test event description'
-  assert event1.airtable_last_modified == datetime(2020, 11, 20, 16, 42, 54, tzinfo=timezone.utc)
+  assert event1.airtable_last_modified == datetime(2020, 11, 20, 16, 42, 54)
   assert event1.airtable_last_modified and type(event1.airtable_last_modified) == datetime
 
   
