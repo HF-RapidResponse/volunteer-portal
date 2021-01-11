@@ -74,7 +74,11 @@ function Settings(props) {
           <p>Organizers can see my profile</p>
         </Col>
         <Col xs={12} md={4}>
-          <Form.Switch id="organizers-can-see-profile-switch" defaultChecked />
+          <Form.Switch
+            id="organizers-can-see-profile-switch"
+            className="custom-switch-md"
+            defaultChecked
+          />
         </Col>
       </Row>
       <Row className="mt-2 mb-2">
@@ -84,6 +88,7 @@ function Settings(props) {
         <Col xs={12} md={4}>
           <Form.Switch
             id="other-vounteers-can-see-profile-switch"
+            className="custom-switch-md"
             defaultChecked
           />
         </Col>

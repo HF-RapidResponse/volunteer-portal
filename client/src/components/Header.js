@@ -62,7 +62,7 @@ function Header(props) {
   }, []);
 
   useEffect(() => {
-    console.log('inside the user useEffect?', user);
+    // console.log('inside the user useEffect?', user);
     if (user) {
       cookies.set('user', user, { path: '/' });
     }

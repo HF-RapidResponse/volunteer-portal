@@ -61,7 +61,13 @@ function Involvement(props) {
         )}
       </Form>
       <Form className="p-4 mt-5 mb-2" style={{ background: 'white' }}>
-        <h4 className="mb-5">Initiatives</h4>
+        <h4 className="mb-4">Initiatives</h4>
+        <Row>
+          <Col xs={12} md={8}></Col>
+          <Col xs={12} md={4}>
+            <label className="text-muted ml-lg-5">Subscribed</label>
+          </Col>
+        </Row>
         <Row className="mt-2 mb-2">
           <Col xs={12} md={8}>
             <Form.Group controlId="formUsername">
@@ -71,6 +77,7 @@ function Involvement(props) {
           <Col xs={12} md={4}>
             <Form.Switch
               id="organizers-can-see-profile-switch"
+              className="custom-switch-md ml-lg-5"
               defaultChecked
             />
           </Col>
@@ -84,6 +91,7 @@ function Involvement(props) {
           <Col xs={12} md={4}>
             <Form.Switch
               id="organizers-can-see-profile-switch"
+              className="custom-switch-md ml-lg-5"
               defaultChecked
             />
           </Col>
@@ -97,6 +105,7 @@ function Involvement(props) {
           <Col xs={12} md={4}>
             <Form.Switch
               id="organizers-can-see-profile-switch"
+              className="custom-switch-md ml-lg-5"
               defaultChecked
             />
           </Col>
@@ -110,6 +119,7 @@ function Involvement(props) {
           <Col xs={12} md={4}>
             <Form.Switch
               id="organizers-can-see-profile-switch"
+              className="custom-switch-md ml-lg-5"
               defaultChecked
             />
           </Col>

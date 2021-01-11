@@ -40,7 +40,7 @@ function AccountIndex(props) {
       break;
   }
   /* eslint-enable indent */
-  console.log('cookies here?', cookies);
+  // console.log('cookies here?', cookies);
 
   return user && mainContent ? (
     <>
@@ -62,7 +62,7 @@ function AccountIndex(props) {
           <Col xs={12} lg={4}>
             <AccountNav />
           </Col>
-          <Col xs={12} lg={6} className="ml-lg-5">
+          <Col xs={12} lg={7} className="ml-lg-5">
             {mainContent}
           </Col>
         </Row>

@@ -16,7 +16,7 @@ function Profile(props) {
               <Form.Control defaultValue={user.name} />
             </Form.Group>
           </Col>
-          <Col xs={12} md={4} className="align-self-center">
+          <Col xs={12} md={4} className="pl-lg-5">
             <label className="text-muted">Show on Profile</label>
             <Form.Switch
               id="show-on-profile-name-switch"
@@ -40,7 +40,7 @@ function Profile(props) {
               <Form.Control type="email" defaultValue={user.email} />
             </Form.Group>
           </Col>
-          <Col xs={12} md={4} className="align-self-center">
+          <Col xs={12} md={4} className="align-self-center pl-lg-5">
             <Form.Switch
               id="show-on-profile-email-switch"
               className="custom-switch-md"
@@ -61,7 +61,7 @@ function Profile(props) {
               <Form.Control type="state" defaultValue={user.state} />
             </Form.Group>
           </Col>
-          <Col xs={12} md={4} className="align-self-center">
+          <Col xs={12} md={4} className="align-self-center pl-lg-5">
             <Form.Switch
               id="show-on-profile-location-switch"
               className="custom-switch-md"
