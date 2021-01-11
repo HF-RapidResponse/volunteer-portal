@@ -35,14 +35,14 @@ function Header(props) {
 
   const firstPath = window.location.pathname;
   // console.log('What is firstPath?', firstPath, firstAcctPage);
-  if (firstPath.includes('/account') && !firstAcctPage) {
-    setFirstAcctPage(firstPath);
-  }
 
   useEffect(() => {
     if (!user) {
       const userCookie = cookies.get('user');
       if (userCookie) {
+        if (firstPath.includes('/account') && !firstAcctPage) {
+          setFirstAcctPage(firstPath);
+        }
         loadLoggedInUser(userCookie);
       }
     }
@@ -267,7 +267,6 @@ const mapDispatchToProps = {
   setFirstAcctPage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withCookies(Header));
+export default withCookies(
+  connect(mapStateToProps, mapDispatchToProps)(Header)
+);

@@ -22,16 +22,23 @@ const userSlice = createSlice({
         'Mr. Grinch',
       ]; // placeholder
       state.user = payload;
-      console.log('Here is the user on login:', state.user);
+      // console.log('Here is the user on login:', state.user);
     },
     completeLogout: (state) => {
       state.user = null;
+      state.shownSettings = {};
+      state.firstAcctPage = null;
     },
     register: (state, action) => {},
     setFirstAcctPage: (state, action) => {
       const { payload } = action;
       state.firstAcctPage = payload;
-      console.log('setting setFirstAcctPage to:', payload);
+    },
+    completeDelete: (state, action) => {
+      const { payload } = action;
+      state.user.roles = state.user.roles.filter((element) => {
+        return element != payload;
+      });
     },
   },
 });
@@ -40,6 +47,7 @@ export const {
   completeLogin,
   completeLogout,
   setFirstAcctPage,
+  completeDelete,
 } = userSlice.actions;
 
 export const attemptLogin = (payload) => async (dispatch) => {
@@ -82,6 +90,16 @@ export const verifyPassword = (payload) => {
     newAndRetypeMatch: payload.newPass === payload.retypePass,
   };
   return responsePayload;
+};
+
+export const deleteRole = (payload) => async (dispatch) => {
+  //const response = await axios.delete(`/users/${userSlice.user.ID}/roles/${payload.roleID}`);
+  dispatch(completeDelete(payload));
+};
+
+export const deleteUser = () => async (dispatch) => {
+  //const response = await axios.delete(`/users/${userSlice.user.ID}/delete`);
+  dispatch(completeLogout());
 };
 
 export default userSlice.reducer;

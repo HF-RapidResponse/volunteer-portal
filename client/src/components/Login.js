@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
 import { Button, Form } from 'react-bootstrap';
-// import { Form as FormWrapper, Field } from 'react-final-form';
 import { attemptLogin } from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 
@@ -33,7 +32,6 @@ function Login(props) {
     }
   }
 
-  console.log('What is firstAcctPage before return?', firstAcctPage);
   return (validated && submitted) || user ? (
     <Redirect push to={firstAcctPage || '/account/profile'} />
   ) : (

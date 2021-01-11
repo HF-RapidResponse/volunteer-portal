@@ -11,10 +11,11 @@ import {
   Dropdown,
   DropdownButton,
 } from 'react-bootstrap';
+import { deleteRole } from '../../store/user-slice';
 import VerticalDots from '../VerticalDots';
 
 function Involvement(props) {
-  const { user } = props;
+  const { user, deleteRole } = props;
 
   const rolesToRender = [];
   const CustomToggle = forwardRef(({ children, onClick }, ref) => (
@@ -47,9 +48,10 @@ function Involvement(props) {
               >
                 <VerticalDots />
               </Dropdown.Toggle>
-
               <Dropdown.Menu>
-                <Dropdown.Item eventKey="1">Delete</Dropdown.Item>
+                <Dropdown.Item eventKey="1" onClick={() => deleteRole(role)}>
+                  Delete
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Col>
@@ -61,7 +63,11 @@ function Involvement(props) {
     <>
       <Form className="p-4" style={{ background: 'white' }}>
         <h4 className="mb-5">Roles</h4>
-        <Form.Group controlId="formPassword">{rolesToRender}</Form.Group>
+        {rolesToRender.length ? (
+          <Form.Group controlId="formPassword">{rolesToRender}</Form.Group>
+        ) : (
+          <p className="text-center">You have no roles.</p>
+        )}
       </Form>
       <Form className="p-4 mt-5 mb-2" style={{ background: 'white' }}>
         <h4 className="mb-5">Initiatives</h4>
@@ -130,4 +136,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Involvement);
+const mapDispatchToProps = { deleteRole };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Involvement);

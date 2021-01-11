@@ -22,16 +22,12 @@ function AccountIndex(props) {
   const path = window.location.pathname;
 
   let mainContent;
-  // console.log('What is pathname?', path, user, cookies);
-  console.log('firstAcctPage or path?', path);
   /* eslint-disable indent */
   switch (path) {
     case '/account/profile':
-      console.log('in profile');
       mainContent = <Profile />;
       break;
     case '/account/settings':
-      console.log('in settings');
       mainContent = <Settings />;
       break;
     case '/account/involvement':
@@ -44,11 +40,11 @@ function AccountIndex(props) {
       break;
   }
   /* eslint-enable indent */
+  console.log('cookies here?', cookies);
 
-  console.log('What is mainContent?', mainContent);
   return user && mainContent ? (
     <>
-      <Container>
+      <Container className="mt-1 mb-4">
         <Row className="text-center md-text-left">
           <Col xs={12} md={2}>
             <Image

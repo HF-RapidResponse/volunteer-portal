@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
+import { withCookies } from 'react-cookie';
+
 import useForm from '../hooks/useForm';
-import { verifyPassword } from '../../store/user-slice';
+import { verifyPassword, deleteUser } from '../../store/user-slice';
 
 function Settings(props) {
   const [currPassValid, setCurrPassValid] = useState(false);
@@ -18,7 +20,7 @@ function Settings(props) {
     validated,
     setValidated,
   } = useForm(verifyPassword);
-  const { user } = props;
+  const { user, deleteUser, cookies } = props;
 
   const handleSubmitResponse = (e) => {
     const userSliceResponse = handleSubmit(e) || {
@@ -31,6 +33,16 @@ function Settings(props) {
     setValidated(
       userSliceResponse.currPassValid && userSliceResponse.newAndRetypeMatch
     );
+  };
+
+  const deletePrompt = () => {
+    const userWantsToDelete = confirm(
+      'Are you sure you want to delete your account? This cannot be undone.'
+    );
+    if (userWantsToDelete) {
+      cookies.remove('user', { path: '/' });
+      deleteUser();
+    }
   };
 
   useEffect(() => {
@@ -132,7 +144,11 @@ function Settings(props) {
           </Button>
         </Col>
         <Col xs={12} xl={6} className="text-center">
-          <Button variant="danger" className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4">
+          <Button
+            variant="danger"
+            className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
+            onClick={() => deletePrompt()}
+          >
             Delete my Account
           </Button>
         </Col>
@@ -149,5 +165,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-// const mapDispatchToProps = { verifyPassword };
-export default connect(mapStateToProps)(Settings);
+const mapDispatchToProps = { deleteUser };
+export default withCookies(
+  connect(mapStateToProps, mapDispatchToProps)(Settings)
+);
