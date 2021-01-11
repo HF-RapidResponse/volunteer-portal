@@ -18,7 +18,11 @@ function Profile(props) {
           </Col>
           <Col xs={12} md={4} className="align-self-center">
             <label className="text-muted">Show on Profile</label>
-            <Form.Switch id="show-on-profile-name-switch" defaultChecked />
+            <Form.Switch
+              id="show-on-profile-name-switch"
+              className="custom-switch-md"
+              defaultChecked
+            />
           </Col>
         </Row>
         <Row className="mt-4 mb-4">
@@ -37,7 +41,11 @@ function Profile(props) {
             </Form.Group>
           </Col>
           <Col xs={12} md={4} className="align-self-center">
-            <Form.Switch id="show-on-profile-email-switch" defaultChecked />
+            <Form.Switch
+              id="show-on-profile-email-switch"
+              className="custom-switch-md"
+              defaultChecked
+            />
           </Col>
         </Row>
         <Row className="mt-4 mb-4">
@@ -56,6 +64,7 @@ function Profile(props) {
           <Col xs={12} md={4} className="align-self-center">
             <Form.Switch
               id="show-on-profile-location-switch"
+              className="custom-switch-md"
               defaultChecked
               size="lg"
             />

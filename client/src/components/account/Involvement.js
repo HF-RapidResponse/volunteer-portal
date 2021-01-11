@@ -1,16 +1,7 @@
-import React, { useState, forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import {
-  Button,
-  Form,
-  Container,
-  Col,
-  Row,
-  Image,
-  Dropdown,
-  DropdownButton,
-} from 'react-bootstrap';
+import { Form, Col, Row, Dropdown } from 'react-bootstrap';
 import { deleteRole } from '../../store/user-slice';
 import VerticalDots from '../VerticalDots';
 
