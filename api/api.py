@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail
 from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, DonationEmailSchema
-from db_sync_pipelines.pipelines import RunEventsSync, RunRolesSync
+from db_sync_pipelines.pipelines import RunEventsSync, RunRolesSync, RunInitiavesSync
 from sqlalchemy.orm import lazyload
 from settings import Session
 
@@ -54,7 +54,7 @@ def get_all_initiatives(db: Session = Depends(get_db)) -> List[NestedInitiativeS
 
 @app.get("/api/initiatives/{initiative_external_id}", response_model=NestedInitiativeSchema)
 def get_initiative_by_external_id(initiative_external_id, db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
-    return db.query(Initiative).filter_by(initiative_external_id=initiative_external_id).first()
+    return db.query(Initiative).filter_by(external_id=initiative_external_id).first()
 
 @app.post("/api/donation_link_requests/", response_model=DonationEmailSchema)
 def create_donation_link_request(email: str, db: Session = Depends(get_db)) -> Optional[DonationEmailSchema]:
@@ -76,3 +76,7 @@ def run_events_sync(db: Session = Depends(get_db)) -> str:
 @app.get("/api/run_roles_sync/")
 def run_roles_sync(db: Session = Depends(get_db)) -> str:
     return SyncRunner(db, RunRolesSync)
+
+@app.get("/api/run_initiatives_sync/")
+def run_roles_sync(db: Session = Depends(get_db)) -> str:
+    return SyncRunner(db, RunInitiavesSync)

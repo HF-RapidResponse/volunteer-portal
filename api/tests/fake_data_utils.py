@@ -82,21 +82,25 @@ def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 
     items = [*role_ids, *event_ids]
     shuffle(items)
 
+    post_datetime = datetime.today() + timedelta(days=randint(-10,10))
     return Initiative(
-        initiative_external_id = fake.ean(),
-        name = fake.name(),
+        external_id = fake.ean(),
+        initiative_name = fake.name(),
         details_url = fake.uri(),
-        title = fake.sentence(),
         hero_image_urls = ([ { 'url': fake.image_url() }] if choice([True, False]) else []),
         content = fake.paragraph(nb_sentences=4),
         role_ids = role_ids,
-        event_ids = event_ids
+        event_ids = event_ids,
+        airtable_last_modified = post_datetime - timedelta(days=randint(10,12)),
+        db_last_modified = post_datetime - timedelta(days=randint(6,8)),
+        is_deleted = False,
     )
 
 def generate_fake_initiatives_list(session, count: int = 1, roles_count: int = 2, events_count: int = 2) -> List[Initiative]:
     initiatives = []
-    for _ in range(count):
+    for i in range(count):
         initiative = generate_fake_initiative(session, roles_count, events_count)
+        initiative.order = i + 1
         session.add(initiative)
         initiatives.append(initiative)
     return initiatives

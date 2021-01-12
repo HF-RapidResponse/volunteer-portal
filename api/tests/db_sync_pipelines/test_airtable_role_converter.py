@@ -8,9 +8,9 @@ def test_convert_fields():
     example_response = json.loads(f.read())
 
   converter = AirtableRoleConverter()
-  first_event = example_response[0]
+  first_role = example_response[0]
 
-  result = converter.Convert(first_event)
+  result = converter.Convert(first_role)
   assert result.external_id == 'recapqTKNF97KJGBr'
   assert result.role_name == 'Team Lead'
   assert type(result.hero_image_urls) == list and type(result.hero_image_urls[0]) == dict
