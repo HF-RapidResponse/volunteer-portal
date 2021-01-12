@@ -23,13 +23,11 @@ services:
 
   client:
     build: ./client
-    command: npm run start
+    command: npm run client
     depends_on:
     - api
     environment:
     - "DANGEROUSLY_DISABLE_HOST_CHECK=true"
-    ports:
-    - 8080:8080
     volumes:
     - ./client:/client
     - client_node_modules:/client/node_modules
