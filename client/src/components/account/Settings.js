@@ -58,7 +58,7 @@ function Settings(props) {
       }, 3000);
     }
   }, [submitted]);
-
+  console.log('what is data.oldPass?', data.oldPass);
   return user ? (
     <Form
       id="acct-settings-form"
@@ -94,7 +94,7 @@ function Settings(props) {
         </Col>
       </Row>
       <Form.Group>
-        <div className="mt-3 mb-5">
+        <div className={'mt-3 ' + (data.oldPass ? 'mb-5' : 'mb-4')}>
           <Form.Label>Change Password</Form.Label>
           <Form.Control
             type="password"
@@ -109,7 +109,7 @@ function Settings(props) {
             Password is invalid!
           </Form.Control.Feedback>
         </div>
-        <div className="mt-5 mb-2">
+        <div className={data.oldPass ? 'mt-5 mb-3' : 'd-none'}>
           <Form.Label>New Password</Form.Label>
           <Form.Control
             type="password"
@@ -120,7 +120,7 @@ function Settings(props) {
             required
           />
         </div>
-        <div className="mt-2 mb-2">
+        <div className={data.oldPass ? 'mt-3 mb-3' : 'd-none'}>
           <Form.Label>Retype Password</Form.Label>
           <Form.Control
             type="password"
