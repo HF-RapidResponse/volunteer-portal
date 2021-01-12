@@ -150,7 +150,7 @@ function InitiativeDetail(props) {
         <>
           <Col xs={12} lg={9} xl={6} className="shadow-card" key={detail["initiative_external_id"]}>
             <h2 className="header-3-section-lead">Initiative:</h2>
-            <h2 className="header-3-section-breaker">{detail["title"]}</h2>
+            <h2 className="header-3-section-breaker">{detail["initiative_name"]}</h2>
             <p>{detail["content"]}</p>
           </Col>
           <>{evts}</>

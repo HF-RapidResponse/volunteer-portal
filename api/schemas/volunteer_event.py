@@ -10,14 +10,13 @@ MarkdownText = str
 class VolunteerEventSchema(BaseModel):
     uuid: UUID
     external_id: str
-    name: str
+    event_name: str
     signup_url: str
     hero_image_url: Url
     details_url: Optional[Url]
     start_datetime: datetime
     end_datetime: Optional[datetime]
     description: Optional[MarkdownText]
-    point_of_contact: Optional[Person]
 
     class Config:
         orm_mode = True
