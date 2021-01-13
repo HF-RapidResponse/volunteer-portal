@@ -9,13 +9,13 @@ down:
 shell-api:
 	docker-compose run --rm api bash
 test:
-	docker-compose run --rm api python -m pytest tests/
+	docker-compose run --rm api-test python -m pytest tests/
 validate:
-	docker-compose run --rm api mypy /api
+	docker-compose run --rm api-test mypy /api
 db-reload-dev:
 	docker-compose run --rm api python bootstrap.py
-db-reload-dev:
-	docker-compose run --rm api ENV=test python bootstrap.py
+db-reload-test:
+	docker-compose run --rm api-test python bootstrap.py
 
 # Database
 shell-db:

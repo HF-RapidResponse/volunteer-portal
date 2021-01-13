@@ -20,10 +20,17 @@ services:
     - 8081:8081
     volumes:
     - ./api:/api
+  api-test:
+    build: ./api
+    env_file: ./api/.env.test
+    depends_on:
+    - 'api'
+    volumes:
+    - ./api:/api
 
   client:
     build: ./client
-    command: npm run start
+    command: npm run client
     depends_on:
     - api
     environment:

@@ -10,4 +10,3 @@ COPY . ./
 RUN rm -rf node_modules \
     && npm install -g serve \
     && npm install --quiet
-RUN npm run build
