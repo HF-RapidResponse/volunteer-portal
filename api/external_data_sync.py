@@ -11,7 +11,6 @@ def SyncRunner(db, sync_fn) -> str:
         sync_fn(db)
     except Exception as e:
         logging.warning(f"Failed to sync {sync_fn}:\n {e}")
-        raise
         return "Failed to sync"
     return "Done"
 
