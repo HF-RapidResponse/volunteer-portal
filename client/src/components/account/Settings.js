@@ -145,7 +145,7 @@ function Settings(props) {
             className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
             type="submit"
           >
-            Update Password
+            Change Password
           </Button>
         </Col>
         <Col xs={12} xl={6} className="text-center">

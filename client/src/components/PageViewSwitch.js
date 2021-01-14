@@ -8,7 +8,7 @@ import Calendar from './Calendar';
 import Roles from './Roles';
 import Candidates from './Candidates';
 import About from './About';
-import CreateAccount from './CreateAccount';
+import Register from './Register';
 import Initiatives from './Initiatives';
 import InitiativeDetail from './InitiativeDetail';
 import NotFound from './NotFound';
@@ -41,7 +41,7 @@ function PageViewSwitch() {
         <Route path="/roles" exact component={Roles} />
         <Route path="/candidates" exact component={Candidates} />
         <Route path="/about" exact component={About} />
-        <Route path="/register" exact component={CreateAccount} />
+        <Route path="/register" exact component={Register} />
         <Route path="/initiatives" exact component={Initiatives} />
         <Route
           path="/initiatives/:ext_id"

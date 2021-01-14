@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import RecruitmentSocialShare from './RecruitmentSocialShare';
 import useForm from './hooks/useForm';
 
-function CreateAccount(props) {
+function Register(props) {
   document.title = 'HF Volunteer Portal - Create an Account';
   const [submitted, setSubmitted] = useState(false);
   const [validated, setValidated] = useState(false);
@@ -93,4 +93,4 @@ function CreateAccount(props) {
   );
 }
 
-export default CreateAccount;
+export default Register;

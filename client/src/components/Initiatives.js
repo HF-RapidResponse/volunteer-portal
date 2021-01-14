@@ -1,34 +1,25 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/initiatives.scss';
 import { Link } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
+import { getInitiatives } from '../store/initiative-slice';
 
 /**
  * Component that displays the initiatives page.
  */
-function Initiatives() {
-  const [initiatives, setInitiatives] = useState(null);
+function Initiatives(props) {
   const [fetched, setFetched] = useState(false);
   document.title = 'HF Volunteer Portal - Initiatives';
+  const { initiatives } = props;
 
   useEffect(() => {
-    fetch('/api/initiatives')
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            setInitiatives(data);
-          });
-        } else {
-          console.error(response);
-        }
-        setFetched(true);
-      })
-      .catch((err) => {
-        console.error(err);
-        setFetched(true);
-      });
+    if (!initiatives || !initiatives.length) {
+      getInitiatives();
+    }
+    setFetched(true);
   }, []);
 
   if (!fetched) {
@@ -106,4 +97,11 @@ function Initiatives() {
   );
 }
 
-export default Initiatives;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    initiatives: state.initiativeStore.initiatives,
+  };
+};
+const mapDispatchToProps = { getInitiatives };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Initiatives);

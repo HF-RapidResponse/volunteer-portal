@@ -13,6 +13,7 @@ import {
   loadLoggedInUser,
   setFirstAcctPage,
 } from '../store/user-slice.js';
+import { getInitiatives } from '../store/initiative-slice';
 
 /**
  * Component that displays the top navigation bar present on every page. It allows users to navigate
@@ -22,9 +23,7 @@ import {
 
 function Header(props) {
   const [expanded, setExpanded] = useState(false);
-  const [initiatives, setInitiatives] = useState([]);
   const [blueBarTitle, setBlueBarTitle] = useState();
-  // const [currPath, setCurrPath] = useState(window.location.pathname);
   const {
     startLogout,
     user,
@@ -32,12 +31,12 @@ function Header(props) {
     cookies,
     loadLoggedInUser,
     setFirstAcctPage,
-    currPath,
     history,
+    initiatives,
+    getInitiatives,
   } = props;
 
   const firstPath = window.location.pathname;
-  // console.log('What is firstPath?', firstPath, firstAcctPage);
 
   useEffect(() => {
     if (!user) {
@@ -49,31 +48,14 @@ function Header(props) {
         loadLoggedInUser(userCookie);
       }
     }
-    fetch('/api/initiatives')
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            setInitiatives(data);
-          });
-        } else {
-          console.error(response);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    getInitiatives();
   }, []);
 
   useEffect(() => {
-    // console.log('inside the user useEffect?', user);
     if (user) {
       cookies.set('user', user, { path: '/' });
     }
   }, [user]);
-
-  // useEffect(() => {
-  //   console.log('is history triggering?', history);
-  // }, [history]);
 
   const links = [
     {
@@ -87,9 +69,6 @@ function Header(props) {
       displayName: 'Return to Parent Site',
       url: 'https://movehumanityforward.com/',
     },
-    // { displayName: 'About Us', url: '/about' },
-    // { displayName: 'Our Candidates', url: '/candidates' },
-    // { displayName: 'Sign In', url: '/signin' },
   ];
 
   const navLinks = [];
@@ -172,21 +151,11 @@ function Header(props) {
     { displayName: 'See my data', url: '/account/data' },
   ];
 
-  // history.listen((location, action) => {
-  //   // location is an object like window.location
-  //   console.log('history listen?', action, location.pathname, location.state);
-  //   const matchingLink =
-  //     links.includes((item) => item.url === location.pathname) ||
-  //     links.includes((item) => item.url === firstPath);
-  //   console.log('any matching link?', matchingLink);
-  // });
   useEffect(() => {
     const currPath = history.location.pathname;
-    console.log('What is pathname here?', currPath);
     const matchingLink =
       links.find((item) => item.url === currPath) ||
       acctLinks.find((item) => item.url === currPath);
-    console.log('any matching link?', matchingLink);
     setBlueBarTitle(matchingLink ? matchingLink.displayName : null);
   }, [history.location.pathname]);
   const profileDropdown = [];
@@ -253,23 +222,23 @@ function Header(props) {
               </>
             ) : (
               <>
-                <Link to={'/register'} className="mt-1 mb-1">
+                <Link to={acctLinks[0].url} className="mt-1 mb-1">
                   <Button
                     variant="info"
                     className="wide-btn ml-3 mr-3"
                     style={{ padding: '.4rem 1.8rem' }}
                     onClick={collapse}
                   >
-                    Create an Account
+                    {acctLinks[0].displayName}
                   </Button>
                 </Link>
-                <Link to={'/login'} className="mt-1 mb-1">
+                <Link to={acctLinks[1].url} className="mt-1 mb-1">
                   <Button
                     variant="outline-info"
                     className="wide-btn ml-3 mr-3"
                     style={{ padding: '.4rem 1.8rem' }}
                   >
-                    Log In
+                    {acctLinks[1].displayName}
                   </Button>
                 </Link>
               </>
@@ -293,7 +262,7 @@ const mapStateToProps = (state, ownProps) => {
     user: state.userStore.user,
     cookies: ownProps.cookies,
     firstAcctPage: state.userStore.firstAcctPage,
-    currPath: window.location.pathname,
+    initiatives: state.initiativeStore.initiatives,
   };
 };
 
@@ -302,6 +271,7 @@ const mapDispatchToProps = {
   startLogout,
   loadLoggedInUser,
   setFirstAcctPage,
+  getInitiatives,
 };
 
 export default withCookies(
