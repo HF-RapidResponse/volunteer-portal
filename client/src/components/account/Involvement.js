@@ -70,13 +70,13 @@ function Involvement(props) {
         </Row>
         <Row className="mt-2 mb-2">
           <Col xs={12} md={8}>
-            <Form.Group controlId="formUsername">
+            <Form.Group>
               <Form.Control type="name" defaultValue={user.name} />
             </Form.Group>
           </Col>
           <Col xs={12} md={4}>
             <Form.Switch
-              id="organizers-can-see-profile-switch"
+              id="initiative-0-switch"
               className="custom-switch-md ml-lg-5"
               defaultChecked
             />
@@ -84,13 +84,13 @@ function Involvement(props) {
         </Row>
         <Row className="mt-2 mb-2">
           <Col xs={12} md={8}>
-            <Form.Group controlId="formUsername">
+            <Form.Group>
               <Form.Control type="name" defaultValue={user.name} />
             </Form.Group>
           </Col>
           <Col xs={12} md={4}>
             <Form.Switch
-              id="organizers-can-see-profile-switch"
+              id="initiative-1-switch"
               className="custom-switch-md ml-lg-5"
               defaultChecked
             />
@@ -98,13 +98,13 @@ function Involvement(props) {
         </Row>
         <Row className="mt-2 mb-2">
           <Col xs={12} md={8}>
-            <Form.Group controlId="formUsername">
+            <Form.Group>
               <Form.Control type="name" defaultValue={user.name} />
             </Form.Group>
           </Col>
           <Col xs={12} md={4}>
             <Form.Switch
-              id="organizers-can-see-profile-switch"
+              id="initiative-2-switch"
               className="custom-switch-md ml-lg-5"
               defaultChecked
             />
@@ -112,13 +112,13 @@ function Involvement(props) {
         </Row>
         <Row className="mt-2 mb-2">
           <Col xs={12} md={8}>
-            <Form.Group controlId="formUsername">
+            <Form.Group>
               <Form.Control type="name" defaultValue={user.name} />
             </Form.Group>
           </Col>
           <Col xs={12} md={4}>
             <Form.Switch
-              id="organizers-can-see-profile-switch"
+              id="initiative-3-switch"
               className="custom-switch-md ml-lg-5"
               defaultChecked
             />

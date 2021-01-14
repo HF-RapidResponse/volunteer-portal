@@ -37,3 +37,16 @@
     }
   }
 }
+
+#title-header {
+  background-color: $hfDarkBlue;
+  margin-top: 4rem;
+  margin-bottom: 2rem;
+
+  h1 {
+    color: white;
+    text-align: center;
+    padding-top: 3rem;
+    padding-bottom: 1rem;
+  }
+}

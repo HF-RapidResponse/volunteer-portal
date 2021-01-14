@@ -37,43 +37,58 @@ function CreateAccount(props) {
     <Redirect push to="/account/profile" />
   ) : (
     <>
-      <h2>Welcome to the portal!</h2>
-      <Form
-        noValidate
-        validated={validated}
-        className="fade-in"
-        onSubmit={submitWrapper}
-      >
-        <Form.Group controlId="formUsername">
-          <Form.Label>Username?</Form.Label>
-          <Form.Control
-            type="username"
-            placeholder="Username or just email below"
-            onChange={(e) => handleKeyPress('username', e)}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>E-mail address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="E-mail address"
-            onChange={(e) => handleKeyPress('email', e)}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            onChange={(e) => handleKeyPress('password', e)}
-          />
-        </Form.Group>
-        <div className="text-center">
-          <Button variant="info" type="submit" className="mt-2 mb-2">
-            Login
-          </Button>
-        </div>
-      </Form>
+      <h2 className="text-center">
+        Create an account with us to manage your volunteering experience.
+      </h2>
+      <div className="mt-5 mb-5">
+        <h3 className="text-center" style={{ color: 'gray' }}>
+          Create your account.
+        </h3>
+        <Form
+          noValidate
+          validated={validated}
+          className="ml-5 mr-5"
+          onSubmit={submitWrapper}
+        >
+          <Form.Group controlId="formUsername">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              type="name"
+              placeholder="Name"
+              onChange={(e) => handleKeyPress('username', e)}
+            />
+          </Form.Group>
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>E-mail address</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="E-mail address"
+              onChange={(e) => handleKeyPress('email', e)}
+            />
+          </Form.Group>
+          <Form.Group controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              onChange={(e) => handleKeyPress('password', e)}
+            />
+          </Form.Group>
+          <Form.Group controlId="formRetypePassword">
+            <Form.Label>Re-enter your password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Repeat password"
+              onChange={(e) => handleKeyPress('password', e)}
+            />
+          </Form.Group>
+          <div className="text-center">
+            <Button variant="info" type="submit" className="mt-3 mb-3">
+              Create an Account
+            </Button>
+          </div>
+        </Form>
+      </div>
     </>
   );
 }

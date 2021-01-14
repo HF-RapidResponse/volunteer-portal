@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, withRouter, useLocation } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 
 import '../styles/header.scss';
@@ -23,6 +23,7 @@ import {
 function Header(props) {
   const [expanded, setExpanded] = useState(false);
   const [initiatives, setInitiatives] = useState([]);
+  const [blueBarTitle, setBlueBarTitle] = useState();
   // const [currPath, setCurrPath] = useState(window.location.pathname);
   const {
     startLogout,
@@ -31,6 +32,8 @@ function Header(props) {
     cookies,
     loadLoggedInUser,
     setFirstAcctPage,
+    currPath,
+    history,
   } = props;
 
   const firstPath = window.location.pathname;
@@ -67,6 +70,10 @@ function Header(props) {
       cookies.set('user', user, { path: '/' });
     }
   }, [user]);
+
+  // useEffect(() => {
+  //   console.log('is history triggering?', history);
+  // }, [history]);
 
   const links = [
     {
@@ -116,11 +123,11 @@ function Header(props) {
       dropdownItems.push(
         <NavLink
           className="nav-link ml-5 mr-5"
-          to={`/initiatives/`}
+          to={`${link.url}`}
           key={`nav-dropdown-child-${link.children.length + 1}`}
           onClick={collapse}
         >
-          See All Initiatives
+          {`See All ${link.displayName.split(' ')[1] || link.displayName}`}
         </NavLink>
       );
       navLinks.push(
@@ -153,6 +160,11 @@ function Header(props) {
     }
   }
 
+  const acctLinks = [
+    { displayName: 'Create an Account', url: '/register' },
+    { displayName: 'Log In', url: '/login' },
+  ];
+
   const profileLinks = [
     { displayName: 'My profile', url: '/account/profile' },
     { displayName: 'Account Settings', url: '/account/settings' },
@@ -160,6 +172,23 @@ function Header(props) {
     { displayName: 'See my data', url: '/account/data' },
   ];
 
+  // history.listen((location, action) => {
+  //   // location is an object like window.location
+  //   console.log('history listen?', action, location.pathname, location.state);
+  //   const matchingLink =
+  //     links.includes((item) => item.url === location.pathname) ||
+  //     links.includes((item) => item.url === firstPath);
+  //   console.log('any matching link?', matchingLink);
+  // });
+  useEffect(() => {
+    const currPath = history.location.pathname;
+    console.log('What is pathname here?', currPath);
+    const matchingLink =
+      links.find((item) => item.url === currPath) ||
+      acctLinks.find((item) => item.url === currPath);
+    console.log('any matching link?', matchingLink);
+    setBlueBarTitle(matchingLink ? matchingLink.displayName : null);
+  }, [history.location.pathname]);
   const profileDropdown = [];
 
   for (let i = 0; i < profileLinks.length; i++) {
@@ -248,6 +277,13 @@ function Header(props) {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
+      {blueBarTitle ? (
+        <div id="title-header">
+          <h1>{blueBarTitle}</h1>
+        </div>
+      ) : (
+        <div className="no-blue-bar"></div>
+      )}
     </>
   );
 }
@@ -257,6 +293,7 @@ const mapStateToProps = (state, ownProps) => {
     user: state.userStore.user,
     cookies: ownProps.cookies,
     firstAcctPage: state.userStore.firstAcctPage,
+    currPath: window.location.pathname,
   };
 };
 
@@ -268,5 +305,5 @@ const mapDispatchToProps = {
 };
 
 export default withCookies(
-  connect(mapStateToProps, mapDispatchToProps)(Header)
+  connect(mapStateToProps, mapDispatchToProps)(withRouter(Header))
 );
