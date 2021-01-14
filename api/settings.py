@@ -49,3 +49,11 @@ Session = sessionmaker(binds={
     VolunteerRole: engine,
     DonationEmail: engine
 })
+
+# Api Dependency
+def get_db():
+    try:
+        db = Session()
+        yield db
+    finally:
+        db.close()

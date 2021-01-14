@@ -3,9 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail
 from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, DonationEmailSchema
-from db_sync_pipelines.pipelines import RunEventsSync, RunRolesSync, RunInitiavesSync
 from sqlalchemy.orm import lazyload
-from settings import Session
+from settings import Session, get_db
+import logging
+
+import external_data_sync
 
 app = FastAPI()
 app.add_middleware(
@@ -16,17 +18,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-import logging
+app.include_router(
+    external_data_sync.router,
+    prefix='/api'
+)
+
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
-# Dependency
-def get_db():
-    try:
-        db = Session()
-        yield db
-    finally:
-        db.close()
 
 @app.get("/api/", response_model=str)
 def root() -> str:
@@ -61,22 +60,3 @@ def create_donation_link_request(email: str, db: Session = Depends(get_db)) -> O
     donationEmail = DonationEmail(email=email)
     DonationEmail.insert(donationEmail)
     return donationEmail
-
-def SyncRunner(db, sync_fn) -> str:
-    try:
-        sync_fn(db)
-    except Exception:
-        return "Failed to sync"
-    return "Done"
-
-@app.get("/api/run_events_sync/")
-def run_events_sync(db: Session = Depends(get_db)) -> str:
-    return SyncRunner(db, RunEventsSync)
-
-@app.get("/api/run_roles_sync/")
-def run_roles_sync(db: Session = Depends(get_db)) -> str:
-    return SyncRunner(db, RunRolesSync)
-
-@app.get("/api/run_initiatives_sync/")
-def run_roles_sync(db: Session = Depends(get_db)) -> str:
-    return SyncRunner(db, RunInitiavesSync)

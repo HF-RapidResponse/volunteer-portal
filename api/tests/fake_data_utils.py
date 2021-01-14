@@ -32,7 +32,7 @@ def generate_fake_volunteer_role() -> VolunteerRole:
         qualifications = fake.paragraph(nb_sentences=4),
         role_type = (RoleType.REQUIRES_APPLICATION if choice([True, False]) else RoleType.OPEN_TO_ALL),
         airtable_last_modified = post_datetime - timedelta(days=randint(10,12)),
-        db_last_modified = post_datetime - timedelta(days=randint(6,8)),
+        updated_at = post_datetime - timedelta(days=randint(6,8)),
         is_deleted = False,
     )
 
@@ -56,7 +56,7 @@ def generate_fake_volunteer_event() -> VolunteerEvent:
         end_datetime = start_datetime + timedelta(days=randint(1,10)),
         description = fake.paragraph(nb_sentences=4),
         airtable_last_modified = start_datetime - timedelta(days=randint(10,12)),
-        db_last_modified = start_datetime - timedelta(days=randint(6,8)),
+        updated_at = start_datetime - timedelta(days=randint(6,8)),
         is_deleted = False,
     )
 
@@ -92,7 +92,7 @@ def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 
         role_ids = role_ids,
         event_ids = event_ids,
         airtable_last_modified = post_datetime - timedelta(days=randint(10,12)),
-        db_last_modified = post_datetime - timedelta(days=randint(6,8)),
+        updated_at = post_datetime - timedelta(days=randint(6,8)),
         is_deleted = False,
     )
 

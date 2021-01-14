@@ -35,7 +35,7 @@ def test_volunteer_event_create_types(db):
     assert type(new_event.end_datetime) is datetime
     assert type(new_event.description) is str
     assert type(new_event.airtable_last_modified) is datetime
-    assert type(new_event.db_last_modified) is datetime
+    assert type(new_event.updated_at) is datetime
     assert type(new_event.is_deleted) is bool
 
     # Validate equality

@@ -20,4 +20,4 @@ def test_convert_fields():
   assert result.role_ids == ['reclVwU0KldZXD0L8', 'reca7NWt4Kll3261m', 'recapqTKNF97KJGBr']
   assert result.event_ids == ['rec2qTo8hpgyCvblo']
   assert result.airtable_last_modified == datetime(2020, 12, 21, 22, 56, 59, tzinfo=timezone.utc)
-  assert type(result.db_last_modified) == datetime
+  assert result.updated_at is None # This won't be set until a db transaction is committed.

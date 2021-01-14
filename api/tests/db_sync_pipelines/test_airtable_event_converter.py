@@ -20,4 +20,4 @@ def test_convert_fields():
   assert result.end_datetime == datetime(2020, 7, 25, 19, 0, tzinfo=timezone.utc)
   assert result.description == 'Test event description'
   assert result.airtable_last_modified == datetime(2020, 11, 20, 16, 42, 54, tzinfo=timezone.utc)
-  assert result.airtable_last_modified and type(result.airtable_last_modified) == datetime
+  assert result.updated_at is None # This won't be set until a db transaction is committed.

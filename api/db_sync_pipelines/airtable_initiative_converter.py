@@ -20,7 +20,6 @@ class AirtableInitiativeConverter(ApiResponseConverter):
     "event_ids": "fields.Events"
   }
 
-  additional_fields = {"db_last_modified": GetNowTimestamp}
   custom_transforms = {
       'airtable_last_modified': ParseTimestamp,
   }

@@ -27,7 +27,7 @@ def RunInitiavesSync(db):
   table_name = 'Volunteer Initiatives'
   table_key = 'appXC8UaNIuMXpnGB'
   airtable_loader = AirtableLoader(table_name, table_key, view='Published Initiatives')
-  response_converter = AirtableRoleConverter()
+  response_converter = AirtableInitiativeConverter()
   RunAirtableSync(airtable_loader,
                   db,
                   response_converter,

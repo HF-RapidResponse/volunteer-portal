@@ -19,7 +19,6 @@ class AirtableEventConverter(ApiResponseConverter):
     "airtable_last_modified": "fields.Last Modified",
   }
 
-  additional_fields = {"db_last_modified": GetNowTimestamp}
   custom_transforms = {
       'start_datetime': ParseTimestamp,
       'end_datetime': ParseTimestamp,

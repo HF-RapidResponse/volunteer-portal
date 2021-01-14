@@ -14,12 +14,21 @@ def db():
     return Session()
 
 
+def cleanup(db):
+    # additional teardown is needed to remove
+    # db changes commited (can't be rolled back) in RunAirtableSync
+    db.query(VolunteerEvent)\
+      .filter(VolunteerEvent.external_id.like("%_test"))\
+      .delete(synchronize_session=False)
+    db.commit()
+
 # Will run each test in the `yield` portion
 @pytest.fixture(autouse=True)
 def setup(db):
     db = Session()
     yield # this is where the testing happens
     db.rollback()
+    cleanup(db)
 
 class FakeAirtableLoader():
   def __init__(self, response_file):
@@ -53,6 +62,6 @@ def test_event_sync(db):
   assert event1.end_datetime == datetime(2020, 7, 25, 19, 0)
   assert event1.description == 'Test event description'
   assert event1.airtable_last_modified == datetime(2020, 11, 20, 16, 42, 54)
-  assert event1.airtable_last_modified and type(event1.airtable_last_modified) == datetime
+  assert event1.updated_at and type(event1.updated_at) == datetime
 
   

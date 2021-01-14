@@ -7,14 +7,15 @@ from sqlalchemy import Column, Enum, String, Integer, Text, DateTime, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
 from sqlalchemy.orm import column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.sql import func
 from uuid import uuid4
 
 class VolunteerRole(Base):
     __tablename__ = 'volunteer_openings'
 
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
-    external_id = Column('id', String(255))
-    role_name = Column('role_name', String(255))
+    external_id = Column('id', String(255), nullable=False)
+    role_name = Column('role_name', String(255), nullable=False)
     hero_image_urls = Column('hero_image_urls', ARRAY(JSON))
     signup_url = Column('application_signup_form', Text)
     details_url = Column('more_info_link', Text)    
@@ -30,7 +31,7 @@ class VolunteerRole(Base):
     qualifications = Column('qualifications', Text)
     role_type = Column('role_type', Enum(RoleType))
     airtable_last_modified = Column('airtable_last_modified', DateTime, nullable=False)
-    db_last_modified = Column('db_last_modified', DateTime, nullable=False)
+    updated_at = Column('updated_at', DateTime, onupdate=func.now(), default=func.now(), nullable=False)
     is_deleted = Column('is_deleted', Boolean, nullable=False, default=False)
 
     @hybrid_property

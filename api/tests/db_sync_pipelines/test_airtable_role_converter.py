@@ -29,4 +29,4 @@ def test_convert_fields():
   assert result.qualifications == '- Knowledge of the Spoke Texting platform\\n- Good language skills...'
   assert result.role_type == RoleType('Requires Application')
   assert result.airtable_last_modified == datetime(2020, 11, 20, 16, 42, 54, tzinfo=timezone.utc)
-  assert type(result.db_last_modified) == datetime
+  assert result.updated_at is None # This won't be set until a db transaction is committed.

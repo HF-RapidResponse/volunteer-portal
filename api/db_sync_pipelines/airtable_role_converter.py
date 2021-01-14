@@ -27,7 +27,6 @@ class AirtableRoleConverter(ApiResponseConverter):
     "airtable_last_modified": "fields.Last Modified",
   }
 
-  additional_fields = {"db_last_modified": GetNowTimestamp}
   custom_transforms = {
       'airtable_last_modified': ParseTimestamp,
       'priority': Priority,

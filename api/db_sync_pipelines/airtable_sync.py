@@ -95,7 +95,7 @@ def GetExistingRecordIds(db, db_model, hard_delete=False):
 
 
 def GetLatestSyncRun(db, db_model):
-    query = db.query(db_model.db_last_modified).order_by(db_model.db_last_modified.desc())
+    query = db.query(db_model.updated_at).order_by(db_model.updated_at.desc())
     result = query.first()
     return result[0].replace(tzinfo=timezone.utc) if result else None
 
@@ -152,10 +152,9 @@ def UpdateRecords(local_records, db, db_model):
 
 def UpdateRecordsAsDeleted(to_delete, db, db_model):
     try:
-        now = GetNowTimestamp()
         db.query(db_model)\
           .filter(db_model.external_id.in_(to_delete))\
-          .update({"is_deleted": True, "db_last_modified": now}, synchronize_session='fetch')
+          .update({"is_deleted": True}, synchronize_session='fetch')
         db.commit()
     except Exception as e:
         logging.warning('Failed to execute queries: %s' % e)

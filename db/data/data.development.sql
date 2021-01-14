@@ -97,7 +97,7 @@ CREATE TABLE public.events (
     "end" timestamp without time zone,
     description text,
     airtable_last_modified timestamp without time zone,
-    db_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
     is_deleted bool NOT NULL
 );
 
