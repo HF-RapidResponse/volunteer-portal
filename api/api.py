@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail
@@ -56,7 +56,7 @@ def get_initiative_by_external_id(initiative_external_id, db: Session = Depends(
     return db.query(Initiative).filter_by(initiative_external_id=initiative_external_id).first()
 
 @app.post("/api/donation_link_requests/", response_model=DonationEmailSchema)
-def create_donation_link_request(email: str, db: Session = Depends(get_db)) -> Optional[DonationEmailSchema]:
-    donationEmail = DonationEmail(email=email)
-    DonationEmail.insert(donationEmail)
+def create_donation_link_request(donationEmail: DonationEmailSchema, db: Session = Depends(get_db)) -> DonationEmailSchema:
+    db.add(DonationEmail(email=donationEmail.email))
+    db.commit()
     return donationEmail

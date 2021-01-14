@@ -70,10 +70,11 @@ function Register() {
         </p>
         <div className="form-group" id="donor-link-input-area">
           <input
-            type="text"
+            type="email"
             className="form-control"
             id="act-blue-email"
             placeholder="Type email address here..."
+            required
           />
         </div>
         <p className="sm-copy">
