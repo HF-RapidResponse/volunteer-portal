@@ -1,18 +1,23 @@
 import pytest
 import json
 from db_sync_pipelines.airtable_event_converter import AirtableEventConverter
-from db_sync_pipelines.airtable_sync import RunAirtableSync
+from db_sync_pipelines.airtable_sync import RunAirtableSync, AIRTABLE_DATETIME_FORMAT
 from models import VolunteerEvent
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from settings import Session
-
-import logging
-logging.basicConfig(level=logging.DEBUG)
+from sqlalchemy import and_
 
 @pytest.fixture
 def db():
     return Session()
 
+@pytest.fixture
+def response_converter():
+    return AirtableEventConverter()
+
+@pytest.fixture
+def airtable_loader():
+    return FakeAirtableLoader('events_example_response.json')
 
 def cleanup(db):
     # additional teardown is needed to remove
@@ -24,29 +29,25 @@ def cleanup(db):
 
 # Will run each test in the `yield` portion
 @pytest.fixture(autouse=True)
-def setup(db):
+def setup(db, response_converter, airtable_loader):
     db = Session()
+
+    RunAirtableSync(airtable_loader, db, response_converter)
+
     yield # this is where the testing happens
     db.rollback()
     cleanup(db)
 
 class FakeAirtableLoader():
   def __init__(self, response_file):
-    self.response_file = response_file
-    
+    with open("/".join(['tests/db_sync_pipelines', response_file])) as f:
+        self.response = json.loads(f.read())
+
   def GetTable(self):
-    with open("/".join(['tests/db_sync_pipelines', self.response_file])) as f:
-      return json.loads(f.read())
+    return self.response
 
-def test_event_sync(db):
-  airtable_loader = FakeAirtableLoader('events_example_response.json')
-  response_converter = AirtableEventConverter()
-
-  RunAirtableSync(airtable_loader,
-                  db,
-                  response_converter,
-                  hard_delete=False)
-
+def test_event_sync_and_setup(db, response_converter):
+  response_converter.GetDBModel()
   saved_test_events = db.query(VolunteerEvent).filter(VolunteerEvent.external_id.like("%_test")).all()
   assert len(saved_test_events) == 3
 
@@ -64,4 +65,44 @@ def test_event_sync(db):
   assert event1.airtable_last_modified == datetime(2020, 11, 20, 16, 42, 54)
   assert event1.updated_at and type(event1.updated_at) == datetime
 
-  
+def test_event_sync_soft_delete(db, airtable_loader, response_converter):
+  del airtable_loader.response[0]
+  RunAirtableSync(airtable_loader, db, response_converter, hard_delete=False)
+
+  saved_test_events = db.query(VolunteerEvent).filter(VolunteerEvent.external_id.like("%_test")).count()
+  assert saved_test_events == 3
+
+  soft_deleted_events = db.query(VolunteerEvent)\
+                          .filter(and_(VolunteerEvent.external_id.like("%_test"), VolunteerEvent.is_deleted))\
+                          .count()
+  assert soft_deleted_events == 1
+
+def test_event_sync_hard_delete(db, airtable_loader, response_converter):
+  del airtable_loader.response[0]
+  RunAirtableSync(airtable_loader, db, response_converter, hard_delete=True)
+
+  saved_test_events = db.query(VolunteerEvent).filter(VolunteerEvent.external_id.like("%_test")).count()
+  assert saved_test_events == 2
+
+  soft_deleted_events = db.query(VolunteerEvent)\
+                          .filter(and_(VolunteerEvent.external_id.like("%_test"), VolunteerEvent.is_deleted))\
+                          .count()
+  assert soft_deleted_events == 0
+
+def test_update(db, airtable_loader, response_converter):
+  event = airtable_loader.response[0]
+  event_id = event['id']
+  event['fields']['Description'] = "Updated"
+  event['fields']['Last Modified'] = (datetime.now(tz=timezone.utc)
+                                      + timedelta(minutes=1)).strftime(AIRTABLE_DATETIME_FORMAT)
+
+  initial_timestamp, initial_description = db.query(VolunteerEvent.updated_at, VolunteerEvent.description)\
+                                             .filter(VolunteerEvent.external_id == event_id).first()
+  assert initial_description != "updated"
+
+  RunAirtableSync(airtable_loader, db, response_converter)
+
+  assert db.query(VolunteerEvent).filter(VolunteerEvent.external_id == event_id).count() == 1
+  saved_event = db.query(VolunteerEvent).filter(VolunteerEvent.external_id == event_id).first()
+  assert saved_event.description == "Updated"
+  assert saved_event.updated_at > initial_timestamp

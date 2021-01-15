@@ -135,15 +135,10 @@ def InsertRecords(db_records, db):
 def UpdateRecords(local_records, db, db_model):
     try:
         for local_record in local_records:
-            # TODO update external_id to uuid once we move to postres
-            # this looks unnecessary step when the primary key is the external_id(airtable recordId)
-            # but will be necessary when we move to a uuid primary key.
-            # there is almost certainly a better way to do this insert/update syncing logic with
-            # sqlAlchemy.
-            record_uid, = db.query(db_model.external_id).filter(
-                db_model.external_id == local_record.external_id).first()
-            local_record.externel_id = record_uid
-
+            # Feels like there should be a better way to do this.
+            db.query(db_model).filter(
+                db_model.external_id == local_record.external_id).delete()
+            db.add(local_record)
         db.commit()
     except Exception as e:
         logging.warning('Failed to execute queries: %s' % e)
