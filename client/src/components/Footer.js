@@ -19,11 +19,6 @@ function Footer() {
           </a>
         </p>
         <p className="btn-text">
-          <Link to="/about" className="btn-text">
-            Who We Are
-          </Link>
-        </p>
-        <p className="btn-text">
           <a
             className="btn-text"
             href="https://secure.actblue.com/donate/hf-vol-portal"
