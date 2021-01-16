@@ -13,26 +13,19 @@ function Footer() {
   return (
     <footer id="main-footer" className="text-center">
       <Container>
-        <div className="smaller-spacing">
-          <p className="btn-text">
-            <a href="https://movehumanityforward.com/" className="btn-text">
-              Learn more about HF
-            </a>
-          </p>
-          <p className="btn-text">
-            <Link to="/about" className="btn-text">
-              Who We Are
-            </Link>
-          </p>
-          <p className="btn-text">
-            <a
-              className="btn-text"
-              href="https://secure.actblue.com/donate/hf-vol-portal"
-            >
-              Donate
-            </a>
-          </p>
-        </div>
+        <p className="btn-text">
+          <a href="https://movehumanityforward.com/" className="btn-text">
+            Learn more about HF
+          </a>
+        </p>
+        <p className="btn-text">
+          <a
+            className="btn-text"
+            href="https://secure.actblue.com/donate/hf-vol-portal"
+          >
+            Donate
+          </a>
+        </p>
         <Container className="text-center">
           <a
             href="https://www.facebook.com/humanity4ward/"

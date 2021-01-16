@@ -26,17 +26,18 @@ app.add_middleware(
 
 donation_link_db: Optional[DataSink] = None
 
+cloudsql_db_addr = '34.66.203.222'
 try:
-    link_db_addr = generate_hf_mysql_db_address('35.188.204.248','donation_link_requests','hf','humanity-forward_hf-db1-mysql_hf')
+    link_db_addr = generate_hf_mysql_db_address(cloudsql_db_addr,'donation_link_requests','hf','humanity-forward_hf-db1-mysql_hf')
     donation_link_db = DataSink(data_base_type=DataSourceType.MYSQL, address=link_db_addr, table='link_requests')
 except Exception as e:
     logging.warning(f'cannot connect to prod email db (likely permissions issue)')
-    test_link_db_addr = generate_hf_mysql_db_address('35.188.204.248','airtable_database','no_pii','humanity-forward_hf-db1-mysql_no_pii')
+    test_link_db_addr = generate_hf_mysql_db_address(cloudsql_db_addr,'airtable_database','no_pii','humanity-forward_hf-db1-mysql_no_pii')
     donation_link_test_db = DataSink(data_base_type=DataSourceType.MYSQL, address=test_link_db_addr, table='link_requests')
 
 try:
     hf_db = DataSource(data_source_type=DataSourceType.MYSQL,
-            address=generate_hf_mysql_db_address('35.188.204.248','airtable_database','no_pii','humanity-forward_hf-db1-mysql_no_pii'))
+            address=generate_hf_mysql_db_address(cloudsql_db_addr,'airtable_database','no_pii','humanity-forward_hf-db1-mysql_no_pii'))
 
     initiatives_dataset = Dataset(data_source = hf_db, dataset_key='initiatives', primary_key='id', linked_model=Initiative, model_key_map=hf_initiatives)
     events_dataset = Dataset(data_source = hf_db, dataset_key='events', primary_key='id', linked_model=VolunteerEvent, model_key_map=hf_events)
