@@ -45,16 +45,24 @@ function Settings(props) {
     }
   };
 
+  const clearFormComponent = () => {
+    const formComponent = document.getElementById('acct-settings-form');
+    formComponent.reset();
+    setData({});
+  };
+
+  const resetChangePassValidation = () => {
+    setCurrPassValid(false);
+    setNewAndReypteMatch(false);
+  };
+
   useEffect(() => {
     if (validated) {
-      const formComponent = document.getElementById('acct-settings-form');
-      formComponent.reset();
-      setData({});
+      clearFormComponent();
       setSubmitted(false);
       setValidated(false);
       setTimeout(() => {
-        setCurrPassValid(false);
-        setNewAndReypteMatch(false);
+        resetChangePassValidation();
       }, 3000);
     }
   }, [submitted]);
@@ -136,28 +144,38 @@ function Settings(props) {
           <Form.Control.Feedback type="valid">
             Passwords change successful
           </Form.Control.Feedback>
+          <Row>
+            <Col xs={12} xl={6} className="text-center">
+              <Button
+                variant="info"
+                className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
+                type="submit"
+              >
+                Change Password
+              </Button>
+            </Col>
+            <Col xs={12} xl={6} className="text-center">
+              {/* <Button
+                variant="danger"
+                className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
+                onClick={() => deletePrompt()}
+              >
+                Delete my Account
+              </Button> */}
+              <Button
+                variant="outline-secondary"
+                className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
+                onClick={() => {
+                  clearFormComponent();
+                  resetChangePassValidation();
+                }}
+              >
+                Cancel
+              </Button>
+            </Col>
+          </Row>
         </div>
       </Form.Group>
-      <Row>
-        <Col xs={12} xl={6} className="text-center">
-          <Button
-            variant="info"
-            className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
-            type="submit"
-          >
-            Change Password
-          </Button>
-        </Col>
-        <Col xs={12} xl={6} className="text-center">
-          <Button
-            variant="danger"
-            className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
-            onClick={() => deletePrompt()}
-          >
-            Delete my Account
-          </Button>
-        </Col>
-      </Row>
     </Form>
   ) : (
     <Redirect push to="/login" />

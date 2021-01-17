@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
-import { Link, NavLink, withRouter, useLocation } from 'react-router-dom';
+import { Link, NavLink, withRouter } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 
 import '../styles/header.scss';
