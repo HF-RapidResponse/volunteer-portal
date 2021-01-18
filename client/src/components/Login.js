@@ -50,14 +50,6 @@ function Login(props) {
           // className="ml-5 mr-5"
           onSubmit={submitWrapper}
         >
-          {/* <Form.Group controlId="formUsername">
-            <Form.Label>Username?</Form.Label>
-            <Form.Control
-              type="username"
-              placeholder="Username or just email below"
-              onChange={(e) => handleKeyPress('username', e)}
-            />
-          </Form.Group> */}
           <Form.Group controlId="formBasicEmail">
             <Form.Label>E-mail address</Form.Label>
             <Form.Control

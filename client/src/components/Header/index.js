@@ -4,23 +4,24 @@ import { Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 
-import '../styles/header.scss';
-import HFLogo from '../assets/HF-RR-long-logo.png';
-import placeholderImg from '../assets/andy-placeholder.jpg';
+import '../../styles/header.scss';
+import HFLogo from '../../assets/HF-RR-long-logo.png';
 import {
   attemptLogin,
   startLogout,
   loadLoggedInUser,
   setFirstAcctPage,
-} from '../store/user-slice.js';
-import { getInitiatives } from '../store/initiative-slice';
+} from '../../store/user-slice.js';
+import { getInitiatives } from '../../store/initiative-slice';
+
+import LoggedInMenu from './LoggedInMenu';
+import LoggedOutMenu from './LoggedOutMenu';
 
 /**
  * Component that displays the top navigation bar present on every page. It allows users to navigate
  * through different parts of the website. Because it is fixed,
  * the nav bar will appear even as users scroll down longer pages.
  */
-
 function Header(props) {
   const [expanded, setExpanded] = useState(false);
   const [blueBarTitle, setBlueBarTitle] = useState();
@@ -37,6 +38,32 @@ function Header(props) {
   } = props;
 
   const firstPath = window.location.pathname;
+
+  const mainLinks = [
+    {
+      displayName: 'Our Initiatives',
+      url: '/initiatives',
+      children: initiatives,
+    },
+    { displayName: 'Event Calendar', url: '/calendar' },
+    { displayName: 'Volunteer Roles', url: '/roles' },
+    {
+      displayName: 'Return to Parent Site',
+      url: 'https://movehumanityforward.com/',
+    },
+  ];
+
+  const acctLinks = [
+    { displayName: 'Create an Account', url: '/register' },
+    { displayName: 'Log In', url: '/login' },
+  ];
+
+  const profileLinks = [
+    { displayName: 'My profile', url: '/account/profile' },
+    { displayName: 'Account Settings', url: '/account/settings' },
+    { displayName: 'Manage my involvement', url: '/account/involvement' },
+    { displayName: 'See my data', url: '/account/data' },
+  ];
 
   useEffect(() => {
     if (!user) {
@@ -57,28 +84,14 @@ function Header(props) {
     }
   }, [user]);
 
-  const links = [
-    {
-      displayName: 'Our Initiatives',
-      url: '/initiatives',
-      children: initiatives,
-    },
-    { displayName: 'Event Calendar', url: '/calendar' },
-    { displayName: 'Volunteer Roles', url: '/roles' },
-    {
-      displayName: 'Return to Parent Site',
-      url: 'https://movehumanityforward.com/',
-    },
-  ];
-
-  const navLinks = [];
-
   function collapse() {
     setTimeout(() => setExpanded(false), 100);
   }
 
-  for (let i = 0; i < links.length; i++) {
-    const link = links[i];
+  const navLinks = [];
+
+  for (let i = 0; i < mainLinks.length; i++) {
+    const link = mainLinks[i];
     if (link.children && link.children.length) {
       const dropdownItems = [];
       for (let j = 0; j < link.children.length; j++) {
@@ -139,22 +152,10 @@ function Header(props) {
     }
   }
 
-  const acctLinks = [
-    { displayName: 'Create an Account', url: '/register' },
-    { displayName: 'Log In', url: '/login' },
-  ];
-
-  const profileLinks = [
-    { displayName: 'My profile', url: '/account/profile' },
-    { displayName: 'Account Settings', url: '/account/settings' },
-    { displayName: 'Manage my involvement', url: '/account/involvement' },
-    { displayName: 'See my data', url: '/account/data' },
-  ];
-
   useEffect(() => {
     const currPath = history.location.pathname;
     const matchingLink =
-      links.find((item) => item.url === currPath) ||
+      mainLinks.find((item) => item.url === currPath) ||
       acctLinks.find((item) => item.url === currPath);
     setBlueBarTitle(matchingLink ? matchingLink.displayName : null);
   }, [history.location.pathname]);
@@ -199,7 +200,7 @@ function Header(props) {
         expanded={expanded}
       >
         <NavLink className="nav-link" key="home-key" to="/" onClick={collapse}>
-          <img src={HFLogo} alt="HF Logo" id="hf-logo" />
+          <Image src={HFLogo} alt="HF Logo" id="hf-logo" fluid />
         </NavLink>
         <Navbar.Toggle
           aria-controls="main-nav"
@@ -211,37 +212,14 @@ function Header(props) {
           </Nav>
           <Nav className="account-container">
             {user ? (
-              <>
-                <NavDropdown
-                  title={`Welcome back, ${user.username}!`}
-                  key={`nav-top-profile`}
-                >
-                  {profileDropdown}
-                </NavDropdown>
-                <Image src={placeholderImg} roundedCircle fluid />
-              </>
+              <LoggedInMenu
+                user={user}
+                profileLinks={profileLinks}
+                collapse={collapse}
+                startLogout={startLogout}
+              />
             ) : (
-              <>
-                <Link to={acctLinks[0].url} className="mt-1 mb-1">
-                  <Button
-                    variant="info"
-                    className="wide-btn ml-3 mr-3"
-                    style={{ padding: '.4rem 1.8rem' }}
-                    onClick={collapse}
-                  >
-                    {acctLinks[0].displayName}
-                  </Button>
-                </Link>
-                <Link to={acctLinks[1].url} className="mt-1 mb-1">
-                  <Button
-                    variant="outline-info"
-                    className="wide-btn ml-3 mr-3"
-                    style={{ padding: '.4rem 1.8rem' }}
-                  >
-                    {acctLinks[1].displayName}
-                  </Button>
-                </Link>
-              </>
+              <LoggedOutMenu acctLinks={acctLinks} collapse={collapse} />
             )}
           </Nav>
         </Navbar.Collapse>
