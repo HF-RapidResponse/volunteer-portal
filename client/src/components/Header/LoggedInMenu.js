@@ -46,7 +46,7 @@ function LoggedInMenu(props) {
       >
         {profileDropdown}
       </NavDropdown>
-      <Image src={placeholderImg} roundedCircle fluid />
+      <Image src={user.image || placeholderImg} roundedCircle fluid />
     </>
   );
 }

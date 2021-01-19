@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
-import { Button, Container, Row, Col, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import RecruitmentSocialShare from './RecruitmentSocialShare';
+import { Button, Form } from 'react-bootstrap';
 import useForm from './hooks/useForm';
 
 function Register(props) {

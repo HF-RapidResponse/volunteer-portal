@@ -4,9 +4,10 @@ import { Redirect } from 'react-router-dom';
 import { Form, Col, Row, Dropdown } from 'react-bootstrap';
 import { deleteRole } from '../../store/user-slice';
 import VerticalDots from '../VerticalDots';
+import initiativeSlice from '../../store/initiative-slice';
 
 function Involvement(props) {
-  const { user, deleteRole } = props;
+  const { user, deleteRole, initiatives } = props;
 
   const rolesToRender = [];
   const CustomToggle = forwardRef(({ children, onClick }, ref) => (
@@ -23,6 +24,7 @@ function Involvement(props) {
     </a>
   ));
 
+  const initiativesToRender = [];
   if (user) {
     for (let i = 0; i < user.roles.length; i++) {
       const role = user.roles[i];
@@ -49,6 +51,27 @@ function Involvement(props) {
         </Row>
       );
     }
+
+    for (let j = 0; j < initiatives.length; j++) {
+      const initiative = initiatives[j];
+      console.log('What is initiative?', initiative);
+      initiativesToRender.push(
+        <Row className="mt-2 mb-2" key={'initiative-' + j}>
+          <Col xs={12} md={8}>
+            <Form.Group>
+              <Form.Control type="name" value={initiative.name} readOnly />
+            </Form.Group>
+          </Col>
+          <Col xs={12} md={4}>
+            <Form.Switch
+              id="initiative-2-switch"
+              className="custom-switch-md ml-lg-5"
+              defaultChecked
+            />
+          </Col>
+        </Row>
+      );
+    }
   }
   return user ? (
     <>
@@ -68,62 +91,7 @@ function Involvement(props) {
             <label className="text-muted ml-lg-5">Subscribed</label>
           </Col>
         </Row>
-        <Row className="mt-2 mb-2">
-          <Col xs={12} md={8}>
-            <Form.Group>
-              <Form.Control type="name" defaultValue={user.name} />
-            </Form.Group>
-          </Col>
-          <Col xs={12} md={4}>
-            <Form.Switch
-              id="initiative-0-switch"
-              className="custom-switch-md ml-lg-5"
-              defaultChecked
-            />
-          </Col>
-        </Row>
-        <Row className="mt-2 mb-2">
-          <Col xs={12} md={8}>
-            <Form.Group>
-              <Form.Control type="name" defaultValue={user.name} />
-            </Form.Group>
-          </Col>
-          <Col xs={12} md={4}>
-            <Form.Switch
-              id="initiative-1-switch"
-              className="custom-switch-md ml-lg-5"
-              defaultChecked
-            />
-          </Col>
-        </Row>
-        <Row className="mt-2 mb-2">
-          <Col xs={12} md={8}>
-            <Form.Group>
-              <Form.Control type="name" defaultValue={user.name} />
-            </Form.Group>
-          </Col>
-          <Col xs={12} md={4}>
-            <Form.Switch
-              id="initiative-2-switch"
-              className="custom-switch-md ml-lg-5"
-              defaultChecked
-            />
-          </Col>
-        </Row>
-        <Row className="mt-2 mb-2">
-          <Col xs={12} md={8}>
-            <Form.Group>
-              <Form.Control type="name" defaultValue={user.name} />
-            </Form.Group>
-          </Col>
-          <Col xs={12} md={4}>
-            <Form.Switch
-              id="initiative-3-switch"
-              className="custom-switch-md ml-lg-5"
-              defaultChecked
-            />
-          </Col>
-        </Row>
+        <>{initiativesToRender}</>
       </Form>
     </>
   ) : (
@@ -134,6 +102,7 @@ function Involvement(props) {
 const mapStateToProps = (state) => {
   return {
     user: state.userStore.user,
+    initiatives: state.initiativeStore.initiatives,
   };
 };
 
