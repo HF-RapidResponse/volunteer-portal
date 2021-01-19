@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Button, Nav, NavDropdown, Image } from 'react-bootstrap';
+import { Nav, NavDropdown, Image } from 'react-bootstrap';
 import { withCookies } from 'react-cookie';
 
 import placeholderImg from '../../assets/andy-placeholder.jpg';

@@ -79,11 +79,15 @@ function Register(props) {
             <Form.Control
               type="password"
               placeholder="Repeat password"
-              onChange={(e) => handleKeyPress('password', e)}
+              onChange={(e) => handleKeyPress('retypePass', e)}
             />
           </Form.Group>
           <div className="text-center">
-            <Button variant="info" type="submit" className="mt-3 mb-3">
+            <Button
+              variant="info"
+              type="submit"
+              className="mt-3 mb-3 pt-2 pb-2 pl-5 pr-5"
+            >
               Create an Account
             </Button>
           </div>

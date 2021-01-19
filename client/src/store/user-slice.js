@@ -93,4 +93,9 @@ export const deleteUser = () => async (dispatch) => {
   dispatch(completeLogout());
 };
 
+export const validatePassword = (payload) => async (dispatch) => {
+  const lengthReq = payload.length >= 5;
+  const hasSpecialChars = payload.match(/^[a-zA-Z0-9!@#$%^&*)(+=._-]+$/g);
+};
+
 export default userSlice.reducer;

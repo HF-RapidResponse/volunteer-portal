@@ -77,9 +77,7 @@ function Login(props) {
             <Button variant="info" type="submit" className="mt-5 mb-3" block>
               Login
             </Button>
-          </div>
-          <p className="text-center font-weight-bold">or</p>
-          <div className="text-center">
+            <p className="font-weight-bold">or</p>
             <GoogleLogin
               clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
               buttonText="Login with Google"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Navbar, Nav, NavDropdown, Button, Image } from 'react-bootstrap';
-import { Link, NavLink, withRouter } from 'react-router-dom';
+import { Navbar, Nav, Image } from 'react-bootstrap';
+import { NavLink, withRouter } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 
 import '../../styles/header.scss';
@@ -16,6 +16,7 @@ import { getInitiatives } from '../../store/initiative-slice';
 
 import LoggedInMenu from './LoggedInMenu';
 import LoggedOutMenu from './LoggedOutMenu';
+import MainMenu from './MainMenu';
 
 /**
  * Component that displays the top navigation bar present on every page. It allows users to navigate
@@ -88,70 +89,6 @@ function Header(props) {
     setTimeout(() => setExpanded(false), 100);
   }
 
-  const navLinks = [];
-
-  for (let i = 0; i < mainLinks.length; i++) {
-    const link = mainLinks[i];
-    if (link.children && link.children.length) {
-      const dropdownItems = [];
-      for (let j = 0; j < link.children.length; j++) {
-        const child = link.children[j];
-        dropdownItems.push(
-          <NavLink
-            className="nav-link ml-5 mr-5"
-            to={`/initiatives/${child.initiative_external_id}`}
-            key={`nav-dropdown-child-${j}`}
-            onClick={collapse}
-          >
-            {child.name}
-          </NavLink>
-        );
-      }
-      dropdownItems.push(
-        <NavDropdown.Divider
-          key={`nav-dropdown-child-${link.children.length}`}
-        />
-      );
-      dropdownItems.push(
-        <NavLink
-          className="nav-link ml-5 mr-5"
-          to={`${link.url}`}
-          key={`nav-dropdown-child-${link.children.length + 1}`}
-          onClick={collapse}
-        >
-          {`See All ${link.displayName.split(' ')[1] || link.displayName}`}
-        </NavLink>
-      );
-      navLinks.push(
-        <NavDropdown title={link.displayName} key={`nav-top-item-${i}`}>
-          {dropdownItems}
-        </NavDropdown>
-      );
-    } else {
-      navLinks.push(
-        link && link.url[0] === '/' ? (
-          <NavLink
-            className="nav-link ml-3 mr-3 text-center"
-            key={`nav-top-item-${i}`}
-            to={link.url}
-            onClick={collapse}
-          >
-            {link.displayName}
-          </NavLink>
-        ) : (
-          <a
-            className="nav-link ml-3 mr-3 text-center"
-            href={link.url}
-            key={`nav-top-item-${i}`}
-            onClick={collapse}
-          >
-            {link.displayName}
-          </a>
-        )
-      );
-    }
-  }
-
   useEffect(() => {
     const currPath = history.location.pathname;
     const matchingLink =
@@ -159,37 +96,7 @@ function Header(props) {
       acctLinks.find((item) => item.url === currPath);
     setBlueBarTitle(matchingLink ? matchingLink.displayName : null);
   }, [history.location.pathname]);
-  const profileDropdown = [];
 
-  for (let i = 0; i < profileLinks.length; i++) {
-    const link = profileLinks[i];
-    profileDropdown.push(
-      <NavLink
-        className="nav-link ml-3 mr-3"
-        key={`nav-profile-dropdown-${i}`}
-        to={link.url}
-        onClick={collapse}
-      >
-        {link.displayName}
-      </NavLink>
-    );
-  }
-
-  profileDropdown.push(
-    <NavDropdown.Divider key={`nav-profile-dropdown-${profileLinks.length}`} />
-  );
-  profileDropdown.push(
-    <Nav.Link
-      className="nav-link ml-3 mr-3"
-      key={`nav-profile-dropdown-${profileLinks.length + 1}`}
-      onClick={() => {
-        cookies.remove('user', { path: '/' });
-        startLogout();
-      }}
-    >
-      Log Out
-    </Nav.Link>
-  );
   return (
     <>
       <Navbar
@@ -207,9 +114,7 @@ function Header(props) {
           onClick={() => setExpanded(!expanded)}
         />
         <Navbar.Collapse id="main-nav">
-          <Nav className="d-lg-flex align-items-center mr-auto">
-            <>{navLinks}</>
-          </Nav>
+          <MainMenu mainLinks={mainLinks} collapse={collapse} />
           <Nav className="account-container">
             {user ? (
               <LoggedInMenu
