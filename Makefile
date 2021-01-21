@@ -30,4 +30,6 @@ db-save-test:
 shell-client:
 	docker-compose run --rm client bash
 test-client:
+	docker-compose run --rm client npm test -- --passWithNoTests --ci --watchAll=false
+test-client-watch:
 	docker-compose run --rm client npm test -- --passWithNoTests
