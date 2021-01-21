@@ -16,4 +16,4 @@ jobs:
       - name: Python Tests
         run: docker-compose run --rm api-test python -m pytest tests/
       - name: JavaScript Tests
-        run: docker-compose run --rm api-client npm test -- --passWithNoTests
+        run: docker-compose run --rm client npm test -- --passWithNoTests
