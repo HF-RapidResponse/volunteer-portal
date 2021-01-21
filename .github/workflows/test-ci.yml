@@ -1,0 +1,19 @@
+name: Test CI
+
+on:
+  push:
+    branches: [ production, develop ]
+  pull_request:
+    branches: [ production, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the stack
+        run: docker-compose up -d
+      - name: Python Tests
+        run: docker-compose run --rm api-test python -m pytest tests/
+      - name: JavaScript Tests
+        run: docker-compose run --rm api-cliet npm test -- --passWithNoTests

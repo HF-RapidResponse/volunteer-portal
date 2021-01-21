@@ -35,6 +35,7 @@ services:
     - api
     environment:
     - "DANGEROUSLY_DISABLE_HOST_CHECK=true"
+    - "NODE_ENV=development"
     ports:
     - 8080:8080
     volumes:
