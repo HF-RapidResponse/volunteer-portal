@@ -74,7 +74,6 @@ function Register() {
             className="form-control"
             id="act-blue-email"
             placeholder="Type email address here..."
-            required
           />
         </div>
         <p className="sm-copy">

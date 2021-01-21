@@ -24,8 +24,7 @@ def setup(db):
 
 def test_donation_email_insert(db):
     donation = DonationEmail(email = fake.email())
-    inserted_donation = DonationEmail.insert(db, donation)
-    assert(inserted_donation)
+    inserted_donation = db.add(donation)
 
     lookup = db.query(DonationEmail).filter_by(email=donation.email).scalar()
 

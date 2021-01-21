@@ -16,10 +16,11 @@ up-prod:
 shell-api:
 	docker-compose run --rm api bash
 test:
-	docker-compose $(TEST) run --rm api python -m pytest tests/
-validate:
-	docker-compose run --rm api mypy /api
-db-reload:
+	docker-compose $(TEST) run --rm api-test python -m pytest tests/
+# Not currently working.
+# validate:
+# 	docker-compose run --rm api-test mypy /api
+db-reload-dev:
 	docker-compose run --rm api python bootstrap.py
 
 # Database
@@ -33,3 +34,7 @@ db-save-test:
 # Client
 shell-client:
 	docker-compose run --rm client bash
+test-client:
+	docker-compose run --rm client npm test -- --passWithNoTests --ci --watchAll=false
+test-client-watch:
+	docker-compose run --rm client npm test -- --passWithNoTests
