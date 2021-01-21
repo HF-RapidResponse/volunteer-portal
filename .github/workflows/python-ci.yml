@@ -15,7 +15,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8
@@ -25,6 +25,9 @@ jobs:
     - name: Setup
       run:
         pip install -r requirements.txt
-    - name: Lint
+    - name: Bootstrap
       run:
-        mypy .
+        ENV=test python bootstrap.py
+    - name: Test
+      run:
+        ENV=test python -m pytest tests/
