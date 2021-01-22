@@ -28,6 +28,8 @@ db-push-dev:
 	psql -h 127.0.0.1 -p 8082 -U admin < db/data/data.development.sql
 db-save-test:
 	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_test > db/data/data.test.sql
+db-save-test-from-dev:
+	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_development | sed 's/hf_volunteer_portal_development/hf_volunteer_portal_test/g' > db/data/data.test.sql
 
 # Client
 shell-client:

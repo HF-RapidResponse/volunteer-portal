@@ -88,16 +88,17 @@ ALTER TABLE public.donation_emails OWNER TO admin;
 --
 
 CREATE TABLE public.events (
-    event_uuid uuid NOT NULL,
-    id character varying(255),
-    event_id character varying(255),
+    uuid uuid NOT NULL,
+    id character varying(255) NOT NULL,
+    event_name character varying(255) NOT NULL,
     event_graphics json[],
     signup_link text,
-    details_url text,
     start timestamp without time zone,
     "end" timestamp without time zone,
     description text,
-    point_of_contact_name text
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL
 );
 
 
@@ -108,14 +109,18 @@ ALTER TABLE public.events OWNER TO admin;
 --
 
 CREATE TABLE public.initiatives (
-    initiative_uuid uuid NOT NULL,
-    id character varying(255),
-    initiative_name character varying(255),
+    uuid uuid NOT NULL,
+    id character varying(255) NOT NULL,
+    initiative_name character varying(255) NOT NULL,
+    "order" integer NOT NULL,
     details_link character varying(255),
     hero_image_urls json[],
-    description character varying(255),
+    description text,
     roles character varying[],
-    events character varying[]
+    events character varying[],
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL
 );
 
 
@@ -126,14 +131,15 @@ ALTER TABLE public.initiatives OWNER TO admin;
 --
 
 CREATE TABLE public.volunteer_openings (
-    role_uuid uuid NOT NULL,
-    id character varying(255),
-    position_id character varying(255),
-    more_info_link text,
-    team_photo json[],
+    uuid uuid NOT NULL,
+    id character varying(255) NOT NULL,
+    role_name character varying(255) NOT NULL,
+    hero_image_urls json[],
     application_signup_form text,
-    priority_level public.priority,
-    point_of_contact_name character varying(255),
+    more_info_link text,
+    priority public.priority,
+    team character varying(255)[],
+    team_lead_ids character varying(255)[],
     num_openings integer,
     minimum_time_commitment_per_week_hours integer,
     maximum_time_commitment_per_week_hours integer,
@@ -141,7 +147,10 @@ CREATE TABLE public.volunteer_openings (
     what_youll_learn text,
     responsibilities_and_duties text,
     qualifications text,
-    role_type public.roletype
+    role_type public.roletype,
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL
 );
 
 
@@ -160,7 +169,7 @@ ALTER TABLE ONLY public.donation_emails
 --
 
 ALTER TABLE ONLY public.events
-    ADD CONSTRAINT events_pkey PRIMARY KEY (event_uuid);
+    ADD CONSTRAINT events_pkey PRIMARY KEY (uuid);
 
 
 --
@@ -168,7 +177,7 @@ ALTER TABLE ONLY public.events
 --
 
 ALTER TABLE ONLY public.initiatives
-    ADD CONSTRAINT initiatives_pkey PRIMARY KEY (initiative_uuid);
+    ADD CONSTRAINT initiatives_pkey PRIMARY KEY (uuid);
 
 
 --
@@ -176,7 +185,7 @@ ALTER TABLE ONLY public.initiatives
 --
 
 ALTER TABLE ONLY public.volunteer_openings
-    ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (role_uuid);
+    ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (uuid);
 
 
 --
