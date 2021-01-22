@@ -10,6 +10,7 @@ import { verifyPassword, deleteUser } from '../../store/user-slice';
 function Settings(props) {
   const [currPassValid, setCurrPassValid] = useState(false);
   const [newAndRetypeMatch, setNewAndReypteMatch] = useState(false);
+  const [disableForm, setDisableForm] = useState(false);
   const {
     handleChange,
     handleSubmit,
@@ -48,7 +49,6 @@ function Settings(props) {
   const clearFormComponent = () => {
     const formComponent = document.getElementById('acct-settings-form');
     formComponent.reset();
-    setData({});
   };
 
   const resetChangePassValidation = () => {
@@ -59,14 +59,17 @@ function Settings(props) {
   useEffect(() => {
     if (validated) {
       clearFormComponent();
-      setSubmitted(false);
+      setDisableForm(true);
       setValidated(false);
       setTimeout(() => {
+        setSubmitted(false);
         resetChangePassValidation();
+        setData({});
+        setDisableForm(false);
       }, 3000);
     }
   }, [submitted]);
-  console.log('what is data.oldPass?', data.oldPass);
+
   return user ? (
     <Form
       id="acct-settings-form"
@@ -109,15 +112,16 @@ function Settings(props) {
             placeholder="Old Password"
             id="old-pass"
             onChange={(e) => handleChange('oldPass', e.target.value)}
-            isValid={currPassValid}
+            isValid={submitted && currPassValid}
             isInvalid={submitted && !currPassValid}
             required
+            disabled={disableForm}
           />
           <Form.Control.Feedback type="invalid">
             Password is invalid!
           </Form.Control.Feedback>
         </div>
-        <div className={data.oldPass ? 'mt-5 mb-3' : 'd-none'}>
+        <div className={data.oldPass || submitted ? 'mt-5 mb-3' : 'd-none'}>
           <Form.Label>New Password</Form.Label>
           <Form.Control
             type="password"
@@ -126,6 +130,7 @@ function Settings(props) {
             isValid={newAndRetypeMatch}
             isInvalid={submitted && !newAndRetypeMatch}
             required
+            disabled={disableForm}
           />
         </div>
         <div className={data.oldPass ? 'mt-3 mb-3' : 'd-none'}>
@@ -137,6 +142,7 @@ function Settings(props) {
             isValid={newAndRetypeMatch}
             isInvalid={submitted && !newAndRetypeMatch}
             required
+            disabled={disableForm}
           />
           <Form.Control.Feedback type="invalid">
             Passwords do not match!
