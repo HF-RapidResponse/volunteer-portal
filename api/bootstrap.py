@@ -11,7 +11,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models import Base, Initiative, VolunteerEvent, VolunteerRole
+from models import Base, DonationEmail, Initiative, VolunteerEvent, VolunteerRole
 from settings import Connections, Session, ENV
 from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_volunteer_events_list, generate_fake_initiatives_list
 # from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_initiatives_list
@@ -59,8 +59,8 @@ for key in Connections:
 Session = sessionmaker(binds={
     Initiative: engines['database'],
     VolunteerEvent: engines['database'],
-    VolunteerRole: engines['database']
-    # Todo: Map other tables to connections
+    VolunteerRole: engines['database'],
+    DonationEmail: engines['database']
 })
 
 # Create all tables

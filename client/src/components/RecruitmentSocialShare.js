@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  FacebookShareButton,
-  TwitterShareButton
-} from 'react-share';
+import { FacebookShareButton, TwitterShareButton } from 'react-share';
 
 function RecruitmentSocialShare() {
   const shareUrl = process.env.REACT_APP_SOCIAL_SHARE_URL;
@@ -16,7 +13,8 @@ function RecruitmentSocialShare() {
           className="btn btn-outline-info"
           resetButtonStyle={false}
           aria-label="Share on Facebook"
-          style={{ padding: '.35rem 1.5rem' }}>
+          style={{ padding: '.35rem 1.5rem' }}
+        >
           Share on Facebook
         </FacebookShareButton>
       </div>
@@ -28,7 +26,8 @@ function RecruitmentSocialShare() {
           className="btn btn-outline-info"
           resetButtonStyle={false}
           aria-label="Share on Twitter"
-          style={{ padding: '.35rem 1.5rem' }}>
+          style={{ padding: '.35rem 1.5rem' }}
+        >
           Share on Twitter
         </TwitterShareButton>
       </div>

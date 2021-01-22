@@ -13,17 +13,24 @@ services:
 
   api:
     build: ./api
-    command: uvicorn --host 0.0.0.0 api:app --app-dir . --port 8081 --reload-dir .
+    command: uvicorn --host 0.0.0.0 api:app --app-dir . --port 8081 --reload
     depends_on:
     - db
     ports:
     - 8081:8081
     volumes:
     - ./api:/api
+  api-test:
+    build: ./api
+    env_file: ./api/.env.test
+    depends_on:
+    - 'api'
+    volumes:
+    - ./api:/api
 
   client:
     build: ./client
-    command: npm run start
+    command: npm run client
     depends_on:
     - api
     environment:
@@ -46,13 +53,6 @@ services:
     - ./nginx:/etc/nginx/conf.d
     ports:
     - 8000:80
-
-  # adminer:
-  #   image: adminer
-  #  ports:
-  #  - 8080:8080
-
-
 
 
 volumes:

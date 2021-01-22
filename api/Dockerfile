@@ -6,5 +6,3 @@ WORKDIR /api
 COPY config.yaml ./config.yaml
 COPY requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
-
-COPY . ./
