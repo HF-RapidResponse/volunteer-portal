@@ -5,9 +5,10 @@ import { Form, Col, Row, Dropdown } from 'react-bootstrap';
 import { deleteRole } from '../../store/user-slice';
 import VerticalDots from '../VerticalDots';
 import initiativeSlice from '../../store/initiative-slice';
+import { toggleInitiativeSubscription } from '../../store/user-slice';
 
 function Involvement(props) {
-  const { user, deleteRole, initiatives } = props;
+  const { user, deleteRole, initiatives, toggleInitiativeSubscription } = props;
 
   const rolesToRender = [];
   const CustomToggle = forwardRef(({ children, onClick }, ref) => (
@@ -52,26 +53,33 @@ function Involvement(props) {
       );
     }
 
-    for (let j = 0; j < initiatives.length; j++) {
-      const initiative = initiatives[j];
-      console.log('What is initiative?', initiative);
-      initiativesToRender.push(
-        <Row className="mt-2 mb-2" key={'initiative-' + j}>
-          <Col xs={12} md={8}>
-            <Form.Group>
-              <Form.Control type="name" value={initiative.name} readOnly />
-            </Form.Group>
-          </Col>
-          <Col xs={12} md={4}>
-            <Form.Switch
-              id="initiative-2-switch"
-              className="custom-switch-md ml-lg-5"
-              defaultChecked
-            />
-          </Col>
-        </Row>
-      );
-    }
+    Object.entries(user.initiativeMap).forEach(
+      ([initiativeName, isSubscribed]) => {
+        initiativesToRender.push(
+          <Row className="mt-2 mb-2" key={'initiative-' + initiativeName}>
+            <Col xs={12} md={8}>
+              <Form.Group>
+                <Form.Control type="name" value={initiativeName} readOnly />
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={4}>
+              <Form.Switch
+                id={'involvement-initiative-' + initiativeName}
+                className="custom-switch-md ml-lg-5"
+                checked={isSubscribed}
+                onChange={() =>
+                  toggleInitiativeSubscription({
+                    user,
+                    initiativeName,
+                    isSubscribed,
+                  })
+                }
+              />
+            </Col>
+          </Row>
+        );
+      }
+    );
   }
   return user ? (
     <>
@@ -106,6 +114,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { deleteRole };
+const mapDispatchToProps = { deleteRole, toggleInitiativeSubscription };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Involvement);

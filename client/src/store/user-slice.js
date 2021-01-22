@@ -13,6 +13,7 @@ const userSlice = createSlice({
   reducers: {
     completeLogin: (state, action) => {
       const { payload } = action;
+      payload.id = payload.id || '1234';
       payload.username = payload.username || 'andyfromtheblock'; // using this as placeholder for now
       payload.name = payload.name || 'Andie Yang'; // placeholder
       payload.city = payload.city || 'New York City'; // placeholder
@@ -21,6 +22,11 @@ const userSlice = createSlice({
         'President of Andy Club and the Superintendent',
         'Mr. Grinch',
       ]; // placeholder
+      payload.initiativeMap = payload.initiativeMap || {
+        'Fundraising for UBI campaign': true,
+        'Congressional Pressure for UBI': true,
+        'Normalize Human Centered Policies': true,
+      };
       state.user = payload;
       // console.log('Here is the user on login:', state.user);
     },
@@ -40,6 +46,14 @@ const userSlice = createSlice({
         return element != payload;
       });
     },
+    completeUserUpdate: (state, action) => {
+      const { payload } = action;
+      // const { user, initiativeName, isSubscribed } = payload;
+      console.log('What is in payload?', payload);
+      state.user = payload;
+      //state.user[initiativeName] = !isSubscribed;
+      console.log('Did user update?', state.user);
+    },
   },
 });
 
@@ -48,6 +62,7 @@ export const {
   completeLogout,
   setFirstAcctPage,
   completeDelete,
+  completeUserUpdate,
 } = userSlice.actions;
 
 export const attemptLogin = (payload) => async (dispatch) => {
@@ -96,6 +111,17 @@ export const deleteUser = () => async (dispatch) => {
 export const validatePassword = (payload) => async (dispatch) => {
   const lengthReq = payload.length >= 5;
   const hasSpecialChars = payload.match(/^[a-zA-Z0-9!@#$%^&*)(+=._-]+$/g);
+};
+
+export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
+  const { user, initiativeName, isSubscribed } = payload;
+  const userCopy = { ...user };
+  userCopy.initiativeMap = {
+    ...userCopy.initiativeMap,
+  };
+  userCopy.initiativeMap[initiativeName] = !isSubscribed;
+  //const response = await axios.put(`/users/user.id`, user);
+  dispatch(completeUserUpdate(userCopy));
 };
 
 export default userSlice.reducer;
