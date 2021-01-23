@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
 import { Button, Form, Container } from 'react-bootstrap';
-import { attemptLogin } from '../store/user-slice.js';
+import { attemptLogin, validateEmail } from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
@@ -10,8 +10,8 @@ import { GoogleLogin } from 'react-google-login';
 function Login(props) {
   const [submitted, setSubmitted] = useState(false);
   const [validated, setValidated] = useState(false);
-  const { attemptLogin, user, firstAcctPage } = props;
-  const { handleSubmit, handleChange } = useForm(attemptLogin);
+  const { attemptLogin, user, firstAcctPage, validateEmail } = props;
+  const { handleSubmit, handleChange, data } = useForm(attemptLogin);
   const path = window.location.pathname;
   /**
    * simple helper function that handles form submission by calling several other functions
@@ -55,16 +55,38 @@ function Login(props) {
             <Form.Control
               type="email"
               placeholder="E-mail address"
-              onChange={(e) => handleKeyPress('email', e)}
+              onChange={(e) => {
+                if (validated) {
+                  setValidated(false);
+                }
+                handleKeyPress('email', e);
+              }}
+              required
+              isInvalid={
+                submitted && (!data.email || validateEmail(data.email))
+              }
             />
+            <Form.Control.Feedback type="invalid">
+              Please provide an e-mail address.
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
               placeholder="Password"
-              onChange={(e) => handleKeyPress('password', e)}
+              onChange={(e) => {
+                if (validated) {
+                  setValidated(false);
+                }
+                handleKeyPress('password', e);
+              }}
+              required
+              isInvalid={submitted && !data.password}
             />
+            <Form.Control.Feedback type="invalid">
+              Please provide a password.
+            </Form.Control.Feedback>
             <Link
               className="font-weight-light"
               style={{ color: 'gray' }}
@@ -100,5 +122,5 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { attemptLogin };
+const mapDispatchToProps = { attemptLogin, validateEmail };
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

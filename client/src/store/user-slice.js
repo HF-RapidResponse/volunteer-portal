@@ -28,7 +28,7 @@ const userSlice = createSlice({
         'Normalize Human Centered Policies': true,
       };
       state.user = payload;
-      // console.log('Here is the user on login:', state.user);
+      console.log('Here is the user on login:', state.user);
     },
     completeLogout: (state) => {
       state.user = null;
@@ -122,6 +122,15 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   userCopy.initiativeMap[initiativeName] = !isSubscribed;
   //const response = await axios.put(`/users/user.id`, user);
   dispatch(completeUserUpdate(userCopy));
+};
+
+/*
+    This regex wizardry was totally stolen from here: 
+    https://www.w3docs.com/snippets/javascript/how-to-validate-an-e-mail-using-javascript.html
+  */
+export const validateEmail = (email) => {
+  const res = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return res.test(String(email).toLowerCase());
 };
 
 export default userSlice.reducer;
