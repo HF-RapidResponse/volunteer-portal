@@ -14,7 +14,7 @@ function Initiatives() {
   document.title = 'HF Volunteer Portal - Initiatives';
 
   useEffect(() => {
-    fetch('/api/initiatives')
+    fetch('/api/initiatives/')
       .then((response) => {
         if (response.ok) {
           response.json().then((data) => {

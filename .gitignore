@@ -85,9 +85,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env.test
-
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
@@ -125,5 +122,5 @@ dist
 
 api/dev-env
 
-## Jupyter checkpoints
-.ipynb_checkpoints
+## Custom ignores (jcherry)
+.ipynb_checkpoints/
