@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { Button, Form, Container } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
 import useForm from './hooks/useForm';
+import { attemptCreateAccount, validatePassword } from '../store/user-slice';
 
 function Register(props) {
   document.title = 'HF Volunteer Portal - Create an Account';
-  const [submitted, setSubmitted] = useState(false);
-  const [validated, setValidated] = useState(false);
-  const { attemptLogin, user } = props;
-  const { handleSubmit, handleChange } = useForm(attemptLogin);
+  // const [submitted, setSubmitted] = useState(false);
+  // const [validated, setValidated] = useState(false);
+  const { user, attemptCreateAccount } = props;
+  const {
+    handleChange,
+    handleSubmit,
+    data,
+    submitted,
+    setSubmitted,
+    validated,
+    setValidated,
+    errors,
+  } = useForm(attemptCreateAccount);
   const path = window.location.pathname;
+
   /**
    * simple helper function that handles form submission by calling several other functions
    * @param {*} e - event object
    */
   function submitWrapper(e) {
-    setSubmitted(handleSubmit(e));
     setValidated(true);
+    setSubmitted(handleSubmit(e));
   }
 
   /**
@@ -37,47 +50,84 @@ function Register(props) {
       <h2 className="text-center">
         Create an account with us to manage your volunteering experience.
       </h2>
-      <div className="mt-5 mb-5">
+      <Container className="mt-5 mb-5">
         <h3 className="text-center" style={{ color: 'gray' }}>
           Create your account.
         </h3>
-        <Form
-          noValidate
-          validated={validated}
-          className="ml-5 mr-5"
-          onSubmit={submitWrapper}
-        >
+        <Form noValidate validated={validated} onSubmit={submitWrapper}>
           <Form.Group controlId="formUsername">
             <Form.Label>Name</Form.Label>
             <Form.Control
               type="name"
               placeholder="Name"
-              onChange={(e) => handleKeyPress('username', e)}
+              onChange={(e) => {
+                if (validated) {
+                  setValidated(false);
+                }
+                handleKeyPress('name', e);
+              }}
+              isInvalid={!!errors.name}
+              required
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.name || 'Please provide a name.'}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>E-mail address</Form.Label>
             <Form.Control
               type="email"
               placeholder="E-mail address"
-              onChange={(e) => handleKeyPress('email', e)}
+              onChange={(e) => {
+                if (validated) {
+                  setValidated(false);
+                }
+                handleKeyPress('email', e);
+              }}
+              isInvalid={!!errors.email}
+              required
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.email || 'Please provide a valid e-mail address.'}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
               placeholder="Password"
-              onChange={(e) => handleKeyPress('password', e)}
+              onChange={(e) => {
+                if (validated) {
+                  setValidated(false);
+                }
+                handleKeyPress('password', e);
+              }}
+              isInvalid={!!errors.password}
+              // isValid={submitted && validatePassword(data.password)}
+              required
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.password || 'Please provide a password.'}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formRetypePassword">
             <Form.Label>Re-enter your password</Form.Label>
             <Form.Control
               type="password"
               placeholder="Repeat password"
-              onChange={(e) => handleKeyPress('retypePass', e)}
+              onChange={(e) => {
+                if (validated) {
+                  setValidated(false);
+                }
+                handleKeyPress('retypePass', e);
+              }}
+              isInvalid={!!errors.retypePass}
+              // isValid={validated && !errors.retypePass}
+              required
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.retypePass || 'Please re-type your password.'}
+            </Form.Control.Feedback>
           </Form.Group>
           <div className="text-center">
             <Button
@@ -89,9 +139,15 @@ function Register(props) {
             </Button>
           </div>
         </Form>
-      </div>
+      </Container>
     </>
   );
 }
+const mapStateToProps = (state) => {
+  return {
+    user: state.userStore.user,
+  };
+};
+const mapDispatchToProps = { attemptCreateAccount };
 
-export default Register;
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

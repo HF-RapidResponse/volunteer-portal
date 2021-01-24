@@ -87,6 +87,36 @@ export const loadLoggedInUser = (payload) => (dispatch) => {
   dispatch(completeLogin(payload));
 };
 
+export const attemptCreateAccount = (payload) => async (dispatch) => {
+  if (!payload) {
+    return false;
+  }
+  console.log('beginning of attempt create', payload);
+  const errors = {};
+  const emailIsValid = validateEmail(payload.email);
+  console.log('Is email valid?', emailIsValid);
+  if (!emailIsValid) {
+    errors.email = 'Please enter a valid e-mail.';
+  }
+  const passwordIsValid = validatePassword(payload.password);
+  if (!passwordIsValid) {
+    errors.password =
+      'Please enter a password at least 5 characters long with 1 letter and 1 nuumber or special character.';
+  }
+
+  const passAndRetypeMatch = payload.password === payload.retypePass;
+  if (!passAndRetypeMatch) {
+    errors.retypePass = 'Passwords do not match!';
+  }
+
+  if (emailIsValid && passwordIsValid && passAndRetypeMatch) {
+    dispatch(loadLoggedInUser(payload));
+    return true;
+  }
+  console.log('errors here?', errors);
+  throw errors;
+};
+
 export const verifyPassword = (payload) => {
   //const response = await axios.get(`/users/${userSlice.user.ID}`);
   //return response.password === (base64blah blah blah) && payload.oldPass === payload.newPass;
@@ -108,9 +138,15 @@ export const deleteUser = () => async (dispatch) => {
   dispatch(completeLogout());
 };
 
-export const validatePassword = (payload) => async (dispatch) => {
+export const validatePassword = (payload) => {
+  console.log('inside validatePassword?', payload);
+  if (!payload) {
+    return false;
+  }
   const lengthReq = payload.length >= 5;
-  const hasSpecialChars = payload.match(/^[a-zA-Z0-9!@#$%^&*)(+=._-]+$/g);
+  const hasLetters = payload.match(/^[a-zA-Z]/g);
+  const hasNumsOrSpecialChars = payload.match(/^[0-9!@#$%^&*)(+=._-]+$/g);
+  return lengthReq && hasLetters && hasNumsOrSpecialChars;
 };
 
 export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
@@ -130,6 +166,10 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   */
 export const validateEmail = (email) => {
   const res = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  console.log(
+    'did we get into validateEmail?',
+    res.test(String(email).toLowerCase())
+  );
   return res.test(String(email).toLowerCase());
 };
 

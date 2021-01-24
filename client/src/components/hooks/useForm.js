@@ -10,6 +10,7 @@ function useForm(callback, initObj) {
   const [data, setData] = useState(initObj || {});
   const [submitted, setSubmitted] = useState(false);
   const [validated, setValidated] = useState(false);
+  const [errors, setErrors] = useState({});
 
   /**
    * event handler function of sorts that handles form change
@@ -20,7 +21,7 @@ function useForm(callback, initObj) {
   function handleChange(key, val) {
     const newData = { ...data };
     newData[key] = val;
-    // console.log('What is newData now?', newData);
+    console.log('What is newData now?', newData);
     setData(newData);
   }
 
@@ -36,9 +37,21 @@ function useForm(callback, initObj) {
     if (form.checkValidity() === false) {
       return null;
     } else {
-      const callbackRes = callback(data);
-      // console.log('what is callbackRes?', callbackRes);
-      return callbackRes;
+      callback(data)
+        .then((response) => {
+          if (response.error) {
+            const newErrors = { ...errors, ...response.error };
+            setErrors(newErrors);
+            return false;
+          } else {
+            setErrors({});
+          }
+        })
+        .catch((error) => {
+          console.error('Did we get an error?', error);
+          setErrors(error);
+          return false;
+        });
     }
   }
 
@@ -51,6 +64,8 @@ function useForm(callback, initObj) {
     setSubmitted,
     validated,
     setValidated,
+    errors,
+    setErrors,
   };
 }
 
