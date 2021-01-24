@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build the stack
-        run: docker-compose up -d
+        run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
       - name: Python Tests
         run: docker-compose -f docker-compose.yml -f docker-compose.test.yml run --rm api python -m pytest tests/
       - name: JavaScript Tests
