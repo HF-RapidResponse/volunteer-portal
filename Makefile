@@ -9,14 +9,12 @@ up:
 down:
 	docker-compose down
 
-up-prod:
-	docker-compose $(PROD) up -d
 
 # Api
 shell-api:
 	docker-compose run --rm api bash
 test:
-	docker-compose $(TEST) run --rm api-test python -m pytest tests/
+	docker-compose $(TEST) run --rm api python -m pytest tests/
 # Not currently working.
 # validate:
 # 	docker-compose run --rm api-test mypy /api
