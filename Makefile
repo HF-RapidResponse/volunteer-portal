@@ -26,8 +26,6 @@ shell-db:
 	docker-compose run --rm db bash
 db-save-dev:
 	docker-compose exec db pg_dump --create -U admin hf_volunteer_portal_development > db/data/dev/data.development.sql
-db-save-test:
-	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_test > db/data/test/data.test.sql
 db-save-test-from-dev:
 	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_development | sed 's/hf_volunteer_portal_development/hf_volunteer_portal_test/g' > db/data/test/data.test.sql
 
