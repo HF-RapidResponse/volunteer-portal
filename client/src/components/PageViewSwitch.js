@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga';
 import { Container } from 'react-bootstrap';
-import { Route, Switch, Redirect, useLocation } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 
 import Home from './Home';
 import Calendar from './Calendar';
@@ -10,7 +10,6 @@ import Candidates from './Candidates';
 import Register from './Register';
 import Initiatives from './Initiatives';
 import InitiativeDetail from './InitiativeDetail';
-import Signin from './Signin';
 import NotFound from './NotFound';
 
 // initialize GA
@@ -40,10 +39,7 @@ function PageViewSwitch() {
         <Route path="/register" exact component={Register} />
         <Route path="/initiatives" exact component={Initiatives} />
         <Route path="/initiatives/:ext_id" component={InitiativeDetail} />
-        <Route path="/signin" exact component={Signin} />
-        <Route exact path="/auth_callback">
-          <Redirect to="/signin" />
-        </Route>
+        {/* <Route path="/signin" exact component={Signin} /> */}
         <Route path="*" component={NotFound} />
       </Switch>
     </Container>
