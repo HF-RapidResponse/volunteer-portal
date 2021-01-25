@@ -101,7 +101,7 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
   const passwordIsValid = validatePassword(payload.password);
   if (!passwordIsValid) {
     errors.password =
-      'Please enter a password at least 5 characters long with 1 letter and 1 nuumber or special character.';
+      'Please enter a password between 6 and 20 characters long with at least 1 letter, 1 nuumber, and 1 special character.';
   }
 
   const passAndRetypeMatch = payload.password === payload.retypePass;
@@ -138,15 +138,17 @@ export const deleteUser = () => async (dispatch) => {
   dispatch(completeLogout());
 };
 
+/*
+  Credit: https://stackoverflow.com/questions/2370015/regular-expression-for-password-validation
+  Regex is asking for 6 to 20 character length with at least 
+  1 letter, 1 number, and 1 special characters
+*/
 export const validatePassword = (payload) => {
   console.log('inside validatePassword?', payload);
   if (!payload) {
     return false;
   }
-  const lengthReq = payload.length >= 5;
-  const hasLetters = payload.match(/^[a-zA-Z]/g);
-  const hasNumsOrSpecialChars = payload.match(/^[0-9!@#$%^&*)(+=._-]+$/g);
-  return lengthReq && hasLetters && hasNumsOrSpecialChars;
+  return payload.match(/(?=.*\d)(?=.*[a-zA-Z])(?=.*[!#$%&?]).{6,20}/g);
 };
 
 export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
@@ -161,8 +163,7 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
 };
 
 /*
-    This regex wizardry was totally stolen from here: 
-    https://www.w3docs.com/snippets/javascript/how-to-validate-an-e-mail-using-javascript.html
+    Credit: https://www.w3docs.com/snippets/javascript/how-to-validate-an-e-mail-using-javascript.html
   */
 export const validateEmail = (email) => {
   const res = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

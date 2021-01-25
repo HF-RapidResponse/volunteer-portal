@@ -35,17 +35,12 @@ function useForm(callback, initObj) {
     e.preventDefault();
     e.stopPropagation();
     if (form.checkValidity() === false) {
-      return null;
+      console.log('in the false?');
+      return false;
     } else {
       callback(data)
         .then((response) => {
-          if (response.error) {
-            const newErrors = { ...errors, ...response.error };
-            setErrors(newErrors);
-            return false;
-          } else {
-            setErrors({});
-          }
+          return response;
         })
         .catch((error) => {
           console.error('Did we get an error?', error);

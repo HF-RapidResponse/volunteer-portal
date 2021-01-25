@@ -36,6 +36,9 @@ function Register(props) {
    * @param {Object} e - event object
    */
   function handleKeyPress(key, e) {
+    if (validated) {
+      setValidated(false);
+    }
     if (e.key === 'Enter') {
       submitWrapper(e);
     } else {
@@ -55,15 +58,12 @@ function Register(props) {
           Create your account.
         </h3>
         <Form noValidate validated={validated} onSubmit={submitWrapper}>
-          <Form.Group controlId="formUsername">
+          <Form.Group controlId="formName">
             <Form.Label>Name</Form.Label>
             <Form.Control
               type="name"
               placeholder="Name"
               onChange={(e) => {
-                if (validated) {
-                  setValidated(false);
-                }
                 handleKeyPress('name', e);
               }}
               isInvalid={!!errors.name}
@@ -79,9 +79,6 @@ function Register(props) {
               type="email"
               placeholder="E-mail address"
               onChange={(e) => {
-                if (validated) {
-                  setValidated(false);
-                }
                 handleKeyPress('email', e);
               }}
               isInvalid={!!errors.email}
@@ -97,13 +94,9 @@ function Register(props) {
               type="password"
               placeholder="Password"
               onChange={(e) => {
-                if (validated) {
-                  setValidated(false);
-                }
                 handleKeyPress('password', e);
               }}
               isInvalid={!!errors.password}
-              // isValid={submitted && validatePassword(data.password)}
               required
             />
             <Form.Control.Feedback type="invalid">
@@ -116,13 +109,9 @@ function Register(props) {
               type="password"
               placeholder="Repeat password"
               onChange={(e) => {
-                if (validated) {
-                  setValidated(false);
-                }
                 handleKeyPress('retypePass', e);
               }}
               isInvalid={!!errors.retypePass}
-              // isValid={validated && !errors.retypePass}
               required
             />
             <Form.Control.Feedback type="invalid">
