@@ -12,7 +12,7 @@ class VolunteerEventSchema(BaseModel):
     external_id: str
     event_name: str
     signup_url: str
-    hero_image_url: Url
+    hero_image_url: Optional[Url]
     details_url: Optional[Url]
     start_datetime: datetime
     end_datetime: Optional[datetime]

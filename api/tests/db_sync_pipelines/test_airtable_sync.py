@@ -106,3 +106,15 @@ def test_update(db, airtable_loader, response_converter):
   saved_event = db.query(VolunteerEvent).filter(VolunteerEvent.external_id == event_id).first()
   assert saved_event.description == "Updated"
   assert saved_event.updated_at > initial_timestamp
+
+def test_missing_nonnullable_field_fails(db, airtable_loader, response_converter):
+  event = airtable_loader.response[0]
+  event['id'] = "missing_nonnullable_id_test"
+  event_id = event['id']
+  del event['fields']['Event Name']
+  event['fields']['Start'] = None
+
+  with pytest.raises(Exception) as e:
+      RunAirtableSync(airtable_loader, db, response_converter)
+
+  assert "event_name" in str(e) or 'start_datetime' in str(e)

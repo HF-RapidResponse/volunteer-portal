@@ -15,6 +15,8 @@ shell-api:
 	docker-compose run --rm api bash
 test:
 	docker-compose $(TEST) run --rm api python -m pytest tests/
+test-debug:
+	docker-compose $(TEST) run --rm api python -m pytest tests/  -s --capture=no -vv
 # Not currently working.
 # validate:
 # 	docker-compose run --rm api-test mypy /api
@@ -28,6 +30,7 @@ db-save-dev:
 	docker-compose exec db pg_dump --create -U admin hf_volunteer_portal_development > db/data/dev/data.development.sql
 db-save-test-from-dev:
 	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_development | sed 's/hf_volunteer_portal_development/hf_volunteer_portal_test/g' > db/data/test/data.test.sql
+db-reset-all-from-python: db-reload-dev db-save-dev db-save-test-from-dev
 
 # Client
 shell-client:
