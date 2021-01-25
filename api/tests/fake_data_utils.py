@@ -13,7 +13,11 @@ seed(1000)
 def generate_fake_volunteer_role() -> VolunteerRole:
     return VolunteerRole(
         role_external_id = fake.name(),
+<<<<<<< HEAD
         name = fake.sentence(),
+=======
+        name  = fake.sentence(),
+>>>>>>> develop
         details_url = fake.uri(),
         hero_image_urls = ([ { 'url': fake.image_url() }] if choice([True, False]) else []),
         priority = Priority.MEDIUM,
@@ -38,8 +42,12 @@ def generate_fake_volunteer_roles_list(session, count: int = 1) -> List[Voluntee
     return roles
 
 def generate_fake_volunteer_event() -> VolunteerEvent:
+<<<<<<< HEAD
     start_datetime = datetime.today() + timedelta(days=randint(-10,10),
                                                   minutes=randint(-100,100))
+=======
+    start_datetime = datetime.today() + timedelta(days=randint(-10,10))
+>>>>>>> develop
 
     return VolunteerEvent(
         event_external_id = fake.name(),
@@ -79,11 +87,19 @@ def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 
         initiative_external_id = fake.sentence(),
         name = fake.name(),
         details_url = fake.uri(),
+<<<<<<< HEAD
         hero_image_urls = ([ { 'url': fake.image_url() }] if choice([True, False]) else []),
         content = fake.paragraph(nb_sentences=4),
         role_ids = role_ids,
         event_ids = event_ids,
         # highlightedItems = items
+=======
+        title = fake.sentence(),
+        hero_image_urls = ([ { 'url': fake.image_url() }] if choice([True, False]) else []),
+        content = fake.paragraph(nb_sentences=4),
+        role_ids = role_ids,
+        event_ids = event_ids
+>>>>>>> develop
     )
 
 def generate_fake_initiatives_list(session, count: int = 1, roles_count: int = 2, events_count: int = 2) -> List[Initiative]:

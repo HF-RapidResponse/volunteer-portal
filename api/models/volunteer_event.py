@@ -1,9 +1,9 @@
 from constants import placeholder_image
-from models.person import Person
 from models.base import Base
-from sqlalchemy import Column, String, Integer, Text, DateTime # type: ignore
-from sqlalchemy.dialects.postgresql import UUID, ARRAY, JSON # type: ignore
-from sqlalchemy.ext.hybrid import hybrid_property # type: ignore
+from models.person import Person
+from sqlalchemy import Column, String, Integer, Text, DateTime
+from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
+from sqlalchemy.ext.hybrid import hybrid_property
 from uuid import uuid4
 
 class VolunteerEvent(Base):
@@ -12,7 +12,7 @@ class VolunteerEvent(Base):
     event_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
     event_external_id = Column('id', String(255))
     name = Column('event_id', String(255))
-    hero_image_urls = Column('event_graphics', JSON)
+    hero_image_urls = Column('event_graphics', ARRAY(JSON))
     signup_url = Column('signup_link', Text)
     details_url = Column('details_url', Text)
     start_datetime = Column('start', DateTime)
@@ -26,7 +26,7 @@ class VolunteerEvent(Base):
 
     @hybrid_property
     def point_of_contact(self):
-        return Person(name=self.point_of_contact_name) if self.point_of_contact_name else None
+        return Person(name=self.name)
 
     def __repr__(self):
         return "<VolunteerEvent(event_uuid='%s', event_external_id='%s', name='%s')>" % (

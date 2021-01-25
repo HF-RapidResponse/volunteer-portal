@@ -1,13 +1,12 @@
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
-from models import Initiative, VolunteerEvent, VolunteerRole, PersonalDonationLinkRequest
-from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, PersonalDonationLinkRequestSchema
-from sqlalchemy.orm import lazyload  # type: ignore
+from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail
+from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, DonationEmailSchema
+from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
-
 import auth
 from settings import Config, Session
 
@@ -67,16 +66,14 @@ def get_volunteer_event_by_external_id(event_external_id, db: Session = Depends(
 
 @app.get("/api/initiatives/", response_model=List[NestedInitiativeSchema])
 def get_all_initiatives(db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
-    
     return db.query(Initiative).options(lazyload(Initiative.roles_rel)).all()
 
 @app.get("/api/initiatives/{initiative_external_id}", response_model=NestedInitiativeSchema)
 def get_initiative_by_external_id(initiative_external_id, db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
     return db.query(Initiative).filter_by(initiative_external_id=initiative_external_id).first()
 
-@app.post("/api/donation_link_requests/")
-def request_personal_donation_link(link_request: PersonalDonationLinkRequestSchema,
-                                   db: Session = Depends(get_db)):
-    request_model = PersonalDonationLinkRequest(**link_request.dict())
-    db.add(request_model)
+@app.post("/api/donation_link_requests/", response_model=DonationEmailSchema)
+def create_donation_link_request(donationEmail: DonationEmailSchema, db: Session = Depends(get_db)) -> DonationEmailSchema:
+    db.add(DonationEmail(email=donationEmail.email))
     db.commit()
+    return donationEmail

@@ -1,13 +1,13 @@
 from models import Person, Priority, RoleType
 from pydantic import BaseModel
 from typing import Optional
-import uuid
+from uuid import UUID
 
 Url = str
 MarkdownText = str
 
 class VolunteerRoleSchema(BaseModel):
-    role_uuid: uuid.UUID
+    role_uuid: UUID
     role_external_id: str
     name: str
     hero_image_url: Url

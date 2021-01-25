@@ -2,13 +2,13 @@ from datetime import datetime
 from models import Person, Priority, RoleType
 from pydantic import BaseModel
 from typing import Optional
-import uuid
+from uuid import UUID
 
 Url = str
 MarkdownText = str
 
 class VolunteerEventSchema(BaseModel):
-    event_uuid: uuid.UUID
+    event_uuid: UUID
     event_external_id: str
     name: str
     signup_url: str

@@ -3,10 +3,10 @@ from models.person import Person
 from models.priority import Priority
 from models.role_type import RoleType
 from constants import placeholder_image
-from sqlalchemy import Column, Enum, String, Integer, Text # type: ignore
-from sqlalchemy.dialects.postgresql import  UUID, ARRAY, JSON, JSONB # type: ignore
-from sqlalchemy.orm import column_property, relationship, synonym # type: ignore
-from sqlalchemy.ext.hybrid import hybrid_property # type: ignore
+from sqlalchemy import Column, Enum, String, Integer, Text
+from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
+from sqlalchemy.orm import column_property, relationship, synonym
+from sqlalchemy.ext.hybrid import hybrid_property
 from uuid import uuid4
 
 class VolunteerRole(Base):
@@ -16,7 +16,7 @@ class VolunteerRole(Base):
     role_external_id = Column('id', String(255))
     name = Column('position_id', String(255))
     details_url = Column('more_info_link', Text)
-    hero_image_urls = Column('team_photo', JSON)
+    hero_image_urls = Column('team_photo', ARRAY(JSON))
     signup_url = Column('application_signup_form', Text)
     priority = Column('priority_level', Enum(Priority))
     point_of_contact_name = Column('point_of_contact_name', String(255))
@@ -35,7 +35,7 @@ class VolunteerRole(Base):
 
     @hybrid_property
     def point_of_contact(self):
-        return Person(name=self.point_of_contact_name) if self.point_of_contact_name else None
+        return Person(name=self.name)
 
     def __repr__(self):
         return "<VolunteerRole(role_uuid='%s', role_external_id='%s', name='%s')>" % (

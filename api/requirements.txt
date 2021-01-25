@@ -3,6 +3,7 @@ pytest
 faker
 pydantic[email]
 fastapi
+python-multipart
 uvicorn[standard]
 gunicorn
 requests

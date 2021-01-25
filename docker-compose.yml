@@ -1,0 +1,42 @@
+version: "3.7"
+
+services:
+  api:
+    build: ./api
+    command: uvicorn --host 0.0.0.0 api:app --app-dir . --port 8081 --reload
+    depends_on:
+    - db
+    ports:
+    - 8081:8081
+    volumes:
+    - ./api:/api
+
+  client:
+    build: ./client
+    command: npm run client
+    depends_on:
+    - api
+    environment:
+    - "DANGEROUSLY_DISABLE_HOST_CHECK=true"
+    ports:
+    - 8080:8080
+    volumes:
+    - ./client:/client
+    - client_node_modules:/client/node_modules
+
+  # Proxy allows the client app to access the API on the same host
+  # This avoids cross-domain issues.
+  # This is the main entrypoint to the application.
+  proxy:
+    image: nginx
+    depends_on:
+    - api
+    - client
+    volumes:
+    - ./nginx:/etc/nginx/conf.d
+    ports:
+    - 8000:80
+
+
+volumes:
+  client_node_modules:
