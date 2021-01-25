@@ -1,58 +1,45 @@
 production_server_defaults: &production_server_defaults
     adapter: mysql
-    host: 35.188.204.248
+    generator: secret_generator
+    host: 
+    database: 
+    user: 
+    password: 
 
 test:
-    database: &test_main
-      generator: db_url_generator
-      adapter: postgresql
-      host: localhost
-      database: hf_volunteer_portal_test
-      user: admin
-      password: password
-    donations:
-      <<: *test_main
+    databases:
+        database:
+            generator: db_url_generator
+            adapter: postgresql
+            host: db
+            database: hf_volunteer_portal_test
+            user: admin
+            password: password
 development:
     routes:
-      client: 'http://localhost:3000'
-      api: 'http://localhost:8000'
-    database: &development_main
-      generator: db_url_generator
-      adapter: postgresql
-      host: localhost
-      database: hf_volunteer_portal
-      user: admin
-      password: password
-    donations:
-      <<: *development_main
+        client: 'http://localhost:8080'
+    databases:
+        database:
+            generator: db_url_generator
+            adapter: postgresql
+            host: db
+            database: hf_volunteer_portal_development
+            user: admin
+            password: password
     auth:
-      jwt:
-        secret: 'secret'
-      google:
-        client_id: 
-        client_secret: 
-      github:
-        client_id: 
-        client_secret: 
+        jwt:
+            secret: 
+        google:
+            client_id: 
+            client_secret: 
+        github:
+            client_id: 
+            client_secret: 
 staging:
-    database:
-        <<: *production_server_defaults
-        database: airtable_database
-        user: no_pii
-        password: humanity-forward_hf-db1-mysql_no_pii
-    donations:
-        <<: *production_server_defaults
-        database: donation_link_requests
-        user: hf
-        password: humanity-forward_hf-db1-mysql_hf
+    databases:
+        database:
+            <<: *production_server_defaults
 production:
-    database:
-        <<: *production_server_defaults
-        database: airtable_database
-        user: no_pii
-        password: humanity-forward_hf-db1-mysql_no_pii
-    donations:
-        <<: *production_server_defaults
-        database: donation_link_requests
-        user: hf
-        password: humanity-forward_hf-db1-mysql_hf
+    databases:
+        database:
+            <<: *production_server_defaults

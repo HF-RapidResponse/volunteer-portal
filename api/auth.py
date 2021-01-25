@@ -11,10 +11,12 @@ from settings import Config
 
 router = APIRouter()
 
+auth_secret = Config['auth']['jwt']['secret']
+
 @AuthJWT.load_config
 def get_config():
     return [
-        ('authjwt_secret_key', Config['auth']['jwt']['secret']),
+        ('authjwt_secret_key', auth_secret),
         ('authjwt_token_location', {"cookies"}),
         ('authjwt_cookie_csrf_protect', False)
     ]
@@ -105,3 +107,4 @@ def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     Authorize.set_access_cookies(access_token, response)
     # Authorize.set_refresh_cookies(refresh_token)
     return response
+
