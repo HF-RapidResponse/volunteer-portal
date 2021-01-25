@@ -1,22 +1,25 @@
 .PHONY: up
 
+# Dev is the default config
+TEST = -f docker-compose.yml -f docker-compose.test.yml
+PROD = -f docker-compose.yml -f docker-compose.prod.yml
+
 up:
 	docker-compose up
 down:
-	docker-compose-down
+	docker-compose down
 
-# Python
+
+# Api
 shell-api:
 	docker-compose run --rm api bash
 test:
-	docker-compose run --rm api-test python -m pytest tests/
+	docker-compose $(TEST) run --rm api python -m pytest tests/
 # Not currently working.
 # validate:
 # 	docker-compose run --rm api-test mypy /api
 db-reload-dev:
 	docker-compose run --rm api python bootstrap.py
-db-reload-test:
-	docker-compose run --rm api-test python bootstrap.py
 
 # Database
 shell-db:
