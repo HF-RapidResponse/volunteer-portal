@@ -1,36 +1,35 @@
 .PHONY: up
 
+# Dev is the default config
+TEST = -f docker-compose.yml -f docker-compose.test.yml
+PROD = -f docker-compose.yml -f docker-compose.prod.yml
+
 up:
 	docker-compose up
 down:
-	docker-compose-down
+	docker-compose down
 
-# Python
+
+# Api
 shell-api:
 	docker-compose run --rm api bash
 test:
-	docker-compose run --rm api-test python -m pytest tests/
-test-debug:
-	docker-compose run --rm api-test python -m pytest tests/ -s --capture=no -vv
+	docker-compose $(TEST) run --rm api python -m pytest tests/
 # Not currently working.
 # validate:
 # 	docker-compose run --rm api-test mypy /api
 db-reload-dev:
 	docker-compose run --rm api python bootstrap.py
-db-reload-test:
-	docker-compose run --rm api-test python bootstrap.py
 
 # Database
 shell-db:
 	docker-compose run --rm db bash
 db-save-dev:
-	docker-compose exec db pg_dump --create -U admin hf_volunteer_portal_development > db/data/data.development.sql
-db-push-dev:
-	psql -h 127.0.0.1 -p 8082 -U admin < db/data/data.development.sql
+	docker-compose exec db pg_dump --create -U admin hf_volunteer_portal_development > db/data/dev/data.development.sql
 db-save-test:
-	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_test > db/data/data.test.sql
+	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_test > db/data/test/data.test.sql
 db-save-test-from-dev:
-	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_development | sed 's/hf_volunteer_portal_development/hf_volunteer_portal_test/g' > db/data/data.test.sql
+	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_development | sed 's/hf_volunteer_portal_development/hf_volunteer_portal_test/g' > db/data/test/data.test.sql
 
 # Client
 shell-client:
