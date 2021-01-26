@@ -15,6 +15,7 @@ from models import Initiative, VolunteerRole, VolunteerEvent, DonationEmail
 
 from tests.fake_data_utils import generate_fake_initiative, generate_fake_volunteer_role
 from tests.fake_data_utils import generate_fake_volunteer_event, generate_fake_donation_email
+from tests.fake_data_utils import generate_fake_initiatives_list
 
 from sqlalchemy import exc
 
@@ -67,8 +68,9 @@ def test_create_model_error():
 
         _ = VolunteerEventSchema(**bad_event_kwargs)
 
-def test_get_initiatives_api():
+def test_get_initiatives_api(db):
     # because Initiatives contain VolunteerEvents and VolunteerRoles, this will test field validations on all three models
+    generate_fake_initiatives_list(db)
     response = client.get('api/initiatives')
     assert response.status_code == 200
 
