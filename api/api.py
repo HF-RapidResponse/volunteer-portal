@@ -37,7 +37,7 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
 
 import logging
 logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 # Dependency
 def get_db():

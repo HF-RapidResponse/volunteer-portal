@@ -1,3 +1,4 @@
+from typing import Dict, List
 import yaml
 from functools import lru_cache
 import os
@@ -16,14 +17,13 @@ def read_config():
     return config
 Config = read_config()
 
-
 # Generate Database URLs based on the DB connection information
 def generate_hf_mysql_db_address(connection) -> str:
     secret_path = f'projects/humanity-forward/secrets/{db_secret_key}/versions/latest'
     db_pass = secret_client.access_secret_version(request={"name": secret_path}).payload.data.decode('UTF-8')
     return f'{connection["adapter"]}://{connection["user"]}:{db_pass}@{connection["host"]}/{connection["database"]}'
 
-def generate_db_url(connection) -> str:
+def generate_db_url(connection: Dict) -> str:
     return f'{connection["adapter"]}://{connection["user"]}:{connection["password"]}@{connection["host"]}/{connection["database"]}'
 db_url_generators = {
     "secret_generator": generate_hf_mysql_db_address,
