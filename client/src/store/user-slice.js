@@ -134,7 +134,7 @@ export const deleteRole = (payload) => async (dispatch) => {
 };
 
 export const deleteUser = () => async (dispatch) => {
-  //const response = await axios.delete(`/users/${userSlice.user.ID}/delete`);
+  //const response = await axios.delete(`/users/${userSlice.user.ID}`);
   dispatch(completeLogout());
 };
 

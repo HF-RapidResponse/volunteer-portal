@@ -34,13 +34,13 @@ export const { setInitiatives } = initiativeSlice.actions;
 
 export const getOneInitiative = (id) => async (dispatch) => {
   console.log('What is window.location?', window.location);
-  const response = await axios.get(`/api/initiatives/${id}`);
+  const response = await axios.get(`/api/initiatives/${id}/`);
   dispatch();
 };
 
 export const getInitiatives = () => async (dispatch) => {
   try {
-    const response = await axios.get('/api/initiatives');
+    const response = await axios.get('/api/initiatives/');
     dispatch(setInitiatives(response.data));
   } catch (error) {
     console.error(error);
