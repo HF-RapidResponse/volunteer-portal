@@ -33,6 +33,12 @@ def setup(db):
 
 client = TestClient(app)
 
+def cleanup_initiative(db, initiative):
+    for item in initiative.roles + initiative.events:
+        db.delete(item)
+    db.delete(initiative)
+    db.commit()
+
 def test_create_model():
     good_event_kwargs = {
         "uuid": "3457f844-5a3a-4efe-b16d-443c24961c68",
@@ -70,13 +76,17 @@ def test_create_model_error():
 
 def test_get_initiatives_api(db):
     # because Initiatives contain VolunteerEvents and VolunteerRoles, this will test field validations on all three models
-    generate_fake_initiatives_list(db)
+    initiatives = generate_fake_initiatives_list(db)
+    db.commit()
     response = client.get('api/initiatives')
+    json = response.json()
     assert response.status_code == 200
 
-    initiatives = [InitiativeSchema(**initiative_kwargs) for initiative_kwargs in response.json()]
+    assert len(json) == 1
+    initiatives_response = [InitiativeSchema(**initiative_kwargs) for initiative_kwargs in json]
+    assert type(initiatives_response[0]) is InitiativeSchema
 
-    assert type(initiatives[-1]) is InitiativeSchema
+    [cleanup_initiative(db, i) for i in initiatives]
 
 def test_create_link_request_error():
     with pytest.raises(error_wrappers.ValidationError):
@@ -114,15 +124,20 @@ def test_nullified_event_serving(db):
   set_nullable_columns_null(event, db)
 
   client.get(f'api/volunteer_events/{event.external_id}')
+  db.delete(event)
+  db.commit()
 
 def test_nullified_roles_serving(db):
   role = generate_fake_volunteer_role()
   set_nullable_columns_null(role, db)
 
   client.get(f'api/volunteer_roles/{role.external_id}')
+  db.delete(role)
+  db.commit()
 
 def test_nullified_initiatives_serving(db):
   initiative = generate_fake_initiative(db)
   set_nullable_columns_null(initiative, db)
 
   client.get(f'api/volunteer_initiatives/{initiative.external_id}')
+  cleanup_initiative(db, initiative)
