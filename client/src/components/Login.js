@@ -101,7 +101,8 @@ function Login(props) {
             </Button>
             <p className="font-weight-bold">or</p>
             <GoogleLogin
-              clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+              // clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+              clientId={null}
               buttonText="Login with Google"
               onSuccess={responseGoogle}
               onFailure={responseGoogle}
