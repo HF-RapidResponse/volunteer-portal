@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Nav, Navbar, NavDropdown, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 
 function AccountNav() {
   const profileLinks = [
@@ -28,18 +30,32 @@ function AccountNav() {
           );
         })}
       </Nav>
-      <Nav id="account-nav-mobile" className="d-flex d-lg-none">
+      <Nav
+        id="account-nav-mobile"
+        className="d-flex d-lg-none mt-4 mb-4"
+        // style={{ overflow: 'visible' }}
+      >
+        <FontAwesomeIcon
+          icon={faAngleLeft}
+          size="lg"
+          className="align-middle"
+          style={{ fontSize: '2rem' }}
+        />
         {profileLinks.map((linkObj, j) => {
           return (
-            <Button
-              variant="info"
-              className="btn-round m-2"
-              key={'acct-nav-sm' + j}
-            >
-              {linkObj.displayName}
-            </Button>
+            <NavLink key={'acct-nav-sm' + j} to={linkObj.url}>
+              <Button variant="info" className="btn-round ml-2 mr-2">
+                {linkObj.displayName}
+              </Button>
+            </NavLink>
           );
         })}
+        <FontAwesomeIcon
+          icon={faAngleRight}
+          size="lg"
+          className="align-middle"
+          style={{ fontSize: '2rem' }}
+        />
       </Nav>
     </>
   );
