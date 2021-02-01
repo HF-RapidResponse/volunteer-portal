@@ -12,6 +12,32 @@ function AccountNav() {
     { displayName: 'See my data', url: '/account/data' },
   ];
 
+  const initialMobileLinks = profileLinks.map((linkObj, j) => {
+    return (
+      <NavLink key={'acct-nav-sm' + j} to={linkObj.url}>
+        <Button variant="info" className="btn-round ml-2 mr-2">
+          {linkObj.displayName}
+        </Button>
+      </NavLink>
+    );
+  });
+
+  const [mobileLinks, setMobileLinks] = useState(initialMobileLinks);
+
+  const rightArrowClick = () => {
+    console.log('right click');
+    const linksCopy = [...mobileLinks];
+    linksCopy.unshift(linksCopy.pop());
+    setMobileLinks(linksCopy);
+  };
+
+  const leftArrowClick = () => {
+    console.log('left click');
+    const linksCopy = [...mobileLinks];
+    linksCopy.push(linksCopy.shift());
+    setMobileLinks(linksCopy);
+  };
+
   return (
     <>
       <Nav
@@ -40,21 +66,15 @@ function AccountNav() {
           size="lg"
           className="align-middle"
           style={{ fontSize: '2rem' }}
+          onClick={() => leftArrowClick()}
         />
-        {profileLinks.map((linkObj, j) => {
-          return (
-            <NavLink key={'acct-nav-sm' + j} to={linkObj.url}>
-              <Button variant="info" className="btn-round ml-2 mr-2">
-                {linkObj.displayName}
-              </Button>
-            </NavLink>
-          );
-        })}
+        {mobileLinks}
         <FontAwesomeIcon
           icon={faAngleRight}
           size="lg"
           className="align-middle"
           style={{ fontSize: '2rem' }}
+          onClick={() => rightArrowClick()}
         />
       </Nav>
     </>
