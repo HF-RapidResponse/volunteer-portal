@@ -6,6 +6,7 @@ import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import Queue from '../../data-structures/queue.js';
 
 function AccountNav() {
+  const [prevX, setPrevX] = useState(null);
   const profileLinks = [
     { displayName: 'Profile', url: '/account/profile' },
     { displayName: 'Account Settings', url: '/account/settings' },
@@ -18,7 +19,7 @@ function AccountNav() {
       <NavLink
         key={'acct-nav-sm' + j}
         to={linkObj.url}
-        onDrag={() => console.log('dragging navlink')}
+        // onDrag={() => console.log('dragging navlink')}
         // className={j != 0 ? 'd-xs-none' : null}
         // style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
         // style={{ display: 'inline' }}
@@ -51,6 +52,21 @@ function AccountNav() {
     setMobileLinks(linksCopy);
   };
 
+  const handleSwipe = (e) => {
+    console.log('on mouse move:', e.clientX);
+    const currX = e.clientX;
+    if (currX < prevX) {
+      setTimeout(() => {
+        leftArrowClick();
+      }, 50);
+    } else if (currX > prevX) {
+      setTimeout(() => {
+        rightArrowClick();
+      }, 50);
+    }
+    setPrevX(currX);
+  };
+
   return (
     <>
       <Nav
@@ -72,6 +88,15 @@ function AccountNav() {
       <div
         id="account-nav-mobile"
         className="d-lg-none mt-5 mb-5 text-center"
+        style={{ overflow: 'hidden' }}
+        // onDrag={(e) => {
+        //   console.log('What is e.pageX?', e.pageX);
+        //   console.log('What is e.pageY?', e.pageY);
+        //   // console.log('dragging container');
+        // }}
+        onMouseMove={(e) => {
+          handleSwipe(e);
+        }}
         // style={{ overflow: 'visible' }}
         // className="text-center"
       >
