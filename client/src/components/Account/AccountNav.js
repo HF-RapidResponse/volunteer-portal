@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import Queue from '../../data-structures/queue.js';
+// import { isMobile, isBrowser } from 'react-device-detect';
 
 function AccountNav() {
   const [prevX, setPrevX] = useState(null);
@@ -19,6 +20,7 @@ function AccountNav() {
       <NavLink
         key={'acct-nav-sm' + j}
         to={linkObj.url}
+        activeClassName="active-profile-mobile"
         // onDrag={() => console.log('dragging navlink')}
         // className={j != 0 ? 'd-xs-none' : null}
         // style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
@@ -85,18 +87,21 @@ function AccountNav() {
           );
         })}
       </Nav>
-      <div
+      <Nav
         id="account-nav-mobile"
-        className="d-lg-none mt-5 mb-5 text-center"
+        className="d-lg-none mt-4 mb-4 text-center"
         style={{ overflow: 'hidden' }}
         // onDrag={(e) => {
         //   console.log('What is e.pageX?', e.pageX);
         //   console.log('What is e.pageY?', e.pageY);
         //   // console.log('dragging container');
         // }}
-        onMouseMove={(e) => {
-          handleSwipe(e);
-        }}
+        // onMouseMove={(e) => {
+        //   if (isMobile) {
+        //     console.log('Are we mobile?', isMobile);
+        //     handleSwipe(e);
+        //   }
+        // }}
         // style={{ overflow: 'visible' }}
         // className="text-center"
       >
@@ -125,7 +130,7 @@ function AccountNav() {
           onClick={() => rightArrowClick()}
           onDrag={() => console.log('dragging right arrow')}
         />
-      </div>
+      </Nav>
     </>
   );
 }

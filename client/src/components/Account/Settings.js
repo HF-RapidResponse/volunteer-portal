@@ -71,118 +71,138 @@ function Settings(props) {
   }, [submitted]);
 
   return user ? (
-    <Form
-      id="acct-settings-form"
-      className="p-4"
-      style={{ background: 'white' }}
-      noValidate
-      validated={validated}
-      onSubmit={(e) => handleSubmitResponse(e)}
-    >
-      <h4 className="mb-5">Change Account</h4>
-      <Row className="mt-2 mb-2">
-        <Col xs={12} md={8}>
-          <p>Organizers can see my profile</p>
-        </Col>
-        <Col xs={12} md={4}>
-          <Form.Switch
-            id="organizers-can-see-profile-switch"
-            className="custom-switch-md"
-            defaultChecked
-          />
-        </Col>
-      </Row>
-      <Row className="mt-2 mb-2">
-        <Col xs={12} md={8}>
-          <p>Other volunteers can see my profile</p>
-        </Col>
-        <Col xs={12} md={4}>
-          <Form.Switch
-            id="other-vounteers-can-see-profile-switch"
-            className="custom-switch-md"
-            defaultChecked
-          />
-        </Col>
-      </Row>
-      <Form.Group>
-        <div className={'mt-3 ' + (data.oldPass ? 'mb-5' : 'mb-4')}>
-          <Form.Label>Change Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Old Password"
-            id="old-pass"
-            onChange={(e) => handleChange('oldPass', e.target.value)}
-            isValid={submitted && currPassValid}
-            isInvalid={submitted && !currPassValid}
-            required
-            disabled={disableForm}
-          />
-          <Form.Control.Feedback type="invalid">
-            Password is invalid!
-          </Form.Control.Feedback>
-        </div>
-        <div className={data.oldPass || submitted ? 'mt-5 mb-3' : 'd-none'}>
-          <Form.Label>New Password</Form.Label>
-          <Form.Control
-            type="password"
-            id="new-pass"
-            onChange={(e) => handleChange('newPass', e.target.value)}
-            isValid={newAndRetypeMatch}
-            isInvalid={submitted && !newAndRetypeMatch}
-            required
-            disabled={disableForm}
-          />
-        </div>
-        <div className={data.oldPass ? 'mt-3 mb-3' : 'd-none'}>
-          <Form.Label>Retype Password</Form.Label>
-          <Form.Control
-            type="password"
-            id="retype-pass"
-            onChange={(e) => handleChange('retypePass', e.target.value)}
-            isValid={newAndRetypeMatch}
-            isInvalid={submitted && !newAndRetypeMatch}
-            required
-            disabled={disableForm}
-          />
-          <Form.Control.Feedback type="invalid">
-            Passwords do not match!
-          </Form.Control.Feedback>
-          <Form.Control.Feedback type="valid">
-            Passwords change successful
-          </Form.Control.Feedback>
-          <Row>
-            <Col xs={12} xl={6} className="text-center">
-              <Button
-                variant="info"
-                className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
-                type="submit"
-              >
-                Change Password
-              </Button>
-            </Col>
-            <Col xs={12} xl={6} className="text-center">
-              {/* <Button
+    <>
+      <Form
+        id="acct-settings-form"
+        className="p-4"
+        style={{ background: 'white' }}
+        noValidate
+        validated={validated}
+        onSubmit={(e) => handleSubmitResponse(e)}
+      >
+        <h4 className="mb-5">Change Account</h4>
+        <Row className="mt-2 mb-2">
+          <Col xs={12} md={8}>
+            <p>Organizers can see my profile</p>
+          </Col>
+          <Col xs={12} md={4}>
+            <Form.Switch
+              id="organizers-can-see-profile-switch"
+              className="custom-switch-md"
+              defaultChecked
+            />
+          </Col>
+        </Row>
+        <Row className="mt-2 mb-2">
+          <Col xs={12} md={8}>
+            <p>Other volunteers can see my profile</p>
+          </Col>
+          <Col xs={12} md={4}>
+            <Form.Switch
+              id="other-vounteers-can-see-profile-switch"
+              className="custom-switch-md"
+              defaultChecked
+            />
+          </Col>
+        </Row>
+        <Form.Group>
+          <div className={'mt-3 ' + (data.oldPass ? 'mb-5' : 'mb-4')}>
+            <Form.Label>Change Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Old Password"
+              id="old-pass"
+              onChange={(e) => handleChange('oldPass', e.target.value)}
+              isValid={submitted && currPassValid}
+              isInvalid={submitted && !currPassValid}
+              required
+              disabled={disableForm}
+            />
+            <Form.Control.Feedback type="invalid">
+              Password is invalid!
+            </Form.Control.Feedback>
+          </div>
+          <div className={data.oldPass || submitted ? 'mt-5 mb-3' : 'd-none'}>
+            <Form.Label>New Password</Form.Label>
+            <Form.Control
+              type="password"
+              id="new-pass"
+              onChange={(e) => handleChange('newPass', e.target.value)}
+              isValid={newAndRetypeMatch}
+              isInvalid={submitted && !newAndRetypeMatch}
+              required
+              disabled={disableForm}
+            />
+          </div>
+          <div className={data.oldPass ? 'mt-3 mb-3' : 'd-none'}>
+            <Form.Label>Retype Password</Form.Label>
+            <Form.Control
+              type="password"
+              id="retype-pass"
+              onChange={(e) => handleChange('retypePass', e.target.value)}
+              isValid={newAndRetypeMatch}
+              isInvalid={submitted && !newAndRetypeMatch}
+              required
+              disabled={disableForm}
+            />
+            <Form.Control.Feedback type="invalid">
+              Passwords do not match!
+            </Form.Control.Feedback>
+            <Form.Control.Feedback type="valid">
+              Passwords change successful
+            </Form.Control.Feedback>
+            <Row>
+              <Col xs={12} xl={6} className="text-center">
+                <Button
+                  variant="info"
+                  className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
+                  type="submit"
+                >
+                  Change Password
+                </Button>
+              </Col>
+              <Col xs={12} xl={6} className="text-center">
+                {/* <Button
                 variant="danger"
                 className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
                 onClick={() => deletePrompt()}
               >
                 Delete my Account
               </Button> */}
+                <Button
+                  variant="outline-secondary"
+                  className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
+                  onClick={() => {
+                    clearFormComponent();
+                    resetChangePassValidation();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        </Form.Group>
+      </Form>
+      <Form className="mt-5 mb-5" style={{ background: 'white' }}>
+        <Form.Group>
+          <Row className="align-items-center">
+            <Col xs={6} className="text-center">
+              <p className="mt-4 mb-4">Delete Account</p>
+            </Col>
+            <Col xs={6} className="text-center">
               <Button
-                variant="outline-secondary"
+                variant="danger"
                 className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
-                onClick={() => {
-                  clearFormComponent();
-                  resetChangePassValidation();
-                }}
+                onClick={() => deletePrompt()}
               >
-                Cancel
+                Delete my Account
               </Button>
             </Col>
           </Row>
-        </div>
-      </Form.Group>
-    </Form>
+        </Form.Group>
+      </Form>
+    </>
   ) : (
     <Redirect push to="/login" />
   );
