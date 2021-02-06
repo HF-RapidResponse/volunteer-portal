@@ -1,8 +1,9 @@
 from constants import placeholder_image
 from models.base import Base
+from models.airtable_row import AirtableRow
 from models.volunteer_event import VolunteerEvent
 from models.volunteer_role import VolunteerRole
-from sqlalchemy import func, select, Column, String, Integer, DateTime, Boolean, Text
+from sqlalchemy import func, select, Column, String, Integer, Text
 from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
 from sqlalchemy.orm import backref, column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -10,11 +11,10 @@ from pydantic import validator
 from sqlalchemy.sql import func
 from uuid import uuid4
 
-class Initiative(Base):
+class Initiative(AirtableRow, Base):
     __tablename__ = 'initiatives'
 
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
-    external_id = Column('id', String(255), nullable=False)
     initiative_name = Column('initiative_name', String(255), nullable=False)
     order = Column('order', Integer, nullable=False)
     details_url = Column('details_link', String(255), nullable=True)
@@ -22,9 +22,6 @@ class Initiative(Base):
     content = Column('description', Text, nullable=False)
     role_ids = Column('roles', ARRAY(String), default=[], nullable=False)
     event_ids = Column('events', ARRAY(String), default=[], nullable=False)
-    airtable_last_modified = Column('airtable_last_modified', DateTime, nullable=False)
-    updated_at = Column('updated_at', DateTime, onupdate=func.now(), default=func.now(), nullable=False)
-    is_deleted = Column('is_deleted', Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return "<Initiative(initiative_uuid='%s', initiative_external_id='%s', name='%s')>" % (

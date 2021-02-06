@@ -1,14 +1,10 @@
 import json
-from datetime import datetime
-from datetime import timezone
-from db_sync_pipelines.airtable_sync import GetNowTimestamp, ParseTimestamp
-from db_sync_pipelines.api_response_converter import ApiResponseConverter
+from db_sync_pipelines.airtable_base_converter import AirtableBaseConverter
 from models import VolunteerRole, Priority, RoleType
 
-class AirtableRoleConverter(ApiResponseConverter):
+class AirtableRoleConverter(AirtableBaseConverter):
   sql_model = VolunteerRole
   field_map = {
-    "external_id": "id",
     "role_name": "fields.Position Title",
     "hero_image_urls": "fields.Team Photo",
     "signup_url": "fields.Application/Signup Form",
@@ -24,11 +20,9 @@ class AirtableRoleConverter(ApiResponseConverter):
     "responsibilities": "fields.Responsibilities & Duties",
     "qualifications": "fields.Qualifications",
     "role_type": "fields.Role Type",
-    "airtable_last_modified": "fields.Last Modified",
   }
 
   custom_transforms = {
-      'airtable_last_modified': ParseTimestamp,
       'priority': Priority,
       'role_type': RoleType
   }

@@ -1,7 +1,8 @@
 import pytest
 import json
 from db_sync_pipelines.airtable_event_converter import AirtableEventConverter
-from db_sync_pipelines.airtable_sync import RunAirtableSync, AIRTABLE_DATETIME_FORMAT
+from db_sync_pipelines.airtable_sync import RunAirtableSync
+from db_sync_pipelines.api_response_converter import ISO8601_DATETIME_FORMAT
 from models import VolunteerEvent
 from datetime import datetime, timezone, timedelta
 from settings import Session
@@ -94,7 +95,7 @@ def test_update(db, airtable_loader, response_converter):
   event_id = event['id']
   event['fields']['Description'] = "Updated"
   event['fields']['Last Modified'] = (datetime.now(tz=timezone.utc)
-                                      + timedelta(minutes=1)).strftime(AIRTABLE_DATETIME_FORMAT)
+                                      + timedelta(minutes=1)).strftime(ISO8601_DATETIME_FORMAT)
 
   initial_timestamp, initial_description = db.query(VolunteerEvent.updated_at, VolunteerEvent.description)\
                                              .filter(VolunteerEvent.external_id == event_id).first()

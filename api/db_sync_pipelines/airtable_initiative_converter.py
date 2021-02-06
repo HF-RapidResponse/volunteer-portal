@@ -1,25 +1,18 @@
 import json
-from datetime import datetime
-from datetime import timezone
-from db_sync_pipelines.airtable_sync import GetNowTimestamp, ParseTimestamp
-from db_sync_pipelines.api_response_converter import ApiResponseConverter
+from db_sync_pipelines.airtable_base_converter import AirtableBaseConverter
 from models import Initiative
 
 
-class AirtableInitiativeConverter(ApiResponseConverter):
+class AirtableInitiativeConverter(AirtableBaseConverter):
   sql_model = Initiative
   field_map = {
-    "external_id": "id",
     "initiative_name": "fields.Initiative",
     "order": "fields.Portal Order",
     "details_url": "fields.Details Link",
     "hero_image_urls": "fields.Image",
     "content": "fields.Description",
-    "airtable_last_modified": "fields.Last Modified",
     "role_ids": "fields.Volunteer Job Openings",
     "event_ids": "fields.Events"
   }
 
-  custom_transforms = {
-      'airtable_last_modified': ParseTimestamp,
-  }
+  custom_transforms = {}

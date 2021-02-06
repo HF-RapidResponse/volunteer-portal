@@ -2,21 +2,10 @@ from google.cloud import secretmanager
 from airtable import Airtable
 import logging
 import json
-from datetime import datetime
 from datetime import timezone
 import re
 
-AIRTABLE_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
 PROJECT_ID = "humanity-forward"
-
-def GetNowTimestamp():
-  return datetime.now(tz=timezone.utc)
-
-
-def ParseTimestamp(timestamp):
-  if not timestamp:
-      return None
-  return datetime.strptime(timestamp, AIRTABLE_DATETIME_FORMAT)
 
 
 class AirtableLoader:
@@ -38,8 +27,8 @@ def RunAirtableSync(airtable_loader,
                     hard_delete=False):
 
     db_model = response_converter.GetDBModel()
-    all_records = list(GetAndConvertAirtableRecords(
-        airtable_loader, response_converter, airtable_view))
+    all_records = GetAndConvertAirtableRecords(
+        airtable_loader, response_converter, airtable_view)
     existing_record_ids = GetExistingRecordIds(db, db_model, hard_delete)
     latest_sync_run = GetLatestSyncRun(db, db_model)
 
@@ -52,8 +41,8 @@ def RunAirtableSync(airtable_loader,
         elif NeedsUpdate(record, latest_sync_run):
             updated_records.append(record)
 
-    airtable_records = set([record.external_id for record in all_records])
-    deleted_records = existing_record_ids - airtable_records
+    airtable_record_ids = set([record.external_id for record in all_records])
+    deleted_records = existing_record_ids - airtable_record_ids
 
     if new_records:
         logging.debug(f"inserting {len(new_records)} records.")
@@ -81,8 +70,7 @@ def GetAirtableClient(table_key, table_name, secret_client):
 def GetAndConvertAirtableRecords(airtable_loader,
                                  response_converter,
                                  view=None):
-    for r in airtable_loader.GetTable():
-        yield response_converter.Convert(r)
+    return [response_converter.Convert(r) for r in airtable_loader.GetTable()]
 
 
 def GetExistingRecordIds(db, db_model, hard_delete=False):

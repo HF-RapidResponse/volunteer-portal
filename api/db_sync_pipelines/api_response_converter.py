@@ -1,4 +1,6 @@
 # A base class for converting nested json responses to flat sqlAlchemy objects
+from datetime import datetime
+from datetime import timezone
 
 class ApiResponseConverter(object):
   """This base class expects field_map and sql_model objects to be set in a subclass.
@@ -26,24 +28,28 @@ class ApiResponseConverter(object):
          }
 
          field_map = {"person_age": "data.age", "received": "request_sent"}
-         custom_transforms = {"received": ParseTimestamp}
+         custom_transforms = {"received": ParseISO8601Timestamp}
 
     The above data and specification could be used for a sqlAlchemy model with 2 columns, "age" and
-    "received" with types int and datetime (assuming that is what ParseTimestamp returns).
+    "received" with types int and datetime (assuming that is what ParseISO8601Timestamp returns).
 
     The sqlAlchemy model may have more fields, but they will always be null in this example.
 """
 
   custom_transforms = {}
   additional_fields = {}
+  base_field_map = {}
+  base_custom_transforms = {}
 
   def __init__(self):
     assert hasattr(self, "field_map"), "field_map not defined in subclass"
     assert hasattr(self, "sql_model"), "sql alchemy model type not set"
+    self.custom_transforms.update(self.base_custom_transforms)
+    self.field_map.update(self.base_field_map)
 
   def UnpackRecordFromJson(self, response):
     rec = {}
-    for k, v in list(self.field_map.items()):
+    for k, v in self.field_map.items():
       val = self.GetField(v, response)
       if k in self.custom_transforms:
         val = self.custom_transforms[k](val)
@@ -67,3 +73,14 @@ class ApiResponseConverter(object):
 
   def GetDBModel(self):
     return self.sql_model
+
+
+def GetNowTimestamp():
+  return datetime.now(tz=timezone.utc)
+
+
+ISO8601_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
+def ParseISO8601Timestamp(timestamp):
+  if not timestamp:
+      return None
+  return datetime.strptime(timestamp, ISO8601_DATETIME_FORMAT)
