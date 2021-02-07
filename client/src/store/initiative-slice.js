@@ -15,7 +15,7 @@ const initiativeSlice = createSlice({
   initialState: {
     initiatives: [],
     fetchTime: null,
-    initiativeDetail: null,
+    detailedInitiative: null,
   },
 
   reducers: {
@@ -25,17 +25,20 @@ const initiativeSlice = createSlice({
     },
     setOneInitiative: (state, action) => {
       const { payload } = action;
-      state.initiativeDetail = payload;
+      state.detailedInitiative = payload;
     },
   },
 });
 
-export const { setInitiatives } = initiativeSlice.actions;
+export const { setInitiatives, setOneInitiative } = initiativeSlice.actions;
 
 export const getOneInitiative = (id) => async (dispatch) => {
-  console.log('What is window.location?', window.location);
-  const response = await axios.get(`/api/initiatives/${id}/`);
-  dispatch();
+  try {
+    const response = await axios.get(`/api/initiatives/${id}/`);
+    dispatch(setOneInitiative(response.data));
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const getInitiatives = () => async (dispatch) => {

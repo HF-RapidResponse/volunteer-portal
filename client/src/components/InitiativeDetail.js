@@ -1,32 +1,26 @@
 import { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
+import { getOneInitiative } from '../store/initiative-slice';
 
 /**
  * Component that displays the inintiatives page.
  */
 function InitiativeDetail(props) {
   const id = props.match.params.ext_id;
-  const [detail, setDetail] = useState(null);
   const [fetched, setFetched] = useState(false);
-
+  const { detailedInitiative, getOneInitiative } = props;
   document.title = 'HF Volunteer Portal - Initiative Details';
 
   useEffect(() => {
-    fetch(`/api/initiatives/${id}`)
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            setDetail(data);
-          });
-        } else {
-          console.error(response);
-        }
+    getOneInitiative(id)
+      .then(() => {
         setFetched(true);
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
+        console.error('failed to retrieve single initiative');
         setFetched(true);
       });
   }, []);
@@ -36,7 +30,7 @@ function InitiativeDetail(props) {
   }
 
   function makeCards() {
-    if (!detail) {
+    if (!detailedInitiative) {
       return (
         <Col xs={12} lg={9} xl={6} className="shadow-card">
           <h2 className="header-3-section-lead">Oops:</h2>
@@ -50,8 +44,8 @@ function InitiativeDetail(props) {
       // Build event cards
       const evts = [];
       let currRow = [];
-      for (var i = 0; i < detail['events'].length; i++) {
-        const evt = detail['events'][i];
+      for (var i = 0; i < detailedInitiative['events'].length; i++) {
+        const evt = detailedInitiative['events'][i];
         const dateOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
         const timeOpts = {
           formatMatcher: 'basic',
@@ -59,14 +53,14 @@ function InitiativeDetail(props) {
           hour: 'numeric',
           minute: 'numeric',
         };
-        const startDate = new Date(evt['start_datetime']+ "+0000");
+        const startDate = new Date(evt['start_datetime'] + '+0000');
         const startDateStr = startDate.toLocaleDateString(undefined, dateOpts);
         const startTimeStr = new Intl.DateTimeFormat(
           'default',
           timeOpts
         ).format(startDate);
         const endDate = evt['end_datetime']
-          ? new Date(evt['end_datetime'] + "+0000")
+          ? new Date(evt['end_datetime'] + '+0000')
           : null;
         const endDateStr = endDate
           ? endDate.toLocaleDateString(undefined, dateOpts)
@@ -122,7 +116,7 @@ function InitiativeDetail(props) {
           </Col>
         );
 
-        if (i % 2 === 1 || detail['events'].length - 1 === i) {
+        if (i % 2 === 1 || detailedInitiative['events'].length - 1 === i) {
           evts.push(<Row>{currRow}</Row>);
           currRow = [];
         }
@@ -131,8 +125,8 @@ function InitiativeDetail(props) {
       const roles = [];
       currRow = [];
 
-      for (let i = 0; i < detail['roles'].length; i++) {
-        const role = detail['roles'][i];
+      for (let i = 0; i < detailedInitiative['roles'].length; i++) {
+        const role = detailedInitiative['roles'][i];
         const button_text =
           role['role_type'] === 'Requires Application'
             ? 'Apply Here'
@@ -164,19 +158,20 @@ function InitiativeDetail(props) {
           </Col>
         );
 
-        if (i % 2 === 1 || detail['roles'].length - 1 === i) {
+        if (i % 2 === 1 || detailedInitiative['roles'].length - 1 === i) {
           roles.push(<Row key={`role-row-${i}`}>{currRow}</Row>);
           currRow = [];
         }
       }
       var button = null;
-      if (detail['details_url']) {
+      if (detailedInitiative['details_url']) {
         button = (
-          <a href={detail['details_url']}>
+          <a href={detailedInitiative['details_url']}>
             <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
               Learn More
             </Button>
-          </a>);
+          </a>
+        );
       }
       return (
         <>
@@ -185,14 +180,14 @@ function InitiativeDetail(props) {
             lg={9}
             xl={6}
             className="shadow-card"
-            key={detail['initiative_external_id']}
+            key={detailedInitiative['initiative_external_id']}
           >
             <h2 className="header-3-section-lead">Initiative:</h2>
-            <h2 className="header-3-section-breaker">{detail['title']}</h2>
-            <p>{detail['content']}</p>
-            <div className="text-center mt-4 mb-4">
-              {button}
-            </div>
+            <h2 className="header-3-section-breaker">
+              {detailedInitiative['title']}
+            </h2>
+            <p>{detailedInitiative['content']}</p>
+            <div className="text-center mt-4 mb-4">{button}</div>
           </Col>
           {evts.length ? (
             <>
@@ -233,4 +228,12 @@ function InitiativeDetail(props) {
   return <>{makeCards()}</>;
 }
 
-export default InitiativeDetail;
+const mapStateToProps = (state) => {
+  return {
+    detailedInitiative: state.initiativeStore.detailedInitiative,
+  };
+};
+
+const mapDispatchToProps = { getOneInitiative };
+
+export default connect(mapStateToProps, mapDispatchToProps)(InitiativeDetail);
