@@ -91,15 +91,6 @@ def logout(Authorize: AuthJWT = Depends()):
     Authorize.unset_jwt_cookies()
     return {"msg":"Successfully logged out"}
 
-# To test logout without a client, paste the following JS code into the console inside of dev tools in your browser with an active session
-
-'''
-const Http = new XMLHttpRequest();
-const url='http://localhost:8000/api/logout';
-Http.open("DELETE", url);
-Http.send();
-'''
-
 def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     access_token = Authorize.create_access_token(subject=user_id)
     # refresh_token = Authorize.create_refresh_token(subject=user_id)

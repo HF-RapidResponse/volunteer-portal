@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - shell: bash
+        env:
+          GCP_CREDENTIALS: ${{  secrets.VOL_PORTAL_GCP_CREDENTIALS  }}
+        run: |
+          echo "$GCP_CREDENTIALS" > gcp_credentials.json
       - name: Build the stack
         run: docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
       - name: Python Tests

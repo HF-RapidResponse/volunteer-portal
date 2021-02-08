@@ -8,7 +8,6 @@ uvicorn[standard]
 gunicorn
 requests
 sqlalchemy
-sqlalchemy-utils
 pybigquery
 pymysql
 psycopg2-binary

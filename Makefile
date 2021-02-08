@@ -8,7 +8,8 @@ up:
 	docker-compose up
 down:
 	docker-compose down
-
+recreate-all:
+	docker-compose build --no-cache 
 
 # Api
 shell-api:
@@ -20,6 +21,8 @@ test:
 # 	docker-compose run --rm api-test mypy /api
 db-reload-dev:
 	docker-compose run --rm api python bootstrap.py
+recreate-api:
+	docker-compose build --no-cache api
 
 # Database
 shell-db:
@@ -28,6 +31,8 @@ db-save-dev:
 	docker-compose exec db pg_dump --create -U admin hf_volunteer_portal_development > db/data/data.development.sql
 db-save-test:
 	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_test > db/data/data.test.sql
+recreate-db:
+	docker-compose build --no-cache db
 
 # Client
 shell-client:
@@ -36,3 +41,5 @@ test-client:
 	docker-compose run --rm client npm test -- --passWithNoTests --ci --watchAll=false
 test-client-watch:
 	docker-compose run --rm client npm test -- --passWithNoTests
+recreate-client:
+	docker-compose build --no-cache client

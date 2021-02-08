@@ -1,5 +1,3 @@
-.PHONY: test
-
 validate:
 	mypy .
 test:
