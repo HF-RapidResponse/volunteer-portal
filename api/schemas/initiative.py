@@ -9,11 +9,11 @@ Url = str
 MarkdownText = str
 
 class InitiativeSchema(BaseModel):
-    initiative_uuid: UUID
-    initiative_external_id: str
-    name: str
+    uuid: UUID
+    external_id: str
+    initiative_name: str
+    order: int
     details_url: Optional[Url]
-    title: str
     hero_image_url: Optional[Url]
     content: MarkdownText
     role_ids: List

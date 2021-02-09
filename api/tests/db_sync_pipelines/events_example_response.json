@@ -1,0 +1,224 @@
+[
+  {
+    "id": "recXuvDiADvgunPBT_test",
+    "fields": {
+      "Event Name": "Humanity CALLS for Marilyn Strickland (w/ Andrew Yang)",
+      "Status": "Post Publicly",
+      "Start": "2020-07-25T04:00:00.000Z",
+      "Urgency": "High",
+      "Impact": "High",
+      "End": "2020-07-25T19:00:00.000Z",
+      "Participating Volunteers": [
+        "recoJy4iZTYUaaVZA",
+        "recSx8yfwhdeUucY9"
+      ],
+      "Sign-Up Link": "https://movehumanityforward.zoom.us/meeting/register/tJYlcuipqj8oGNKH7oLiW5ma3rBBsBxFXA4Q",
+      "Event / Action Type": "Humanity Hang",
+      "Event Graphic(s)": [
+        {
+          "id": "att0mrHD7oFazOAb1",
+          "url": "https://dl.airtable.com/.attachments/8d182ef5b3020efc193dd465814f5117/5b4ccc77/07.28.20Humanity_Hang.jpg",
+          "filename": "07.28.20 Humanity_Hang.jpg",
+          "size": 168858,
+          "type": "image/jpeg",
+          "thumbnails": {
+            "small": {
+              "url": "https://dl.airtable.com/.attachmentThumbnails/ef3d792a19a91cc2013999b1ed3c485c/a04fe799",
+              "width": 64,
+              "height": 36
+            },
+            "large": {
+              "url": "https://dl.airtable.com/.attachmentThumbnails/622e850f3381906ba2726653c8c76824/10caf4bb",
+              "width": 910,
+              "height": 512
+            },
+            "full": {
+              "url": "https://dl.airtable.com/.attachmentThumbnails/014c1399af41ab133d9f965c2e067eae/2260d44a",
+              "width": 3000,
+              "height": 3000
+            }
+          }
+        }
+      ],        
+      "Description": "Test event description",
+      "Candidate/Campaign": [
+        "rec09eImFAw0hTs6l"
+      ],
+      "High-profile attendees": [
+        "Andrew Yang",
+        "Endorsed Candidate"
+      ],
+      "Event / Action Type": "Humanity CALLS phone bank",
+      "Priority": "High",
+      "Vols. Recruited": 69,
+      "PTG (Recruitment)": {
+        "specialValue": "Infinity"
+      },
+      "Last Modified": "2020-11-20T16:42:54.000Z",
+      "Created by": {
+        "id": "usrg7iGBoicYG7cfL",
+        "email": "tom@gmail.com",
+        "name": "Tom Jeffrey"
+      },
+      "Participant Count": 69,
+      "record_id": "recXuvDiADvgunPBT",
+      "Date of Request": "2020-07-27T12:29:07.000Z",
+      "Graphics/Promotional Due Date": "2020-07-20T04:00:00.000Z",
+      "Start Time (for automation)": "Sat, Jul 25, 2020 4:00 AM",
+      "End time (for automation)": "Sat, Jul 25, 2020 7:00 PM",
+      "Suggested Post Date": "Jul 23, 2020",
+      "RecordID": "recXuvDiADvgunPBT"
+    },
+    "createdTime": "2020-07-27T12:29:07.000Z"
+  },
+  {
+    "id": "recngmalOQ5JeP48S_test",
+    "fields": {
+      "Event Name": "Humanity Hang",
+      "Status": "Post Publicly",
+      "Start": "2020-07-28T22:00:00.000Z",
+      "Urgency": "Low",
+      "Impact": "Low",
+      "End": "2020-07-28T23:30:00.000Z",
+      "Participating Volunteers": [
+        "recFMOKf0TTGcn1Py",
+        "rec96j4rZdS1238l3",
+        "recnYjRzr2jxFzdg2",
+        "recfXbW9E4DuIiIe9",
+        "recsl1zO4LZwX7TTP",
+        "recizzUtJgV2eXJNp",
+        "rec6luXJMw0eCD3lJ",
+        "recz0zgp2FKQmSARO",
+        "recBTrwv1JAGATz4W",
+        "recpala8ZWm2rT7S3",
+        "recA67Q84Cam1jk6v",
+        "recU66kMBSnHdcyB8",
+        "rec9SZDfw4azSTAjQ",
+        "rec9x2YpYd8dLjlv4",
+        "recRMPlEJy0tSFYcV",
+        "rec9dRyVFvZwXPq2n",
+        "recMd7hH5NcLwApDb",
+        "recz4bz5TWWPkkEUD"
+      ],
+      "Sign-Up Link": "https://movehumanityforward.zoom.us/meeting/register/tJYlcuipqj8oGNKH7oLiW5ma3rBBsBxFXA4Q",
+      "Event Graphic(s)": [
+        {
+          "id": "att0mrHD7oFazOAb1",
+          "url": "https://dl.airtable.com/.attachments/8d182ef5b3020efc193dd465814f5117/5b4ccc77/07.28.20Humanity_Hang.jpg",
+          "filename": "07.28.20 Humanity_Hang.jpg",
+          "size": 168858,
+          "type": "image/jpeg",
+          "thumbnails": {
+            "small": {
+              "url": "https://dl.airtable.com/.attachmentThumbnails/ef3d792a19a91cc2013999b1ed3c485c/a04fe799",
+              "width": 64,
+              "height": 36
+            },
+            "large": {
+              "url": "https://dl.airtable.com/.attachmentThumbnails/622e850f3381906ba2726653c8c76824/10caf4bb",
+              "width": 910,
+              "height": 512
+            },
+            "full": {
+              "url": "https://dl.airtable.com/.attachmentThumbnails/014c1399af41ab133d9f965c2e067eae/2260d44a",
+              "width": 3000,
+              "height": 3000
+            }
+          }
+        }
+      ],
+      "Priority": "Low",
+      "Vols. Recruited": 18,
+      "PTG (Recruitment)": {
+        "specialValue": "Infinity"
+      },
+      "Last Modified": "2020-11-20T16:42:54.000Z",
+      "Created by": {
+        "id": "usrg7iGBoicYG7cfL",
+        "email": "tom@gmail.com",
+        "name": "Tom Jeffrey"
+      },
+      "Participant Count": 18,
+      "record_id": "recngmalOQ5JeP48S",
+      "Date of Request": "2020-07-30T18:17:40.000Z",
+      "Graphics/Promotional Due Date": "2020-07-23T22:00:00.000Z",
+      "Start Time (for automation)": "Tue, Jul 28, 2020 10:00 PM",
+      "End time (for automation)": "Tue, Jul 28, 2020 11:30 PM",
+      "Suggested Post Date": "Jul 26, 2020",
+      "RecordID": "recngmalOQ5JeP48S"
+    },
+    "createdTime": "2020-07-30T18:17:40.000Z"
+  },
+  {
+    "id": "recMO53v1kTLeWePb_test",
+    "fields": {
+      "Event Name": "Humanity CALLS for Robbie Goldstein (w/ Andrew Yang)",
+      "Status": "Post Publicly",
+      "Start": "2020-08-19T22:00:00.000Z",
+      "Urgency": "Medium",
+      "Impact": "High",
+      "End": "2020-08-20T00:00:00.000Z",
+      "Participating Volunteers": [
+        "recYLiYaR6I4vrtTJ",
+        "recYTM8ZLCk4AiN4C",
+        "recZFAMgDBhFdEjzx",
+        "rec134IqQHbjZrQkU",
+        "recaiEvtGxi8gl14S"
+      ],
+      "Sign-Up Link": "https:test.com",
+      "Candidate/Campaign": [
+        "reckk7peZOCs0vl9i"
+      ],
+      "Vols. Requested": 100,
+      "High-profile attendees": [
+        "Andrew Yang",
+        "Endorsed Candidate"
+      ],
+      "Event / Action Type": "Humanity CALLS phone bank",
+      "Event Graphic(s)": [
+        {
+          "id": "attwxsVlaCX1GRPvy",
+          "url": "https://dl.airtable.com/.attachments/56351124526b6c386dd6c057645246b8/68a4d6df/Call4Robbie2.png",
+          "filename": "Call 4 Robbie 2.png",
+          "size": 503768,
+          "type": "image/png",
+          "thumbnails": {
+            "small": {
+              "url": "https://dl.airtable.com/.attachmentThumbnails/87a652cbac549a292979cba699cb8592/37f593ce",
+              "width": 64,
+              "height": 36
+            },
+            "large": {
+              "url": "https://dl.airtable.com/.attachmentThumbnails/b08c00443ca7e7bdf6791e77f8782679/caf4105a",
+              "width": 910,
+              "height": 512
+            },
+            "full": {
+              "url": "https://dl.airtable.com/.attachmentThumbnails/52d17ff46ec9412f3b2f5b8cf390ec0d/7567e7fb",
+              "width": 3000,
+              "height": 3000
+            }
+          }
+        }
+      ],
+      "Priority": "High",
+      "Vols. Recruited": 108,
+      "PTG (Recruitment)": 1.08,
+      "Last Modified": "2020-11-20T16:42:54.000Z",
+      "Created by": {
+        "id": "usr7VzEUdXDqBpN8I",
+        "email": "ericka@movehumanityforward.com",
+        "name": "Ericka McLeod"
+      },
+      "Participant Count": 108,
+      "record_id": "recMO53v1kTLeWePb",
+      "Date of Request": "2020-08-01T04:18:32.000Z",
+      "Graphics/Promotional Due Date": "2020-08-14T22:00:00.000Z",
+      "Start Time (for automation)": "Wed, Aug 19, 2020 10:00 PM",
+      "End time (for automation)": "Thu, Aug 20, 2020 12:00 AM",
+      "Suggested Post Date": "Aug 17, 2020",
+      "RecordID": "recMO53v1kTLeWePb"
+    },
+    "createdTime": "2020-08-01T04:18:32.000Z"
+  }
+]

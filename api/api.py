@@ -8,7 +8,10 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
 import auth
-from settings import Config, Session
+from settings import Config, Session, get_db
+import logging
+
+import external_data_sync
 
 app = FastAPI()
 
@@ -35,17 +38,14 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
         content={"detail": exc.message}
     )
 
-import logging
+app.include_router(
+    external_data_sync.router,
+    prefix='/api'
+)
+
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
-# Dependency
-def get_db():
-    try:
-        db = Session()
-        yield db
-    finally:
-        db.close()
 
 @app.get("/api/", response_model=str)
 def root() -> str:
@@ -57,15 +57,15 @@ def get_all_volunteer_roles(db: Session = Depends(get_db)) -> List[VolunteerRole
 
 @app.get("/api/volunteer_roles/{role_external_id}", response_model=VolunteerRoleSchema)
 def get_volunteer_role_by_external_id(role_external_id, db: Session = Depends(get_db)) -> Optional[VolunteerRoleSchema]:
-    return db.query(VolunteerRole).filter_by(role_external_id=role_external_id).first()
+    return db.query(VolunteerRole).filter_by(external_id=role_external_id).first()
 
 @app.get("/api/volunteer_events/", response_model=List[VolunteerEventSchema])
 def get_all_volunteer_events(db: Session = Depends(get_db)) -> List[VolunteerEventSchema]:
     return db.query(VolunteerEvent).all()
 
-@app.get("/api/volunteer_events/{event_external_id}", response_model=VolunteerEventSchema)
-def get_volunteer_event_by_external_id(event_external_id, db: Session = Depends(get_db)) -> Optional[VolunteerEventSchema]:
-    return db.query(VolunteerEvent).filter_by(event_external_id=event_external_id).first()
+@app.get("/api/volunteer_events/{external_id}", response_model=VolunteerEventSchema)
+def get_volunteer_event_by_external_id(external_id, db: Session = Depends(get_db)) -> Optional[VolunteerEventSchema]:
+    return db.query(VolunteerEvent).filter_by(external_id=external_id).first()
 
 @app.get("/api/initiatives/", response_model=List[NestedInitiativeSchema])
 def get_all_initiatives(db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
@@ -73,7 +73,7 @@ def get_all_initiatives(db: Session = Depends(get_db)) -> List[NestedInitiativeS
 
 @app.get("/api/initiatives/{initiative_external_id}", response_model=NestedInitiativeSchema)
 def get_initiative_by_external_id(initiative_external_id, db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
-    return db.query(Initiative).filter_by(initiative_external_id=initiative_external_id).first()
+    return db.query(Initiative).filter_by(external_id=initiative_external_id).first()
 
 @app.post("/api/donation_link_requests/", response_model=DonationEmailSchema)
 def create_donation_link_request(donationEmail: DonationEmailSchema, db: Session = Depends(get_db)) -> DonationEmailSchema:
