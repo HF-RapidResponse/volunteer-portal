@@ -57,7 +57,7 @@ function Initiatives() {
     var button = null;
     if (initiative['roles'].length > 0 || initiative['events'].length > 0) {
       button = (
-        <Link to={'/initiatives/' + initiative['initiative_external_id']}>
+        <Link to={'/initiatives/' + initiative['external_id']}>
           <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
             View Events & Roles
           </Button>
@@ -77,10 +77,10 @@ function Initiatives() {
         lg={9}
         xl={6}
         className="shadow-card"
-        key={initiative['initiative_external_id']}
+        key={initiative['external_id']}
       >
         <h2 className="header-3-section-lead">Initiative {i + 1}:</h2>
-        <h2 className="header-3-section-breaker">{initiative['title']}</h2>
+        <h2 className="header-3-section-breaker">{initiative['initiative_name']}</h2>
         <p>{initiative['content']}</p>
         <div className="text-center mt-4 mb-4">
           {button}
