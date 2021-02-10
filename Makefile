@@ -1,5 +1,8 @@
 .PHONY: up
 
+ORANGE=\033[0;33m
+NC=\033[0m # No Color
+
 # Dev is the default config
 TEST = -f docker-compose.yml -f docker-compose.test.yml
 PROD = -f docker-compose.yml -f docker-compose.prod.yml
@@ -15,6 +18,7 @@ recreate-all:
 shell-api:
 	docker-compose run --rm api bash
 test:
+	@echo "${ORANGE}If you're getting errors with configuration/database settings, try running \`make down\` first${NC}"
 	docker-compose $(TEST) run --rm api python -m pytest tests/
 test-debug:
 	docker-compose $(TEST) run --rm api python -m pytest tests/  -s --capture=no -vv

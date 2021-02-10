@@ -9,15 +9,6 @@ production_db_defaults: &production_db_defaults
         user: 
         password: 
 
-development_db_defaults: &development_db_defaults
-    database:
-        generator: db_url_generator
-        adapter: postgresql
-        host: db
-        database: hf_volunteer_portal_development
-        user: admin
-        password: password
-
 development_routes_defaults: &development_routes_defaults
     client: 'http://localhost:8080'
 
@@ -37,14 +28,26 @@ test:
     routes:
         <<: *development_routes_defaults
     databases:
-        <<: *development_db_defaults
+        database:
+            generator: db_url_generator
+            adapter: postgresql
+            host: db
+            database: hf_volunteer_portal_test
+            user: admin
+            password: password
     auth:
         <<: *auth_defaults
 development:
     routes:
         <<: *development_routes_defaults
     databases:
-        <<: *development_db_defaults
+        database:
+            generator: db_url_generator
+            adapter: postgresql
+            host: db
+            database: hf_volunteer_portal_development
+            user: admin
+            password: password
     auth:
         # import_auth_credentials_from_secret_store: false
         <<: *auth_defaults
