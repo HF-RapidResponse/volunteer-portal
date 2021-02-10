@@ -16,13 +16,10 @@ function InitiativeDetail(props) {
 
   useEffect(() => {
     getOneInitiative(id)
-      .then(() => {
-        setFetched(true);
-      })
       .catch(() => {
         console.error('failed to retrieve single initiative');
-        setFetched(true);
-      });
+      })
+      .finally(() => setFetched(true));
   }, []);
 
   if (!fetched) {
