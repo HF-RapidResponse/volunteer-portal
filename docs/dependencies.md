@@ -47,3 +47,13 @@ volunteer-portal (develop) $ git commit -am "Added momentjs library"
 ```
 
 Running `npm install --save momentjs` within the docker container updated the `package.json` and the `package-lock.json` in the client directory – just like it would if you were working locally. After that you can commit, push and work just like you would if this application ran using your local node environment.
+
+## Recreating Docker Images
+
+Occassionally the docker images do not automatically update when new dependencies are added (e.g. when switching branches). If you are receiving errors for a dependency that's already declared in a dependencies file, try rebuilding the corresponding service using the following commands:
+* `make recreate-api`
+* `make recreate-client`
+* `make recreate-db`
+Then simply use `make up` as usual to test if the dependencies are now installed as expected.
+
+There is a brute-force `make recreate-all` that does all of the above, but it takes a while so save yourself some time and just rebuild the service you need!

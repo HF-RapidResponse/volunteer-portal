@@ -23,7 +23,6 @@ from sqlalchemy import exc
 def db():
     return Session()
 
-
 # Will run each test in the `yield` portion
 @pytest.fixture(autouse=True)
 def setup(db):

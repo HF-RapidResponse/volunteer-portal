@@ -3,6 +3,5 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /api
 
-COPY config.yaml ./config.yaml
-COPY requirements.txt ./requirements.txt
+COPY config.yaml requirements.txt gcp_credentials.json* ./
 RUN pip install -r requirements.txt

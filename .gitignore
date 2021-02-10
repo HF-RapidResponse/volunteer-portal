@@ -121,6 +121,4 @@ dist
 *.mypy
 
 api/dev-env
-
-## Custom ignores (jcherry)
-.ipynb_checkpoints/
+api/gcp_credentials.json

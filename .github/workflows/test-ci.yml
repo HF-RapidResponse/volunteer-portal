@@ -11,6 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Fetch GCP credentials
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.VOL_PORTAL_GCP_CREDENTIALS }}
+          export_default_credentials: true
+          credentials_file_path: ./api/gcp_credentials.json
       - name: Python Tests
         run: docker-compose -f docker-compose.yml -f docker-compose.test.yml run --rm api python -m pytest tests/
       - name: JavaScript Tests

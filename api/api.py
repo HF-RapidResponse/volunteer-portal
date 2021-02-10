@@ -1,22 +1,42 @@
-from fastapi import Depends, FastAPI, Form
+from fastapi import Depends, FastAPI, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail
 from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, DonationEmailSchema
 from sqlalchemy.orm import lazyload
-from settings import Session, get_db
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi.responses import JSONResponse
+from fastapi_jwt_auth.exceptions import AuthJWTException
+import auth
+from settings import Config, Session, get_db
 import logging
 
 import external_data_sync
 
 app = FastAPI()
+
+origins = ['*']
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_middleware(SessionMiddleware, secret_key=Config['auth']['jwt']['secret'])
+app.include_router(
+    auth.router,
+    prefix='/api'
+)
+
+@app.exception_handler(AuthJWTException)
+def authjwt_exception_handler(request: Request, exc: AuthJWTException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.message}
+    )
 
 app.include_router(
     external_data_sync.router,
