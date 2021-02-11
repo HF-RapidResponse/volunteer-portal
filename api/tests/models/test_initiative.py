@@ -21,16 +21,14 @@ def setup(db):
 def test_initiative_create_types(db):
     initiative = generate_fake_initiative(db, 2, 3)
     db.add(initiative)
-    new_initiative = db.query(Initiative).filter_by(initiative_external_id=initiative.initiative_external_id).scalar()
+    new_initiative = db.query(Initiative).filter_by(external_id=initiative.external_id).scalar()
 
     assert new_initiative
 
     # Validate types
-    assert type(new_initiative.initiative_uuid) is UUID
-    assert type(new_initiative.initiative_external_id) is str
-    assert type(new_initiative.name) is str
-    assert type(new_initiative.title) is str
-    assert new_initiative.name == new_initiative.title
+    assert type(new_initiative.uuid) is UUID
+    assert type(new_initiative.external_id) is str
+    assert type(new_initiative.initiative_name) is str
     assert type(new_initiative.hero_image_url) is str
     assert type(new_initiative.content) is str
 
@@ -47,7 +45,7 @@ def test_initiative_create_types(db):
     assert type(new_initiative.events[0]) is VolunteerEvent
 
     # Validate equality
-    assert initiative.name == new_initiative.name
+    assert initiative.initiative_name == new_initiative.initiative_name
     assert new_initiative.role_ids == initiative.role_ids
     assert new_initiative.event_ids == initiative.event_ids
 
@@ -58,7 +56,7 @@ def test_initiatives_relationships_scoped(db):
 
     initiative = generate_fake_initiative(db, 2, 3)
     db.add(initiative)
-    new_initiative = db.query(Initiative).filter_by(initiative_external_id=initiative.initiative_external_id).scalar()
+    new_initiative = db.query(Initiative).filter_by(external_id=initiative.external_id).scalar()
 
     assert len(new_initiative.role_ids) == 2
     assert len(new_initiative.roles) == 2

@@ -88,7 +88,7 @@ function InitiativeDetail(props) {
             lg={7}
             xl={5}
             className="shadow-card"
-            key={evt['event_external_id']}
+            key={evt['external_id']}
           >
             <h2 style={{ margin: '0 0' }} className="header-4">
               {evt['name']}
@@ -136,7 +136,7 @@ function InitiativeDetail(props) {
             lg={7}
             xl={5}
             className="shadow-card"
-            key={role['role_external_id']}
+            key={role['external_id']}
           >
             <h2 style={{ margin: '0 0' }} className="header-4">
               {role['name']}

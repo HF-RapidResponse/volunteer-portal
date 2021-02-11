@@ -13,3 +13,8 @@ pymysql
 psycopg2-binary
 pyyaml
 google-cloud-secret-manager
+itsdangerous
+authlib
+httpx
+fastapi_jwt_auth
+airtable-python-wrapper

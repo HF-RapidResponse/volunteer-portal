@@ -1,0 +1,23 @@
+# Dev config
+# Calling "docker-compose up" uses the configuration set in docker-compose.yml then
+# extends and overwrites those values with the configuration here
+services:
+  db:
+    build: ./db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+    - 8082:5432 # For local connection via a Postgres client
+    volumes:
+    - ./db/data/dev:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin"]
+      interval: 1s
+      timeout: 10s
+      retries: 10
+
+  api:
+    environment:
+      ENV: development
+      GOOGLE_APPLICATION_CREDENTIALS: ./gcp_credentials.json
