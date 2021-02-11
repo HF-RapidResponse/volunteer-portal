@@ -21,3 +21,5 @@ services:
     environment:
       ENV: test
       GOOGLE_APPLICATION_CREDENTIALS: ./gcp_credentials.json
+    depends_on:
+      - db

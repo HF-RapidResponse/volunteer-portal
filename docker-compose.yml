@@ -13,8 +13,11 @@ services:
     - ./api:/api
 
   client:
-    build: ./client
+    build:
+      context: ./client
+      network: host
     command: npm run client
+
     depends_on:
     - api
     environment:

@@ -2,12 +2,12 @@
 
 production_db_defaults: &production_db_defaults
     database:
-        adapter: mysql
+        adapter: postgresql
         generator: secret_generator
-        host: 
-        database: 
-        user: 
-        password: 
+        host:  34.69.153.217
+        database: hf_volunteer_portal
+        user: admin
+        password: humanity-forward_hf-portal_psql-db_admin
 
 development_routes_defaults: &development_routes_defaults
     client: 'http://localhost:8080'
