@@ -1,14 +1,6 @@
 import axios from 'axios';
 import { createSlice } from '@reduxjs/toolkit';
 
-// console.log('What is window.location?', window.location);
-// const axiosInstance = axios.create({
-//   baseURL:
-//     window.location.host === 'localhost:8000'
-//       ? 'http://localhost:8081'
-//       : window.location.host,
-// });
-
 const initiativeSlice = createSlice({
   name: 'initiativeStore',
 

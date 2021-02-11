@@ -1,10 +1,22 @@
 @import 'variables';
 
 .squish-title {
-    letter-spacing: -0.02em;
+  letter-spacing: -0.02em;
 }
 
 .bold-subtitle {
-    margin: 0rem 0rem;
-    font-weight: bold;
+  margin: 0rem 0rem;
+  font-weight: bold;
+}
+
+.initiative-header {
+  background-color: $hfDarkBlue;
+  * {
+    color: white;
+  }
+}
+
+.initiative-content {
+  background-color: white;
+  padding: 2rem;
 }
