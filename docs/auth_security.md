@@ -12,17 +12,25 @@ This can be tested using the `/api/profile` endpoint, which is protected by auth
 
 In order to use authentication, you must have access to the various credentials of the OAuth clients the application uses. There are two ways to get them:
 
+### Get Secrets from GCP Secret Manager using Service Account Key (Recommended)
+
+Including this [Service Account key](https://storage.cloud.google.com/humanity-forward-infra/gcp_credentials.json) called `gcp_credentials.json` in the `api/` folder will automatically be pulled in correctly when the API Docker image builds. To rebuild that image to ensure this has happened, use `make down` followed by `make up`. __Do not__ include that service key in your commits; it's already been added to the .gitignore to help prevent that.
+
+Service Accounts are shared accounts that grant access to our development Secrets, thus these shared keys must be handled with care. We have separate service accounts and secrets for production.
+
+`standard-tech-volunteer-robot@humanity-forward.iam.gserviceaccount.com` is the main service account we use for development. It is a member of vol-tech@movehumanityforward.com and has the same permissions as any fully onboarded volunteer. 
+
+To grant access to individual secrets to volunters (and service accounts inlcuded in vol-tech@) run:
+```
+gcloud secrets add-iam-policy-binding  portal_auth_github_client_id  --member=group:vol-tech@movehumanityforward.com --role=roles/secretmanager.secretAccessor
+```
+
 ### Get Secrets from GCP Secret Manager using Cloud SDK Profile
 
 ...still need to figure this out. Ideally does not involve any explicit setting of keys and their paths and works as the rational default. Would support granting individual access (i.e. making it much more secure than shared Service Account keys).
 
 GCP docs for logging into the CLI are [here](https://cloud.google.com/sdk/gcloud/reference/auth/login). To make that work automagically, we'll need to update either `api/Dockerfile` or `docker-compose.override.yml` to pull the host's implicit service key into the container either by copying it over or setting the `GOOGLE_APPLICATION_CREDENTIALS` environment variable inside the container to something that points to the correct place on the host.
 
-### Get Secrets from GCP Secret Manager using Service Account Key (Recommended)
-
-Including a Service Account key (with the correct permissions) called `gcp_credentials.json` in the `api/` folder will automatically be pulled in correctly when the API Docker image builds. To rebuild that image to ensure this has happened, use `make recreate-api` followed by `make up`. __Do not__ include that service key in your commits; it's already been added to the .gitignore to help prevent that.
-
-Service Accounts are shared accounts that grant access to our secrets, thus these shared keys must be handled with care. They are refreshed often. Reach out to one of the GCP admins in our team Slack channel in order to get it.
 
 ### Manually Configure OAuth Client Credentials
 
