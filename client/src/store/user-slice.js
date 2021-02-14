@@ -73,8 +73,34 @@ export const attemptLogin = (payload) => async (dispatch) => {
   // } else {
   //   return false;
   // }
+  // if (payload.oauthLogin) {
+  //   console.log('What is hostname?', window.location.hostname);
+  //   const host =
+  //     window.location.hostname === 'localhost' ? 'http://localhost:8000' : null;
+  //   console.log(
+  //     `What is url? ${host}/api/login?provider=${payload.oauthLogin}`
+  //   );
+  //   const response = await axios.get(
+  //     `${host}/api/login?provider=${payload.oauthLogin}`
+  //   );
+  //   console.log('what is response here?', response);
+  // }
   dispatch(completeLogin(payload));
   return true;
+};
+
+export const oauthLogin = (payload) => async (dispatch) => {
+  console.log('payload on oauthLogin?', payload);
+  const { profileObj } = payload;
+  const userPayload = {
+    username: profileObj.googleID,
+    email: profileObj.email,
+    firstName: profileObj.givenName,
+    lastName: profileObj.familyName,
+    name: profileObj.name,
+    profilePic: profileObj.imageUrl,
+  };
+  dispatch(completeLogin(userPayload));
 };
 
 export const startLogout = (payload) => async (dispatch) => {

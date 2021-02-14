@@ -2,15 +2,26 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
 import { Button, Form, Container } from 'react-bootstrap';
-import { attemptLogin, validateEmail } from '../store/user-slice.js';
+import {
+  attemptLogin,
+  validateEmail,
+  oauthLogin,
+} from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
+import GoogleLogo from './GoogleLogo';
 
 function Login(props) {
   const [submitted, setSubmitted] = useState(false);
   const [validated, setValidated] = useState(false);
-  const { attemptLogin, user, firstAcctPage, validateEmail } = props;
+  const {
+    attemptLogin,
+    user,
+    firstAcctPage,
+    validateEmail,
+    oauthLogin,
+  } = props;
   const { handleSubmit, handleChange, data } = useForm(attemptLogin);
   const path = window.location.pathname;
   /**
@@ -34,8 +45,18 @@ function Login(props) {
     }
   }
 
-  const responseGoogle = (response) => {
-    console.log(response);
+  const errorGoogle = (response) => {
+    console.error(response);
+  };
+
+  const getRequestUrl = (oauthLogin) => {
+    // const host =
+    //   window.location.hostname === 'localhost'
+    //     ? 'http://localhost:8000'
+    //     : window.location.hostname;
+    const url = `/api/login?provider=${oauthLogin}`;
+    console.log('url to return:', url);
+    return url;
   };
 
   return (validated && submitted) || user ? (
@@ -100,12 +121,29 @@ function Login(props) {
               Login
             </Button>
             <p className="font-weight-bold">or</p>
-            <GoogleLogin
+            {/* <GoogleLogin
               // clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-              clientId={null}
+              clientId="102560006154572955509"
               buttonText="Login with Google"
               onSuccess={responseGoogle}
               onFailure={responseGoogle}
+              onClick={() => attemptLogin({ oauthLogin: 'google' })}
+              cookiePolicy={'single_host_origin'}
+              className="btn-block"
+            /> */}
+            {/* <Button
+              variant="primary"
+              onClick={() => props.history.push(getRequestUrl('google'))}
+            >
+              Login with Google
+            </Button> */}
+            <GoogleLogin
+              clientId="899853639312-rluooarpraulr242vuvfqejefmg1ii8d.apps.googleusercontent.com"
+              //clientId="102560006154572955509"
+              buttonText="Login with Google"
+              onSuccess={oauthLogin}
+              onFailure={errorGoogle}
+              // onClick={() => oauthLogin({ oauthLogin: 'google' })}
               cookiePolicy={'single_host_origin'}
               className="btn-block"
             />
@@ -123,5 +161,5 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { attemptLogin, validateEmail };
+const mapDispatchToProps = { attemptLogin, validateEmail, oauthLogin };
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

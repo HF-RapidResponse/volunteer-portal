@@ -90,9 +90,7 @@ function Initiatives(props) {
           </Col>
           <Col xs={12} lg={4} className="text-center">
             <Image
-              src={
-                initiative.hero_image_url || 'https://via.placeholder.com/300'
-              }
+              src={'https://via.placeholder.com/300x400'} // initiative.hero_image_url || 'https://via.placeholder.com/300'
               fluid
             />
           </Col>
