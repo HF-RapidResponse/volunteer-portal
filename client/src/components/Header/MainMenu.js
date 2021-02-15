@@ -15,11 +15,13 @@ function MainMenu(props) {
         dropdownItems.push(
           <NavLink
             className="nav-link ml-5 mr-5"
-            to={`/initiatives/${child.initiative_external_id}`}
+            to={`/initiatives/${
+              child.initiative_external_id || child.external_id
+            }`}
             key={`nav-dropdown-child-${j}`}
             onClick={collapse}
           >
-            {child.name}
+            {child.name || child.initiative_name}
           </NavLink>
         );
       }

@@ -49,16 +49,6 @@ function Login(props) {
     console.error(response);
   };
 
-  const getRequestUrl = (oauthLogin) => {
-    // const host =
-    //   window.location.hostname === 'localhost'
-    //     ? 'http://localhost:8000'
-    //     : window.location.hostname;
-    const url = `/api/login?provider=${oauthLogin}`;
-    console.log('url to return:', url);
-    return url;
-  };
-
   return (validated && submitted) || user ? (
     <Redirect push to={firstAcctPage || '/account/profile'} />
   ) : (

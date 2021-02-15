@@ -40,7 +40,6 @@ function AccountIndex(props) {
       break;
   }
   /* eslint-enable indent */
-  // console.log('cookies here?', cookies);
 
   return user && mainContent ? (
     <>
@@ -48,7 +47,7 @@ function AccountIndex(props) {
         <Row className="text-center md-text-left">
           <Col xs={12} md={2}>
             <Image
-              src={placeholderImg}
+              src={user.profilePic || placeholderImg}
               roundedCircle
               fluid
               style={{ maxWidth: '80px' }}

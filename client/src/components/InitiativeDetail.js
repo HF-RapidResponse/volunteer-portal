@@ -114,7 +114,7 @@ function InitiativeDetail(props) {
         );
 
         if (i % 2 === 1 || detailedInitiative['events'].length - 1 === i) {
-          evts.push(<Row>{currRow}</Row>);
+          evts.push(<Row key={'row' + i}>{currRow}</Row>);
           currRow = [];
         }
       }

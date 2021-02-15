@@ -93,7 +93,7 @@ export const oauthLogin = (payload) => async (dispatch) => {
   console.log('payload on oauthLogin?', payload);
   const { profileObj } = payload;
   const userPayload = {
-    username: profileObj.googleID,
+    username: profileObj.googleId,
     email: profileObj.email,
     firstName: profileObj.givenName,
     lastName: profileObj.familyName,

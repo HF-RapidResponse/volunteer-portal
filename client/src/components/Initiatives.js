@@ -43,10 +43,13 @@ function Initiatives(props) {
   const cards = [];
   for (var i = 0; i < initiatives.length; i++) {
     const initiative = initiatives[i];
+    const initKey =
+      initiative['initiative_external_id'] || initiative['external_id'];
     var button = null;
+
     if (initiative['roles'].length > 0 || initiative['events'].length > 0) {
       button = (
-        <Link to={'/initiatives/' + initiative['initiative_external_id']}>
+        <Link to={'/initiatives/' + initKey}>
           <Button variant="info" style={{ padding: '.35rem 1.5rem' }}>
             View Events & Roles
           </Button>
@@ -62,9 +65,8 @@ function Initiatives(props) {
       );
     }
 
-    const initKey = initiative['initiative_external_id'];
     cards.push(
-      <Container className="mt-5 mb-5">
+      <Container className="mt-5 mb-5" key={initKey + i}>
         {/* <Col
           xs={12}
           lg={9}
