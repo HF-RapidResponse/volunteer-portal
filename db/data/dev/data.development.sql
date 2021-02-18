@@ -157,6 +157,25 @@ CREATE TABLE public.volunteer_openings (
 ALTER TABLE public.volunteer_openings OWNER TO admin;
 
 --
+-- Name: accounts; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.accounts (
+    uuid uuid NOT NULL,
+    acct_email text,
+    username character varying(255),
+    first_name character varying(255) NOT NULL,
+    last_name character varying(255) NOT NULL,
+    city character varying(255),
+    "state" character varying(255),
+    roles character varying[] NOT NULL,
+    initiative_map json
+);
+
+
+ALTER TABLE public.accounts OWNER TO admin;
+
+--
 -- Data for Name: donation_emails; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
@@ -247,6 +266,12 @@ ALTER TABLE ONLY public.initiatives
 ALTER TABLE ONLY public.volunteer_openings
     ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (uuid);
 
+--
+-- Name: volunteer_openings volunteer_openings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
 
 --
 -- PostgreSQL database dump complete

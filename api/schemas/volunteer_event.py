@@ -7,6 +7,7 @@ from uuid import UUID
 Url = str
 MarkdownText = str
 
+
 class VolunteerEventSchema(BaseModel):
     uuid: UUID
     external_id: str

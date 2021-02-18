@@ -66,25 +66,6 @@ export const {
 } = userSlice.actions;
 
 export const attemptLogin = (payload) => async (dispatch) => {
-  // const response = await axios.post('/api/login-or-something-like-that/', payload);
-  // if (response.ok) {
-  //   dispatch(login(response.data));
-  //   return true;
-  // } else {
-  //   return false;
-  // }
-  // if (payload.oauthLogin) {
-  //   console.log('What is hostname?', window.location.hostname);
-  //   const host =
-  //     window.location.hostname === 'localhost' ? 'http://localhost:8000' : null;
-  //   console.log(
-  //     `What is url? ${host}/api/login?provider=${payload.oauthLogin}`
-  //   );
-  //   const response = await axios.get(
-  //     `${host}/api/login?provider=${payload.oauthLogin}`
-  //   );
-  //   console.log('what is response here?', response);
-  // }
   dispatch(completeLogin(payload));
   return true;
 };
@@ -92,6 +73,8 @@ export const attemptLogin = (payload) => async (dispatch) => {
 export const oauthLogin = (payload) => async (dispatch) => {
   console.log('payload on oauthLogin?', payload);
   const { profileObj } = payload;
+  const existingAcct = await axios.get(`/api/accounts/${profileObj.email}`);
+  console.log('does an account exist?', existingAcct);
   const userPayload = {
     username: profileObj.googleId,
     email: profileObj.email,

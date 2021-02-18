@@ -6,3 +6,4 @@ from models.priority import Priority
 from models.role_type import RoleType
 from models.volunteer_event import VolunteerEvent
 from models.volunteer_role import VolunteerRole
+from models.account import Account

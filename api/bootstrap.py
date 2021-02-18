@@ -11,7 +11,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models import Base, DonationEmail, Initiative, VolunteerEvent, VolunteerRole
+from models import Base, DonationEmail, Initiative, VolunteerEvent, VolunteerRole, Account
 from settings import Connections, Session, ENV
 from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_volunteer_events_list, generate_fake_initiatives_list
 # from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_initiatives_list
@@ -26,7 +26,8 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 # Create database(s) and tables
 for key in Connections:
     # Connect with `echo` so we can see what's being run
-    db_url = Connections[key]['url'].replace(f'/{Connections[key]["database"]}', '/postgres')
+    db_url = Connections[key]['url'].replace(
+        f'/{Connections[key]["database"]}', '/postgres')
     engine = create_engine(db_url)
     conn = engine.connect()
     conn.execute("commit")
@@ -60,7 +61,8 @@ Session = sessionmaker(binds={
     Initiative: engines['database'],
     VolunteerEvent: engines['database'],
     VolunteerRole: engines['database'],
-    DonationEmail: engines['database']
+    DonationEmail: engines['database'],
+    Account: engines['database'],
 })
 
 # Create all tables
