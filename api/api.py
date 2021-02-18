@@ -94,12 +94,12 @@ def create_donation_link_request(donationEmail: DonationEmailSchema, db: Session
 
 
 @app.get("/api/accounts/", response_model=List[AccountResponseSchema])
-def get_all_accounts(db: Session = Depends(get_db)) -> List[AccountRequestSchema]:
+def get_all_accounts(db: Session = Depends(get_db)):
     return db.query(Account).all()
 
 
 @app.get("/api/accounts/{uuid}", response_model=AccountResponseSchema)
-def get_account_by_uuid(uuid, db: Session = Depends(get_db)) -> Optional[AccountRequestSchema]:
+def get_account_by_uuid(uuid, db: Session = Depends(get_db)):
     return db.query(Account).filter_by(uuid=uuid).first()
 
 
@@ -111,10 +111,17 @@ def get_account_by_email(email, db: Session = Depends(get_db)) -> Optional[Accou
 @app.post("/api/accounts/", response_model=AccountResponseSchema, status_code=201)
 def create_account(account: AccountRequestSchema, db: Session = Depends(get_db)):
     acct_uuid = uuid4()
-    db.add(Account(uuid=acct_uuid, email=account.email, username=account.username, first_name=account.first_name,
-                   last_name=account.last_name, city=account.city, state=account.state, roles=account.roles, initiative_map=account.initiative_map))
+    db.add(Account(uuid=acct_uuid, **account.dict()))
     db.commit()
     return db.query(Account).filter_by(uuid=acct_uuid).first()
+
+
+@app.put("/api/accounts/{uuid}", response_model=AccountResponseSchema)
+def update_account(uuid, account: AccountRequestSchema, db: Session = Depends(get_db)):
+    new_obj = Account(uuid=uuid, **account.dict())
+    db.merge(new_obj)
+    db.commit()
+    return db.query(Account).filter_by(uuid=uuid).first()
 
 
 @app.delete("/api/accounts/{uuid}", status_code=204)
@@ -125,8 +132,3 @@ def delete_account(uuid, db: Session = Depends(get_db)):
                             detail=f"Account with UUID {uuid} not found")
     db.delete(acct_to_delete)
     db.commit()
-
-
-@ app.get("/api/uuid", response_model=UUID)
-def generate_uuid() -> UUID:
-    return uuid4()
