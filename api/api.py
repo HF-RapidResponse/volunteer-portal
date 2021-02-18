@@ -1,8 +1,8 @@
-from fastapi import Depends, FastAPI, Form, Request
+from fastapi import Depends, FastAPI, Form, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Text
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account
-from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, DonationEmailSchema, AccountSchema
+from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, DonationEmailSchema, AccountRequestSchema, AccountResponseSchema
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
@@ -93,23 +93,38 @@ def create_donation_link_request(donationEmail: DonationEmailSchema, db: Session
     return donationEmail
 
 
-@app.get("/api/accounts/", response_model=List[AccountSchema])
-def get_all_accounts(db: Session = Depends(get_db)) -> List[AccountSchema]:
+@app.get("/api/accounts/", response_model=List[AccountResponseSchema])
+def get_all_accounts(db: Session = Depends(get_db)) -> List[AccountRequestSchema]:
     return db.query(Account).all()
 
 
-@app.get("/api/accounts/{email}", response_model=AccountSchema)
-def get_account_by_email(email, db: Session = Depends(get_db)) -> Optional[AccountSchema]:
+@app.get("/api/accounts/{uuid}", response_model=AccountResponseSchema)
+def get_account_by_uuid(uuid, db: Session = Depends(get_db)) -> Optional[AccountRequestSchema]:
+    return db.query(Account).filter_by(uuid=uuid).first()
+
+
+@app.get("/api/accounts/{email}", response_model=AccountResponseSchema)
+def get_account_by_email(email, db: Session = Depends(get_db)) -> Optional[AccountRequestSchema]:
     return db.query(Account).filter_by(email=email).first()
 
 
-@app.post("/api/accounts/", response_model=AccountSchema)
-def create_account(account: AccountSchema, db: Session = Depends(get_db)) -> AccountSchema:
+@app.post("/api/accounts/", response_model=AccountResponseSchema, status_code=201)
+def create_account(account: AccountRequestSchema, db: Session = Depends(get_db)):
     acct_uuid = uuid4()
-    db.add(Account(uuid=acct_uuid, acct_email=account.acct_email, username=account.username, first_name=account.first_name,
+    db.add(Account(uuid=acct_uuid, email=account.email, username=account.username, first_name=account.first_name,
                    last_name=account.last_name, city=account.city, state=account.state, roles=account.roles, initiative_map=account.initiative_map))
     db.commit()
-    return account
+    return db.query(Account).filter_by(uuid=acct_uuid).first()
+
+
+@app.delete("/api/accounts/{uuid}", status_code=204)
+def delete_account(uuid, db: Session = Depends(get_db)):
+    acct_to_delete = db.query(Account).filter_by(uuid=uuid).first()
+    if acct_to_delete is None:
+        raise HTTPException(status_code=404,
+                            detail=f"Account with UUID {uuid} not found")
+    db.delete(acct_to_delete)
+    db.commit()
 
 
 @ app.get("/api/uuid", response_model=UUID)

@@ -14,15 +14,15 @@ class Account(Base):
 
     uuid = Column(UUID(as_uuid=True), primary_key=True,
                   default=uuid4, unique=True, nullable=False)
-    acct_email: Column('acct_email', Text)
-    username: Column('username', String(255), nullable=True)
-    first_name: Column('first_name', String(255), nullable=True)
-    last_name: Column('last_name', String(255), nullable=True)
-    city: Column('city', String(32), nullable=True)
-    state: Column('state', String(16), nullable=True)
-    roles: Column('roles', ARRAY(String), default=[], nullable=False)
-    initiative_map: Column('initiative_map', JSON, default={}, nullable=False)
+    email = Column('email', Text)
+    username = Column('username', String(255), nullable=True)
+    first_name = Column('first_name', String(255), nullable=True)
+    last_name = Column('last_name', String(255), nullable=True)
+    city = Column('city', String(32), nullable=True)
+    state = Column('state', String(16), nullable=True)
+    roles = Column('roles', ARRAY(String), default=[], nullable=False)
+    initiative_map = Column('initiative_map', JSON, default={}, nullable=False)
 
     def __repr__(self):
-        return "<Account(uuid='%s', acct_email='%s', username='%s', first_name='%s', last_name='%s', city='%s', state='%s', roles='%s', initiative_map='%s')>" % (
-            self.uuid, self.acct_email, self.username, self.first_name, self.last_name, self.city, self.state, self.roles, self.initiative_map)
+        return "<Account(uuid='%s', email='%s', username='%s', first_name='%s', last_name='%s', city='%s', state='%s', roles='%s', initiative_map='%s')>" % (
+            self.uuid, self.email, self.username, self.first_name, self.last_name, self.city, self.state, self.roles, self.initiative_map)

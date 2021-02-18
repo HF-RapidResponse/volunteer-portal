@@ -3,8 +3,8 @@ from typing import List, Dict
 from uuid import UUID
 
 
-class AccountSchema(BaseModel):
-    acct_email: EmailStr
+class AccountRequestSchema(BaseModel):
+    email: EmailStr
     username: str
     first_name: str
     last_name: str
@@ -16,3 +16,7 @@ class AccountSchema(BaseModel):
     class Config:
         orm_mode = True
         arbitrary_types_allowed = True
+
+
+class AccountResponseSchema(AccountRequestSchema):
+    uuid: UUID
