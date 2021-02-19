@@ -22,6 +22,10 @@ auth_defaults: &auth_defaults
         client_id: portal_auth_github_client_id
         client_secret: portal_auth_github_client_secret
 
+notification_defaults: &notification_defaults
+    email_default_from_address: tripp@movehumanityforward.com
+    sendgrid_api_key: portal_notifications_sendgrid_test_api_key
+
 # Specific configurations for each environment
 
 test:
@@ -37,6 +41,8 @@ test:
             password: password
     auth:
         <<: *auth_defaults
+    notifications:
+        <<: *notification_defaults
 development:
     routes:
         <<: *development_routes_defaults
@@ -51,6 +57,8 @@ development:
     auth:
         # import_auth_credentials_from_secret_store: false
         <<: *auth_defaults
+    notifications:
+        <<: *notification_defaults
 staging:
     databases:
         <<: *production_db_defaults

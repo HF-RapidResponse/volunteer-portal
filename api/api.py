@@ -15,7 +15,7 @@ import external_data_sync
 
 app = FastAPI()
 
-origins = ['*']
+origins = [Config['routes']['client']]
 
 app.add_middleware(
     CORSMiddleware,
