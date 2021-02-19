@@ -47,7 +47,7 @@ def send_email_notification(notification: Notification, db: DBSession):
             notification.status = NotificationStatus.SENT
             notification.sent_date = datetime.utcnow()
         else:
-            notification.status = NotificationStatus.FAILE
+            notification.status = NotificationStatus.FAILED
     
     except Exception:
         notification.status = NotificationStatus.FAILED
