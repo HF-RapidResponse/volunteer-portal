@@ -71,19 +71,30 @@ export const attemptLogin = (payload) => async (dispatch) => {
 };
 
 export const oauthLogin = (payload) => async (dispatch) => {
-  console.log('payload on oauthLogin?', payload);
   const { profileObj } = payload;
-  const existingAcct = await axios.get(`/api/accounts/${profileObj.email}`);
-  console.log('does an account exist?', existingAcct);
-  const userPayload = {
-    username: profileObj.googleId,
-    email: profileObj.email,
-    firstName: profileObj.givenName,
-    lastName: profileObj.familyName,
-    name: profileObj.name,
-    profilePic: profileObj.imageUrl,
-  };
-  dispatch(completeLogin(userPayload));
+  console.log('profileObj on oauthLogin?', profileObj);
+  try {
+    console.log('window.location?', window.location);
+    const host =
+      window.location.origin === 'localhost:8000'
+        ? 'http://localhost:8081'
+        : window.location.origin;
+    const existingAcct = await axios.get(
+      `${host}/api/accounts/email/${profileObj.email}`
+    );
+    console.log('does an account exist?', existingAcct);
+    const userPayload = {
+      username: profileObj.googleId,
+      email: profileObj.email,
+      firstName: profileObj.givenName,
+      lastName: profileObj.familyName,
+      name: profileObj.name,
+      profilePic: profileObj.imageUrl,
+    };
+    dispatch(completeLogin(userPayload));
+  } catch (error) {
+    console.error('error on oauth get:', error);
+  }
 };
 
 export const startLogout = (payload) => async (dispatch) => {

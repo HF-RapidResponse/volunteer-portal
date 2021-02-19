@@ -103,8 +103,8 @@ def get_account_by_uuid(uuid, db: Session = Depends(get_db)):
     return db.query(Account).filter_by(uuid=uuid).first()
 
 
-@app.get("/api/accounts/{email}", response_model=AccountResponseSchema)
-def get_account_by_email(email, db: Session = Depends(get_db)) -> Optional[AccountRequestSchema]:
+@app.get("/api/accounts/email/{email}", response_model=AccountResponseSchema)
+def get_account_by_email(email, db: Session = Depends(get_db)):
     return db.query(Account).filter_by(email=email).first()
 
 
