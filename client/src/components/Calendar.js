@@ -32,6 +32,7 @@ function Events() {
     inner = data.map(
       ({
         uuid,
+        external_id,
         event_name,
         description,
         start_datetime,
@@ -44,7 +45,12 @@ function Events() {
 
         if (startDate.isAfter()) {
           return (
-            <Col xs={12} lg={8} className="shadow-card" key={uuid}>
+            <Col
+              xs={12}
+              lg={8}
+              className="shadow-card"
+              key={`${uuid}-${external_id}`}
+            >
               <h2 className="header-4">{event_name}</h2>
               <p className="btn-cyan">{dateRange}</p>
               <p>{description}</p>
