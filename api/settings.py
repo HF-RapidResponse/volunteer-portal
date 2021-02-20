@@ -42,6 +42,8 @@ def read_config():
         config = import_auth_credentials_from_secret_store(config)
 
     config['notifications']['sendgrid_api_key'] = get_secret_for_key(config['notifications']['sendgrid_api_key'])
+    config['notifications']['twilio_sid'] = get_secret_for_key(config['notifications']['twilio_sid'])
+    config['notifications']['twilio_auth_token'] = get_secret_for_key(config['notifications']['twilio_auth_token'])
 
     return config
 
