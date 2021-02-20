@@ -166,9 +166,10 @@ CREATE TABLE public.accounts (
     username character varying(255),
     first_name character varying(255) NOT NULL,
     last_name character varying(255) NOT NULL,
+    profile_pic text,
     city character varying(255),
     "state" character varying(255),
-    roles character varying[] NOT NULL,
+    roles character varying[],
     initiative_map json
 );
 

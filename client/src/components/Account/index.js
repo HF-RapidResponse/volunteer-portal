@@ -47,7 +47,7 @@ function AccountIndex(props) {
         <Row className="text-center md-text-left">
           <Col xs={12} md={2}>
             <Image
-              src={user.profilePic || placeholderImg}
+              src={user.profile_pic || placeholderImg}
               roundedCircle
               fluid
               style={{ maxWidth: '80px' }}

@@ -53,7 +53,7 @@ function Involvement(props) {
       );
     }
 
-    Object.entries(user.initiativeMap).forEach(
+    Object.entries(user.initiative_map).forEach(
       ([initiativeName, isSubscribed]) => {
         initiativesToRender.push(
           <Row className="mt-2 mb-2" key={'initiative-' + initiativeName}>
@@ -93,13 +93,19 @@ function Involvement(props) {
       </Form>
       <Form className="p-4 mt-5 mb-2" style={{ background: 'white' }}>
         <h4 className="mb-4">Initiatives</h4>
-        <Row>
-          <Col xs={12} md={8}></Col>
-          <Col xs={12} md={4}>
-            <label className="text-muted ml-lg-5">Subscribed</label>
-          </Col>
-        </Row>
-        <>{initiativesToRender}</>
+        {initiativesToRender.length ? (
+          <>
+            <Row>
+              <Col xs={12} md={8}></Col>
+              <Col xs={12} md={4}>
+                <label className="text-muted ml-lg-5">Subscribed</label>
+              </Col>
+            </Row>
+            <>{initiativesToRender}</>
+          </>
+        ) : (
+          <p>No initiatives to display</p>
+        )}
       </Form>
     </>
   ) : (

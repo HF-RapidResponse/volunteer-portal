@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import List, Dict
+from typing import List, Dict, Text, Optional
 from uuid import UUID
 
 
@@ -8,10 +8,11 @@ class AccountRequestSchema(BaseModel):
     username: str
     first_name: str
     last_name: str
-    city: str
-    state: str
-    roles: List
-    initiative_map: Dict
+    profile_pic: Optional[Text]
+    city: Optional[str]
+    state: Optional[str]
+    roles: Optional[List]
+    initiative_map: Optional[Dict]
 
     class Config:
         orm_mode = True

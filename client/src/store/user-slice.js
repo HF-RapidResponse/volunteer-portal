@@ -13,20 +13,6 @@ const userSlice = createSlice({
   reducers: {
     completeLogin: (state, action) => {
       const { payload } = action;
-      payload.id = payload.id || '1234';
-      payload.username = payload.username || 'andyfromtheblock'; // using this as placeholder for now
-      payload.name = payload.name || 'Andie Yang'; // placeholder
-      payload.city = payload.city || 'New York City'; // placeholder
-      payload.state = payload.state || 'NY'; // placeholder
-      payload.roles = payload.roles || [
-        'President of Andy Club and the Superintendent',
-        'Mr. Grinch',
-      ]; // placeholder
-      payload.initiativeMap = payload.initiativeMap || {
-        'Fundraising for UBI campaign': true,
-        'Congressional Pressure for UBI': true,
-        'Normalize Human Centered Policies': true,
-      };
       state.user = payload;
       console.log('Here is the user on login:', state.user);
     },
@@ -65,6 +51,18 @@ export const {
   completeUserUpdate,
 } = userSlice.actions;
 
+class AccountPayload {
+  constructor(obj) {
+    this.username = obj.username;
+    this.email = obj.email;
+    this.first_name = obj.first_name;
+    this.last_name = obj.last_name;
+    this.profile_pic = obj.profile_pic;
+    this.roles = obj.roles || [];
+    this.initiative_map = obj.initiative_map || {};
+  }
+}
+
 export const attemptLogin = (payload) => async (dispatch) => {
   dispatch(completeLogin(payload));
   return true;
@@ -72,26 +70,25 @@ export const attemptLogin = (payload) => async (dispatch) => {
 
 export const oauthLogin = (payload) => async (dispatch) => {
   const { profileObj } = payload;
-  console.log('profileObj on oauthLogin?', profileObj);
   try {
-    console.log('window.location?', window.location);
-    const host =
-      window.location.origin === 'localhost:8000'
-        ? 'http://localhost:8081'
-        : window.location.origin;
     const existingAcct = await axios.get(
-      `${host}/api/accounts/email/${profileObj.email}`
+      `/api/accounts/email/${profileObj.email}`
     );
-    console.log('does an account exist?', existingAcct);
-    const userPayload = {
-      username: profileObj.googleId,
-      email: profileObj.email,
-      firstName: profileObj.givenName,
-      lastName: profileObj.familyName,
-      name: profileObj.name,
-      profilePic: profileObj.imageUrl,
-    };
-    dispatch(completeLogin(userPayload));
+
+    if (existingAcct.data) {
+      dispatch(completeLogin(existingAcct.data));
+    } else {
+      const acctPayload = new AccountPayload({
+        username: profileObj.googleId,
+        email: profileObj.email,
+        first_name: profileObj.givenName,
+        last_name: profileObj.familyName,
+        profile_pic: profileObj.imageUrl,
+      });
+
+      const newAcct = await axios.post(`/api/accounts/`, acctPayload);
+      dispatch(completeLogin(newAcct.data));
+    }
   } catch (error) {
     console.error('error on oauth get:', error);
   }
@@ -174,10 +171,10 @@ export const validatePassword = (payload) => {
 export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   const { user, initiativeName, isSubscribed } = payload;
   const userCopy = { ...user };
-  userCopy.initiativeMap = {
-    ...userCopy.initiativeMap,
+  userCopy.initiative_map = {
+    ...userCopy.initiative_map,
   };
-  userCopy.initiativeMap[initiativeName] = !isSubscribed;
+  userCopy.initiative_map[initiativeName] = !isSubscribed;
   //const response = await axios.put(`/users/user.id`, user);
   dispatch(completeUserUpdate(userCopy));
 };

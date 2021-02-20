@@ -13,7 +13,10 @@ function Profile(props) {
           <Col xs={12} md={8}>
             <Form.Group controlId="formName">
               <Form.Label>Name</Form.Label>
-              <Form.Control defaultValue={user.name} />
+              <Form.Control
+                defaultValue={user.first_name + user.last_name}
+                placeholder="Enter name here"
+              />
             </Form.Group>
           </Col>
           <Col xs={12} md={4} className="pl-lg-5">
