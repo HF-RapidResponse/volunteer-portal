@@ -21,7 +21,6 @@ const userSlice = createSlice({
       state.shownSettings = {};
       state.firstAcctPage = null;
     },
-    register: (state, action) => {},
     setFirstAcctPage: (state, action) => {
       const { payload } = action;
       state.firstAcctPage = payload;
@@ -51,7 +50,7 @@ export const {
   completeUserUpdate,
 } = userSlice.actions;
 
-class AccountPayload {
+class AccountReqBody {
   constructor(obj) {
     this.username = obj.username;
     this.email = obj.email;
@@ -78,7 +77,7 @@ export const oauthLogin = (payload) => async (dispatch) => {
     if (existingAcct.data) {
       dispatch(completeLogin(existingAcct.data));
     } else {
-      const acctPayload = new AccountPayload({
+      const acctPayload = new AccountReqBody({
         username: profileObj.googleId,
         email: profileObj.email,
         first_name: profileObj.givenName,

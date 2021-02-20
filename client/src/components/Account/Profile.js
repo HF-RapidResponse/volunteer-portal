@@ -10,12 +10,21 @@ function Profile(props) {
       <Form className="p-4" style={{ background: 'white' }}>
         <h4>My Info</h4>
         <Row className="mt-4 mb-4">
-          <Col xs={12} md={8}>
-            <Form.Group controlId="formName">
-              <Form.Label>Name</Form.Label>
+          <Col xs={12} md={4}>
+            <Form.Group controlId="formFirstName">
+              <Form.Label>First Name</Form.Label>
               <Form.Control
-                defaultValue={user.first_name + user.last_name}
-                placeholder="Enter name here"
+                defaultValue={user.first_name}
+                placeholder="Enter first name here"
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={12} md={4}>
+            <Form.Group controlId="formLastName">
+              <Form.Label>Last Name</Form.Label>
+              <Form.Control
+                defaultValue={user.last_name}
+                placeholder="Enter last name here"
               />
             </Form.Group>
           </Col>
@@ -55,13 +64,21 @@ function Profile(props) {
           <Col xs={12} md={4}>
             <Form.Group controlId="formCity">
               <Form.Label>City</Form.Label>
-              <Form.Control type="city" defaultValue={user.city} />
+              <Form.Control
+                type="city"
+                defaultValue={user.city}
+                placeholder="Enter city here"
+              />
             </Form.Group>
           </Col>
           <Col xs={12} md={4}>
             <Form.Group controlId="formState">
               <Form.Label>State</Form.Label>
-              <Form.Control type="state" defaultValue={user.state} />
+              <Form.Control
+                type="state"
+                defaultValue={user.state}
+                placeholder="Enter state here"
+              />
             </Form.Group>
           </Col>
           <Col xs={12} md={4} className="align-self-center pl-lg-5">

@@ -213,3 +213,17 @@ p {
   /* Gray 4 */
   color: $btnCyan;
 }
+
+.side-line-text {
+  display: flex;
+  margin: 2rem auto;
+  &:before,
+  &:after {
+    color: white;
+    content: '';
+    flex: 1;
+    border-bottom: groove 2px;
+    margin: auto 1rem;
+    box-shadow: 0 -1px; /* ou 0 1px si border-style:ridge */
+  }
+}
