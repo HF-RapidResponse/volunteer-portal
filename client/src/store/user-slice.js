@@ -68,7 +68,8 @@ export const attemptLogin = (payload) => async (dispatch) => {
 };
 
 export const oauthLogin = (payload) => async (dispatch) => {
-  const { profileObj } = payload;
+  const { profileObj, tokenObj } = payload;
+  console.log('What is payload on oauthLogin?', payload);
   try {
     const existingAcct = await axios.get(
       `/api/accounts/email/${profileObj.email}`
@@ -84,8 +85,17 @@ export const oauthLogin = (payload) => async (dispatch) => {
         last_name: profileObj.familyName,
         profile_pic: profileObj.imageUrl,
       });
-
-      const newAcct = await axios.post(`/api/accounts/`, acctPayload);
+      const bearerConfig = {
+        headers: {
+          token: tokenObj.id_token,
+        },
+      };
+      console.log('What is bearerConfig here?', bearerConfig);
+      const newAcct = await axios.post(
+        `/api/accounts/`,
+        acctPayload,
+        bearerConfig
+      );
       dispatch(completeLogin(newAcct.data));
     }
   } catch (error) {

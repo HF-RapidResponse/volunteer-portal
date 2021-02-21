@@ -1,6 +1,6 @@
-from fastapi import Depends, FastAPI, Form, Request, HTTPException
+from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional, Text
+from typing import List, Optional, Text, Union, Mapping, Any
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account
 from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, DonationEmailSchema, AccountRequestSchema, AccountResponseSchema
 from sqlalchemy.orm import lazyload
@@ -11,6 +11,8 @@ import auth
 from settings import Config, Session, get_db
 import logging
 from uuid import uuid4, UUID
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 import external_data_sync
 
@@ -32,6 +34,8 @@ app.include_router(
     auth.router,
     prefix='/api'
 )
+
+CLIENT_ID = "899853639312-rluooarpraulr242vuvfqejefmg1ii8d.apps.googleusercontent.com"
 
 
 @app.exception_handler(AuthJWTException)
@@ -109,11 +113,23 @@ def get_account_by_email(email, db: Session = Depends(get_db)):
 
 
 @app.post("/api/accounts/", response_model=AccountResponseSchema, status_code=201)
-def create_account(account: AccountRequestSchema, db: Session = Depends(get_db)):
-    acct_uuid = uuid4()
-    db.add(Account(uuid=acct_uuid, **account.dict()))
-    db.commit()
-    return db.query(Account).filter_by(uuid=acct_uuid).first()
+def create_account(account: AccountRequestSchema, token: Optional[Union[str, bytes]] = Header(None, convert_underscores=False), db: Session = Depends(get_db)):
+    try:
+        id_token.verify_oauth2_token(
+            token, requests.Request(), CLIENT_ID)
+        acct_uuid = uuid4()
+        db.add(Account(uuid=acct_uuid, **account.dict()))
+        db.commit()
+        return db.query(Account).filter_by(uuid=acct_uuid).first()
+    except ValueError:
+        raise HTTPException(status_code=401,
+                            detail=f"Access token is invalid")
+
+
+@app.get("/api/test/", response_model=Mapping[str, Any])
+def get_stuff(token: Optional[Union[str, bytes]] = Header(None, convert_underscores=False)):
+    return id_token.verify_oauth2_token(
+        token, requests.Request(), CLIENT_ID)
 
 
 @app.put("/api/accounts/{uuid}", response_model=AccountResponseSchema)
