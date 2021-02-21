@@ -14,7 +14,7 @@ class Account(Base):
 
     uuid = Column(UUID(as_uuid=True), primary_key=True,
                   default=uuid4, unique=True, nullable=False)
-    email = Column('email', Text)
+    email = Column('email', Text, unique=True, nullable=False)
     username = Column('username', String(255), nullable=True)
     first_name = Column('first_name', String(255), nullable=True)
     last_name = Column('last_name', String(255), nullable=True)

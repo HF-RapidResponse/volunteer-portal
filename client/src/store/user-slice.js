@@ -88,6 +88,7 @@ export const oauthLogin = (payload) => async (dispatch) => {
       const bearerConfig = {
         headers: {
           token: tokenObj.id_token,
+          oauth_type: 'google',
         },
       };
       console.log('What is bearerConfig here?', bearerConfig);
