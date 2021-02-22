@@ -5,7 +5,7 @@ import { Button, Form, Container } from 'react-bootstrap';
 import {
   attemptLogin,
   validateEmail,
-  oauthLogin,
+  googleOauthLogin,
 } from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -20,7 +20,7 @@ function Login(props) {
     user,
     firstAcctPage,
     validateEmail,
-    oauthLogin,
+    googleOauthLogin,
   } = props;
   const { handleSubmit, handleChange, data } = useForm(attemptLogin);
   const path = window.location.pathname;
@@ -111,16 +111,6 @@ function Login(props) {
               Login
             </Button>
             <p className="font-weight-bold side-line-text">or</p>
-            {/* <GoogleLogin
-              // clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-              clientId="102560006154572955509"
-              buttonText="Login with Google"
-              onSuccess={responseGoogle}
-              onFailure={responseGoogle}
-              onClick={() => attemptLogin({ oauthLogin: 'google' })}
-              cookiePolicy={'single_host_origin'}
-              className="btn-block"
-            /> */}
             {/* <Button
               variant="primary"
               onClick={() => props.history.push(getRequestUrl('google'))}
@@ -129,11 +119,9 @@ function Login(props) {
             </Button> */}
             <GoogleLogin
               clientId="899853639312-rluooarpraulr242vuvfqejefmg1ii8d.apps.googleusercontent.com"
-              //clientId="102560006154572955509"
               buttonText="Login with Google"
-              onSuccess={oauthLogin}
+              onSuccess={googleOauthLogin}
               onFailure={errorGoogle}
-              // onClick={() => oauthLogin({ oauthLogin: 'google' })}
               cookiePolicy={'single_host_origin'}
               className="btn-block"
             />
@@ -151,5 +139,5 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { attemptLogin, validateEmail, oauthLogin };
+const mapDispatchToProps = { attemptLogin, validateEmail, googleOauthLogin };
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

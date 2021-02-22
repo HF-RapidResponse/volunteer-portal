@@ -42,7 +42,7 @@ function Settings(props) {
     );
     if (userWantsToDelete) {
       cookies.remove('user', { path: '/' });
-      deleteUser();
+      deleteUser(user.uuid);
     }
   };
 
@@ -89,7 +89,7 @@ function Settings(props) {
             <Form.Switch
               id="organizers-can-see-profile-switch"
               className="custom-switch-md"
-              defaultChecked
+              checked={user.organizers_can_see}
             />
           </Col>
         </Row>
@@ -101,7 +101,7 @@ function Settings(props) {
             <Form.Switch
               id="other-vounteers-can-see-profile-switch"
               className="custom-switch-md"
-              defaultChecked
+              checked={user.volunteers_can_see}
             />
           </Col>
         </Row>

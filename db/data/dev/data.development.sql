@@ -170,7 +170,9 @@ CREATE TABLE public.accounts (
     city character varying(255),
     "state" character varying(255),
     roles character varying[],
-    initiative_map json
+    initiative_map json,
+    organizers_can_see boolean,
+    volunteers_can_see boolean
 );
 
 

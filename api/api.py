@@ -113,23 +113,23 @@ def get_account_by_email(email, db: Session = Depends(get_db)):
 
 
 @app.post("/api/accounts/", response_model=AccountResponseSchema, status_code=201)
-def create_account(account: AccountRequestSchema, token: Optional[Union[str, bytes]] = Header(None, convert_underscores=False), oauth_type: str = Header(None), db: Session = Depends(get_db)):
+def create_account(account: AccountRequestSchema, token_id: Optional[Union[str, bytes]] = Header(None, convert_underscores=False), oauth_type: str = Header(None), db: Session = Depends(get_db)):
     existing_acct = db.query(Account).filter_by(email=account.email).first()
     if existing_acct is not None:
         raise HTTPException(
             status_code=400, detail=f"An account with the email address {account.email} already exists")
     if oauth_type == 'google':
-        get_and_authorize_google_user(account, token)
+        get_and_authorize_google_user(account, token_id)
     acct_uuid = uuid4()
     db.add(Account(uuid=acct_uuid, **account.dict()))
     db.commit()
     return db.query(Account).filter_by(uuid=acct_uuid).first()
 
 
-def get_and_authorize_google_user(account: AccountRequestSchema, token: Optional[str]) -> Mapping[str, Any]:
+def get_and_authorize_google_user(account: AccountRequestSchema, token_id: Optional[str]) -> Mapping[str, Any]:
     try:
         token_user = id_token.verify_oauth2_token(
-            token, requests.Request(), CLIENT_ID)
+            token_id, requests.Request(), CLIENT_ID)
         if token_user.get('email') != account.email:
             raise HTTPException(
                 status_code=401, detail=f"User in schema does not match token user")

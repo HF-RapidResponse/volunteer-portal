@@ -11,7 +11,7 @@ const userSlice = createSlice({
   },
 
   reducers: {
-    completeLogin: (state, action) => {
+    setUser: (state, action) => {
       const { payload } = action;
       state.user = payload;
       console.log('Here is the user on login:', state.user);
@@ -43,7 +43,7 @@ const userSlice = createSlice({
 });
 
 export const {
-  completeLogin,
+  setUser,
   completeLogout,
   setFirstAcctPage,
   completeDelete,
@@ -59,24 +59,44 @@ class AccountReqBody {
     this.profile_pic = obj.profile_pic;
     this.roles = obj.roles || [];
     this.initiative_map = obj.initiative_map || {};
+    this.organizers_can_see = true;
+    this.volunteers_can_see = true;
   }
 }
 
 export const attemptLogin = (payload) => async (dispatch) => {
-  dispatch(completeLogin(payload));
+  dispatch(setUser(payload));
   return true;
 };
 
-export const oauthLogin = (payload) => async (dispatch) => {
+const createInitiativeMap = async () => {
+  try {
+    const initiativeResponse = await axios.get('/api/initiatives/');
+    const result = {};
+    const initiatives = initiativeResponse.data;
+    console.log('Any initiatives?', initiatives);
+    if (initiatives && initiatives.length) {
+      initiatives.forEach((item) => {
+        result[item.initiative_name] = false;
+      });
+    }
+    return result;
+  } catch (error) {
+    console.error(error);
+    return {};
+  }
+};
+
+export const googleOauthLogin = (payload) => async (dispatch) => {
   const { profileObj, tokenObj } = payload;
-  console.log('What is payload on oauthLogin?', payload);
+  console.log('What is payload on googleOauthLogin?', payload);
   try {
     const existingAcct = await axios.get(
       `/api/accounts/email/${profileObj.email}`
     );
 
     if (existingAcct.data) {
-      dispatch(completeLogin(existingAcct.data));
+      dispatch(setUser(existingAcct.data));
     } else {
       const acctPayload = new AccountReqBody({
         username: profileObj.googleId,
@@ -85,22 +105,20 @@ export const oauthLogin = (payload) => async (dispatch) => {
         last_name: profileObj.familyName,
         profile_pic: profileObj.imageUrl,
       });
-      const bearerConfig = {
+      const config = {
         headers: {
-          token: tokenObj.id_token,
+          token_id: tokenObj.id_token,
+          access_token: tokenObj.access_token,
           oauth_type: 'google',
         },
       };
-      console.log('What is bearerConfig here?', bearerConfig);
-      const newAcct = await axios.post(
-        `/api/accounts/`,
-        acctPayload,
-        bearerConfig
-      );
-      dispatch(completeLogin(newAcct.data));
+      console.log('What is config here?', config);
+      acctPayload.initiative_map = await createInitiativeMap();
+      const newAcct = await axios.post(`/api/accounts/`, acctPayload, config);
+      dispatch(setUser(newAcct.data));
     }
   } catch (error) {
-    console.error('error on oauth get:', error);
+    console.error('error on google oauth get:', error);
   }
 };
 
@@ -111,7 +129,7 @@ export const startLogout = (payload) => async (dispatch) => {
 
 export const loadLoggedInUser = (payload) => (dispatch) => {
   // const response = await axios.post('/api/login', payload);
-  dispatch(completeLogin(payload));
+  dispatch(setUser(payload));
 };
 
 export const attemptCreateAccount = (payload) => async (dispatch) => {
@@ -160,9 +178,13 @@ export const deleteRole = (payload) => async (dispatch) => {
   dispatch(completeDelete(payload));
 };
 
-export const deleteUser = () => async (dispatch) => {
-  //const response = await axios.delete(`/users/${userSlice.user.ID}`);
-  dispatch(completeLogout());
+export const deleteUser = (uuid) => async (dispatch) => {
+  try {
+    await axios.delete(`/api/accounts/${uuid}`);
+    dispatch(completeLogout());
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 /*
@@ -179,14 +201,23 @@ export const validatePassword = (payload) => {
 };
 
 export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
-  const { user, initiativeName, isSubscribed } = payload;
+  const { user, initiative_name, isSubscribed } = payload;
   const userCopy = { ...user };
   userCopy.initiative_map = {
     ...userCopy.initiative_map,
   };
-  userCopy.initiative_map[initiativeName] = !isSubscribed;
-  //const response = await axios.put(`/users/user.id`, user);
-  dispatch(completeUserUpdate(userCopy));
+  userCopy.initiative_map[initiative_name] = !isSubscribed;
+
+  try {
+    const response = await axios.put(
+      `/api/accounts/${userCopy.uuid}`,
+      userCopy
+    );
+    console.log('What is response.data?', response.data);
+    dispatch(completeUserUpdate(response.data));
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 /*

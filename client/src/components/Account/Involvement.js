@@ -54,23 +54,23 @@ function Involvement(props) {
     }
 
     Object.entries(user.initiative_map).forEach(
-      ([initiativeName, isSubscribed]) => {
+      ([initiative_name, isSubscribed]) => {
         initiativesToRender.push(
-          <Row className="mt-2 mb-2" key={'initiative-' + initiativeName}>
+          <Row className="mt-2 mb-2" key={'initiative-' + initiative_name}>
             <Col xs={12} md={8}>
               <Form.Group>
-                <Form.Control type="name" value={initiativeName} readOnly />
+                <Form.Control type="name" value={initiative_name} readOnly />
               </Form.Group>
             </Col>
             <Col xs={12} md={4}>
               <Form.Switch
-                id={'involvement-initiative-' + initiativeName}
+                id={'involvement-initiative-' + initiative_name}
                 className="custom-switch-md ml-lg-5"
                 checked={isSubscribed}
                 onChange={() =>
                   toggleInitiativeSubscription({
                     user,
-                    initiativeName,
+                    initiative_name,
                     isSubscribed,
                   })
                 }
@@ -104,7 +104,7 @@ function Involvement(props) {
             <>{initiativesToRender}</>
           </>
         ) : (
-          <p>No initiatives to display</p>
+          <p className="text-center">No initiatives to display</p>
         )}
       </Form>
     </>

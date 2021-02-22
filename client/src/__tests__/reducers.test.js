@@ -1,7 +1,4 @@
-import userReducer, {
-  completeLogin,
-  completeLogout,
-} from '../store/user-slice.js';
+import userReducer, { setUser, completeLogout } from '../store/user-slice.js';
 
 describe('user reducer', () => {
   const testUser = {
@@ -16,7 +13,7 @@ describe('user reducer', () => {
   };
 
   it('can login and logout', () => {
-    let newState = userReducer({}, completeLogin(testUser));
+    let newState = userReducer({}, setUser(testUser));
 
     expect(newState.user).toMatchObject(testUser);
     newState = userReducer(newState, completeLogout());

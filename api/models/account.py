@@ -1,6 +1,6 @@
 from models.base import Base
 
-from sqlalchemy import func, select, Column, String, Integer, Text
+from sqlalchemy import func, select, Column, String, Integer, Text, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
 from sqlalchemy.orm import backref, column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -23,7 +23,11 @@ class Account(Base):
     state = Column('state', String(16), nullable=True)
     roles = Column('roles', ARRAY(String), default=[], nullable=False)
     initiative_map = Column('initiative_map', JSON, default={}, nullable=False)
+    organizers_can_see = Column(
+        'organizers_can_see', Boolean, default=True, nullable=False)
+    volunteers_can_see = Column(
+        'volunteers_can_see', Boolean, default=True, nullable=False)
 
     def __repr__(self):
-        return "<Account(uuid='%s', email='%s', username='%s', first_name='%s', last_name='%s', profile_pic='%s', city='%s', state='%s', roles='%s', initiative_map='%s')>" % (
-            self.uuid, self.email, self.username, self.first_name, self.last_name, self.profile_pic, self.city, self.state, self.roles, self.initiative_map)
+        return "<Account(uuid='%s', email='%s', username='%s', first_name='%s', last_name='%s', profile_pic='%s', city='%s', state='%s', roles='%s', initiative_map='%s', organizers_can_see='%s', volunteers_can_see='%s')>" % (
+            self.uuid, self.email, self.username, self.first_name, self.last_name, self.profile_pic, self.city, self.state, self.roles, self.initiative_map, self.organizers_can_see, self.volunteers_can_see)

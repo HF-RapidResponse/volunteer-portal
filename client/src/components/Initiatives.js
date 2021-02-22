@@ -17,7 +17,9 @@ function Initiatives(props) {
 
   useEffect(() => {
     getInitiatives()
-      .catch(() => console.error('finally to grab all initiatives'))
+      .catch((error) =>
+        console.error('error while grabbing all initiatives', error)
+      )
       .finally(() => setFetched(true));
   }, []);
 
@@ -110,16 +112,14 @@ function Initiatives(props) {
         current initiatives down below.
       </h4>
       <Container id="bot-group" key="init-bot-group">
-        {/* <Col xs={12} lg={9} xl={6} className="shadow-card">
-          <h1 className="header-2">What can I do right away?</h1>
-          <p className="bold-subtitle">Want to get involved right away?</p>
+        {cards.length ? (
+          cards
+        ) : (
           <p>
-            Get involved with our urgent initiatives! Advocate for UBI policy in
-            Congress with our Humanity CALLS and Humanity WRITES initiatives, or
-            help ensure we can continue fighting for UBI by fundraising.
+            Oops, looks like we currently don't have any initiatives! Please
+            check again later.
           </p>
-        </Col> */}
-        {cards}
+        )}
       </Container>
     </>
   );
