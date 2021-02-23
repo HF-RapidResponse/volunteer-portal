@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
@@ -13,6 +14,7 @@ import { GoogleLogin } from 'react-google-login';
 import GoogleLogo from './GoogleLogo';
 
 function Login(props) {
+  const API_SERVER = 'http://localhost:8081/api';
   const [submitted, setSubmitted] = useState(false);
   const [validated, setValidated] = useState(false);
   const {
@@ -111,20 +113,36 @@ function Login(props) {
               Login
             </Button>
             <p className="font-weight-bold side-line-text">or</p>
-            {/* <Button
+            <Button
               variant="primary"
-              onClick={() => props.history.push(getRequestUrl('google'))}
+              onClick={() => window.location.href = API_SERVER + '/login?provider=google' }
             >
               Login with Google
-            </Button> */}
-            <GoogleLogin
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => axios.get(API_SERVER + '/accounts', { withCredentials: true })
+                .then(function (response) {
+                // handle success
+                  console.log(response.data);
+                }) }
+            >
+              Print Accounts to Console
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => axios.delete(API_SERVER + '/logout', { withCredentials: true })}
+            >
+              Logout
+            </Button>
+            {/* <GoogleLogin
               clientId="899853639312-rluooarpraulr242vuvfqejefmg1ii8d.apps.googleusercontent.com"
               buttonText="Login with Google"
               onSuccess={googleOauthLogin}
               onFailure={errorGoogle}
               cookiePolicy={'single_host_origin'}
               className="btn-block"
-            />
+            /> */}
           </div>
         </Form>
       </Container>

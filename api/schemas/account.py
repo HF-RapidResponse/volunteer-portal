@@ -5,7 +5,7 @@ from uuid import UUID
 
 class AccountRequestSchema(BaseModel):
     email: EmailStr
-    username: str
+    username: Optional[str]
     first_name: str
     last_name: str
     profile_pic: Optional[Text]

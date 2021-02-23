@@ -1,5 +1,6 @@
 from typing import Dict
 from enum import Enum
+import logging
 
 from fastapi import APIRouter, Request, Depends
 import starlette.config
@@ -7,7 +8,8 @@ from authlib.integrations.starlette_client import OAuth, OAuthError
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi_jwt_auth import AuthJWT
 
-from settings import Config
+from settings import Config, Session, get_db
+from models.account import Account
 
 router = APIRouter()
 
@@ -66,13 +68,28 @@ async def login(request: Request, provider: OAuthProvider):
         return await oauth.github.authorize_redirect(request, redirect_uri)
 
 @router.get("/auth/google")
-async def authorize_google(request: Request, Authorize: AuthJWT = Depends()):
+async def authorize_google(request: Request, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     try:
         token = await oauth.google.authorize_access_token(request)
     except OAuthError as error:
         return HTMLResponse(f'<h1>{error.error}</h1>')
     user = await oauth.google.parse_id_token(request, token)
-    return create_token_for_user(Authorize, user.email)
+
+    account = db.query(Account).filter_by(email=user.email).first()
+    if account is None:
+        logging.warning('Creating a new user object for first-time login')
+        new_account = Account(
+            email=user.email,
+            first_name=user.given_name,
+            last_name=user.family_name,
+            profile_pic=user.picture
+        )
+        db.add(new_account)
+        db.commit()
+        db.refresh(new_account)
+        account = new_account
+
+    return create_token_for_user(Authorize, str(account.uuid))
 
 @router.get("/auth/github")
 async def authorize_github(request: Request, Authorize: AuthJWT = Depends()):
