@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from google.cloud import secretmanager  # type: ignore
-from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail
+from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Notification
 
 ENV = os.environ.get('ENV') if os.environ.get('ENV') else "development"
 
@@ -38,11 +38,12 @@ def import_auth_credentials_from_secret_store(config):
 def read_config():
     with open("config.yaml", 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)[ENV]
-    if 'import_auth_credentials_from_secret_store' in config['auth'] and not config['auth']['import_auth_credentials_from_secret_store']:
-        return config
-    else:
+    if not ('import_auth_credentials_from_secret_store' in config['auth'] and not config['auth']['import_auth_credentials_from_secret_store']):
         config = import_auth_credentials_from_secret_store(config)
-        return config
+
+    config['notifications']['sendgrid_api_key'] = get_secret_for_key(config['notifications']['sendgrid_api_key'])
+
+    return config
 
 Config = read_config()
 
@@ -75,7 +76,8 @@ Session = sessionmaker(binds={
     Initiative: engine,
     VolunteerEvent: engine,
     VolunteerRole: engine,
-    DonationEmail: engine
+    DonationEmail: engine,
+    Notification: engine
 })
 
 # Api Dependency
