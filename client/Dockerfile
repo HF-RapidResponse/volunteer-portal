@@ -7,6 +7,6 @@ WORKDIR /client
 
 COPY . ./
 
+ENV NODE_ENV development
 RUN rm -rf node_modules \
-    && npm install -g serve \
-    && NODE_ENV=development npm install --quiet
+    && npm install --quiet
