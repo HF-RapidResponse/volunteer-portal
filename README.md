@@ -26,13 +26,14 @@ Once that's downloaded, open up a terminal to the root `volunteer-portal` direct
 
 Include this [Service Account key](https://storage.cloud.google.com/humanity-forward-infra/gcp_credentials.json) called `gcp_credentials.json` in the `api/` folder. If you can't access this key, your onboarding process may not have been completed. reach out to a team lead to get that sorted.
 
-In the root directory of the repo, run the following command:
+In the root directory of the repo, run the following command to start the dev environment at `http://localhost:8000`:
 
 `docker-compose up`
 
 That command will take a while to run the first time you run it. It'll download a few OS images, set them up with the code in this repository and start the needed servers.
 
 Once that's done, open up [http://localhost:8000](http://localhost:8000) and you should see the application!
+:warning: **The client runs at 8080 and the api runs at 8081, but 8000 is the port you likely want to use** using 8080 to access the client you will not be able to interact with the API
 
 ## Testing
 
