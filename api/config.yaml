@@ -4,7 +4,7 @@ production_db_defaults: &production_db_defaults
     database:
         adapter: postgresql
         generator: secret_generator
-        host:  34.69.153.217
+        host: 10.17.1.3
         database: hf_volunteer_portal
         user: admin
         password: humanity-forward_hf-portal_psql-db_admin
