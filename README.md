@@ -34,7 +34,7 @@ That command will take a while to run the first time you run it. It'll download 
 
 Once that's done, open up [http://localhost:8000](http://localhost:8000) and you should see the application!
 
-:warning: **The client runs at 8080 and the api runs at 8081, but 8000 is the port you likely want to use** using 8080 to access the client you will not be able to interact with the API
+:warning: **The client runs at 8080 and the api runs at 8081, but 8000 is the port you likely want to use for most development.** Using 8080 to access the client you will not be able to interact with the API.
 
 ## Testing
 
