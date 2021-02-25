@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
-import { Button, Form, Container } from 'react-bootstrap';
+import { Button, Form, Container, Image, Row, Col } from 'react-bootstrap';
 import {
   attemptLogin,
   validateEmail,
@@ -12,6 +12,7 @@ import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import GoogleLogo from './GoogleLogo';
+// import GoogleBtnImage from '../assets/google_btn.png';
 
 function Login(props) {
   const [submitted, setSubmitted] = useState(false);
@@ -48,22 +49,13 @@ function Login(props) {
     }
   }
 
-  const errorGoogle = (response) => {
-    console.error(response);
-  };
-
   return (validated && submitted) || user ? (
     <Redirect push to={firstAcctPage || '/account/profile'} />
   ) : (
     <>
       <h2 className="text-center">Welcome Back!</h2>
       <Container className="mt-4 mb-5">
-        <Form
-          noValidate
-          validated={validated}
-          // className="ml-5 mr-5"
-          onSubmit={submitWrapper}
-        >
+        <Form noValidate validated={validated} onSubmit={submitWrapper}>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>E-mail address</Form.Label>
             <Form.Control
@@ -121,30 +113,20 @@ function Login(props) {
                   window.location.port === '8000'
                     ? 'http://localhost:8081'
                     : window.location.origin;
-                const name = 'Google OAuth Login';
-                const windowFeatures =
-                  'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
                 const oauthUrl = `${baseUrl}/api/login?provider=google`;
                 console.log('What is oauthUrl?', oauthUrl);
                 window.location.href = oauthUrl;
-                // const windowObjectReference = window.open(
-                //   oauthUrl,
-                //   name,
-                //   windowFeatures
-                // );
-                // windowObjectReference.focus();
               }}
             >
-              Login with Google
+              <Container>
+                <Row>
+                  <Col style={{ maxWidth: '55px' }}>
+                    <GoogleLogo />
+                  </Col>
+                  <Col>Login with Google</Col>
+                </Row>
+              </Container>
             </Button>
-            {/* <GoogleLogin
-              clientId="899853639312-rluooarpraulr242vuvfqejefmg1ii8d.apps.googleusercontent.com"
-              buttonText="Login with Google"
-              onSuccess={googleOauthLogin}
-              onFailure={errorGoogle}
-              cookiePolicy={'single_host_origin'}
-              className="btn-block"
-            /> */}
           </div>
         </Form>
       </Container>
