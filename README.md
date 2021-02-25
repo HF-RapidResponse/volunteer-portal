@@ -36,7 +36,7 @@ Once that's done, open up [http://localhost:8000](http://localhost:8000) and you
 
 ## Testing
 
-You can enter the api docker container to run tests in there, or use the handy make tasks. For these to work you'll need to have `docker-compse up` running.
+You can enter the api docker container to run tests in there, or use the handy make tasks. For these to work you'll need to have `docker-compose up` running.
 
 `make test`
 
@@ -45,7 +45,6 @@ Runs linting which validates Python static type hints/annotations
 `make validate`
 
 Runs tests. Some data source tests currently (lazily) use real HF databases and require [authentication through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account).
-
 
 ## Using the Application
 
@@ -66,3 +65,11 @@ We keep track of tasks through an [Asana board here](https://app.asana.com/0/119
 ## Branching and GitHub
 
 To read more about branching, [see this page](/docs/branching.md).
+
+## Storybook
+
+[Storybook](https://storybook.js.org/) helps document our UI components.
+
+To run storybook:
+1. `make shell-client`
+2. `npm run storybook`
