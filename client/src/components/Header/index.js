@@ -11,6 +11,7 @@ import {
   startLogout,
   loadLoggedInUser,
   setFirstAcctPage,
+  getUserFromID,
 } from '../../store/user-slice.js';
 import { getInitiatives } from '../../store/initiative-slice';
 
@@ -36,9 +37,11 @@ function Header(props) {
     history,
     initiatives,
     getInitiatives,
+    getUserFromID,
   } = props;
 
   const firstPath = window.location.pathname;
+  const params = new URLSearchParams(window.location.search);
 
   const mainLinks = [
     {
@@ -69,11 +72,20 @@ function Header(props) {
   useEffect(() => {
     if (!user) {
       const userCookie = cookies.get('user');
+      const accessCookie = cookies.get('access_token_cookie');
+      const sessionCookie = cookies.get('session');
+      console.log('access cookie?', accessCookie);
+      console.log('session cookie?', sessionCookie);
       if (userCookie) {
         if (firstPath.includes('/account') && !firstAcctPage) {
           setFirstAcctPage(firstPath);
         }
         loadLoggedInUser(userCookie);
+      }
+
+      const userID = params.get('user_id');
+      if (userID) {
+        getUserFromID(userID);
       }
     }
     getInitiatives();
@@ -155,6 +167,7 @@ const mapDispatchToProps = {
   loadLoggedInUser,
   setFirstAcctPage,
   getInitiatives,
+  getUserFromID,
 };
 
 export default withCookies(

@@ -1,63 +1,63 @@
 # Aliases for common sections of configuration across environments
 
 production_db_defaults: &production_db_defaults
+  database:
+    adapter: mysql
+    generator: secret_generator
+    host:
     database:
-        adapter: mysql
-        generator: secret_generator
-        host: 
-        database: 
-        user: 
-        password: 
+    user:
+    password:
 
 development_routes_defaults: &development_routes_defaults
-    client: 'http://localhost:8080'
+  client: 'http://localhost:8000'
 
 auth_defaults: &auth_defaults
-    jwt:
-        secret: portal_auth_jwt_secret
-    google:
-        client_id: portal_auth_google_client_id
-        client_secret: portal_auth_google_client_secret
-    github:
-        client_id: portal_auth_github_client_id
-        client_secret: portal_auth_github_client_secret
+  jwt:
+    secret: portal_auth_jwt_secret
+  google:
+    client_id: portal_auth_google_client_id
+    client_secret: portal_auth_google_client_secret
+  github:
+    client_id: portal_auth_github_client_id
+    client_secret: portal_auth_github_client_secret
 
 # Specific configurations for each environment
 
 test:
-    routes:
-        <<: *development_routes_defaults
-    databases:
-        database:
-            generator: db_url_generator
-            adapter: postgresql
-            host: db
-            database: hf_volunteer_portal_test
-            user: admin
-            password: password
-    auth:
-        <<: *auth_defaults
+  routes:
+    <<: *development_routes_defaults
+  databases:
+    database:
+      generator: db_url_generator
+      adapter: postgresql
+      host: db
+      database: hf_volunteer_portal_test
+      user: admin
+      password: password
+  auth:
+    <<: *auth_defaults
 development:
-    routes:
-        <<: *development_routes_defaults
-    databases:
-        database:
-            generator: db_url_generator
-            adapter: postgresql
-            host: db
-            database: hf_volunteer_portal_development
-            user: admin
-            password: password
-    auth:
-        # import_auth_credentials_from_secret_store: false
-        <<: *auth_defaults
+  routes:
+    <<: *development_routes_defaults
+  databases:
+    database:
+      generator: db_url_generator
+      adapter: postgresql
+      host: db
+      database: hf_volunteer_portal_development
+      user: admin
+      password: password
+  auth:
+    # import_auth_credentials_from_secret_store: false
+    <<: *auth_defaults
 staging:
-    databases:
-        <<: *production_db_defaults
-    auth:
-        <<: *auth_defaults
+  databases:
+    <<: *production_db_defaults
+  auth:
+    <<: *auth_defaults
 production:
-    databases:
-        <<: *production_db_defaults
-    auth:
-        <<: *auth_defaults
+  databases:
+    <<: *production_db_defaults
+  auth:
+    <<: *auth_defaults

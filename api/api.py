@@ -11,14 +11,14 @@ import auth
 from settings import Config, Session, get_db
 import logging
 from uuid import uuid4, UUID
-from google.oauth2 import id_token
-from google.auth.transport import requests
-
+from fastapi_jwt_auth import AuthJWT
+# from google.oauth2 import id_token
+# from google.auth.transport import requests
 import external_data_sync
 
 app = FastAPI()
 
-origins = ['*']
+origins = [Config['routes']['client']]
 
 app.add_middleware(
     CORSMiddleware,
@@ -103,7 +103,8 @@ def get_all_accounts(db: Session = Depends(get_db)):
 
 
 @app.get("/api/accounts/{uuid}", response_model=AccountResponseSchema)
-def get_account_by_uuid(uuid, db: Session = Depends(get_db)):
+def get_account_by_uuid(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    Authorize.jwt_required()
     return db.query(Account).filter_by(uuid=uuid).first()
 
 
@@ -113,47 +114,50 @@ def get_account_by_email(email, db: Session = Depends(get_db)):
 
 
 @app.post("/api/accounts/", response_model=AccountResponseSchema, status_code=201)
-def create_account(account: AccountRequestSchema, token_id: Optional[Union[str, bytes]] = Header(None, convert_underscores=False), oauth_type: str = Header(None), db: Session = Depends(get_db)):
+def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    Authorize.jwt_required()
     existing_acct = db.query(Account).filter_by(email=account.email).first()
     if existing_acct is not None:
         raise HTTPException(
             status_code=400, detail=f"An account with the email address {account.email} already exists")
-    if oauth_type == 'google':
-        get_and_authorize_google_user(account, token_id)
-    acct_uuid = uuid4()
-    db.add(Account(uuid=acct_uuid, **account.dict()))
+    account = Account(**account.dict())
+    db.add(account)
     db.commit()
-    return db.query(Account).filter_by(uuid=acct_uuid).first()
+    db.refresh(account)
+    return account
 
 
-def get_and_authorize_google_user(account: AccountRequestSchema, token_id: Optional[str]) -> Mapping[str, Any]:
-    try:
-        token_user = id_token.verify_oauth2_token(
-            token_id, requests.Request(), CLIENT_ID)
-        if token_user.get('email') != account.email:
-            raise HTTPException(
-                status_code=401, detail=f"User in schema does not match token user")
-        return token_user
-    except ValueError:
-        raise HTTPException(status_code=401, detail=f"Access token is invalid")
+# def get_and_authorize_google_user(account: AccountRequestSchema, token_id: Optional[str]) -> Mapping[str, Any]:
+#     try:
+#         token_user = id_token.verify_oauth2_token(
+#             token_id, requests.Request(), CLIENT_ID)
+#         if token_user.get('email') != account.email:
+#             raise HTTPException(
+#                 status_code=401, detail=f"User in schema does not match token user")
+#         return token_user
+#     except ValueError:
+#         raise HTTPException(status_code=401, detail=f"Access token is invalid")
 
 
-@app.get("/api/test/", response_model=Mapping[str, Any])
-def get_stuff(token: Optional[Union[str, bytes]] = Header(None, convert_underscores=False)):
-    return id_token.verify_oauth2_token(
-        token, requests.Request(), CLIENT_ID)
+# @app.get("/api/test/", response_model=Mapping[str, Any])
+# def get_stuff(token: Optional[Union[str, bytes]] = Header(None, convert_underscores=False)):
+#     return id_token.verify_oauth2_token(
+#         token, requests.Request(), CLIENT_ID)
 
 
 @app.put("/api/accounts/{uuid}", response_model=AccountResponseSchema)
-def update_account(uuid, account: AccountRequestSchema, db: Session = Depends(get_db)):
-    new_obj = Account(uuid=uuid, **account.dict())
-    db.merge(new_obj)
+def update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    Authorize.jwt_required()
+    updated_acct = Account(uuid=uuid, **account.dict())
+    db.merge(updated_acct)
     db.commit()
-    return db.query(Account).filter_by(uuid=uuid).first()
+    db.refresh(updated_acct)
+    return updated_acct
 
 
 @app.delete("/api/accounts/{uuid}", status_code=204)
-def delete_account(uuid, db: Session = Depends(get_db)):
+def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    Authorize.jwt_required()
     acct_to_delete = db.query(Account).filter_by(uuid=uuid).first()
     if acct_to_delete is None:
         raise HTTPException(status_code=404,

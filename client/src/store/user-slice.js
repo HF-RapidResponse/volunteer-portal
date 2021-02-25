@@ -86,7 +86,20 @@ const createInitiativeMap = async () => {
     return {};
   }
 };
-
+export const openGoogleOauthWindow = async () => {
+  try {
+    const baseUrl =
+      window.location.port === '8000'
+        ? 'http://localhost:8081'
+        : window.location.origin;
+    const oauthUrl = `${baseUrl}/api/login?provider=google`;
+    console.log('What is oauthUrl?', oauthUrl);
+    const response = await axios.get(oauthUrl);
+    console.log('any data from response?', response.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 export const googleOauthLogin = (payload) => async (dispatch) => {
   const { profileObj, tokenObj } = payload;
   console.log('What is payload on googleOauthLogin?', payload);
@@ -119,6 +132,19 @@ export const googleOauthLogin = (payload) => async (dispatch) => {
     }
   } catch (error) {
     console.error('error on google oauth get:', error);
+  }
+};
+
+export const getUserFromID = (id) => async (dispatch) => {
+  try {
+    const response = await axios.get(`/api/accounts/${id}`);
+    if (!response.data) {
+      throw `User with ID ${id} does not exist.`;
+    }
+    // const formattedUser = new AccountReqBody(response.data);
+    dispatch(setUser(response.data));
+  } catch (error) {
+    console.error('Failed to get user by ID:', error);
   }
 };
 

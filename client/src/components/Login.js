@@ -6,6 +6,7 @@ import {
   attemptLogin,
   validateEmail,
   googleOauthLogin,
+  openGoogleOauthWindow,
 } from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -21,9 +22,11 @@ function Login(props) {
     firstAcctPage,
     validateEmail,
     googleOauthLogin,
+    openGoogleOauthWindow,
   } = props;
   const { handleSubmit, handleChange, data } = useForm(attemptLogin);
   const path = window.location.pathname;
+
   /**
    * simple helper function that handles form submission by calling several other functions
    * @param {*} e - event object
@@ -111,20 +114,37 @@ function Login(props) {
               Login
             </Button>
             <p className="font-weight-bold side-line-text">or</p>
-            {/* <Button
+            <Button
               variant="primary"
-              onClick={() => props.history.push(getRequestUrl('google'))}
+              onClick={() => {
+                const baseUrl =
+                  window.location.port === '8000'
+                    ? 'http://localhost:8081'
+                    : window.location.origin;
+                const name = 'Google OAuth Login';
+                const windowFeatures =
+                  'toolbar=no, menubar=no, width=600, height=700, top=100, left=100';
+                const oauthUrl = `${baseUrl}/api/login?provider=google`;
+                console.log('What is oauthUrl?', oauthUrl);
+                window.location.href = oauthUrl;
+                // const windowObjectReference = window.open(
+                //   oauthUrl,
+                //   name,
+                //   windowFeatures
+                // );
+                // windowObjectReference.focus();
+              }}
             >
               Login with Google
-            </Button> */}
-            <GoogleLogin
+            </Button>
+            {/* <GoogleLogin
               clientId="899853639312-rluooarpraulr242vuvfqejefmg1ii8d.apps.googleusercontent.com"
               buttonText="Login with Google"
               onSuccess={googleOauthLogin}
               onFailure={errorGoogle}
               cookiePolicy={'single_host_origin'}
               className="btn-block"
-            />
+            /> */}
           </div>
         </Form>
       </Container>
@@ -139,5 +159,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { attemptLogin, validateEmail, googleOauthLogin };
+const mapDispatchToProps = {
+  attemptLogin,
+  validateEmail,
+  googleOauthLogin,
+  openGoogleOauthWindow,
+};
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
