@@ -39,6 +39,32 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: notificationchannel; Type: TYPE; Schema: public; Owner: admin
+--
+
+CREATE TYPE public.notificationchannel AS ENUM (
+    'EMAIL',
+    'SMS',
+    'SLACK'
+);
+
+
+ALTER TYPE public.notificationchannel OWNER TO admin;
+
+--
+-- Name: notificationstatus; Type: TYPE; Schema: public; Owner: admin
+--
+
+CREATE TYPE public.notificationstatus AS ENUM (
+    'SCHEDULED',
+    'SENT',
+    'FAILED'
+);
+
+
+ALTER TYPE public.notificationstatus OWNER TO admin;
+
+--
 -- Name: priority; Type: TYPE; Schema: public; Owner: admin
 --
 
@@ -127,6 +153,23 @@ CREATE TABLE public.initiatives (
 ALTER TABLE public.initiatives OWNER TO admin;
 
 --
+-- Name: notifications; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.notifications (
+    notification_uuid uuid NOT NULL,
+    channel public.notificationchannel NOT NULL,
+    recipient text NOT NULL,
+    message text NOT NULL,
+    scheduled_send_date timestamp without time zone NOT NULL,
+    status public.notificationstatus NOT NULL,
+    send_date timestamp without time zone
+);
+
+
+ALTER TABLE public.notifications OWNER TO admin;
+
+--
 -- Name: volunteer_openings; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -178,6 +221,14 @@ ALTER TABLE ONLY public.events
 
 ALTER TABLE ONLY public.initiatives
     ADD CONSTRAINT initiatives_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: notifications notifications_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.notifications
+    ADD CONSTRAINT notifications_pkey PRIMARY KEY (notification_uuid);
 
 
 --

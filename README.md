@@ -22,7 +22,11 @@ To run this code locally, it must first be cloned from GitHub. This can be done 
 
 The URL for cloning comes from the top right portion of the repo page.
 
-Once that's downloaded, open up a terminal to the root `volunteer-portal` directory. In that directory, run the following command:
+Once that's downloaded, open up a terminal to the root `volunteer-portal` directory.
+
+Include this [Service Account key](https://storage.cloud.google.com/humanity-forward-infra/gcp_credentials.json) called `gcp_credentials.json` in the `api/` folder. If you can't access this key, your onboarding process may not have been completed. reach out to a team lead to get that sorted.
+
+In the root directory of the repo, run the following command:
 
 `docker-compose up`
 
