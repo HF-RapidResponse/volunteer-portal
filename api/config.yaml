@@ -41,6 +41,8 @@ test:
       password: password
   auth:
     <<: *auth_defaults
+  notifications:
+    <<: *notification_defaults
 development:
   routes:
     <<: *development_routes_defaults
