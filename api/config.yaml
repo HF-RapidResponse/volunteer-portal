@@ -55,6 +55,8 @@ development:
   auth:
     # import_auth_credentials_from_secret_store: false
     <<: *auth_defaults
+  notifications:
+    <<: *notification_defaults
 staging:
   databases:
     <<: *production_db_defaults
