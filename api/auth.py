@@ -86,6 +86,7 @@ async def authorize_google(request: Request, Authorize: AuthJWT = Depends(), db:
         logging.warning('Creating a new user object for first-time login')
         new_account = Account(
             email=user.email,
+            username=user.email.split('@')[0],
             first_name=user.given_name,
             last_name=user.family_name,
             profile_pic=user.picture

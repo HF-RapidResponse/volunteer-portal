@@ -226,6 +226,21 @@ export const validatePassword = (payload) => {
   return payload.match(/(?=.*\d)(?=.*[a-zA-Z])(?=.*[!#$%&?]).{6,20}/g);
 };
 
+export const basicPropUpdate = (payload) => async (dispatch) => {
+  const { user, key, newVal } = payload;
+  const userCopy = { ...user };
+  userCopy[key] = newVal;
+  try {
+    const response = await axios.put(
+      `/api/accounts/${userCopy.uuid}`,
+      userCopy
+    );
+    dispatch(completeUserUpdate(response.data));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   const { user, initiative_name, isSubscribed } = payload;
   const userCopy = { ...user };

@@ -151,7 +151,6 @@ def update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Dep
     updated_acct = Account(uuid=uuid, **account.dict())
     db.merge(updated_acct)
     db.commit()
-    db.refresh(updated_acct)
     return updated_acct
 
 

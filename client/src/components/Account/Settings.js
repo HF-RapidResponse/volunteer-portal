@@ -5,7 +5,11 @@ import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
 import { withCookies } from 'react-cookie';
 
 import useForm from '../hooks/useForm';
-import { verifyPassword, deleteUser } from '../../store/user-slice';
+import {
+  verifyPassword,
+  deleteUser,
+  basicPropUpdate,
+} from '../../store/user-slice';
 
 function Settings(props) {
   const [currPassValid, setCurrPassValid] = useState(false);
@@ -21,7 +25,7 @@ function Settings(props) {
     validated,
     setValidated,
   } = useForm(verifyPassword);
-  const { user, deleteUser, cookies } = props;
+  const { user, deleteUser, cookies, basicPropUpdate } = props;
 
   const handleSubmitResponse = (e) => {
     const userSliceResponse = handleSubmit(e) || {
@@ -90,6 +94,13 @@ function Settings(props) {
               id="organizers-can-see-profile-switch"
               className="custom-switch-md"
               checked={user.organizers_can_see}
+              onChange={() =>
+                basicPropUpdate({
+                  user,
+                  key: 'organizers_can_see',
+                  newVal: !user.organizers_can_see,
+                })
+              }
             />
           </Col>
         </Row>
@@ -102,6 +113,13 @@ function Settings(props) {
               id="other-vounteers-can-see-profile-switch"
               className="custom-switch-md"
               checked={user.volunteers_can_see}
+              onChange={() =>
+                basicPropUpdate({
+                  user,
+                  key: 'volunteers_can_see',
+                  newVal: !user.volunteers_can_see,
+                })
+              }
             />
           </Col>
         </Row>
@@ -214,7 +232,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { deleteUser };
+const mapDispatchToProps = { deleteUser, basicPropUpdate };
 export default withCookies(
   connect(mapStateToProps, mapDispatchToProps)(Settings)
 );
