@@ -12,8 +12,6 @@ from settings import Config, Session, get_db
 import logging
 from uuid import uuid4, UUID
 from fastapi_jwt_auth import AuthJWT
-# from google.oauth2 import id_token
-# from google.auth.transport import requests
 import external_data_sync
 
 app = FastAPI()
@@ -125,24 +123,6 @@ def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends()
     db.commit()
     db.refresh(account)
     return account
-
-
-# def get_and_authorize_google_user(account: AccountRequestSchema, token_id: Optional[str]) -> Mapping[str, Any]:
-#     try:
-#         token_user = id_token.verify_oauth2_token(
-#             token_id, requests.Request(), CLIENT_ID)
-#         if token_user.get('email') != account.email:
-#             raise HTTPException(
-#                 status_code=401, detail=f"User in schema does not match token user")
-#         return token_user
-#     except ValueError:
-#         raise HTTPException(status_code=401, detail=f"Access token is invalid")
-
-
-# @app.get("/api/test/", response_model=Mapping[str, Any])
-# def get_stuff(token: Optional[Union[str, bytes]] = Header(None, convert_underscores=False)):
-#     return id_token.verify_oauth2_token(
-#         token, requests.Request(), CLIENT_ID)
 
 
 @app.put("/api/accounts/{uuid}", response_model=AccountResponseSchema)

@@ -11,7 +11,8 @@ import {
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
-import GoogleLogo from './GoogleLogo';
+import GoogleLogo from './OAuth/GoogleLogo';
+import GoogleOAuthBtn from './OAuth/GoogleOAuthBtn';
 // import GoogleBtnImage from '../assets/google_btn.png';
 
 function Login(props) {
@@ -106,27 +107,7 @@ function Login(props) {
               Login
             </Button>
             <p className="font-weight-bold side-line-text">or</p>
-            <Button
-              variant="primary"
-              onClick={() => {
-                const baseUrl =
-                  window.location.port === '8000'
-                    ? 'http://localhost:8081'
-                    : window.location.origin;
-                const oauthUrl = `${baseUrl}/api/login?provider=google`;
-                console.log('What is oauthUrl?', oauthUrl);
-                window.location.href = oauthUrl;
-              }}
-            >
-              <Container>
-                <Row>
-                  <Col style={{ maxWidth: '55px' }}>
-                    <GoogleLogo />
-                  </Col>
-                  <Col>Login with Google</Col>
-                </Row>
-              </Container>
-            </Button>
+            <GoogleOAuthBtn />
           </div>
         </Form>
       </Container>
