@@ -24,7 +24,7 @@ describe('header component', () => {
     // inspect the first anchor tag
     const firstATag = aTags.at(0);
     expect(firstATag.html()).toBe(
-      '<a aria-current="page" class="nav-link active" href="/"><img src="HF-RR-long-logo.png" alt="HF Logo" id="hf-logo"></a>'
+      '<a aria-current="page" class="nav-link active" href="/"><img src="HF-RR-long-logo.png" alt="HF Logo" id="hf-logo" class="img-fluid"></a>'
     );
 
     // inspect the second anchor tag

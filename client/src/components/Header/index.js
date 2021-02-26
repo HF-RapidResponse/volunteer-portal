@@ -72,10 +72,6 @@ function Header(props) {
   useEffect(() => {
     if (!user) {
       const userCookie = cookies.get('user');
-      const accessCookie = cookies.get('access_token_cookie');
-      const sessionCookie = cookies.get('session');
-      console.log('access cookie?', accessCookie);
-      console.log('session cookie?', sessionCookie);
       if (userCookie) {
         if (firstPath.includes('/account') && !firstAcctPage) {
           setFirstAcctPage(firstPath);
