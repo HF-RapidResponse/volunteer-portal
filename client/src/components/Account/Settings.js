@@ -45,7 +45,7 @@ function Settings(props) {
       'Are you sure you want to delete your account? This cannot be undone.'
     );
     if (userWantsToDelete) {
-      cookies.remove('user', { path: '/' });
+      cookies.remove('user', { path: '/', sameSite: 'None', secure: true });
       deleteUser(user.uuid);
     }
   };

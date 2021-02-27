@@ -120,9 +120,8 @@ export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
   }
 };
 
-export const startLogout = (id) => async (dispatch) => {
-  // const response = await axios.post('/api/logout-and-clear-tokens?/', payload);
-  // await axios.delete(`/api/logout`);
+export const startLogout = () => async (dispatch) => {
+  await axios.delete(`/api/logout`);
   dispatch(completeLogout());
 };
 

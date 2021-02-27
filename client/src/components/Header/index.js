@@ -89,7 +89,7 @@ function Header(props) {
 
   useEffect(() => {
     if (user) {
-      cookies.set('user', user, { path: '/' });
+      cookies.set('user', user, { path: '/', sameSite: 'None', secure: true });
     }
   }, [user]);
 
