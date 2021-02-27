@@ -12,6 +12,8 @@ import {
   loadLoggedInUser,
   setFirstAcctPage,
   getUserFromID,
+  createInitiativeMap,
+  syncInitMapAndLoadUser,
 } from '../../store/user-slice.js';
 import { getInitiatives } from '../../store/initiative-slice';
 
@@ -38,6 +40,7 @@ function Header(props) {
     initiatives,
     getInitiatives,
     getUserFromID,
+    syncInitMapAndLoadUser,
   } = props;
 
   const firstPath = window.location.pathname;
@@ -70,21 +73,20 @@ function Header(props) {
   ];
 
   useEffect(() => {
-    if (!user) {
+    getInitiatives();
+    const userID = params.get('user_id');
+    if (userID) {
+      syncInitMapAndLoadUser(userID);
+    } else if (user) {
+      loadLoggedInUser(user);
+    } else {
       const userCookie = cookies.get('user');
       if (userCookie) {
         if (firstPath.includes('/account') && !firstAcctPage) {
           setFirstAcctPage(firstPath);
         }
-        loadLoggedInUser(userCookie);
-      }
-
-      const userID = params.get('user_id');
-      if (userID) {
-        getUserFromID(userID);
       }
     }
-    getInitiatives();
   }, []);
 
   useEffect(() => {
@@ -164,6 +166,7 @@ const mapDispatchToProps = {
   setFirstAcctPage,
   getInitiatives,
   getUserFromID,
+  syncInitMapAndLoadUser,
 };
 
 export default withCookies(

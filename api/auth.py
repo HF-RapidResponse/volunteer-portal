@@ -9,7 +9,8 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi_jwt_auth import AuthJWT
 
 from settings import Config, Session, get_db
-from models.account import Account
+from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account
+from sqlalchemy.orm import lazyload
 
 router = APIRouter()
 app = FastAPI()
@@ -89,7 +90,7 @@ async def authorize_google(request: Request, Authorize: AuthJWT = Depends(), db:
             username=user.email.split('@')[0],
             first_name=user.given_name,
             last_name=user.family_name,
-            profile_pic=user.picture
+            profile_pic=user.picture,
         )
         db.add(new_account)
         db.commit()
@@ -97,6 +98,17 @@ async def authorize_google(request: Request, Authorize: AuthJWT = Depends(), db:
         account = new_account
 
     return create_token_for_user(Authorize, str(account.uuid))
+
+
+@router.get("/initiative_map/default")
+def populate_initiative_map(db: Session = Depends(get_db)) -> Dict:
+    initiatives = db.query(Initiative).options(
+        lazyload(Initiative.roles_rel)).all()
+    result = {}
+    if initiatives is not None:
+        for item in initiatives:
+            result[item] = False
+    return result
 
 
 @router.get("/auth/github")

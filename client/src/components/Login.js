@@ -5,13 +5,11 @@ import { Button, Form, Container, Image, Row, Col } from 'react-bootstrap';
 import {
   attemptLogin,
   validateEmail,
-  googleOauthLogin,
   openGoogleOauthWindow,
 } from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
-import GoogleLogo from './OAuth/GoogleLogo';
 import GoogleOAuthBtn from './OAuth/GoogleOAuthBtn';
 // import GoogleBtnImage from '../assets/google_btn.png';
 
@@ -23,7 +21,6 @@ function Login(props) {
     user,
     firstAcctPage,
     validateEmail,
-    googleOauthLogin,
     openGoogleOauthWindow,
   } = props;
   const { handleSubmit, handleChange, data } = useForm(attemptLogin);
@@ -125,7 +122,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   attemptLogin,
   validateEmail,
-  googleOauthLogin,
   openGoogleOauthWindow,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
