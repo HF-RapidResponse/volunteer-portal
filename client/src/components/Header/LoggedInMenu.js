@@ -31,8 +31,8 @@ function LoggedInMenu(props) {
       className="nav-link ml-3 mr-3"
       key={`nav-profile-dropdown-${profileLinks.length + 1}`}
       onClick={() => {
+        startLogout(user.uuid);
         cookies.remove('user', { path: '/' });
-        startLogout();
       }}
     >
       Log Out

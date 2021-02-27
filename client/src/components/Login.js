@@ -10,7 +10,7 @@ import {
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
-import GoogleOAuthBtn from './OAuth/GoogleOAuthBtn';
+import GoogleOAuthButton from './OAuth/GoogleOAuthButton';
 // import GoogleBtnImage from '../assets/google_btn.png';
 
 function Login(props) {
@@ -104,7 +104,7 @@ function Login(props) {
               Login
             </Button>
             <p className="font-weight-bold side-line-text">or</p>
-            <GoogleOAuthBtn />
+            <GoogleOAuthButton />
           </div>
         </Form>
       </Container>

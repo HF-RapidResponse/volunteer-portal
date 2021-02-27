@@ -11,8 +11,6 @@ import {
   startLogout,
   loadLoggedInUser,
   setFirstAcctPage,
-  getUserFromID,
-  createInitiativeMap,
   syncInitMapAndLoadUser,
 } from '../../store/user-slice.js';
 import { getInitiatives } from '../../store/initiative-slice';
@@ -39,7 +37,6 @@ function Header(props) {
     history,
     initiatives,
     getInitiatives,
-    getUserFromID,
     syncInitMapAndLoadUser,
   } = props;
 
@@ -85,6 +82,7 @@ function Header(props) {
         if (firstPath.includes('/account') && !firstAcctPage) {
           setFirstAcctPage(firstPath);
         }
+        loadLoggedInUser(userCookie);
       }
     }
   }, []);
@@ -165,7 +163,6 @@ const mapDispatchToProps = {
   loadLoggedInUser,
   setFirstAcctPage,
   getInitiatives,
-  getUserFromID,
   syncInitMapAndLoadUser,
 };
 

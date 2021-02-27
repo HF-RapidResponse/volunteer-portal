@@ -69,24 +69,6 @@ export const attemptLogin = (payload) => async (dispatch) => {
   return true;
 };
 
-// const createInitiativeMap = async () => {
-//   try {
-//     const initiativeResponse = await axios.get('/api/initiatives/');
-//     const result = {};
-//     const initiatives = initiativeResponse.data;
-//     console.log('Any initiatives?', initiatives);
-//     if (initiatives && initiatives.length) {
-//       initiatives.forEach((item) => {
-//         result[item.initiative_name] = false;
-//       });
-//     }
-//     return result;
-//   } catch (error) {
-//     console.error(error);
-//     return {};
-//   }
-// };
-
 export const openGoogleOauthWindow = async () => {
   try {
     const baseUrl =
@@ -102,48 +84,12 @@ export const openGoogleOauthWindow = async () => {
   }
 };
 
-// export const googleOauthLogin = (payload) => async (dispatch) => {
-//   const { profileObj, tokenObj } = payload;
-//   console.log('What is payload on googleOauthLogin?', payload);
-//   try {
-//     const existingAcct = await axios.get(
-//       `/api/accounts/email/${profileObj.email}`
-//     );
-
-//     if (existingAcct.data) {
-//       dispatch(setUser(existingAcct.data));
-//     } else {
-//       const acctPayload = new AccountReqBody({
-//         username: profileObj.googleId,
-//         email: profileObj.email,
-//         first_name: profileObj.givenName,
-//         last_name: profileObj.familyName,
-//         profile_pic: profileObj.imageUrl,
-//       });
-//       const config = {
-//         headers: {
-//           token_id: tokenObj.id_token,
-//           access_token: tokenObj.access_token,
-//           oauth_type: 'google',
-//         },
-//       };
-//       console.log('What is config here?', config);
-//       acctPayload.initiative_map = await createInitiativeMap();
-//       const newAcct = await axios.post(`/api/accounts/`, acctPayload, config);
-//       dispatch(setUser(newAcct.data));
-//     }
-//   } catch (error) {
-//     console.error('error on google oauth get:', error);
-//   }
-// };
-
 export const getUserFromID = (id) => async (dispatch) => {
   try {
     const response = await axios.get(`/api/accounts/${id}`);
     if (!response.data) {
       throw `User with ID ${id} does not exist.`;
     }
-    // const formattedUser = new AccountReqBody(response.data);
     dispatch(setUser(response.data));
   } catch (error) {
     console.error('Failed to get user by ID:', error);
@@ -174,8 +120,9 @@ export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
   }
 };
 
-export const startLogout = (payload) => async (dispatch) => {
+export const startLogout = (id) => async (dispatch) => {
   // const response = await axios.post('/api/logout-and-clear-tokens?/', payload);
+  // await axios.delete(`/api/logout`);
   dispatch(completeLogout());
 };
 

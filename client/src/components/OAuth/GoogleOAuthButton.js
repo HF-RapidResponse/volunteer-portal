@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import GoogleLogo from './GoogleLogo';
 
-function GoogleOAuthBtn() {
+function GoogleOAuthButton() {
   return (
     <Button
       variant="dark"
@@ -28,4 +28,4 @@ function GoogleOAuthBtn() {
   );
 }
 
-export default GoogleOAuthBtn;
+export default GoogleOAuthButton;
