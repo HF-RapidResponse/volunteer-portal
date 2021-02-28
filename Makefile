@@ -5,7 +5,6 @@ NC=\033[0m # No Color
 
 # Dev is the default config
 TEST = -f docker-compose.yml -f docker-compose.test.yml
-PROD = -f docker-compose.yml -f docker-compose.prod.yml
 
 up:
 	docker-compose up
