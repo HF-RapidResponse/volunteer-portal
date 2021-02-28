@@ -22,10 +22,22 @@ const KINDS = {
   caption: "p",
 };
 
-export const Typography = ({ kind, children, centerAlign, color }) => {
-  const Component = kind ? KINDS[kind] : "p";
+export const Typography = ({
+  kind,
+  children,
+  centerAlign,
+  color,
+  className,
+  inline,
+}) => {
+  let Component;
+  if (inline) {
+    Component = "span";
+  } else {
+    Component = kind ? KINDS[kind] : "p";
+  }
 
-  const classes = classNames("component-typography", kind, color, {
+  const classes = classNames("component-typography", kind, color, className, {
     "center-align": centerAlign,
   });
 
@@ -36,6 +48,8 @@ Typography.propTypes = {
   kind: PropTypes.oneOf(Object.keys(KINDS)).isRequired,
   children: PropTypes.node.isRequired,
   centerAlign: PropTypes.bool,
+  className: PropTypes.string,
+  inline: PropTypes.bool,
 
   // This should be in-sync with the color names in _variables.scss
   color: PropTypes.oneOf([
@@ -48,5 +62,7 @@ Typography.propTypes = {
     "gray-3",
     "gray-4",
     "gray-5",
+    "success",
+    "error",
   ]),
 };
