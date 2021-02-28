@@ -64,8 +64,12 @@ staging:
         <<: *production_db_defaults
     auth:
         <<: *auth_defaults
+    # TODO update to proper staging config
+    notifications:
+        <<: *notification_defaults  
 production:
     databases:
         <<: *production_db_defaults
     auth:
         <<: *auth_defaults
+    # TODO add production notification configs
