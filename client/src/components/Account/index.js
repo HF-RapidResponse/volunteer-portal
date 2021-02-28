@@ -5,7 +5,7 @@ import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
 import { withCookies } from 'react-cookie';
 
 import AccountNav from './AccountNav';
-import placeholderImg from '../../assets/andy-placeholder.jpg';
+import placeholderImg from '../../assets/placeholder-img.png';
 import Profile from './Profile';
 import Involvement from './Involvement';
 import Settings from './Settings';

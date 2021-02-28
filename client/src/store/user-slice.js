@@ -56,6 +56,7 @@ class AccountReqBody {
     this.email = obj.email;
     this.first_name = obj.first_name;
     this.last_name = obj.last_name;
+    this.password = obj.password;
     this.profile_pic = obj.profile_pic;
     this.roles = obj.roles || [];
     this.initiative_map = obj.initiative_map || {};
@@ -65,7 +66,12 @@ class AccountReqBody {
 }
 
 export const attemptLogin = (payload) => async (dispatch) => {
-  dispatch(setUser(payload));
+  try {
+    const response = await axios.post(`/api/auth/basic`, payload);
+    dispatch(setUser(response.data));
+  } catch (error) {
+    console.error(error);
+  }
   return true;
 };
 
@@ -96,22 +102,28 @@ export const getUserFromID = (id) => async (dispatch) => {
   }
 };
 
+const updateInitiativeMap = async (initiative_map = {}) => {
+  const initiativeResponse = await axios.get(`/api/initiatives/`);
+  const updatedMap = {};
+  const initiatives = initiativeResponse.data;
+
+  if (initiatives && initiatives.length) {
+    initiatives.forEach((item) => {
+      updatedMap[item.initiative_name] =
+        initiative_map[item.initiative_name] || false;
+    });
+  }
+  return updatedMap;
+};
+
 export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
   try {
     const userRes = await axios.get(`/api/accounts/${id}`);
     const { initiative_map } = userRes.data;
-    const initiativeResponse = await axios.get(`/api/initiatives/`);
-    const updatedMap = {};
-    const initiatives = initiativeResponse.data;
-
-    if (initiatives && initiatives.length) {
-      initiatives.forEach((item) => {
-        updatedMap[item.initiative_name] =
-          initiative_map[item.initiative_name] || false;
-      });
-    }
-
-    const userCopy = { ...userRes.data, initiative_map: updatedMap };
+    const userCopy = {
+      ...userRes.data,
+      initiative_map: await updateInitiativeMap(initiative_map),
+    };
     console.log('did we hit userCopy?', userCopy);
     const updatedAcctRes = await axios.put(`/api/accounts/${id}`, userCopy);
     dispatch(setUser(updatedAcctRes.data));
@@ -153,8 +165,19 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
   }
 
   if (emailIsValid && passwordIsValid && passAndRetypeMatch) {
-    dispatch(loadLoggedInUser(payload));
-    return true;
+    try {
+      const objPayload = new AccountReqBody(payload);
+      objPayload.initiative_map = await updateInitiativeMap();
+      // const stringifyObj = JSON.stringify(objPayload);
+      // payload.organizers_can_see = true;
+      // payload.volunteers_can_see = true;
+      await axios.post(`/api/create_token`, objPayload);
+      const response = await axios.post(`/api/accounts/`, objPayload);
+      dispatch(loadLoggedInUser(response.data));
+      return true;
+    } catch (error) {
+      console.error('API error when attempting to create user:', error);
+    }
   }
   console.log('errors here?', errors);
   throw errors;

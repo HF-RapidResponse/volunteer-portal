@@ -2,7 +2,7 @@ from typing import Dict
 from enum import Enum
 import logging
 
-from fastapi import APIRouter, Request, Depends, FastAPI
+from fastapi import APIRouter, Request, Depends, FastAPI, HTTPException
 import starlette.config
 from authlib.integrations.starlette_client import OAuth, OAuthError
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -10,6 +10,8 @@ from fastapi_jwt_auth import AuthJWT
 
 from settings import Config, Session, get_db
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account
+from schemas import AccountBasicLoginSchema
+from security import encrypt_password, check_encrypted_password
 from sqlalchemy.orm import lazyload
 
 router = APIRouter()
@@ -90,7 +92,7 @@ async def authorize_google(request: Request, Authorize: AuthJWT = Depends(), db:
             username=user.email.split('@')[0],
             first_name=user.given_name,
             last_name=user.family_name,
-            profile_pic=user.picture,
+            profile_pic=user.picture
         )
         db.add(new_account)
         db.commit()
@@ -98,6 +100,29 @@ async def authorize_google(request: Request, Authorize: AuthJWT = Depends(), db:
         account = new_account
 
     return create_token_for_user(Authorize, str(account.uuid))
+
+
+@router.post("/create_token")
+def get_token_from_email(account: AccountBasicLoginSchema, Authorize: AuthJWT = Depends()):
+    access_token = Authorize.create_access_token(subject=str(account.email))
+    Authorize.set_access_cookies(access_token)
+
+
+@router.post("/auth/basic")
+def authorize_basic(account: AccountBasicLoginSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    existing_acct = db.query(Account).filter_by(email=account.email).first()
+    if existing_acct is None:
+        raise HTTPException(
+            status_code=400, detail=f"An account with the email address {account.email} does not exist")
+    verified_pw = check_encrypted_password(
+        account.password, existing_acct.password)
+    if verified_pw is False:
+        raise HTTPException(
+            status_code=403, detail=f"Password is is incorrect")
+    access_token = Authorize.create_access_token(
+        subject=str(existing_acct.uuid))
+    Authorize.set_access_cookies(access_token)
+    return existing_acct
 
 
 @router.get("/initiative_map/default")

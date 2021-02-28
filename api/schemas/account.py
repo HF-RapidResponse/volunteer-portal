@@ -8,6 +8,7 @@ class AccountRequestSchema(BaseModel):
     username: Optional[str]
     first_name: str
     last_name: str
+    password: Optional[str]
     profile_pic: Optional[Text]
     city: Optional[str]
     state: Optional[str]
@@ -23,3 +24,8 @@ class AccountRequestSchema(BaseModel):
 
 class AccountResponseSchema(AccountRequestSchema):
     uuid: UUID
+
+
+class AccountBasicLoginSchema(BaseModel):
+    email: EmailStr
+    password: str

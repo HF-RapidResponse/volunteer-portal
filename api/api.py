@@ -13,6 +13,7 @@ import logging
 from uuid import uuid4, UUID
 from fastapi_jwt_auth import AuthJWT
 import external_data_sync
+from security import encrypt_password, check_encrypted_password
 
 app = FastAPI()
 
@@ -118,6 +119,9 @@ def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends()
     if existing_acct is not None:
         raise HTTPException(
             status_code=400, detail=f"An account with the email address {account.email} already exists")
+    if account.password is not None:
+        account.password = encrypt_password(account.password)
+
     account = Account(**account.dict())
     db.add(account)
     db.commit()

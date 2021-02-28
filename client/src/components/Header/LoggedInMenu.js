@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { Nav, NavDropdown, Image } from 'react-bootstrap';
 import { withCookies } from 'react-cookie';
 
-import placeholderImg from '../../assets/andy-placeholder.jpg';
+import placeholderImg from '../../assets/placeholder-img.png';
 
 function LoggedInMenu(props) {
   const { user, profileLinks, cookies, collapse, startLogout } = props;
@@ -32,7 +32,7 @@ function LoggedInMenu(props) {
       key={`nav-profile-dropdown-${profileLinks.length + 1}`}
       onClick={() => {
         startLogout();
-        cookies.remove('user', { path: '/' });
+        cookies.remove('user', { path: '/', sameSite: 'None', secure: true });
       }}
     >
       Log Out
@@ -41,7 +41,7 @@ function LoggedInMenu(props) {
   return (
     <>
       <NavDropdown
-        title={`Welcome back, ${user.username}!`}
+        title={`Welcome back, ${user.first_name}!`}
         key={`nav-top-profile`}
       >
         {profileDropdown}

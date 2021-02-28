@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Container } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import useForm from './hooks/useForm';
 import { attemptCreateAccount, validatePassword } from '../store/user-slice';
@@ -57,20 +57,60 @@ function Register(props) {
         <h3 className="text-center" style={{ color: 'gray' }}>
           Create your account.
         </h3>
-        <Form noValidate validated={validated} onSubmit={submitWrapper}>
-          <Form.Group controlId="formName">
-            <Form.Label>Name</Form.Label>
+        <Form
+          noValidate
+          validated={validated}
+          onSubmit={submitWrapper}
+          className="mt-2 mb-2"
+        >
+          <Row>
+            <Col xs={12} lg={6}>
+              <Form.Group controlId="formFirstName">
+                <Form.Label>First Name</Form.Label>
+                <Form.Control
+                  type="name"
+                  placeholder="First Name"
+                  onChange={(e) => {
+                    handleKeyPress('first_name', e);
+                  }}
+                  isInvalid={!!errors.name}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.first_name || 'Please provide a first name.'}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+            <Col xs={12} lg={6}>
+              <Form.Group controlId="formLastName">
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control
+                  type="name"
+                  placeholder="Last Name"
+                  onChange={(e) => {
+                    handleKeyPress('last_name', e);
+                  }}
+                  isInvalid={!!errors.name}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.last_name || 'Please provide a name.'}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Form.Group controlId="formUsername">
+            <Form.Label>Username</Form.Label>
             <Form.Control
-              type="name"
-              placeholder="Name"
+              type="username"
+              placeholder="Username (optional)"
               onChange={(e) => {
-                handleKeyPress('name', e);
+                handleKeyPress('username', e);
               }}
-              isInvalid={!!errors.name}
-              required
+              isInvalid={!!errors.username}
             />
             <Form.Control.Feedback type="invalid">
-              {errors.name || 'Please provide a name.'}
+              {errors.username || 'Please provide a valid username.'}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicEmail">
