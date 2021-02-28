@@ -23,5 +23,5 @@ class VolunteerEvent(AirtableRow, Base):
         return self.hero_image_urls[0]['url'] if self.hero_image_urls else placeholder_image()
 
     def __repr__(self):
-        return "<VolunteerEvent(uuid='%s', external_id='%s', name='%s')>" % (
+        return "VolunteerEvent(uuid='%s', external_id='%s', name='%s')" % (
                                 self.uuid, self.external_id, self.event_name)

@@ -140,3 +140,18 @@ def test_nullified_initiatives_serving(db):
 
   client.get(f'api/volunteer_initiatives/{initiative.external_id}')
   cleanup_initiative(db, initiative)
+
+def test_sync_events_test_route(db):
+    saved_test_events = db.query(VolunteerEvent).filter(VolunteerEvent.external_id.like("%_test")).all()
+    assert len(saved_test_events) == 0
+
+    resp = client.get(f'api/run_test_event_sync')
+
+    saved_test_events = db.query(VolunteerEvent).filter(VolunteerEvent.external_id.like("%_test"))
+    assert len(saved_test_events.all()) == 3
+
+    assert "Sync Complete. Issues Found <b>0</b>" in resp.text
+
+    for e in saved_test_events:
+        db.delete(e)
+    db.commit()
