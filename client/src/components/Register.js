@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col, Alert } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import useForm from './hooks/useForm';
 import { attemptCreateAccount, validatePassword } from '../store/user-slice';
@@ -158,6 +158,9 @@ function Register(props) {
               {errors.retypePass || 'Please re-type your password.'}
             </Form.Control.Feedback>
           </Form.Group>
+          <Alert variant="danger" className={!errors.api ? 'd-none' : null}>
+            {errors.api}
+          </Alert>
           <div className="text-center">
             <Button
               variant="info"

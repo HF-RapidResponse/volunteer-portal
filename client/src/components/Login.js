@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
 import { Button, Form, Container, Image, Row, Col } from 'react-bootstrap';
@@ -9,13 +9,13 @@ import {
 } from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { GoogleLogin } from 'react-google-login';
 import GoogleOAuthButton from './OAuth/GoogleOAuthButton';
-// import GoogleBtnImage from '../assets/google_btn.png';
+import LoadingSpinner from './LoadingSpinner';
 
 function Login(props) {
   const [submitted, setSubmitted] = useState(false);
   const [validated, setValidated] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {
     attemptLogin,
     user,
@@ -25,6 +25,7 @@ function Login(props) {
   } = props;
   const { handleSubmit, handleChange, data } = useForm(attemptLogin);
   const path = window.location.pathname;
+  const params = new URLSearchParams(window.location.search);
 
   /**
    * simple helper function that handles form submission by calling several other functions
@@ -47,7 +48,22 @@ function Login(props) {
     }
   }
 
-  return (validated && submitted) || user ? (
+  useEffect(() => {
+    const userID = params.get('user_id');
+    if (userID) {
+      setLoading(true);
+    }
+  }, [params]);
+
+  useEffect(() => {
+    if (user) {
+      setLoading(false);
+    }
+  }, [user]);
+
+  return loading ? (
+    <LoadingSpinner />
+  ) : (validated && submitted) || user ? (
     <Redirect push to={firstAcctPage || '/account/profile'} />
   ) : (
     <>

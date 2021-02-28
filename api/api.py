@@ -114,7 +114,6 @@ def get_account_by_email(email, db: Session = Depends(get_db)):
 
 @app.post("/api/accounts/", response_model=AccountResponseSchema, status_code=201)
 def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    Authorize.jwt_required()
     existing_acct = db.query(Account).filter_by(email=account.email).first()
     if existing_acct is not None:
         raise HTTPException(
@@ -126,6 +125,9 @@ def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends()
     db.add(account)
     db.commit()
     db.refresh(account)
+    access_token = Authorize.create_access_token(
+        subject=str(account.uuid))
+    Authorize.set_access_cookies(access_token)
     return account
 
 

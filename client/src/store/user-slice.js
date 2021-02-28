@@ -68,7 +68,9 @@ class AccountReqBody {
 export const attemptLogin = (payload) => async (dispatch) => {
   try {
     const response = await axios.post(`/api/auth/basic`, payload);
-    dispatch(setUser(response.data));
+    const user = response.data;
+    user.initiative_map = await updateInitiativeMap(user.initiative_map);
+    dispatch(setUser(user));
   } catch (error) {
     console.error(error);
   }
@@ -171,12 +173,18 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
       // const stringifyObj = JSON.stringify(objPayload);
       // payload.organizers_can_see = true;
       // payload.volunteers_can_see = true;
-      await axios.post(`/api/create_token`, objPayload);
+      // await axios.post(`/api/create_token`, objPayload);
       const response = await axios.post(`/api/accounts/`, objPayload);
       dispatch(loadLoggedInUser(response.data));
       return true;
     } catch (error) {
       console.error('API error when attempting to create user:', error);
+      errors.api =
+        error.response.data.detail ||
+        'Error while attempting to create an account. Please try again later.';
+      // console.log(error.message);
+      // console.log(error.response.data);
+      throw errors;
     }
   }
   console.log('errors here?', errors);

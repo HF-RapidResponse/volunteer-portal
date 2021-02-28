@@ -82,7 +82,7 @@ function Header(props) {
         if (firstPath.includes('/account') && !firstAcctPage) {
           setFirstAcctPage(firstPath);
         }
-        loadLoggedInUser(userCookie);
+        syncInitMapAndLoadUser(userCookie.uuid);
       }
     }
   }, []);
