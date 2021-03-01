@@ -135,6 +135,8 @@ def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends()
 def update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
     updated_acct = Account(uuid=uuid, **account.dict())
+    if account.password is not None:
+        updated_acct.password = encrypt_password(account.password)
     db.merge(updated_acct)
     db.commit()
     return updated_acct

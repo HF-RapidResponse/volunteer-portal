@@ -57,6 +57,7 @@ class AccountReqBody {
     this.first_name = obj.first_name;
     this.last_name = obj.last_name;
     this.password = obj.password;
+    this.oauth = obj.oauth;
     this.profile_pic = obj.profile_pic;
     this.roles = obj.roles || [];
     this.initiative_map = obj.initiative_map || {};
@@ -75,21 +76,6 @@ export const attemptLogin = (payload) => async (dispatch) => {
     console.error(error);
   }
   return true;
-};
-
-export const openGoogleOauthWindow = async () => {
-  try {
-    const baseUrl =
-      window.location.port === '8000'
-        ? 'http://localhost:8081'
-        : window.location.origin;
-    const oauthUrl = `${baseUrl}/api/login?provider=google`;
-    console.log('What is oauthUrl?', oauthUrl);
-    const response = await axios.get(oauthUrl);
-    console.log('any data from response?', response.data);
-  } catch (error) {
-    console.error(error);
-  }
 };
 
 export const getUserFromID = (id) => async (dispatch) => {
@@ -170,10 +156,6 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
     try {
       const objPayload = new AccountReqBody(payload);
       objPayload.initiative_map = await updateInitiativeMap();
-      // const stringifyObj = JSON.stringify(objPayload);
-      // payload.organizers_can_see = true;
-      // payload.volunteers_can_see = true;
-      // await axios.post(`/api/create_token`, objPayload);
       const response = await axios.post(`/api/accounts/`, objPayload);
       dispatch(loadLoggedInUser(response.data));
       return true;
@@ -182,24 +164,51 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
       errors.api =
         error.response.data.detail ||
         'Error while attempting to create an account. Please try again later.';
-      // console.log(error.message);
-      // console.log(error.response.data);
       throw errors;
     }
   }
-  console.log('errors here?', errors);
   throw errors;
 };
 
 export const verifyPassword = (payload) => {
-  //const response = await axios.get(`/users/${userSlice.user.ID}`);
-  //return response.password === (base64blah blah blah) && payload.oldPass === payload.newPass;
-  // console.log('Do we ever hit verifyPassword?', payload);
   const responsePayload = {
     currPassValid: true,
     newAndRetypeMatch: payload.newPass === payload.retypePass,
   };
   return responsePayload;
+};
+
+export const changePassword = (payload) => async (dispatch) => {
+  console.log('did we make into change password?', payload);
+  const responsePayload = {
+    currPassValid: false,
+    newAndRetypeMatch: payload.newPass === payload.retypePass,
+  };
+  try {
+    const oldPassIsValid = await axios.post(`/verify_password`, {
+      old_password: payload.oldPass,
+      new_password: payload.newPass,
+    });
+    // const user = oldPassIsValid.data;
+    console.log('Do we have a user?', payload);
+    if (oldPassIsValid.data && responsePayload.newAndRetypeMatch) {
+      // console.log('user exist?', user);
+      responsePayload.currPassValid = true;
+      const response = await axios.put(
+        `/api/accounts/${payload.uuid}`,
+        new AccountReqBody({
+          ...payload,
+          password: payload.newPass,
+        })
+      );
+      dispatch(setUser(response.data));
+    }
+    console.log('at the end of changePassword:', responsePayload);
+    return responsePayload;
+  } catch (error) {
+    console.error(error);
+    return responsePayload;
+  }
 };
 
 export const deleteRole = (payload) => async (dispatch) => {

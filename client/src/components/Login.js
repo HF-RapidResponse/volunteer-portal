@@ -2,11 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
 import { Button, Form, Container, Image, Row, Col } from 'react-bootstrap';
-import {
-  attemptLogin,
-  validateEmail,
-  openGoogleOauthWindow,
-} from '../store/user-slice.js';
+import { attemptLogin, validateEmail } from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import GoogleOAuthButton from './OAuth/GoogleOAuthButton';
@@ -16,13 +12,7 @@ function Login(props) {
   const [submitted, setSubmitted] = useState(false);
   const [validated, setValidated] = useState(false);
   const [loading, setLoading] = useState(false);
-  const {
-    attemptLogin,
-    user,
-    firstAcctPage,
-    validateEmail,
-    openGoogleOauthWindow,
-  } = props;
+  const { attemptLogin, user, firstAcctPage, validateEmail } = props;
   const { handleSubmit, handleChange, data } = useForm(attemptLogin);
   const path = window.location.pathname;
   const params = new URLSearchParams(window.location.search);
@@ -140,6 +130,5 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   attemptLogin,
   validateEmail,
-  openGoogleOauthWindow,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

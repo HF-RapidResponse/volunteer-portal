@@ -9,6 +9,7 @@ class AccountRequestSchema(BaseModel):
     first_name: str
     last_name: str
     password: Optional[str]
+    oauth: Optional[str]
     profile_pic: Optional[Text]
     city: Optional[str]
     state: Optional[str]

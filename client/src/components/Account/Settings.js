@@ -5,8 +5,9 @@ import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
 import { withCookies } from 'react-cookie';
 
 import useForm from '../hooks/useForm';
-import {
+import userSlice, {
   verifyPassword,
+  changePassword,
   deleteUser,
   basicPropUpdate,
 } from '../../store/user-slice';
@@ -15,6 +16,7 @@ function Settings(props) {
   const [currPassValid, setCurrPassValid] = useState(false);
   const [newAndRetypeMatch, setNewAndReypteMatch] = useState(false);
   const [disableForm, setDisableForm] = useState(false);
+  const { user, deleteUser, cookies, basicPropUpdate, changePassword } = props;
   const {
     handleChange,
     handleSubmit,
@@ -24,20 +26,22 @@ function Settings(props) {
     setSubmitted,
     validated,
     setValidated,
-  } = useForm(verifyPassword);
-  const { user, deleteUser, cookies, basicPropUpdate } = props;
+  } = useForm(changePassword, user);
 
-  const handleSubmitResponse = (e) => {
-    const userSliceResponse = handleSubmit(e) || {
-      currPassValid: false,
-      userSliceResponse: false,
-    };
-    setCurrPassValid(userSliceResponse.currPassValid);
-    setNewAndReypteMatch(userSliceResponse.newAndRetypeMatch);
-    setSubmitted(true);
-    setValidated(
-      userSliceResponse.currPassValid && userSliceResponse.newAndRetypeMatch
-    );
+  const handleSubmitResponse = async (e) => {
+    const submitRes = handleSubmit(e);
+    console.log('What is submitRes?', submitRes);
+    // const userSliceResponse = handleSubmit(e) || {
+    //   currPassValid: false,
+    //   userSliceResponse: false,
+    // };
+    // console.log('anything after userSlice res here?', userSliceResponse);
+    if (submitRes) {
+      setCurrPassValid(submitRes.currPassValid);
+      setNewAndReypteMatch(submitRes.newAndRetypeMatch);
+      setSubmitted(true);
+      setValidated(true);
+    }
   };
 
   const deletePrompt = () => {
@@ -53,6 +57,7 @@ function Settings(props) {
   const clearFormComponent = () => {
     const formComponent = document.getElementById('acct-settings-form');
     formComponent.reset();
+    setData({});
   };
 
   const resetChangePassValidation = () => {
@@ -73,6 +78,11 @@ function Settings(props) {
       }, 3000);
     }
   }, [submitted]);
+
+  // useEffect(() => {
+  //   setCurrPassValid(data.currPassValid);
+  //   setNewAndReypteMatch(data.newAndRetypeMatch);
+  // }, [data]);
 
   return user ? (
     <>
@@ -123,7 +133,7 @@ function Settings(props) {
             />
           </Col>
         </Row>
-        <Form.Group>
+        <Form.Group className={user.oauth ? 'd-none' : null}>
           <div className={'mt-3 ' + (data.oldPass ? 'mb-5' : 'mb-4')}>
             <Form.Label>Change Password</Form.Label>
             <Form.Control
@@ -180,13 +190,6 @@ function Settings(props) {
                 </Button>
               </Col>
               <Col xs={12} xl={6} className="text-center">
-                {/* <Button
-                variant="danger"
-                className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
-                onClick={() => deletePrompt()}
-              >
-                Delete my Account
-              </Button> */}
                 <Button
                   variant="outline-secondary"
                   className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
@@ -232,7 +235,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { deleteUser, basicPropUpdate };
+const mapDispatchToProps = { deleteUser, basicPropUpdate, changePassword };
 export default withCookies(
   connect(mapStateToProps, mapDispatchToProps)(Settings)
 );

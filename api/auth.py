@@ -92,6 +92,7 @@ async def authorize_google(request: Request, Authorize: AuthJWT = Depends(), db:
             username=user.email.split('@')[0],
             first_name=user.given_name,
             last_name=user.family_name,
+            oauth='google',
             profile_pic=user.picture
         )
         db.add(new_account)
@@ -106,6 +107,19 @@ async def authorize_google(request: Request, Authorize: AuthJWT = Depends(), db:
 def get_token_from_email(account: AccountBasicLoginSchema, Authorize: AuthJWT = Depends()):
     access_token = Authorize.create_access_token(subject=str(account.email))
     Authorize.set_access_cookies(access_token)
+
+
+@router.post("/verify_password")
+def verify_password(payload, Authorize: AuthJWT = Depends()):
+    Authorize.jwt_refresh_token_required()
+    current_acct = Authorize.get_jwt_subject()
+    password_valid = check_encrypted_password(
+        payload.old_password, current_acct.password)
+    if password_valid is True:
+        return True
+    else:
+        raise HTTPException(
+            status_code=403, detail=f"Password is is incorrect")
 
 
 @router.post("/auth/basic")
