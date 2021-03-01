@@ -4,6 +4,7 @@ import { Button, Form, Container, Row, Col, Alert } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import useForm from './hooks/useForm';
 import { attemptCreateAccount, validatePassword } from '../store/user-slice';
+import GoogleOAuthButton from './OAuth/GoogleOAuthButton';
 
 function Register(props) {
   document.title = 'HF Volunteer Portal - Create an Account';
@@ -171,6 +172,10 @@ function Register(props) {
             </Button>
           </div>
         </Form>
+        <p className="font-weight-bold side-line-text">or</p>
+        <div className="text-center">
+          <GoogleOAuthButton />
+        </div>
       </Container>
     </>
   );

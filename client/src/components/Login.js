@@ -119,10 +119,12 @@ function Login(props) {
             <Button variant="info" type="submit" className="mt-5 mb-3" block>
               Login
             </Button>
-            <p className="font-weight-bold side-line-text">or</p>
-            <GoogleOAuthButton />
           </div>
         </Form>
+        <p className="font-weight-bold side-line-text">or</p>
+        <div className="text-center">
+          <GoogleOAuthButton />
+        </div>
       </Container>
     </>
   );
