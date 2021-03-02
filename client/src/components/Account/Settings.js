@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
+import {
+  Button,
+  Form,
+  Container,
+  Col,
+  Row,
+  Image,
+  Alert,
+} from 'react-bootstrap';
 import { withCookies } from 'react-cookie';
 
 import useForm from '../hooks/useForm';
@@ -13,8 +21,6 @@ import userSlice, {
 } from '../../store/user-slice';
 
 function Settings(props) {
-  const [currPassValid, setCurrPassValid] = useState(false);
-  const [newAndRetypeMatch, setNewAndReypteMatch] = useState(false);
   const [disableForm, setDisableForm] = useState(false);
   const { user, deleteUser, cookies, basicPropUpdate, changePassword } = props;
   const {
@@ -26,22 +32,13 @@ function Settings(props) {
     setSubmitted,
     validated,
     setValidated,
+    errors,
+    setErrors,
   } = useForm(changePassword, user);
 
-  const handleSubmitResponse = async (e) => {
-    const submitRes = handleSubmit(e);
-    console.log('What is submitRes?', submitRes);
-    // const userSliceResponse = handleSubmit(e) || {
-    //   currPassValid: false,
-    //   userSliceResponse: false,
-    // };
-    // console.log('anything after userSlice res here?', userSliceResponse);
-    if (submitRes) {
-      setCurrPassValid(submitRes.currPassValid);
-      setNewAndReypteMatch(submitRes.newAndRetypeMatch);
-      setSubmitted(true);
-      setValidated(true);
-    }
+  const handleSubmitResponse = (e) => {
+    setValidated(true);
+    setSubmitted(handleSubmit(e));
   };
 
   const deletePrompt = () => {
@@ -57,27 +54,42 @@ function Settings(props) {
   const clearFormComponent = () => {
     const formComponent = document.getElementById('acct-settings-form');
     formComponent.reset();
-    setData({});
-  };
-
-  const resetChangePassValidation = () => {
-    setCurrPassValid(false);
-    setNewAndReypteMatch(false);
+    setData(user);
   };
 
   useEffect(() => {
-    if (validated) {
+    console.log('are we validated && submitted?', validated, submitted);
+    if (validated && submitted) {
       clearFormComponent();
       setDisableForm(true);
       setValidated(false);
       setTimeout(() => {
         setSubmitted(false);
-        resetChangePassValidation();
-        setData({});
+        setData(user);
         setDisableForm(false);
       }, 3000);
     }
-  }, [submitted]);
+  }, [validated, submitted]);
+
+  const resetOnChange = () => {
+    setSubmitted(false);
+    setValidated(false);
+    setErrors({});
+  };
+  // useEffect(() => {
+  //   console.log('Any submitResponse info here?', submitResponse);
+  //   if (submitResponse.currPassValid && submitResponse.newAndRetypeMatch) {
+  //     clearFormComponent();
+  //     setDisableForm(true);
+  //     setValidated(false);
+  //     setTimeout(() => {
+  //       setSubmitted(false);
+  //       resetChangePassValidation();
+  //       setData({});
+  //       setDisableForm(false);
+  //     }, 3000);
+  //   }
+  // }, [submitted]);
 
   // useEffect(() => {
   //   setCurrPassValid(data.currPassValid);
@@ -140,9 +152,12 @@ function Settings(props) {
               type="password"
               placeholder="Old Password"
               id="old-pass"
-              onChange={(e) => handleChange('oldPass', e.target.value)}
-              isValid={submitted && currPassValid}
-              isInvalid={submitted && !currPassValid}
+              onChange={(e) => {
+                resetOnChange();
+                handleChange('oldPass', e.target.value);
+              }}
+              isValid={submitted && !errors.oldPassInvalid}
+              isInvalid={errors.oldPassInvalid}
               required
               disabled={disableForm}
             />
@@ -155,9 +170,12 @@ function Settings(props) {
             <Form.Control
               type="password"
               id="new-pass"
-              onChange={(e) => handleChange('newPass', e.target.value)}
-              isValid={newAndRetypeMatch}
-              isInvalid={submitted && !newAndRetypeMatch}
+              onChange={(e) => {
+                resetOnChange();
+                handleChange('newPass', e.target.value);
+              }}
+              isValid={submitted && !errors.newPassInvalid}
+              isInvalid={errors.newPassInvalid}
               required
               disabled={disableForm}
             />
@@ -167,9 +185,13 @@ function Settings(props) {
             <Form.Control
               type="password"
               id="retype-pass"
-              onChange={(e) => handleChange('retypePass', e.target.value)}
-              isValid={newAndRetypeMatch}
-              isInvalid={submitted && !newAndRetypeMatch}
+              onChange={(e) => {
+                resetOnChange();
+                handleChange('retypePass', e.target.value);
+              }}
+              // isValid={newAndRetypeMatch}
+              isInvalid={errors.newPassRetypeMismatch}
+              isValid={submitted && validated}
               required
               disabled={disableForm}
             />
@@ -179,6 +201,9 @@ function Settings(props) {
             <Form.Control.Feedback type="valid">
               Passwords change successful
             </Form.Control.Feedback>
+            <Alert variant="danger" className={!errors.api ? 'd-none' : null}>
+              {errors.api}
+            </Alert>
             <Row>
               <Col xs={12} xl={6} className="text-center">
                 <Button
@@ -195,7 +220,6 @@ function Settings(props) {
                   className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
                   onClick={() => {
                     clearFormComponent();
-                    resetChangePassValidation();
                   }}
                 >
                   Cancel

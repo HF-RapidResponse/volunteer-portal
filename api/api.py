@@ -144,7 +144,7 @@ def update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Dep
 
 @app.delete("/api/accounts/{uuid}", status_code=204)
 def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    Authorize.jwt_required()
+    # Authorize.jwt_required()
     acct_to_delete = db.query(Account).filter_by(uuid=uuid).first()
     if acct_to_delete is None:
         raise HTTPException(status_code=404,

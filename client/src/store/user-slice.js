@@ -179,36 +179,36 @@ export const verifyPassword = (payload) => {
 };
 
 export const changePassword = (payload) => async (dispatch) => {
-  console.log('did we make into change password?', payload);
-  const responsePayload = {
-    currPassValid: false,
-    newAndRetypeMatch: payload.newPass === payload.retypePass,
+  const newPassValidated = validatePassword(payload.newPass);
+  const newPassesMatch = payload.newPass === payload.retypePass;
+  const errors = {
+    oldPassInvalid: true,
+    newPassRetypeMismatch: !newPassesMatch,
+    newPassInvalid: !newPassValidated,
   };
+
   try {
-    const oldPassIsValid = await axios.post(`/verify_password`, {
+    const oldPassIsValid = await axios.post(`/api/verify_password`, {
       old_password: payload.oldPass,
-      new_password: payload.newPass,
+      uuid: payload.uuid,
     });
-    // const user = oldPassIsValid.data;
-    console.log('Do we have a user?', payload);
-    if (oldPassIsValid.data && responsePayload.newAndRetypeMatch) {
-      // console.log('user exist?', user);
-      responsePayload.currPassValid = true;
-      const response = await axios.put(
-        `/api/accounts/${payload.uuid}`,
-        new AccountReqBody({
-          ...payload,
-          password: payload.newPass,
-        })
-      );
+
+    const response = await axios.put(
+      `/api/accounts/${payload.uuid}`,
+      new AccountReqBody({
+        ...payload,
+        password: payload.newPass,
+      })
+    );
+    errors.oldPassInvalid = false;
+    if (oldPassIsValid.data && newPassValidated && newPassesMatch) {
       dispatch(setUser(response.data));
+      return true;
     }
-    console.log('at the end of changePassword:', responsePayload);
-    return responsePayload;
   } catch (error) {
-    console.error(error);
-    return responsePayload;
+    console.error(error.response);
   }
+  throw errors;
 };
 
 export const deleteRole = (payload) => async (dispatch) => {

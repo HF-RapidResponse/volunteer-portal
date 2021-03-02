@@ -32,6 +32,7 @@ function useForm(callback, initObj) {
    */
   function handleSubmit(e) {
     const form = e.currentTarget;
+    setErrors({});
     e.preventDefault();
     e.stopPropagation();
     if (form.checkValidity() === false) {

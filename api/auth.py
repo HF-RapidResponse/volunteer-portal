@@ -10,7 +10,7 @@ from fastapi_jwt_auth import AuthJWT
 
 from settings import Config, Session, get_db
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account
-from schemas import AccountBasicLoginSchema
+from schemas import AccountBasicLoginSchema, AccountPasswordSchema
 from security import encrypt_password, check_encrypted_password
 from sqlalchemy.orm import lazyload
 
@@ -110,11 +110,11 @@ def get_token_from_email(account: AccountBasicLoginSchema, Authorize: AuthJWT = 
 
 
 @router.post("/verify_password")
-def verify_password(payload, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_refresh_token_required()
-    current_acct = Authorize.get_jwt_subject()
+def verify_password(payload: AccountPasswordSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    Authorize.jwt_required()
+    existing_acct = db.query(Account).filter_by(uuid=payload.uuid).first()
     password_valid = check_encrypted_password(
-        payload.old_password, current_acct.password)
+        payload.old_password, existing_acct.password)
     if password_valid is True:
         return True
     else:
@@ -137,6 +137,17 @@ def authorize_basic(account: AccountBasicLoginSchema, Authorize: AuthJWT = Depen
         subject=str(existing_acct.uuid))
     Authorize.set_access_cookies(access_token)
     return existing_acct
+
+
+@app.post('/refresh')
+def refresh(Authorize: AuthJWT = Depends()):
+    Authorize.jwt_refresh_token_required()
+
+    current_user = Authorize.get_jwt_subject()
+    new_access_token = Authorize.create_access_token(subject=current_user)
+    # Set the JWT cookies in the response
+    Authorize.set_access_cookies(new_access_token)
+    return {"msg": "The token has been refresh"}
 
 
 @router.get("/initiative_map/default")
@@ -171,10 +182,12 @@ def logout(Authorize: AuthJWT = Depends()):
 
 def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     access_token = Authorize.create_access_token(subject=user_id)
+    refresh_token = Authorize.create_refresh_token(subject=user_id)
     # refresh_token = Authorize.create_refresh_token(subject=user_id)
     response = RedirectResponse(
         f'{Config["routes"]["client"]}/login?user_id={user_id}')
     Authorize.set_access_cookies(access_token, response)
+    Authorize.set_refresh_cookies(refresh_token)
     logging.warning(f"What is access_token? {access_token}")
     # Authorize.set_refresh_cookies(refresh_token)
     return response

@@ -30,3 +30,8 @@ class AccountResponseSchema(AccountRequestSchema):
 class AccountBasicLoginSchema(BaseModel):
     email: EmailStr
     password: str
+
+
+class AccountPasswordSchema(BaseModel):
+    old_password: Optional[str]
+    uuid: Optional[str]
