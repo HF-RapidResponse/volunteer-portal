@@ -10,11 +10,7 @@ import Profile from './Profile';
 import Involvement from './Involvement';
 import Settings from './Settings';
 import Data from './Data';
-import {
-  attemptLogin,
-  startLogout,
-  loadLoggedInUser,
-} from '../../store/user-slice.js';
+import { attemptLogin, startLogout } from '../../store/user-slice.js';
 import '../../styles/account.scss';
 
 function AccountIndex(props) {
@@ -80,7 +76,7 @@ const mapStateToProps = (state, ownProps) => {
     cookies: ownProps.cookies,
   };
 };
-const mapDispatchToProps = { attemptLogin, startLogout, loadLoggedInUser };
+const mapDispatchToProps = { attemptLogin, startLogout };
 
 export default withCookies(
   connect(mapStateToProps, mapDispatchToProps)(AccountIndex)

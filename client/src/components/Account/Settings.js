@@ -37,8 +37,8 @@ function Settings(props) {
   } = useForm(changePassword, user);
 
   const handleSubmitResponse = (e) => {
+    handleSubmit(e);
     setValidated(true);
-    setSubmitted(handleSubmit(e));
   };
 
   const deletePrompt = () => {
@@ -54,19 +54,18 @@ function Settings(props) {
   const clearFormComponent = () => {
     const formComponent = document.getElementById('acct-settings-form');
     formComponent.reset();
-    setData(user);
+    // setData(user);
   };
 
   useEffect(() => {
-    console.log('are we validated && submitted?', validated, submitted);
     if (validated && submitted) {
       clearFormComponent();
       setDisableForm(true);
-      setValidated(false);
       setTimeout(() => {
+        setValidated(false);
         setSubmitted(false);
-        setData(user);
         setDisableForm(false);
+        setData(user);
       }, 3000);
     }
   }, [validated, submitted]);
@@ -76,25 +75,6 @@ function Settings(props) {
     setValidated(false);
     setErrors({});
   };
-  // useEffect(() => {
-  //   console.log('Any submitResponse info here?', submitResponse);
-  //   if (submitResponse.currPassValid && submitResponse.newAndRetypeMatch) {
-  //     clearFormComponent();
-  //     setDisableForm(true);
-  //     setValidated(false);
-  //     setTimeout(() => {
-  //       setSubmitted(false);
-  //       resetChangePassValidation();
-  //       setData({});
-  //       setDisableForm(false);
-  //     }, 3000);
-  //   }
-  // }, [submitted]);
-
-  // useEffect(() => {
-  //   setCurrPassValid(data.currPassValid);
-  //   setNewAndReypteMatch(data.newAndRetypeMatch);
-  // }, [data]);
 
   return user ? (
     <>

@@ -22,7 +22,7 @@ function Login(props) {
    * @param {*} e - event object
    */
   function submitWrapper(e) {
-    setSubmitted(handleSubmit(e));
+    handleSubmit(e);
     setValidated(true);
   }
 

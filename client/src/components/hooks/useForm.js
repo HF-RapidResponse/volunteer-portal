@@ -40,13 +40,15 @@ function useForm(callback, initObj) {
       return false;
     } else {
       callback(data)
-        .then((response) => {
-          return response;
+        .then(() => {
+          setSubmitted(true);
+          // return response;
         })
         .catch((error) => {
           console.error('Did we get an error?', error);
           setErrors(error);
-          return false;
+          submitted(false);
+          // return false;
         });
     }
   }
