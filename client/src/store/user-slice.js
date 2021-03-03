@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { createSlice } from '@reduxjs/toolkit';
+const jwt = require('jsonwebtoken');
 
 const userSlice = createSlice({
   name: 'userStore',
@@ -72,10 +73,10 @@ export const attemptLogin = (payload) => async (dispatch) => {
     const user = response.data;
     user.initiative_map = await updateInitiativeMap(user.initiative_map);
     dispatch(setUser(user));
+    return true;
   } catch (error) {
     console.error(error);
   }
-  return true;
 };
 
 export const getUserFromID = (id) => async (dispatch) => {
@@ -121,8 +122,14 @@ export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
 };
 
 export const startLogout = () => async (dispatch) => {
-  await axios.delete(`/api/logout`);
-  dispatch(completeLogout());
+  try {
+    const refreshRes = await axios.post(`/api/refresh`);
+    // console.log('refreshRes?', refreshRes.data);
+    await axios.delete(`/api/logout`);
+    dispatch(completeLogout());
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const loadLoggedInUser = (payload) => (dispatch) => {
@@ -188,6 +195,8 @@ export const changePassword = (payload) => async (dispatch) => {
   };
 
   try {
+    const refreshRes = await axios.post(`/api/refresh`);
+    // console.log('refreshRes?', refreshRes.data);
     const oldPassIsValid = await axios.post(`/api/verify_password`, {
       old_password: payload.oldPass,
       uuid: payload.uuid,
@@ -218,6 +227,8 @@ export const deleteRole = (payload) => async (dispatch) => {
 
 export const deleteUser = (uuid) => async (dispatch) => {
   try {
+    const refreshRes = await axios.post(`/api/refresh`);
+    // console.log('refreshRes?', refreshRes.data);
     await axios.delete(`/api/accounts/${uuid}`);
     dispatch(completeLogout());
   } catch (error) {
@@ -243,6 +254,8 @@ export const basicPropUpdate = (payload) => async (dispatch) => {
   const userCopy = { ...user };
   userCopy[key] = newVal;
   try {
+    const refreshRes = await axios.post(`/api/refresh`);
+    // console.log('refreshRes?', refreshRes.data);
     const response = await axios.put(
       `/api/accounts/${userCopy.uuid}`,
       userCopy
@@ -262,6 +275,8 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   userCopy.initiative_map[initiative_name] = !isSubscribed;
 
   try {
+    const refreshRes = await axios.post(`/api/refresh`);
+    console.log('refreshRes?', refreshRes.data);
     const response = await axios.put(
       `/api/accounts/${userCopy.uuid}`,
       userCopy

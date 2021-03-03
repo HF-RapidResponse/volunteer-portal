@@ -9,11 +9,16 @@ import GoogleOAuthButton from './OAuth/GoogleOAuthButton';
 import LoadingSpinner from './LoadingSpinner';
 
 function Login(props) {
-  const [submitted, setSubmitted] = useState(false);
-  const [validated, setValidated] = useState(false);
   const [loading, setLoading] = useState(false);
   const { attemptLogin, user, firstAcctPage, validateEmail } = props;
-  const { handleSubmit, handleChange, data } = useForm(attemptLogin);
+  const {
+    validated,
+    submitted,
+    setValidated,
+    handleSubmit,
+    handleChange,
+    data,
+  } = useForm(attemptLogin);
   const path = window.location.pathname;
   const params = new URLSearchParams(window.location.search);
 

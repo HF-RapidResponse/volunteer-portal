@@ -125,10 +125,19 @@ def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends()
     db.add(account)
     db.commit()
     db.refresh(account)
-    access_token = Authorize.create_access_token(
-        subject=str(account.uuid))
-    Authorize.set_access_cookies(access_token)
+    create_access_and_refresh_tokens(str(account.uuid), Authorize)
     return account
+
+
+def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
+    try:
+        access_token = Authorize.create_access_token(subject=user_id)
+        Authorize.set_access_cookies(access_token)
+        refresh_token = Authorize.create_refresh_token(subject=user_id)
+        Authorize.set_refresh_cookies(refresh_token)
+    except:
+        raise HTTPException(
+            status_code=500, detail=f"Error while trying to create and refresh tokens")
 
 
 @app.put("/api/accounts/{uuid}", response_model=AccountResponseSchema)

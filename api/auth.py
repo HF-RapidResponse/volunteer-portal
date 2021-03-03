@@ -139,12 +139,12 @@ def authorize_basic(account: AccountBasicLoginSchema, Authorize: AuthJWT = Depen
     return existing_acct
 
 
-@app.post('/refresh')
+@router.post('/refresh')
 def refresh(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()
-
-    current_user = Authorize.get_jwt_subject()
-    new_access_token = Authorize.create_access_token(subject=current_user)
+    current_token = Authorize.get_jwt_subject()
+    new_access_token = Authorize.create_access_token(
+        subject=str(current_token))
     # Set the JWT cookies in the response
     Authorize.set_access_cookies(new_access_token)
     return {"msg": "The token has been refresh"}
@@ -187,7 +187,7 @@ def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     response = RedirectResponse(
         f'{Config["routes"]["client"]}/login?user_id={user_id}')
     Authorize.set_access_cookies(access_token, response)
-    Authorize.set_refresh_cookies(refresh_token)
+    Authorize.set_refresh_cookies(refresh_token, response)
     logging.warning(f"What is access_token? {access_token}")
     # Authorize.set_refresh_cookies(refresh_token)
     return response

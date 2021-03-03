@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import {
-  Button,
-  Form,
-  Container,
-  Col,
-  Row,
-  Image,
-  Alert,
-} from 'react-bootstrap';
+import { Button, Form, Col, Row, Alert } from 'react-bootstrap';
 import { withCookies } from 'react-cookie';
 
 import useForm from '../hooks/useForm';
-import userSlice, {
-  verifyPassword,
+import {
   changePassword,
   deleteUser,
   basicPropUpdate,
@@ -46,8 +37,8 @@ function Settings(props) {
       'Are you sure you want to delete your account? This cannot be undone.'
     );
     if (userWantsToDelete) {
-      cookies.remove('user', { path: '/', sameSite: 'None', secure: true });
       deleteUser(user.uuid);
+      cookies.remove('user', { path: '/', sameSite: 'None', secure: true });
     }
   };
 
