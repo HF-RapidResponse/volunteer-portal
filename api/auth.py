@@ -99,3 +99,5 @@ def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     # Authorize.set_refresh_cookies(refresh_token)
     return response
 
+# @router.post("/validate_identifier/start")
+# def begin_identifer_validation(request: Request, Authorize: AuthJWT, )
