@@ -39,6 +39,20 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: identifiertype; Type: TYPE; Schema: public; Owner: admin
+--
+
+CREATE TYPE public.identifiertype AS ENUM (
+    'EMAIL',
+    'PHONE',
+    'SLACK_ID',
+    'GOOGLE_ID'
+);
+
+
+ALTER TYPE public.identifiertype OWNER TO admin;
+
+--
 -- Name: notificationchannel; Type: TYPE; Schema: public; Owner: admin
 --
 
@@ -97,7 +111,23 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: account_settings; Type: TABLE; Schema: public; Owner: admin
+-- Name: accounts; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.accounts (
+    uuid uuid NOT NULL,
+    username character varying(255),
+    first_name character varying(255),
+    last_name character varying(255),
+    _primary_email_identifier_uuid uuid,
+    _primary_phone_number_identifier_uuid uuid
+);
+
+
+ALTER TABLE public.accounts OWNER TO admin;
+
+--
+-- Name: donation_emails; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.account_settings (
@@ -188,10 +218,10 @@ ALTER TABLE public.initiatives OWNER TO admin;
 --
 
 CREATE TABLE public.notifications (
-    notification_uuid uuid NOT NULL,
+    uuid uuid NOT NULL,
     channel public.notificationchannel NOT NULL,
     recipient text NOT NULL,
-    subject text,
+    title text,
     message text NOT NULL,
     scheduled_send_date timestamp without time zone NOT NULL,
     status public.notificationstatus NOT NULL,
@@ -200,6 +230,37 @@ CREATE TABLE public.notifications (
 
 
 ALTER TABLE public.notifications OWNER TO admin;
+
+--
+-- Name: personal_identifiers; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.personal_identifiers (
+    uuid uuid NOT NULL,
+    type public.identifiertype NOT NULL,
+    value text NOT NULL,
+    account_uuid uuid,
+    verified boolean NOT NULL,
+    slack_workspace_id text
+);
+
+
+ALTER TABLE public.personal_identifiers OWNER TO admin;
+
+--
+-- Name: verification_tokens; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.verification_tokens (
+    uuid uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    already_used boolean NOT NULL,
+    counter bigint NOT NULL,
+    personal_identifier_uuid uuid
+);
+
+
+ALTER TABLE public.verification_tokens OWNER TO admin;
 
 --
 -- Name: volunteer_openings; Type: TABLE; Schema: public; Owner: admin
@@ -232,7 +293,15 @@ CREATE TABLE public.volunteer_openings (
 ALTER TABLE public.volunteer_openings OWNER TO admin;
 
 --
--- Name: account_settings account_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: donation_emails donation_emails_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.account_settings
@@ -267,7 +336,23 @@ ALTER TABLE ONLY public.initiatives
 --
 
 ALTER TABLE ONLY public.notifications
-    ADD CONSTRAINT notifications_pkey PRIMARY KEY (notification_uuid);
+    ADD CONSTRAINT notifications_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: personal_identifiers personal_identifiers_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.personal_identifiers
+    ADD CONSTRAINT personal_identifiers_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: verification_tokens verification_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.verification_tokens
+    ADD CONSTRAINT verification_tokens_pkey PRIMARY KEY (uuid);
 
 
 --
@@ -279,20 +364,37 @@ ALTER TABLE ONLY public.volunteer_openings
 
 
 --
--- Name: ix_accounts_email; Type: INDEX; Schema: public; Owner: admin
+-- Name: accounts accounts__primary_email_identifier_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
-CREATE UNIQUE INDEX ix_accounts_email ON public.accounts USING btree (email);
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts__primary_email_identifier_uuid_fkey FOREIGN KEY (_primary_email_identifier_uuid) REFERENCES public.personal_identifiers(uuid);
 
 
 --
--- Name: ix_accounts_username; Type: INDEX; Schema: public; Owner: admin
+-- Name: accounts accounts__primary_phone_number_identifier_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
-CREATE UNIQUE INDEX ix_accounts_username ON public.accounts USING btree (username);
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts__primary_phone_number_identifier_uuid_fkey FOREIGN KEY (_primary_phone_number_identifier_uuid) REFERENCES public.personal_identifiers(uuid);
+
+
+--
+-- Name: personal_identifiers personal_identifiers_account_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.personal_identifiers
+    ADD CONSTRAINT personal_identifiers_account_uuid_fkey FOREIGN KEY (account_uuid) REFERENCES public.accounts(uuid);
+
+
+--
+-- Name: verification_tokens verification_tokens_personal_identifier_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.verification_tokens
+    ADD CONSTRAINT verification_tokens_personal_identifier_uuid_fkey FOREIGN KEY (personal_identifier_uuid) REFERENCES public.personal_identifiers(uuid);
 
 
 --
 -- PostgreSQL database dump complete
 --
-

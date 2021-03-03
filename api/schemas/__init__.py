@@ -4,3 +4,4 @@ from schemas.volunteer_role import VolunteerRoleSchema
 from schemas.account import (AccountCreateRequestSchema, AccountResponseSchema, AccountBaseSchema,
                              AccountBasicLoginSchema, AccountPasswordSchema, AccountNewPasswordSchema, AccountNotificationSchema)
 from schemas.account_settings import AccountSettingsSchema
+from schemas.personal_identifier_verification import IdentifierVerificationStart, IdentifierVerificationFinish
