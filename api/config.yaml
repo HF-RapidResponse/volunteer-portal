@@ -33,6 +33,7 @@ notification_defaults: &notification_defaults
 # Specific configurations for each environment
 
 test:
+    public_facing_org_name: "[TEST] Humanity Forward's Volunteer Program"
     routes:
         <<: *development_routes_defaults
     databases:
@@ -48,6 +49,7 @@ test:
     notifications:
         <<: *notification_defaults
 development:
+    public_facing_org_name: "[DEV] Humanity Forward's Volunteer Program"
     routes:
         <<: *development_routes_defaults
     databases:
@@ -64,6 +66,7 @@ development:
     notifications:
         <<: *notification_defaults
 staging:
+    public_facing_org_name: "[STAGING] Humanity Forward's Volunteer Program"
     # TODO verify that this is fine as long as the traffic is all proxies within a single machine.
     routes:
         <<: *development_routes_defaults  
@@ -75,6 +78,7 @@ staging:
     notifications:
         <<: *notification_defaults  
 production:
+    public_facing_org_name: "Humanity Forward's Volunteer Program"
     databases:
         <<: *production_db_defaults
     auth:
