@@ -27,8 +27,8 @@ class PersonalIdentifier(Base):
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
     type = Column(Enum(IdentifierType), nullable=False)
     value = Column(Text, nullable=False)
-    # account_uuid = Column('account', UUID(as_uuid=True), ForeignKey('accounts.uuid'), nullable=True)
-    # account = relationship('Account', foreign_keys=[account_uuid], primaryjoin=primary_join_query)
+    account_uuid = Column('account', UUID(as_uuid=True), ForeignKey('accounts.uuid'), nullable=True)
+    account = relationship('Account', foreign_keys=[account_uuid], primaryjoin=primary_join_query, uselist=False)
     verified = Column(Boolean, default=False, nullable=False)
 
     # enforcing uniqueness on type + value will make app logic much simpler, we accept the problems if two people share the same email, phone, etc.

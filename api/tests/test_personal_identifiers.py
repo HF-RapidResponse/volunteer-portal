@@ -38,7 +38,7 @@ def test_personal_identifiers_polymorphism(db):
     assert email_linked_account.uuid == account.uuid
     assert phone_number_linked_account.uuid == account.uuid
 
-    # db.query(PersonalIdentifier).filter(PersonalIdentifier.account==account).first
+    db.query(PersonalIdentifier).filter(PersonalIdentifier.account==account).first
 
     [db.delete(record) for record in [account, other_email, other_phone_number]]
     db.commit()

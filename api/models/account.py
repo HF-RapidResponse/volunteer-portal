@@ -18,9 +18,9 @@ class Account(Base):
     first_name = Column('first_name', String(255), nullable=True)
     last_name = Column('last_name', String(255), nullable=True)
     email_identifier_id = Column(UUID(as_uuid=True), ForeignKey('personal_identifiers.uuid'))
-    email_identifier = relationship("EmailIdentifier", foreign_keys=[email_identifier_id], backref=backref('account', uselist=False))
+    email_identifier = relationship("EmailIdentifier", foreign_keys=[email_identifier_id], back_populates='account', uselist=False)
     phone_number_identifier_id = Column(UUID(as_uuid=True), ForeignKey('personal_identifiers.uuid'))
-    phone_number_identifier = relationship("PhoneNumberIdentifier", foreign_keys=[phone_number_identifier_id], backref=backref('account', uselist=False))
+    phone_number_identifier = relationship("PhoneNumberIdentifier", foreign_keys=[phone_number_identifier_id], back_populates='account', uselist=False)
     
     @hybrid_property
     def email(self):
