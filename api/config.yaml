@@ -60,6 +60,9 @@ development:
     notifications:
         <<: *notification_defaults
 staging:
+    # TODO verify that this is fine as long as the traffic is all proxies within a single machine.
+    routes:
+        <<: *development_routes_defaults  
     databases:
         <<: *production_db_defaults
     auth:
