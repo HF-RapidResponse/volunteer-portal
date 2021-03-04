@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
 
 function Profile(props) {
-  const { user } = props;
+  const { user, tokenRefreshTime } = props;
   return user ? (
     <>
       <Form className="p-4" style={{ background: 'white' }}>
@@ -100,6 +100,7 @@ function Profile(props) {
 const mapStateToProps = (state) => {
   return {
     user: state.userStore.user,
+    tokenRefreshTime: state.userStore.tokenRefreshTime,
   };
 };
 

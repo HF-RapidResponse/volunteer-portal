@@ -9,6 +9,7 @@ const userSlice = createSlice({
     user: null,
     shownSettings: {},
     firstAcctPage: null,
+    tokenRefreshTime: null,
   },
 
   reducers: {
@@ -16,6 +17,11 @@ const userSlice = createSlice({
       const { payload } = action;
       state.user = payload;
       console.log('Here is the user on login:', state.user);
+    },
+    setRefreshTime: (state, action) => {
+      const { payload } = action;
+      state.tokenRefreshTime = payload;
+      console.log('What is tokenRefreshTime now?', state.tokenRefreshTime);
     },
     completeLogout: (state) => {
       state.user = null;
@@ -34,10 +40,7 @@ const userSlice = createSlice({
     },
     completeUserUpdate: (state, action) => {
       const { payload } = action;
-      // const { user, initiativeName, isSubscribed } = payload;
-      console.log('What is in payload?', payload);
       state.user = payload;
-      //state.user[initiativeName] = !isSubscribed;
       console.log('Did user update?', state.user);
     },
   },
@@ -45,6 +48,7 @@ const userSlice = createSlice({
 
 export const {
   setUser,
+  setRefreshTime,
   completeLogout,
   setFirstAcctPage,
   completeDelete,
@@ -70,7 +74,10 @@ class AccountReqBody {
 export const attemptLogin = (payload) => async (dispatch) => {
   try {
     const response = await axios.post(`/api/auth/basic`, payload);
+    const refreshTime = Date.now();
+    dispatch(setRefreshTime(refreshTime));
     const user = response.data;
+    console.log('What is user after login attempt?', user);
     user.initiative_map = await updateInitiativeMap(user.initiative_map);
     dispatch(setUser(user));
     return true;
@@ -107,6 +114,8 @@ const updateInitiativeMap = async (initiative_map = {}) => {
 
 export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
   try {
+    const refreshTime = await refreshAccessToken();
+    dispatch(setRefreshTime(refreshTime));
     const userRes = await axios.get(`/api/accounts/${id}`);
     const { initiative_map } = userRes.data;
     const userCopy = {
@@ -115,17 +124,42 @@ export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
     };
     console.log('did we hit userCopy?', userCopy);
     const updatedAcctRes = await axios.put(`/api/accounts/${id}`, userCopy);
+    // const user = { ...updatedAcctRes.data, refreshTime };
     dispatch(setUser(updatedAcctRes.data));
   } catch (error) {
     console.error(error);
   }
 };
 
+const refreshAccessToken = async () => {
+  try {
+    await axios.post(`/api/refresh`);
+    const refreshTime = Date.now();
+    console.log('token refreshed at:', refreshTime);
+    return refreshTime;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const refreshTokenIfNeeded = (tokenRefreshTime) => async (dispatch) => {
+  const currTime = Date.now();
+  const timeDiff = currTime - tokenRefreshTime;
+
+  console.log('What are values here?', currTime, tokenRefreshTime);
+  if (tokenRefreshTime && timeDiff > 750000) {
+    console.log('token needs a refresh', timeDiff);
+    const newRefreshTime = await refreshAccessToken();
+    dispatch(setRefreshTime(newRefreshTime));
+  }
+};
+
 export const startLogout = () => async (dispatch) => {
   try {
-    const refreshRes = await axios.post(`/api/refresh`);
-    // console.log('refreshRes?', refreshRes.data);
+    await refreshAccessToken();
     await axios.delete(`/api/logout`);
+    // console.log('refreshRes?', refreshRes.data);
+    dispatch(setRefreshTime(null));
     dispatch(completeLogout());
   } catch (error) {
     console.error(error);
@@ -195,12 +229,13 @@ export const changePassword = (payload) => async (dispatch) => {
   };
 
   try {
-    const refreshRes = await axios.post(`/api/refresh`);
-    // console.log('refreshRes?', refreshRes.data);
-    const oldPassIsValid = await axios.post(`/api/verify_password`, {
+    // await refreshAccessToken();
+    const acctReqObj = {
       old_password: payload.oldPass,
       uuid: payload.uuid,
-    });
+    };
+    console.log('payload going into verify pw?', acctReqObj);
+    const oldPassIsValid = await axios.post(`/api/verify_password`, acctReqObj);
 
     const response = await axios.put(
       `/api/accounts/${payload.uuid}`,
@@ -250,11 +285,13 @@ export const validatePassword = (payload) => {
 };
 
 export const basicPropUpdate = (payload) => async (dispatch) => {
-  const { user, key, newVal } = payload;
+  const { user, key, newVal, tokenRefreshTime } = payload;
   const userCopy = { ...user };
   userCopy[key] = newVal;
   try {
-    const refreshRes = await axios.post(`/api/refresh`);
+    // const refreshRes = await axios.post(`/api/refresh`);
+    console.log('any tokenRefreshTime in toggle basic prop?', tokenRefreshTime);
+    dispatch(refreshTokenIfNeeded(tokenRefreshTime));
     // console.log('refreshRes?', refreshRes.data);
     const response = await axios.put(
       `/api/accounts/${userCopy.uuid}`,
@@ -267,7 +304,7 @@ export const basicPropUpdate = (payload) => async (dispatch) => {
 };
 
 export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
-  const { user, initiative_name, isSubscribed } = payload;
+  const { user, initiative_name, isSubscribed, tokenRefreshTime } = payload;
   const userCopy = { ...user };
   userCopy.initiative_map = {
     ...userCopy.initiative_map,
@@ -275,8 +312,10 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   userCopy.initiative_map[initiative_name] = !isSubscribed;
 
   try {
-    const refreshRes = await axios.post(`/api/refresh`);
-    console.log('refreshRes?', refreshRes.data);
+    // const refreshRes = await axios.post(`/api/refresh`);
+    // console.log('refreshRes?', refreshRes.data);
+    console.log('any tokenRefreshTime in toggle initiative?', tokenRefreshTime);
+    dispatch(refreshTokenIfNeeded(tokenRefreshTime));
     const response = await axios.put(
       `/api/accounts/${userCopy.uuid}`,
       userCopy

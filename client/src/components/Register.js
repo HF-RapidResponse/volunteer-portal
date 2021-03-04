@@ -27,10 +27,10 @@ function Register(props) {
    * simple helper function that handles form submission by calling several other functions
    * @param {*} e - event object
    */
-  function submitWrapper(e) {
+  const submitWrapper = (e) => {
     setValidated(true);
-    setSubmitted(handleSubmit(e));
-  }
+    handleSubmit(e);
+  };
 
   /**
    * simple helper function that checks for enter key to do for submission

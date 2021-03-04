@@ -33,5 +33,5 @@ class AccountBasicLoginSchema(BaseModel):
 
 
 class AccountPasswordSchema(BaseModel):
-    old_password: Optional[str]
-    uuid: Optional[str]
+    old_password: str
+    uuid: UUID

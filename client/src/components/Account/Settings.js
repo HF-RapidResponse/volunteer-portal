@@ -13,7 +13,14 @@ import {
 
 function Settings(props) {
   const [disableForm, setDisableForm] = useState(false);
-  const { user, deleteUser, cookies, basicPropUpdate, changePassword } = props;
+  const {
+    user,
+    tokenRefreshTime,
+    deleteUser,
+    cookies,
+    basicPropUpdate,
+    changePassword,
+  } = props;
   const {
     handleChange,
     handleSubmit,
@@ -92,6 +99,7 @@ function Settings(props) {
                   user,
                   key: 'organizers_can_see',
                   newVal: !user.organizers_can_see,
+                  tokenRefreshTime,
                 })
               }
             />
@@ -111,6 +119,7 @@ function Settings(props) {
                   user,
                   key: 'volunteers_can_see',
                   newVal: !user.volunteers_can_see,
+                  tokenRefreshTime,
                 })
               }
             />
@@ -227,6 +236,7 @@ function Settings(props) {
 const mapStateToProps = (state) => {
   return {
     user: state.userStore.user,
+    tokenRefreshTime: state.userStore.tokenRefreshTime,
   };
 };
 

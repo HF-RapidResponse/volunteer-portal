@@ -133,9 +133,7 @@ def authorize_basic(account: AccountBasicLoginSchema, Authorize: AuthJWT = Depen
     if verified_pw is False:
         raise HTTPException(
             status_code=403, detail=f"Password is is incorrect")
-    access_token = Authorize.create_access_token(
-        subject=str(existing_acct.uuid))
-    Authorize.set_access_cookies(access_token)
+    create_access_and_refresh_tokens(str(existing_acct.uuid), Authorize)
     return existing_acct
 
 
@@ -191,3 +189,14 @@ def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     logging.warning(f"What is access_token? {access_token}")
     # Authorize.set_refresh_cookies(refresh_token)
     return response
+
+
+def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
+    try:
+        access_token = Authorize.create_access_token(subject=user_id)
+        Authorize.set_access_cookies(access_token)
+        refresh_token = Authorize.create_refresh_token(subject=user_id)
+        Authorize.set_refresh_cookies(refresh_token)
+    except:
+        raise HTTPException(
+            status_code=500, detail=f"Error while trying to create and refresh tokens")

@@ -47,7 +47,7 @@ function useForm(callback, initObj) {
         .catch((error) => {
           console.error('Did we get an error?', error);
           setErrors(error);
-          submitted(false);
+          setSubmitted(false);
           // return false;
         });
     }

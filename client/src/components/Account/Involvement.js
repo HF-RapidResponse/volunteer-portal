@@ -8,7 +8,13 @@ import initiativeSlice from '../../store/initiative-slice';
 import { toggleInitiativeSubscription } from '../../store/user-slice';
 
 function Involvement(props) {
-  const { user, deleteRole, initiatives, toggleInitiativeSubscription } = props;
+  const {
+    user,
+    tokenRefreshTime,
+    deleteRole,
+    initiatives,
+    toggleInitiativeSubscription,
+  } = props;
 
   const rolesToRender = [];
   const CustomToggle = forwardRef(({ children, onClick }, ref) => (
@@ -72,6 +78,7 @@ function Involvement(props) {
                     user,
                     initiative_name,
                     isSubscribed,
+                    tokenRefreshTime,
                   })
                 }
               />
@@ -117,6 +124,7 @@ const mapStateToProps = (state) => {
   return {
     user: state.userStore.user,
     initiatives: state.initiativeStore.initiatives,
+    tokenRefreshTime: state.userStore.tokenRefreshTime,
   };
 };
 
