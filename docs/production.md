@@ -19,3 +19,5 @@ The `cloud_serving` directory contains utilities for running the portal in GCP f
 
 #### Cloud Run
 The configuration for running the production and staging image can be inspected in the Cloud Run console on GCP. This configuration defines Cloud Build job that is triggered when code is pushed or merged into production or a release.* branch.
+
+To inspect the running instance you can look at the [cloud run dashboard](https://console.cloud.google.com/run?project=humanity-forward), from there you can find the buid information for each deployed service, or go directly to the [cloud build dashboard](https://console.cloud.google.com/cloud-build/builds?project=humanity-forward)
