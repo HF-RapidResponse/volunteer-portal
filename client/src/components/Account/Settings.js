@@ -74,6 +74,16 @@ function Settings(props) {
     setErrors({});
   };
 
+  const formHasNoErrors = () => {
+    for (const val of Object.values(errors)) {
+      console.log('what is val?', val);
+      if (val) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   return user ? (
     <>
       <Form
@@ -170,8 +180,8 @@ function Settings(props) {
                 handleChange('retypePass', e.target.value);
               }}
               // isValid={newAndRetypeMatch}
-              isInvalid={errors.newPassRetypeMismatch}
-              isValid={submitted && validated}
+              isInvalid={errors.newPassRetypeMismatch || !formHasNoErrors()}
+              isValid={submitted && validated && formHasNoErrors()}
               required
               disabled={disableForm}
             />

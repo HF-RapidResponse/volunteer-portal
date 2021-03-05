@@ -18,7 +18,7 @@ class Account(Base):
     username = Column('username', String(255), nullable=True)
     first_name = Column('first_name', String(255), nullable=True)
     last_name = Column('last_name', String(255), nullable=True)
-    password = Column('password', String(255), nullable=True)
+    password = Column('password', Text, nullable=True)
     oauth = Column('oauth', String(32), nullable=True)
     profile_pic = Column('profile_pic', Text, nullable=True)
     city = Column('city', String(32), nullable=True)

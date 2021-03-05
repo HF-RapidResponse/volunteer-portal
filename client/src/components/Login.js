@@ -14,6 +14,7 @@ function Login(props) {
   const {
     validated,
     submitted,
+    errors,
     setValidated,
     handleSubmit,
     handleChange,
@@ -97,10 +98,10 @@ function Login(props) {
                 handleKeyPress('password', e);
               }}
               required
-              isInvalid={submitted && !data.password}
+              isInvalid={(submitted && !data.password) || errors.message}
             />
             <Form.Control.Feedback type="invalid">
-              Please provide a password.
+              {errors.message || 'Please provide a password.'}
             </Form.Control.Feedback>
             <Link
               className="font-weight-light"

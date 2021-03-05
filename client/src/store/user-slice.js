@@ -72,6 +72,7 @@ class AccountReqBody {
 }
 
 export const attemptLogin = (payload) => async (dispatch) => {
+  const errors = {};
   try {
     const response = await axios.post(`/api/auth/basic`, payload);
     const refreshTime = Date.now();
@@ -83,7 +84,9 @@ export const attemptLogin = (payload) => async (dispatch) => {
     return true;
   } catch (error) {
     console.error(error);
+    errors.message = 'Email or password is invalid!';
   }
+  throw errors;
 };
 
 export const getUserFromID = (id) => async (dispatch) => {

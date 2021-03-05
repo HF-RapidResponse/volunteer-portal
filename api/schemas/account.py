@@ -8,7 +8,7 @@ class AccountRequestSchema(BaseModel):
     username: Optional[str]
     first_name: str
     last_name: str
-    password: Optional[str]
+    password: Optional[Text]
     oauth: Optional[str]
     profile_pic: Optional[Text]
     city: Optional[str]
@@ -29,9 +29,9 @@ class AccountResponseSchema(AccountRequestSchema):
 
 class AccountBasicLoginSchema(BaseModel):
     email: EmailStr
-    password: str
+    password: Text
 
 
 class AccountPasswordSchema(BaseModel):
-    old_password: str
+    old_password: Text
     uuid: UUID
