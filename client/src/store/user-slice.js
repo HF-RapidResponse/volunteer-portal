@@ -199,6 +199,8 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
       objPayload.initiative_map = await updateInitiativeMap();
       const response = await axios.post(`/api/accounts/`, objPayload);
       dispatch(setUser(response.data));
+      const refreshTime = await refreshAccessToken();
+      dispatch(setRefreshTime(refreshTime));
       return true;
     } catch (error) {
       console.error('API error when attempting to create user:', error);
