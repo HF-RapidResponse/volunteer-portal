@@ -55,7 +55,7 @@ function Initiatives() {
     const initiative = initiatives[i];
     console.log(initiative);
     var button = null;
-    if (initiative['roles'].length > 0 || initiative['events'].length > 0) {
+    if (initiative['roles_count'] > 0 || initiative['events_count'] > 0) {
       button = (
         <Link to={'/initiatives/' + initiative['external_id']}>
           <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>

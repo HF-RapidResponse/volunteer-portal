@@ -9,9 +9,9 @@ from pydantic import error_wrappers
 from api.api import app
 from settings import Session
 
-from schemas import InitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema
+from schemas import NestedInitiativeSchema, InitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema
 from schemas import DonationEmailSchema
-from models import Initiative, VolunteerRole, VolunteerEvent, DonationEmail
+from models import NestedInitiative, Initiative, VolunteerRole, VolunteerEvent, DonationEmail
 
 from tests.fake_data_utils import generate_fake_initiative, generate_fake_volunteer_role
 from tests.fake_data_utils import generate_fake_volunteer_event, generate_fake_donation_email
@@ -74,7 +74,6 @@ def test_create_model_error():
         _ = VolunteerEventSchema(**bad_event_kwargs)
 
 def test_get_initiatives_api(db):
-    # because Initiatives contain VolunteerEvents and VolunteerRoles, this will test field validations on all three models
     initiatives = generate_fake_initiatives_list(db)
     db.commit()
     response = client.get('api/initiatives')
@@ -82,10 +81,33 @@ def test_get_initiatives_api(db):
     assert response.status_code == 200
 
     assert len(json) == 1
+    initiative_json = json[0]
+    assert 'roles' not in initiative_json and 'events' not in initiative_json
     initiatives_response = [InitiativeSchema(**initiative_kwargs) for initiative_kwargs in json]
     assert type(initiatives_response[0]) is InitiativeSchema
-
+    assert not hasattr(initiatives_response[0], 'roles',)
+    assert not hasattr(initiatives_response[0], 'events',)
     [cleanup_initiative(db, i) for i in initiatives]
+
+def test_get_initiative_api(db):
+    # because Initiatives contain VolunteerEvents and VolunteerRoles, this will test field validations on all three models
+    initiative = generate_fake_initiative(db)
+    db.add(initiative)
+    db.commit()
+    initiative_id = initiative.external_id
+
+    response = client.get(f'api/initiatives/{initiative_id}')
+
+    initiative_json = response.json()
+    assert response.status_code == 200
+    assert 'roles' in initiative_json and 'events' in initiative_json
+
+    initiatives_response = NestedInitiativeSchema(**initiative_json)
+    assert type(initiatives_response) is NestedInitiativeSchema
+    assert hasattr(initiatives_response, 'roles')
+    assert hasattr(initiatives_response, 'events')
+
+    cleanup_initiative(db, initiative)
 
 def test_create_link_request_error():
     with pytest.raises(error_wrappers.ValidationError):
@@ -108,7 +130,6 @@ def set_nullable_columns_null(db_row, db):
   db_row_dict = db_row.__dict__.copy()
   db.add(db_row)
   db.commit()
-
 
   fields = [x for x in db_row_dict if not x.startswith('_sa_')]
   for a in fields:

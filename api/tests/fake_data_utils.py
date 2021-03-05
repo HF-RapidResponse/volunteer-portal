@@ -5,8 +5,7 @@ from datetime import datetime, timedelta
 from faker import Faker # type: ignore
 from faker.providers import barcode #type: ignore
 
-# from models import Person, Initiative, VolunteerRole, Priority, VolunteerEvent
-from models import Initiative, Person, Priority, RoleType, VolunteerRole, VolunteerEvent
+from models import NestedInitiative, Initiative, Person, Priority, RoleType, VolunteerRole, VolunteerEvent
 
 fake = Faker()
 fake.add_provider(barcode)
@@ -68,7 +67,7 @@ def generate_fake_volunteer_events_list(session, count: int = 1) -> List[Volunte
         events.append(event)
     return events
 
-def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 1, order_num: int = 1) -> Initiative:
+def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 1, order_num: int = 1) -> NestedInitiative:
     roles = generate_fake_volunteer_roles_list(session, roles_count)
     role_ids = []
     for role in roles:
@@ -83,7 +82,7 @@ def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 
     shuffle(items)
 
     post_datetime = datetime.today() + timedelta(days=randint(-10,10))
-    return Initiative(
+    return NestedInitiative(
         external_id = fake.ean(),
         initiative_name = fake.name(),
         details_url = fake.uri(),
@@ -97,7 +96,7 @@ def generate_fake_initiative(session, roles_count: int = 1, events_count: int = 
         is_deleted = False,
     )
 
-def generate_fake_initiatives_list(session, count: int = 1, roles_count: int = 2, events_count: int = 2) -> List[Initiative]:
+def generate_fake_initiatives_list(session, count: int = 1, roles_count: int = 2, events_count: int = 2) -> List[NestedInitiative]:
     initiatives = []
     for i in range(count):
         initiative = generate_fake_initiative(session, roles_count, events_count, i + 1)
