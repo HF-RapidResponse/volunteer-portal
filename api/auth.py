@@ -179,14 +179,12 @@ def logout(Authorize: AuthJWT = Depends()):
 
 
 def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
-    # access_token = Authorize.create_access_token(subject=user_id)
-    # refresh_token = Authorize.create_refresh_token(subject=user_id)
-    # refresh_token = Authorize.create_refresh_token(subject=user_id)
     response = RedirectResponse(
         f'{Config["routes"]["client"]}/login?user_id={user_id}')
-    # Authorize.set_access_cookies(access_token)
-    # Authorize.set_refresh_cookies(refresh_token)
-    create_access_and_refresh_tokens(user_id, Authorize)
+    access_token = Authorize.create_access_token(subject=user_id)
+    refresh_token = Authorize.create_refresh_token(subject=user_id)
+    Authorize.set_access_cookies(access_token, response)
+    Authorize.set_refresh_cookies(refresh_token, response)
     return response
 
 
@@ -196,6 +194,7 @@ def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
         Authorize.set_access_cookies(access_token)
         refresh_token = Authorize.create_refresh_token(subject=user_id)
         Authorize.set_refresh_cookies(refresh_token)
+        return {access_token, refresh_token}
     except:
         raise HTTPException(
             status_code=500, detail=f"Error while trying to create and refresh tokens")
