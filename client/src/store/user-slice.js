@@ -20,12 +20,12 @@ const userSlice = createSlice({
     setRefreshTime: (state, action) => {
       const { payload } = action;
       state.tokenRefreshTime = payload;
-      console.log('What is tokenRefreshTime now?', state.tokenRefreshTime);
     },
     completeLogout: (state) => {
       state.user = null;
       state.shownSettings = {};
       state.firstAcctPage = null;
+      state.tokenRefreshTime = null;
     },
     setFirstAcctPage: (state, action) => {
       const { payload } = action;
@@ -40,7 +40,6 @@ const userSlice = createSlice({
     completeUserUpdate: (state, action) => {
       const { payload } = action;
       state.user = payload;
-      console.log('Did user update?', state.user);
     },
   },
 });
@@ -126,7 +125,6 @@ export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
     };
     console.log('did we hit userCopy?', userCopy);
     const updatedAcctRes = await axios.put(`/api/accounts/${id}`, userCopy);
-    // const user = { ...updatedAcctRes.data, refreshTime };
     dispatch(setUser(updatedAcctRes.data));
   } catch (error) {
     console.error(error);
@@ -148,7 +146,6 @@ export const refreshTokenIfNeeded = (tokenRefreshTime) => async (dispatch) => {
   const currTime = Date.now();
   const timeDiff = currTime - tokenRefreshTime;
 
-  console.log('What are values here?', currTime, tokenRefreshTime);
   if (!tokenRefreshTime || timeDiff > 750000) {
     console.log('token needs a refresh', timeDiff);
     const newRefreshTime = await refreshAccessToken();
@@ -160,7 +157,6 @@ export const startLogout = () => async (dispatch) => {
   try {
     await refreshAccessToken();
     await axios.delete(`/api/logout`);
-    // console.log('refreshRes?', refreshRes.data);
     dispatch(setRefreshTime(null));
     dispatch(completeLogout());
   } catch (error) {
@@ -224,8 +220,9 @@ export const verifyPassword = (payload) => {
 };
 
 export const changePassword = (payload) => async (dispatch) => {
-  const newPassValidated = validatePassword(payload.newPass);
-  const newPassesMatch = payload.newPass === payload.retypePass;
+  const { uuid, oldPass, newPass, retypePass, tokenRefreshTime } = payload;
+  const newPassValidated = validatePassword(newPass);
+  const newPassesMatch = newPass === retypePass;
   const errors = {
     oldPassInvalid: true,
     newPassRetypeMismatch: !newPassesMatch,
@@ -233,31 +230,32 @@ export const changePassword = (payload) => async (dispatch) => {
   };
 
   try {
-    // await refreshAccessToken();
     const acctReqObj = {
-      old_password: payload.oldPass,
-      uuid: payload.uuid,
+      old_password: oldPass,
+      uuid: uuid,
     };
-    console.log('payload going into verify pw?', acctReqObj);
-    dispatch(refreshTokenIfNeeded(payload.tokenRefreshTime));
+    dispatch(refreshTokenIfNeeded(tokenRefreshTime));
     const oldPassIsValid = await axios.post(`/api/verify_password`, acctReqObj);
 
     if (oldPassIsValid.data && newPassValidated && newPassesMatch) {
       errors.oldPassInvalid = false;
-      console.log('no errors going into if?', errors);
       const response = await axios.patch(
-        `/api/accounts/${payload.uuid}`,
+        `/api/accounts/${uuid}`,
         new AccountReqBody({
-          password: payload.newPass,
+          password: newPass,
         })
       );
       dispatch(setUser(response.data));
       return;
     }
   } catch (error) {
-    console.error(error.response);
+    console.error(error);
+    if (error.response) {
+      errors.api =
+        error.response.data.detail ||
+        'Error while attempting to create an account. Please try again later.';
+    }
   }
-  console.log('errors to throw from change pw:', errors);
   throw errors;
 };
 
@@ -268,8 +266,7 @@ export const deleteRole = (payload) => async (dispatch) => {
 
 export const deleteUser = (uuid) => async (dispatch) => {
   try {
-    const refreshRes = await axios.post(`/api/refresh`);
-    // console.log('refreshRes?', refreshRes.data);
+    await refreshAccessToken();
     await axios.delete(`/api/accounts/${uuid}`);
     dispatch(completeLogout());
   } catch (error) {
@@ -326,7 +323,6 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
       `/api/accounts/${userCopy.uuid}`,
       userCopy
     );
-    console.log('What is response.data?', response.data);
     dispatch(completeUserUpdate(response.data));
   } catch (error) {
     console.error(error);

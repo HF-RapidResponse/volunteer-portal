@@ -53,7 +53,6 @@ function Settings(props) {
   const clearFormComponent = () => {
     const formComponent = document.getElementById('acct-settings-form');
     formComponent.reset();
-    // setData(user);
   };
 
   useEffect(() => {
@@ -142,7 +141,6 @@ function Settings(props) {
               placeholder="Old Password"
               id="old-pass"
               onChange={(e) => {
-                // resetOnChange();
                 handleChange('oldPass', e.target.value);
               }}
               isValid={submitted && !errors.oldPassInvalid}
@@ -160,7 +158,6 @@ function Settings(props) {
               type="password"
               id="new-pass"
               onChange={(e) => {
-                // resetOnChange();
                 handleChange('newPass', e.target.value);
               }}
               isValid={submitted && !errors.newPassInvalid}
@@ -179,10 +176,8 @@ function Settings(props) {
               type="password"
               id="retype-pass"
               onChange={(e) => {
-                // resetOnChange();
                 handleChange('retypePass', e.target.value);
               }}
-              // isValid={newAndRetypeMatch}
               isValid={submitted}
               isInvalid={errors.newPassRetypeMismatch}
               required
