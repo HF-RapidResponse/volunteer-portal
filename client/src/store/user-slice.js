@@ -242,10 +242,9 @@ export const changePassword = (payload) => async (dispatch) => {
     console.log('payload going into verify pw?', acctReqObj);
     const oldPassIsValid = await axios.post(`/api/verify_password`, acctReqObj);
 
-    const response = await axios.put(
+    const response = await axios.patch(
       `/api/accounts/${payload.uuid}`,
       new AccountReqBody({
-        ...payload,
         password: payload.newPass,
       })
     );

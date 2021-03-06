@@ -179,15 +179,14 @@ def logout(Authorize: AuthJWT = Depends()):
 
 
 def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
-    access_token = Authorize.create_access_token(subject=user_id)
-    refresh_token = Authorize.create_refresh_token(subject=user_id)
+    # access_token = Authorize.create_access_token(subject=user_id)
+    # refresh_token = Authorize.create_refresh_token(subject=user_id)
     # refresh_token = Authorize.create_refresh_token(subject=user_id)
     response = RedirectResponse(
         f'{Config["routes"]["client"]}/login?user_id={user_id}')
-    Authorize.set_access_cookies(access_token, response)
-    Authorize.set_refresh_cookies(refresh_token, response)
-    logging.warning(f"What is access_token? {access_token}")
+    # Authorize.set_access_cookies(access_token)
     # Authorize.set_refresh_cookies(refresh_token)
+    create_access_and_refresh_tokens(user_id, Authorize)
     return response
 
 

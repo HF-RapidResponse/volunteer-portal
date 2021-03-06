@@ -2,11 +2,13 @@ from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Text, Union, Mapping, Any
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account
-from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema, DonationEmailSchema, AccountRequestSchema, AccountResponseSchema
+from schemas import (NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema,
+                     DonationEmailSchema, AccountRequestSchema, AccountResponseSchema, PartialAccountSchema)
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
+from fastapi.encoders import jsonable_encoder
 import auth
 from settings import Config, Session, get_db
 import logging
@@ -124,7 +126,7 @@ def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends()
     account = Account(**account.dict())
     db.add(account)
     db.commit()
-    db.refresh(account)
+    # db.refresh(account)
     create_access_and_refresh_tokens(str(account.uuid), Authorize)
     return account
 
@@ -141,17 +143,27 @@ def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
 
 
 @app.put("/api/accounts/{uuid}", response_model=AccountResponseSchema)
-def update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+def put_update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
     updated_acct = Account(uuid=uuid, **account.dict())
-    if account.password is not None:
-        updated_acct.password = encrypt_password(account.password)
     db.merge(updated_acct)
     db.commit()
     return updated_acct
 
 
-@app.delete("/api/accounts/{uuid}", status_code=204)
+@app.patch("/api/accounts/{uuid}", response_model=AccountResponseSchema)
+def update_password(uuid, partial_account: PartialAccountSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    Authorize.jwt_required()
+    account = db.query(Account).filter_by(uuid=uuid).first()
+    if partial_account.password is not None:
+        account.password = encrypt_password(partial_account.password)
+    db.merge(account)
+    db.commit()
+    db.refresh(account)
+    return account
+
+
+@ app.delete("/api/accounts/{uuid}", status_code=204)
 def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     # Authorize.jwt_required()
     acct_to_delete = db.query(Account).filter_by(uuid=uuid).first()

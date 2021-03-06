@@ -35,3 +35,17 @@ class AccountBasicLoginSchema(BaseModel):
 class AccountPasswordSchema(BaseModel):
     old_password: Text
     uuid: UUID
+
+
+class PartialAccountSchema(BaseModel):
+    first_name: Optional[str]
+    last_name: Optional[str]
+    password: Optional[Text]
+    oauth: Optional[str]
+    profile_pic: Optional[Text]
+    city: Optional[str]
+    state: Optional[str]
+    roles: Optional[List]
+
+    # class Config:
+    #     orm_mode = True
