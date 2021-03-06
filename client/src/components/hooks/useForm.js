@@ -19,6 +19,11 @@ function useForm(callback, initObj) {
    * @param {*} val - value to add/edit
    */
   function handleChange(key, val) {
+    if (validated || submitted) {
+      setValidated(false);
+      setSubmitted(false);
+      setErrors({});
+    }
     const newData = { ...data };
     newData[key] = val;
     console.log('What is newData now?', newData);
@@ -53,6 +58,13 @@ function useForm(callback, initObj) {
     }
   }
 
+  const resetForm = () => {
+    setData(initObj || {});
+    setValidated(false);
+    setSubmitted(false);
+    setErrors({});
+  };
+
   return {
     handleChange,
     handleSubmit,
@@ -64,6 +76,7 @@ function useForm(callback, initObj) {
     setValidated,
     errors,
     setErrors,
+    resetForm,
   };
 }
 

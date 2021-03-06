@@ -32,7 +32,8 @@ function Settings(props) {
     setValidated,
     errors,
     setErrors,
-  } = useForm(changePassword, user);
+    resetForm,
+  } = useForm(changePassword, { uuid: user.uuid, tokenRefreshTime });
 
   const handleSubmitResponse = (e) => {
     handleSubmit(e);
@@ -60,19 +61,17 @@ function Settings(props) {
       clearFormComponent();
       setDisableForm(true);
       setTimeout(() => {
-        setValidated(false);
-        setSubmitted(false);
+        resetForm();
         setDisableForm(false);
-        setData(user);
       }, 3000);
     }
   }, [validated, submitted]);
 
-  const resetOnChange = () => {
-    setSubmitted(false);
-    setValidated(false);
-    setErrors({});
-  };
+  // const resetOnChange = () => {
+  //   setSubmitted(false);
+  //   setValidated(false);
+  //   setErrors({});
+  // };
 
   const formHasNoErrors = () => {
     for (const val of Object.values(errors)) {
@@ -143,7 +142,7 @@ function Settings(props) {
               placeholder="Old Password"
               id="old-pass"
               onChange={(e) => {
-                resetOnChange();
+                // resetOnChange();
                 handleChange('oldPass', e.target.value);
               }}
               isValid={submitted && !errors.oldPassInvalid}
@@ -161,7 +160,7 @@ function Settings(props) {
               type="password"
               id="new-pass"
               onChange={(e) => {
-                resetOnChange();
+                // resetOnChange();
                 handleChange('newPass', e.target.value);
               }}
               isValid={submitted && !errors.newPassInvalid}
@@ -169,6 +168,10 @@ function Settings(props) {
               required
               disabled={disableForm}
             />
+            <Form.Control.Feedback type="invalid">
+              Passwords must be between 6 to 20 characters with 1 letter, 1
+              number, and one special character.
+            </Form.Control.Feedback>
           </div>
           <div className={data.oldPass ? 'mt-3 mb-3' : 'd-none'}>
             <Form.Label>Retype Password</Form.Label>
@@ -176,20 +179,24 @@ function Settings(props) {
               type="password"
               id="retype-pass"
               onChange={(e) => {
-                resetOnChange();
+                // resetOnChange();
                 handleChange('retypePass', e.target.value);
               }}
               // isValid={newAndRetypeMatch}
-              isInvalid={errors.newPassRetypeMismatch || !formHasNoErrors()}
-              isValid={submitted && validated && formHasNoErrors()}
+              isValid={submitted}
+              isInvalid={errors.newPassRetypeMismatch}
               required
               disabled={disableForm}
             />
             <Form.Control.Feedback type="invalid">
-              Passwords do not match!
+              {!data.newPass || !data.retypePass
+                ? 'New password or retype cannot be blank'
+                : 'Passwords do not match!'}
             </Form.Control.Feedback>
             <Form.Control.Feedback type="valid">
-              Passwords change successful
+              {submitted && formHasNoErrors()
+                ? 'Passwords change successful'
+                : null}
             </Form.Control.Feedback>
             <Alert variant="danger" className={!errors.api ? 'd-none' : null}>
               {errors.api}
@@ -210,6 +217,7 @@ function Settings(props) {
                   className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
                   onClick={() => {
                     clearFormComponent();
+                    resetForm();
                   }}
                 >
                   Cancel

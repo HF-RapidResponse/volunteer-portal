@@ -132,7 +132,7 @@ def authorize_basic(account: AccountBasicLoginSchema, Authorize: AuthJWT = Depen
         account.password, existing_acct.password)
     if verified_pw is False:
         raise HTTPException(
-            status_code=403, detail=f"Password is is incorrect")
+            status_code=403, detail=f"Password is incorrect")
     create_access_and_refresh_tokens(str(existing_acct.uuid), Authorize)
     return existing_acct
 

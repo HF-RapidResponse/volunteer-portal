@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { createSlice } from '@reduxjs/toolkit';
-const jwt = require('jsonwebtoken');
 
 const userSlice = createSlice({
   name: 'userStore',
@@ -150,7 +149,7 @@ export const refreshTokenIfNeeded = (tokenRefreshTime) => async (dispatch) => {
   const timeDiff = currTime - tokenRefreshTime;
 
   console.log('What are values here?', currTime, tokenRefreshTime);
-  if (tokenRefreshTime && timeDiff > 750000) {
+  if (!tokenRefreshTime || timeDiff > 750000) {
     console.log('token needs a refresh', timeDiff);
     const newRefreshTime = await refreshAccessToken();
     dispatch(setRefreshTime(newRefreshTime));
@@ -240,22 +239,25 @@ export const changePassword = (payload) => async (dispatch) => {
       uuid: payload.uuid,
     };
     console.log('payload going into verify pw?', acctReqObj);
+    dispatch(refreshTokenIfNeeded(payload.tokenRefreshTime));
     const oldPassIsValid = await axios.post(`/api/verify_password`, acctReqObj);
 
-    const response = await axios.patch(
-      `/api/accounts/${payload.uuid}`,
-      new AccountReqBody({
-        password: payload.newPass,
-      })
-    );
-    errors.oldPassInvalid = false;
     if (oldPassIsValid.data && newPassValidated && newPassesMatch) {
+      errors.oldPassInvalid = false;
+      console.log('no errors going into if?', errors);
+      const response = await axios.patch(
+        `/api/accounts/${payload.uuid}`,
+        new AccountReqBody({
+          password: payload.newPass,
+        })
+      );
       dispatch(setUser(response.data));
-      return true;
+      return;
     }
   } catch (error) {
     console.error(error.response);
   }
+  console.log('errors to throw from change pw:', errors);
   throw errors;
 };
 

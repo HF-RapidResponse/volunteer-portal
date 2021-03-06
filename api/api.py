@@ -143,7 +143,7 @@ def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
 
 
 @app.put("/api/accounts/{uuid}", response_model=AccountResponseSchema)
-def put_update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+def update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
     updated_acct = Account(uuid=uuid, **account.dict())
     db.merge(updated_acct)
@@ -155,7 +155,10 @@ def put_update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT =
 def update_password(uuid, partial_account: PartialAccountSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
     account = db.query(Account).filter_by(uuid=uuid).first()
-    if partial_account.password is not None:
+    if partial_account.password is None:
+        raise HTTPException(
+            status_code=400, detail=f"Password is missing")
+    else:
         account.password = encrypt_password(partial_account.password)
     db.merge(account)
     db.commit()
