@@ -103,13 +103,15 @@ function Login(props) {
             <Form.Control.Feedback type="invalid">
               {errors.message || 'Please provide a password.'}
             </Form.Control.Feedback>
-            <Link
-              className="font-weight-light"
-              style={{ color: 'gray' }}
-              to="/forgot_password"
-            >
-              Forgot Password?
-            </Link>
+            <div className="mt-2 mb-2">
+              <Link
+                className="font-weight-light"
+                style={{ color: 'gray' }}
+                to="/forgot_password"
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </Form.Group>
           <div className="text-center">
             <Button variant="info" type="submit" className="mt-5 mb-3" block>
