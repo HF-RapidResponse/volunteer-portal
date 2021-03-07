@@ -25,13 +25,10 @@ function Settings(props) {
     handleChange,
     handleSubmit,
     data,
-    setData,
     submitted,
-    setSubmitted,
     validated,
     setValidated,
     errors,
-    setErrors,
     resetForm,
   } = useForm(changePassword, { uuid: user.uuid, tokenRefreshTime });
 
@@ -66,12 +63,6 @@ function Settings(props) {
     }
   }, [validated, submitted]);
 
-  // const resetOnChange = () => {
-  //   setSubmitted(false);
-  //   setValidated(false);
-  //   setErrors({});
-  // };
-
   const formHasNoErrors = () => {
     for (const val of Object.values(errors)) {
       console.log('what is val?', val);
@@ -90,7 +81,7 @@ function Settings(props) {
         style={{ background: 'white' }}
         noValidate
         validated={validated}
-        onSubmit={(e) => handleSubmitResponse(e)}
+        onSubmit={handleSubmitResponse}
       >
         <h4 className="mb-5">Change Account</h4>
         <Row className="mt-2 mb-2">

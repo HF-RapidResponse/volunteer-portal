@@ -99,32 +99,7 @@ export const attemptLogin = (payload) => async (dispatch) => {
   throw errors;
 };
 
-// export const getUserFromID = (id) => async (dispatch) => {
-//   try {
-//     const userRes = await axios.get(`/api/accounts/${id}`);
-//     if (!userRes.data) {
-//       throw `User with ID ${id} does not exist.`;
-//     }
-//     let user = userRes.data;
-//     // const getSettings = await axios.get(`/api/settings/${id}`);
-//     // if (getSettings.data) {
-//     //   user = { ...user, ...getSettings.data };
-//     // } else {
-//     //   const initiative_map = await updateInitiativeMap();
-//     //   const createSettings = await axios.post(
-//     //     `/api/settings/`,
-//     //     new SettingsReqBody({ initiative_map })
-//     //   );
-//     //   user = { ...user, ...createSettings.data };
-//     // }
-//     console.log('user at the end of all this mess?', user);
-//     dispatch(setUser(user));
-//   } catch (error) {
-//     console.error('Failed to get user by ID:', error);
-//   }
-// };
-
-const getUpdatedSettings = async (id) => {
+const getSettings = async (id) => {
   if (!id) {
     throw 'missing required id param';
   }
@@ -167,18 +142,11 @@ export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
     const refreshTime = await refreshAccessToken();
     dispatch(setRefreshTime(refreshTime));
     const acctRes = await axios.get(`/api/accounts/${id}`);
-    const settings = await getUpdatedSettings(id);
+    const settings = await getSettings(id);
     const userCopy = {
       ...acctRes.data,
       ...settings,
     };
-    // const { initiative_map } = userRes.data;
-    // const userCopy = {
-    //   ...userRes.data,
-    //   initiative_map: await updateInitiativeMap(initiative_map),
-    // };
-    // console.log('did we hit userCopy?', userCopy);
-    // const updatedAcctRes = await axios.put(`/api/accounts/${id}`, userCopy);
     dispatch(setUser(userCopy));
   } catch (error) {
     console.error(error);
@@ -248,12 +216,14 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
   if (emailIsValid && passwordIsValid && passAndRetypeMatch) {
     try {
       const objPayload = new AccountReqBody(payload);
-      objPayload.initiative_map = await updateInitiativeMap();
-      const response = await axios.post(`/api/accounts/`, objPayload);
-      dispatch(setUser(response.data));
+      const accountRes = await axios.post(`/api/accounts/`, objPayload);
+      const accountData = accountRes.data;
+      const settings = await getSettings(accountData.uuid);
+      const userCopy = { ...accountData, ...settings };
+      dispatch(setUser(userCopy));
       const refreshTime = await refreshAccessToken();
       dispatch(setRefreshTime(refreshTime));
-      return true;
+      return;
     } catch (error) {
       console.error('API error when attempting to create user:', error);
       errors.api =
@@ -305,6 +275,7 @@ export const changePassword = (payload) => async (dispatch) => {
   } catch (error) {
     console.error(error);
     if (error.response) {
+      handlePossibleExpiredToken(error);
       errors.api =
         error.response.data.detail ||
         'Error while attempting to create an account. Please try again later.';
@@ -324,6 +295,7 @@ export const deleteUser = (uuid) => async (dispatch) => {
     await axios.delete(`/api/accounts/${uuid}`);
     dispatch(completeLogout());
   } catch (error) {
+    handlePossibleExpiredToken(error);
     console.error(error);
   }
 };
@@ -360,6 +332,13 @@ export const basicPropUpdate = (payload) => async (dispatch) => {
     dispatch(completeUserUpdate(userCopy));
   } catch (error) {
     console.error(error);
+    handlePossibleExpiredToken(error);
+  }
+};
+
+const handlePossibleExpiredToken = (error) => {
+  if (error.response && error.response.status === 422) {
+    window.location.reload();
   }
 };
 
@@ -385,6 +364,7 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
     dispatch(completeUserUpdate(userCopy));
   } catch (error) {
     console.error(error);
+    handlePossibleExpiredToken(error);
   }
 };
 
