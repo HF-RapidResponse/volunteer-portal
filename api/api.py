@@ -200,3 +200,12 @@ def get_all_settings(db: Session = Depends(get_db)):
 @app.get("/api/settings/{uuid}", response_model=SettingsSchema)
 def get_settings_by_uuid(uuid, db: Session = Depends(get_db)):
     return db.query(Settings).filter_by(uuid=uuid).first()
+
+
+@app.put("/api/settings/{uuid}", response_model=SettingsSchema)
+def update_settings(uuid, settings: SettingsSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    Authorize.jwt_required()
+    updated_settings = Settings(**settings.dict())
+    db.merge(updated_settings)
+    db.commit()
+    return updated_settings

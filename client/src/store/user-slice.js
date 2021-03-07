@@ -72,11 +72,11 @@ class AccountReqBody {
 class SettingsReqBody {
   constructor(obj) {
     this.uuid = obj.uuid;
-    this.show_name = obj.show_name || true;
-    this.show_email = obj.show_email || true;
-    this.show_location = obj.show_location || true;
-    this.organizers_can_see = obj.organizers_can_see || true;
-    this.volunteers_can_see = obj.volunteers_can_see || true;
+    this.show_name = obj.show_name ?? true;
+    this.show_email = obj.show_email ?? true;
+    this.show_location = obj.show_location ?? true;
+    this.organizers_can_see = obj.organizers_can_see ?? true;
+    this.volunteers_can_see = obj.volunteers_can_see ?? true;
     this.initiative_map = obj.initiative_map || {};
   }
 }
@@ -343,18 +343,21 @@ export const validatePassword = (payload) => {
 
 export const basicPropUpdate = (payload) => async (dispatch) => {
   const { user, key, newVal, tokenRefreshTime } = payload;
-  const userCopy = { ...user };
+  let userCopy = { ...user };
   userCopy[key] = newVal;
   try {
     // const refreshRes = await axios.post(`/api/refresh`);
     console.log('any tokenRefreshTime in toggle basic prop?', tokenRefreshTime);
     dispatch(refreshTokenIfNeeded(tokenRefreshTime));
     // console.log('refreshRes?', refreshRes.data);
+    const settingsReq = new SettingsReqBody(userCopy);
     const response = await axios.put(
-      `/api/accounts/${userCopy.uuid}`,
-      userCopy
+      `/api/settings/${settingsReq.uuid}`,
+      settingsReq
     );
-    dispatch(completeUserUpdate(response.data));
+    userCopy = { ...userCopy, ...response.data };
+    console.log('userCopy after put?', userCopy);
+    dispatch(completeUserUpdate(userCopy));
   } catch (error) {
     console.error(error);
   }
@@ -362,7 +365,7 @@ export const basicPropUpdate = (payload) => async (dispatch) => {
 
 export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   const { user, initiative_name, isSubscribed, tokenRefreshTime } = payload;
-  const userCopy = { ...user };
+  let userCopy = { ...user };
   userCopy.initiative_map = {
     ...userCopy.initiative_map,
   };
@@ -373,11 +376,13 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
     // console.log('refreshRes?', refreshRes.data);
     console.log('any tokenRefreshTime in toggle initiative?', tokenRefreshTime);
     dispatch(refreshTokenIfNeeded(tokenRefreshTime));
+    const settingsReq = new SettingsReqBody(userCopy);
     const response = await axios.put(
-      `/api/accounts/${userCopy.uuid}`,
-      userCopy
+      `/api/settings/${settingsReq.uuid}`,
+      settingsReq
     );
-    dispatch(completeUserUpdate(response.data));
+    userCopy = { ...userCopy, ...response.data };
+    dispatch(completeUserUpdate(userCopy));
   } catch (error) {
     console.error(error);
   }

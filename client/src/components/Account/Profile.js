@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
+import { basicPropUpdate } from '../../store/user-slice';
 
 function Profile(props) {
-  const { user, tokenRefreshTime } = props;
+  const { user, tokenRefreshTime, basicPropUpdate } = props;
   return user ? (
     <>
       <Form className="p-4" style={{ background: 'white' }}>
@@ -33,7 +34,15 @@ function Profile(props) {
             <Form.Switch
               id="show-on-profile-name-switch"
               className="custom-switch-md"
-              defaultChecked
+              checked={user.show_name}
+              onChange={() =>
+                basicPropUpdate({
+                  user,
+                  key: 'show_name',
+                  newVal: !user.show_name,
+                  tokenRefreshTime,
+                })
+              }
             />
           </Col>
         </Row>
@@ -56,7 +65,15 @@ function Profile(props) {
             <Form.Switch
               id="show-on-profile-email-switch"
               className="custom-switch-md"
-              defaultChecked
+              checked={user.show_email}
+              onChange={() =>
+                basicPropUpdate({
+                  user,
+                  key: 'show_email',
+                  newVal: !user.show_email,
+                  tokenRefreshTime,
+                })
+              }
             />
           </Col>
         </Row>
@@ -85,8 +102,15 @@ function Profile(props) {
             <Form.Switch
               id="show-on-profile-location-switch"
               className="custom-switch-md"
-              defaultChecked
-              size="lg"
+              checked={user.show_location}
+              onChange={() =>
+                basicPropUpdate({
+                  user,
+                  key: 'show_location',
+                  newVal: !user.show_location,
+                  tokenRefreshTime,
+                })
+              }
             />
           </Col>
         </Row>
@@ -103,5 +127,6 @@ const mapStateToProps = (state) => {
     tokenRefreshTime: state.userStore.tokenRefreshTime,
   };
 };
+const mapDispatchToProps = { basicPropUpdate };
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
