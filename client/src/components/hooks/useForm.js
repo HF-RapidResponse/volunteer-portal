@@ -40,22 +40,16 @@ function useForm(callback, initObj) {
     setErrors({});
     e.preventDefault();
     e.stopPropagation();
-    if (form.checkValidity() === false) {
-      console.log('in the false?');
-      return false;
-    } else {
-      callback(data)
-        .then(() => {
-          setSubmitted(true);
-          // return response;
-        })
-        .catch((error) => {
-          console.error('Did we get an error?', error);
-          setErrors(error);
-          setSubmitted(false);
-          // return false;
-        });
-    }
+    callback(data)
+      .then(() => {
+        setSubmitted(true);
+        return true;
+      })
+      .catch((error) => {
+        setErrors(error);
+        setSubmitted(false);
+        return false;
+      });
   }
 
   const resetForm = () => {

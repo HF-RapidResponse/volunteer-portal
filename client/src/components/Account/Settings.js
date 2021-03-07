@@ -184,9 +184,6 @@ function Settings(props) {
                 ? 'Passwords change successful'
                 : null}
             </Form.Control.Feedback>
-            <Alert variant="danger" className={!errors.api ? 'd-none' : null}>
-              {errors.api}
-            </Alert>
             <Row>
               <Col xs={12} xl={6} className="text-center">
                 <Button

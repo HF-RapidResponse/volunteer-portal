@@ -144,11 +144,11 @@ export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
     dispatch(setRefreshTime(refreshTime));
     const acctRes = await axios.get(`/api/accounts/${id}`);
     const settings = await getSettings(id);
-    const userCopy = {
+    const user = {
       ...acctRes.data,
       ...settings,
     };
-    dispatch(setUser(userCopy));
+    dispatch(setUser(user));
   } catch (error) {
     console.error(error);
   }
@@ -220,8 +220,8 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
       const accountRes = await axios.post(`/api/accounts/`, objPayload);
       const accountData = accountRes.data;
       const settings = await getSettings(accountData.uuid);
-      const userCopy = { ...accountData, ...settings };
-      dispatch(setUser(userCopy));
+      const user = { ...accountData, ...settings };
+      dispatch(setUser(user));
       const refreshTime = await refreshAccessToken();
       dispatch(setRefreshTime(refreshTime));
       return;
@@ -281,9 +281,9 @@ export const changePassword = (payload) => async (dispatch) => {
     console.error(error);
     if (error.response) {
       handlePossibleExpiredToken(error);
-      errors.api =
-        error.response.data.detail ||
-        'Error while attempting to create an account. Please try again later.';
+      // errors.api =
+      //   error.response.data.detail ||
+      //   'Error while attempting to create an account. Please try again later.';
     }
   }
   throw errors;
