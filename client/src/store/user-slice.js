@@ -84,12 +84,13 @@ class SettingsReqBody {
 export const attemptLogin = (payload) => async (dispatch) => {
   const errors = {};
   try {
-    const response = await axios.post(`/api/auth/basic`, payload);
+    const accountRes = await axios.post(`/api/auth/basic`, payload);
+    const accountData = accountRes.data;
     const refreshTime = Date.now();
     dispatch(setRefreshTime(refreshTime));
-    const user = response.data;
+    const settings = await getSettings(accountData.uuid);
+    const user = { ...accountData, ...settings };
     console.log('What is user after login attempt?', user);
-    user.initiative_map = await updateInitiativeMap(user.initiative_map);
     dispatch(setUser(user));
     return true;
   } catch (error) {
@@ -263,13 +264,17 @@ export const changePassword = (payload) => async (dispatch) => {
 
     if (oldPassIsValid.data && newPassValidated && newPassesMatch) {
       errors.oldPassInvalid = false;
-      const response = await axios.patch(
+
+      const accountRes = await axios.patch(
         `/api/accounts/${uuid}`,
         new AccountReqBody({
           password: newPass,
         })
       );
-      dispatch(setUser(response.data));
+
+      const settings = await getSettings(uuid);
+      const userCopy = { ...accountRes.data, ...settings };
+      dispatch(setUser(userCopy));
       return;
     }
   } catch (error) {
