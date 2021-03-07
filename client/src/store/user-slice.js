@@ -90,7 +90,6 @@ export const attemptLogin = (payload) => async (dispatch) => {
     dispatch(setRefreshTime(refreshTime));
     const settings = await getSettings(accountData.uuid);
     const user = { ...accountData, ...settings };
-    console.log('What is user after login attempt?', user);
     dispatch(setUser(user));
     return true;
   } catch (error) {
@@ -188,7 +187,6 @@ export const startLogout = () => async (dispatch) => {
 };
 
 export const loadLoggedInUser = (payload) => (dispatch) => {
-  // const response = await axios.post('/api/login', payload);
   dispatch(setUser(payload));
 };
 
@@ -279,12 +277,7 @@ export const changePassword = (payload) => async (dispatch) => {
     }
   } catch (error) {
     console.error(error);
-    if (error.response) {
-      handlePossibleExpiredToken(error);
-      // errors.api =
-      //   error.response.data.detail ||
-      //   'Error while attempting to create an account. Please try again later.';
-    }
+    handlePossibleExpiredToken(error);
   }
   throw errors;
 };
@@ -297,11 +290,12 @@ export const deleteRole = (payload) => async (dispatch) => {
 export const deleteUser = (uuid) => async (dispatch) => {
   try {
     await refreshAccessToken();
+    await axios.delete(`/api/settings/${uuid}`);
     await axios.delete(`/api/accounts/${uuid}`);
     dispatch(completeLogout());
   } catch (error) {
-    handlePossibleExpiredToken(error);
     console.error(error);
+    handlePossibleExpiredToken(error);
   }
 };
 

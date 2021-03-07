@@ -126,7 +126,6 @@ def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends()
     account = Account(**account.dict())
     db.add(account)
     db.commit()
-    # db.refresh(account)
     create_access_and_refresh_tokens(str(account.uuid), Authorize)
     return account
 
@@ -168,10 +167,10 @@ def update_password(uuid, partial_account: PartialAccountSchema, Authorize: Auth
 
 @ app.delete("/api/accounts/{uuid}", status_code=204)
 def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    # Authorize.jwt_required()
+    Authorize.jwt_required()
     acct_to_delete = db.query(Account).filter_by(uuid=uuid).first()
     if acct_to_delete is None:
-        raise HTTPException(status_code=404,
+        raise HTTPException(status_code=400,
                             detail=f"Account with UUID {uuid} not found")
     db.delete(acct_to_delete)
     db.commit()
@@ -209,3 +208,14 @@ def update_settings(uuid, settings: SettingsSchema, Authorize: AuthJWT = Depends
     db.merge(updated_settings)
     db.commit()
     return updated_settings
+
+
+@ app.delete("/api/settings/{uuid}", status_code=204)
+def delete_settings(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    Authorize.jwt_required()
+    settings_to_delete = db.query(Settings).filter_by(uuid=uuid).first()
+    if settings_to_delete is None:
+        raise HTTPException(status_code=400,
+                            detail=f"Settings with UUID {uuid} not found")
+    db.delete(settings_to_delete)
+    db.commit()
