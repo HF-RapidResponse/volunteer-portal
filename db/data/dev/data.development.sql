@@ -171,14 +171,29 @@ CREATE TABLE public.accounts (
     profile_pic text,
     city character varying(32),
     "state" character varying(32),
-    roles character varying[],
-    initiative_map json,
-    organizers_can_see boolean,
-    volunteers_can_see boolean
+    roles character varying[]
 );
 
 
 ALTER TABLE public.accounts OWNER TO admin;
+
+--
+-- Name: settings; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.settings (
+    uuid uuid NOT NULL,
+    show_name boolean,
+    show_email boolean,
+    show_location boolean,
+    organizers_can_see boolean,
+    volunteers_can_see boolean,
+    initiative_map json
+);
+
+
+ALTER TABLE public.settings OWNER TO admin;
+
 
 --
 -- Data for Name: donation_emails; Type: TABLE DATA; Schema: public; Owner: admin
@@ -272,11 +287,18 @@ ALTER TABLE ONLY public.volunteer_openings
     ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (uuid);
 
 --
--- Name: volunteer_openings volunteer_openings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.accounts
     ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
+
+--
+-- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.settings
+    ADD CONSTRAINT settings_pkey PRIMARY KEY (uuid);
 
 --
 -- PostgreSQL database dump complete

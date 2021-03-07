@@ -24,12 +24,7 @@ class Account(Base):
     city = Column('city', String(32), nullable=True)
     state = Column('state', String(32), nullable=True)
     roles = Column('roles', ARRAY(String), default=[], nullable=False)
-    initiative_map = Column('initiative_map', JSON, default={}, nullable=False)
-    organizers_can_see = Column(
-        'organizers_can_see', Boolean, default=True, nullable=False)
-    volunteers_can_see = Column(
-        'volunteers_can_see', Boolean, default=True, nullable=False)
 
     def __repr__(self):
-        return "<Account(uuid='%s', email='%s', username='%s', first_name='%s', last_name='%s', password='%s', oauth='%s', profile_pic='%s', city='%s', state='%s', roles='%s', initiative_map='%s', organizers_can_see='%s', volunteers_can_see='%s')>" % (
-            self.uuid, self.email, self.username, self.first_name, self.last_name, self.password, self.oauth, self.profile_pic, self.city, self.state, self.roles, self.initiative_map, self.organizers_can_see, self.volunteers_can_see)
+        return "<Account(uuid='%s', email='%s', username='%s', first_name='%s', last_name='%s', password='%s', oauth='%s', profile_pic='%s', city='%s', state='%s', roles='%s')>" % (
+            self.uuid, self.email, self.username, self.first_name, self.last_name, self.password, self.oauth, self.profile_pic, self.city, self.state, self.roles)

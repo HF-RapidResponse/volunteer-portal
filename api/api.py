@@ -1,9 +1,9 @@
 from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Text, Union, Mapping, Any
-from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account
+from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account, Settings
 from schemas import (NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema,
-                     DonationEmailSchema, AccountRequestSchema, AccountResponseSchema, PartialAccountSchema)
+                     DonationEmailSchema, AccountRequestSchema, AccountResponseSchema, PartialAccountSchema, SettingsSchema)
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
@@ -175,3 +175,28 @@ def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(g
                             detail=f"Account with UUID {uuid} not found")
     db.delete(acct_to_delete)
     db.commit()
+
+
+@app.post("/api/settings/", response_model=SettingsSchema, status_code=201)
+def create_settings(settings: SettingsSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    existing_settings = db.query(Settings).filter_by(
+        uuid=settings.uuid).first()
+    if existing_settings is not None:
+        raise HTTPException(
+            status_code=400, detail=f"Settings already exist for that account")
+
+    new_settings = Settings(**settings.dict())
+    db.add(new_settings)
+    db.commit()
+    create_access_and_refresh_tokens(str(settings.uuid), Authorize)
+    return new_settings
+
+
+@app.get("/api/settings/", response_model=List[SettingsSchema])
+def get_all_settings(db: Session = Depends(get_db)):
+    return db.query(Settings).all()
+
+
+@app.get("/api/settings/{uuid}", response_model=SettingsSchema)
+def get_settings_by_uuid(uuid, db: Session = Depends(get_db)):
+    return db.query(Settings).filter_by(uuid=uuid).first()

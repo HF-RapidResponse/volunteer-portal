@@ -69,6 +69,18 @@ class AccountReqBody {
   }
 }
 
+class SettingsReqBody {
+  constructor(obj) {
+    this.uuid = obj.uuid;
+    this.show_name = obj.show_name || true;
+    this.show_email = obj.show_email || true;
+    this.show_location = obj.show_location || true;
+    this.organizers_can_see = obj.organizers_can_see || true;
+    this.volunteers_can_see = obj.volunteers_can_see || true;
+    this.initiative_map = obj.initiative_map || {};
+  }
+}
+
 export const attemptLogin = (payload) => async (dispatch) => {
   const errors = {};
   try {
@@ -87,15 +99,52 @@ export const attemptLogin = (payload) => async (dispatch) => {
   throw errors;
 };
 
-export const getUserFromID = (id) => async (dispatch) => {
+// export const getUserFromID = (id) => async (dispatch) => {
+//   try {
+//     const userRes = await axios.get(`/api/accounts/${id}`);
+//     if (!userRes.data) {
+//       throw `User with ID ${id} does not exist.`;
+//     }
+//     let user = userRes.data;
+//     // const getSettings = await axios.get(`/api/settings/${id}`);
+//     // if (getSettings.data) {
+//     //   user = { ...user, ...getSettings.data };
+//     // } else {
+//     //   const initiative_map = await updateInitiativeMap();
+//     //   const createSettings = await axios.post(
+//     //     `/api/settings/`,
+//     //     new SettingsReqBody({ initiative_map })
+//     //   );
+//     //   user = { ...user, ...createSettings.data };
+//     // }
+//     console.log('user at the end of all this mess?', user);
+//     dispatch(setUser(user));
+//   } catch (error) {
+//     console.error('Failed to get user by ID:', error);
+//   }
+// };
+
+const getUpdatedSettings = async (id) => {
+  if (!id) {
+    throw 'missing required id param';
+  }
+
   try {
-    const response = await axios.get(`/api/accounts/${id}`);
-    if (!response.data) {
-      throw `User with ID ${id} does not exist.`;
+    const getRes = await axios.get(`/api/settings/${id}`);
+    let settings;
+    if (getRes.data) {
+      settings = getRes.data;
+    } else {
+      const initiative_map = await updateInitiativeMap();
+      const createRes = await axios.post(
+        `/api/settings/`,
+        new SettingsReqBody({ uuid: id, initiative_map })
+      );
+      settings = createRes.data;
     }
-    dispatch(setUser(response.data));
+    return settings;
   } catch (error) {
-    console.error('Failed to get user by ID:', error);
+    console.error(error);
   }
 };
 
@@ -117,15 +166,20 @@ export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
   try {
     const refreshTime = await refreshAccessToken();
     dispatch(setRefreshTime(refreshTime));
-    const userRes = await axios.get(`/api/accounts/${id}`);
-    const { initiative_map } = userRes.data;
+    const acctRes = await axios.get(`/api/accounts/${id}`);
+    const settings = await getUpdatedSettings(id);
     const userCopy = {
-      ...userRes.data,
-      initiative_map: await updateInitiativeMap(initiative_map),
+      ...acctRes.data,
+      ...settings,
     };
-    console.log('did we hit userCopy?', userCopy);
-    const updatedAcctRes = await axios.put(`/api/accounts/${id}`, userCopy);
-    dispatch(setUser(updatedAcctRes.data));
+    // const { initiative_map } = userRes.data;
+    // const userCopy = {
+    //   ...userRes.data,
+    //   initiative_map: await updateInitiativeMap(initiative_map),
+    // };
+    // console.log('did we hit userCopy?', userCopy);
+    // const updatedAcctRes = await axios.put(`/api/accounts/${id}`, userCopy);
+    dispatch(setUser(userCopy));
   } catch (error) {
     console.error(error);
   }

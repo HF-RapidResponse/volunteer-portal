@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from google.cloud import secretmanager  # type: ignore
-from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account, Notification
+from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account, Notification, Settings
 
 ENV = os.environ.get('ENV') if os.environ.get('ENV') else "development"
 
@@ -94,7 +94,8 @@ Session = sessionmaker(binds={
     VolunteerRole: engine,
     DonationEmail: engine,
     Account: engine,
-    Notification: engine
+    Notification: engine,
+    Settings: engine
 })
 
 # Api Dependency

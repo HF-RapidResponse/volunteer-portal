@@ -14,9 +14,6 @@ class AccountRequestSchema(BaseModel):
     city: Optional[str]
     state: Optional[str]
     roles: Optional[List]
-    initiative_map: Optional[Dict]
-    organizers_can_see: bool
-    volunteers_can_see: bool
 
     class Config:
         orm_mode = True
