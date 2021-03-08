@@ -6,7 +6,7 @@ import { useState } from 'react';
  * @param {Function} submitFunction -  function that really handles submit
  * @returns several variables and functions to be used elsewhere
  */
-function useForm(callback, initObj) {
+const useForm = (callback, initObj) => {
   const [data, setData] = useState(initObj || {});
   const [submitted, setSubmitted] = useState(false);
   const [validated, setValidated] = useState(false);
@@ -18,7 +18,7 @@ function useForm(callback, initObj) {
    * @param {*} key - key/property to add/edit
    * @param {*} val - value to add/edit
    */
-  function handleChange(key, val) {
+  const handleChange = (key, val) => {
     if (validated || submitted) {
       setValidated(false);
       setSubmitted(false);
@@ -28,29 +28,31 @@ function useForm(callback, initObj) {
     newData[key] = val;
     console.log('What is newData now?', newData);
     setData(newData);
-  }
+  };
 
   /**
    * event handler function that handles page submission
    * designed to work with HTML page form validation
    * @param {Object} e - event object (we weant to inspect the currentTarget property)
    */
-  function handleSubmit(e) {
+  const handleSubmit = (e) => {
     const form = e.currentTarget;
     setErrors({});
     e.preventDefault();
     e.stopPropagation();
     callback(data)
       .then(() => {
+        setValidated(true);
         setSubmitted(true);
         return true;
       })
       .catch((error) => {
         setErrors(error);
+        setValidated(true);
         setSubmitted(false);
         return false;
       });
-  }
+  };
 
   const resetForm = () => {
     setData(initObj || {});
@@ -72,6 +74,6 @@ function useForm(callback, initObj) {
     setErrors,
     resetForm,
   };
-}
+};
 
 export default useForm;

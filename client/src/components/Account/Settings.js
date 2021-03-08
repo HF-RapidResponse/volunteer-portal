@@ -9,6 +9,7 @@ import {
   changePassword,
   deleteUser,
   basicPropUpdate,
+  formHasNoErrors,
 } from '../../store/user-slice';
 
 function Settings(props) {
@@ -31,11 +32,6 @@ function Settings(props) {
     errors,
     resetForm,
   } = useForm(changePassword, { uuid: user.uuid, tokenRefreshTime });
-
-  const handleSubmitResponse = (e) => {
-    handleSubmit(e);
-    // setValidated(true);
-  };
 
   const deletePrompt = () => {
     const userWantsToDelete = confirm(
@@ -63,16 +59,6 @@ function Settings(props) {
     }
   }, [validated, submitted]);
 
-  const formHasNoErrors = () => {
-    for (const val of Object.values(errors)) {
-      console.log('what is val?', val);
-      if (val) {
-        return false;
-      }
-    }
-    return true;
-  };
-
   return user ? (
     <>
       <Form
@@ -81,7 +67,7 @@ function Settings(props) {
         style={{ background: 'white' }}
         noValidate
         validated={validated}
-        onSubmit={handleSubmitResponse}
+        onSubmit={handleSubmit}
       >
         <h4 className="mb-5">Change Account</h4>
         <Row className="mt-2 mb-2">
@@ -180,7 +166,7 @@ function Settings(props) {
                 : 'Passwords do not match!'}
             </Form.Control.Feedback>
             <Form.Control.Feedback type="valid">
-              {submitted && formHasNoErrors()
+              {submitted && formHasNoErrors(errors)
                 ? 'Password change successful'
                 : null}
             </Form.Control.Feedback>
@@ -219,7 +205,7 @@ function Settings(props) {
             <Col xs={6} className="text-center">
               <Button
                 variant="danger"
-                className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
+                className="mt-4 mb-4 ml-2 mr-2 pt-2 pb-2 pr-4 pl-4"
                 onClick={() => deletePrompt()}
               >
                 Delete my Account

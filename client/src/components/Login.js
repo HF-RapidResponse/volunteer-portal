@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
-import { Button, Form, Container, Image, Row, Col } from 'react-bootstrap';
+import { Button, Form, Container } from 'react-bootstrap';
 import { attemptLogin, validateEmail } from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -10,38 +10,16 @@ import LoadingSpinner from './LoadingSpinner';
 
 function Login(props) {
   const [loading, setLoading] = useState(false);
-  const { attemptLogin, user, firstAcctPage, validateEmail } = props;
+  const { attemptLogin, user, firstAcctPage } = props;
   const {
     validated,
     submitted,
     errors,
-    setValidated,
     handleSubmit,
     handleChange,
     data,
   } = useForm(attemptLogin);
-  const path = window.location.pathname;
   const params = new URLSearchParams(window.location.search);
-
-  /**
-   * simple helper function that handles form submission by calling several other functions
-   * @param {*} e - event object
-   */
-  function submitWrapper(e) {
-    handleSubmit(e);
-  }
-
-  /**
-   * simple helper function that checks for enter key to do for submission
-   * @param {Object} e - event object
-   */
-  function handleKeyPress(key, e) {
-    if (e.key === 'Enter') {
-      submitWrapper(e);
-    } else {
-      handleChange(key, e.target.value);
-    }
-  }
 
   useEffect(() => {
     const userID = params.get('user_id');
@@ -64,25 +42,22 @@ function Login(props) {
     <>
       <h2 className="text-center">Welcome Back!</h2>
       <Container className="mt-4 mb-5">
-        <Form noValidate validated={validated} onSubmit={submitWrapper}>
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>E-mail address</Form.Label>
             <Form.Control
               type="email"
               placeholder="E-mail address"
               onChange={(e) => {
-                if (validated) {
-                  setValidated(false);
-                }
-                handleKeyPress('email', e);
+                handleChange('email', e.target.value);
               }}
               required
-              isInvalid={
-                submitted && (!data.email || validateEmail(data.email))
-              }
+              isInvalid={validated && (!data.email || errors.email)}
             />
             <Form.Control.Feedback type="invalid">
-              Please provide an e-mail address.
+              {!data.email
+                ? 'Please provide an e-mail address.'
+                : 'Invalid e-mail format'}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicPassword">
@@ -91,16 +66,16 @@ function Login(props) {
               type="password"
               placeholder="Password"
               onChange={(e) => {
-                if (validated) {
-                  setValidated(false);
-                }
-                handleKeyPress('password', e);
+                handleChange('password', e.target.value);
               }}
               required
-              isInvalid={(submitted && !data.password) || errors.message}
+              isInvalid={
+                validated &&
+                (!data.password || errors.password || errors.message)
+              }
             />
             <Form.Control.Feedback type="invalid">
-              {errors.message || 'Please provide a password.'}
+              {!data.password ? 'Please provide a password.' : errors.message}
             </Form.Control.Feedback>
             <div className="mt-2 mb-2">
               <Link
@@ -138,4 +113,5 @@ const mapDispatchToProps = {
   attemptLogin,
   validateEmail,
 };
+
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -81,20 +81,26 @@ class SettingsReqBody {
 }
 
 export const attemptLogin = (payload) => async (dispatch) => {
-  const errors = {};
+  const { email, password } = payload;
+  const errors = {
+    email: !validateEmail(email),
+    password: !validatePassword(password),
+  };
   try {
-    const accountRes = await axios.post(`/api/auth/basic`, payload);
-    const accountData = accountRes.data;
-    const refreshTime = Date.now();
-    dispatch(setRefreshTime(refreshTime));
-    const settings = await getSettings(accountData.uuid);
-    const user = { ...accountData, ...settings };
-    dispatch(setUser(user));
-    return true;
+    if (formHasNoErrors(errors)) {
+      const accountRes = await axios.post(`/api/auth/basic`, payload);
+      const accountData = accountRes.data;
+      const refreshTime = Date.now();
+      dispatch(setRefreshTime(refreshTime));
+      const settings = await getSettings(accountData.uuid);
+      const user = { ...accountData, ...settings };
+      dispatch(setUser(user));
+      return;
+    }
   } catch (error) {
     console.error(error);
-    errors.message = 'Email or password is invalid!';
   }
+  errors.message = 'Email or password is invalid!';
   throw errors;
 };
 
@@ -393,7 +399,7 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
   throw errors;
 };
 
-const formHasNoErrors = (errors) => {
+export const formHasNoErrors = (errors) => {
   for (const val of Object.values(errors)) {
     console.log('what is val?', val);
     if (val) {
