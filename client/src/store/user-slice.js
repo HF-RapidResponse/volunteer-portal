@@ -15,7 +15,6 @@ const userSlice = createSlice({
     setUser: (state, action) => {
       const { payload } = action;
       state.user = payload;
-      console.log('Here is the user on login:', state.user);
     },
     setRefreshTime: (state, action) => {
       const { payload } = action;
@@ -53,7 +52,7 @@ export const {
   completeUserUpdate,
 } = userSlice.actions;
 
-class AccountReqBody {
+export class AccountReqBody {
   constructor(obj) {
     this.username = obj.username;
     this.email = obj.email;
@@ -68,7 +67,7 @@ class AccountReqBody {
   }
 }
 
-class SettingsReqBody {
+export class SettingsReqBody {
   constructor(obj) {
     this.uuid = obj.uuid;
     this.show_name = obj.show_name ?? true;
@@ -83,8 +82,8 @@ class SettingsReqBody {
 export const attemptLogin = (payload) => async (dispatch) => {
   const { email, password } = payload;
   const errors = {
-    email: !validateEmail(email),
-    password: !validatePassword(password),
+    email: !isValidEmail(email),
+    password: !isValidPassword(password),
   };
   try {
     if (formHasNoErrors(errors)) {
@@ -162,7 +161,6 @@ const refreshAccessToken = async () => {
   try {
     await axios.post(`/api/refresh`);
     const refreshTime = Date.now();
-    console.log('token refreshed at:', refreshTime);
     return refreshTime;
   } catch (error) {
     console.error(error);
@@ -174,7 +172,6 @@ export const refreshTokenIfNeeded = (tokenRefreshTime) => async (dispatch) => {
   const timeDiff = currTime - tokenRefreshTime;
 
   if (!tokenRefreshTime || timeDiff > 750000) {
-    console.log('token needs a refresh', timeDiff);
     const newRefreshTime = await refreshAccessToken();
     dispatch(setRefreshTime(newRefreshTime));
   }
@@ -199,25 +196,17 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
   if (!payload) {
     return false;
   }
-  console.log('beginning of attempt create', payload);
-  const errors = {};
-  const emailIsValid = validateEmail(payload.email);
-  console.log('Is email valid?', emailIsValid);
-  if (!emailIsValid) {
-    errors.email = 'Please enter a valid e-mail.';
-  }
-  const passwordIsValid = validatePassword(payload.password);
-  if (!passwordIsValid) {
-    errors.password =
-      'Please enter a password between 6 and 20 characters long with at least 1 letter, 1 nuumber, and 1 special character.';
-  }
 
-  const passAndRetypeMatch = payload.password === payload.retypePass;
-  if (!passAndRetypeMatch) {
-    errors.retypePass = 'Passwords do not match!';
-  }
+  const errors = {
+    firstName: !isAlphaNumericOrUnicode(payload.first_name),
+    lastName: !isAlphaNumericOrUnicode(payload.last_name),
+    username: !isAlphaNumericOrUnicode(payload.username),
+    email: !isValidEmail(payload.email),
+    password: !isValidPassword(payload.password),
+    retypePass: payload.password !== payload.retypePass,
+  };
 
-  if (emailIsValid && passwordIsValid && passAndRetypeMatch) {
+  if (formHasNoErrors(errors)) {
     try {
       const objPayload = new AccountReqBody(payload);
       const accountRes = await axios.post(`/api/accounts/`, objPayload);
@@ -230,10 +219,11 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
       return;
     } catch (error) {
       console.error('API error when attempting to create user:', error);
-      errors.api =
-        error.response.data.detail ||
-        'Error while attempting to create an account. Please try again later.';
-      throw errors;
+      if (error.response) {
+        errors.api =
+          error.response.data.detail ||
+          'Error while attempting to create an account. Please try again later.';
+      }
     }
   }
   throw errors;
@@ -249,7 +239,7 @@ export const verifyPassword = (payload) => {
 
 export const changePassword = (payload) => async (dispatch) => {
   const { uuid, oldPass, newPass, retypePass, tokenRefreshTime } = payload;
-  const newPassValidated = validatePassword(newPass);
+  const newPassValidated = isValidPassword(newPass);
   const newPassesMatch = newPass === retypePass;
   const errors = {
     oldPassInvalid: true,
@@ -309,8 +299,7 @@ export const deleteUser = (uuid) => async (dispatch) => {
   Regex is asking for 6 to 20 character length with at least 
   1 letter, 1 number, and 1 special characters
 */
-export const validatePassword = (payload) => {
-  console.log('inside validatePassword?', payload);
+export const isValidPassword = (payload) => {
   if (!payload) {
     return false;
   }
@@ -322,17 +311,13 @@ export const basicPropUpdate = (payload) => async (dispatch) => {
   let userCopy = { ...user };
   userCopy[key] = newVal;
   try {
-    // const refreshRes = await axios.post(`/api/refresh`);
-    console.log('any tokenRefreshTime in toggle basic prop?', tokenRefreshTime);
     dispatch(refreshTokenIfNeeded(tokenRefreshTime));
-    // console.log('refreshRes?', refreshRes.data);
     const settingsReq = new SettingsReqBody(userCopy);
     const response = await axios.put(
       `/api/settings/${settingsReq.uuid}`,
       settingsReq
     );
     userCopy = { ...userCopy, ...response.data };
-    console.log('userCopy after put?', userCopy);
     dispatch(completeUserUpdate(userCopy));
   } catch (error) {
     console.error(error);
@@ -355,9 +340,6 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   userCopy.initiative_map[initiative_name] = !isSubscribed;
 
   try {
-    // const refreshRes = await axios.post(`/api/refresh`);
-    // console.log('refreshRes?', refreshRes.data);
-    console.log('any tokenRefreshTime in toggle initiative?', tokenRefreshTime);
     dispatch(refreshTokenIfNeeded(tokenRefreshTime));
     const settingsReq = new SettingsReqBody(userCopy);
     const response = await axios.put(
@@ -373,21 +355,20 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
 };
 
 export const attemptAccountUpdate = (payload) => async (dispatch) => {
+  const { uuid } = payload;
   const acctPayload = new AccountReqBody(payload);
   const errors = {
     firstName: !isAlphaNumericOrUnicode(acctPayload.first_name),
     lastName: !isAlphaNumericOrUnicode(acctPayload.last_name),
     username: !isAlphaNumericOrUnicode(acctPayload.username),
-    email: !validateEmail(acctPayload.email),
+    email: !isValidEmail(acctPayload.email),
   };
 
   try {
     if (formHasNoErrors(errors)) {
-      const accountRes = await axios.put(
-        `/api/accounts/${payload.uuid}`,
-        acctPayload
-      );
-      const user = { ...payload, ...accountRes.data };
+      const accountRes = await axios.put(`/api/accounts/${uuid}`, acctPayload);
+      const settings = new SettingsReqBody(payload);
+      const user = { ...settings, ...accountRes.data };
       dispatch(setUser(user));
       return;
     }
@@ -399,7 +380,6 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
 
 export const formHasNoErrors = (errors) => {
   for (const val of Object.values(errors)) {
-    console.log('what is val?', val);
     if (val) {
       return false;
     }
@@ -410,12 +390,8 @@ export const formHasNoErrors = (errors) => {
 /*
   Credit: https://www.w3docs.com/snippets/javascript/how-to-validate-an-e-mail-using-javascript.html
 */
-export const validateEmail = (email) => {
+export const isValidEmail = (email) => {
   const res = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  console.log(
-    'did we get into validateEmail?',
-    res.test(String(email).toLowerCase())
-  );
   return res.test(String(email).toLowerCase());
 };
 

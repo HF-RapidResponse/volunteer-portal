@@ -12,7 +12,6 @@ function GoogleOAuthButton() {
             ? 'http://localhost:8081'
             : window.location.origin;
         const oauthUrl = `${baseUrl}/api/login?provider=google`;
-        console.log('What is oauthUrl?', oauthUrl);
         window.location.href = oauthUrl;
       }}
     >

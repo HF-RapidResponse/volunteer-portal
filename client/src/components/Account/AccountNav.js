@@ -20,11 +20,7 @@ function AccountNav() {
         to={linkObj.url}
         activeClassName="active-profile-mobile"
       >
-        <Button
-          variant="info"
-          className="btn-round ml-2 mr-2"
-          onDrag={() => console.log('dragging button')}
-        >
+        <Button variant="info" className="btn-round ml-2 mr-2">
           {linkObj.displayName}
         </Button>
       </NavLink>
@@ -34,14 +30,12 @@ function AccountNav() {
   const [mobileLinks, setMobileLinks] = useState(initialMobileLinks);
 
   const rightArrowClick = () => {
-    console.log('right click');
     const linksCopy = [...mobileLinks];
     linksCopy.unshift(linksCopy.pop());
     setMobileLinks(linksCopy);
   };
 
   const leftArrowClick = () => {
-    console.log('left click');
     const linksCopy = [...mobileLinks];
     linksCopy.push(linksCopy.shift());
     setMobileLinks(linksCopy);
@@ -76,7 +70,6 @@ function AccountNav() {
           size="lg"
           style={{ fontSize: '2rem', opacity: '0.7' }}
           onClick={() => leftArrowClick()}
-          onDrag={() => console.log('dragging left arrow')}
         />
         <div
           style={{
@@ -93,7 +86,6 @@ function AccountNav() {
           className="align-middle m-1 mt-4 mt-md-1"
           style={{ fontSize: '2rem', opacity: '0.7' }}
           onClick={() => rightArrowClick()}
-          onDrag={() => console.log('dragging right arrow')}
         />
       </Nav>
     </>

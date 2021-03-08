@@ -26,7 +26,6 @@ const useForm = (callback, initObj) => {
     }
     const newData = { ...data };
     newData[key] = val;
-    console.log('What is newData now?', newData);
     setData(newData);
   };
 

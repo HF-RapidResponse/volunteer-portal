@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
 import { Button, Form, Container } from 'react-bootstrap';
-import { attemptLogin, validateEmail } from '../store/user-slice.js';
+import { attemptLogin } from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import GoogleOAuthButton from './OAuth/GoogleOAuthButton';
@@ -111,7 +111,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   attemptLogin,
-  validateEmail,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

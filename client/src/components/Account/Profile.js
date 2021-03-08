@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
-import { basicPropUpdate, attemptAccountUpdate } from '../../store/user-slice';
+import { Button, Form, Col, Row } from 'react-bootstrap';
+import {
+  basicPropUpdate,
+  attemptAccountUpdate,
+  AccountReqBody,
+} from '../../store/user-slice';
 import useForm from '../hooks/useForm';
 const _ = require('lodash');
 
@@ -100,15 +104,16 @@ function Profile(props) {
             <Form.Switch
               id="show-on-profile-name-switch"
               className="custom-switch-md"
-              checked={user.show_name}
-              onChange={() =>
+              checked={data.show_name}
+              onChange={(e) => {
+                handleChange('show_name', e.target.checked);
                 basicPropUpdate({
                   user,
                   key: 'show_name',
-                  newVal: !user.show_name,
+                  newVal: e.target.checked,
                   tokenRefreshTime,
-                })
-              }
+                });
+              }}
             />
           </Col>
         </Row>
@@ -152,15 +157,16 @@ function Profile(props) {
             <Form.Switch
               id="show-on-profile-email-switch"
               className="custom-switch-md"
-              checked={user.show_email}
-              onChange={() =>
+              checked={data.show_email}
+              onChange={(e) => {
+                handleChange('show_email', e.target.checked);
                 basicPropUpdate({
                   user,
                   key: 'show_email',
-                  newVal: !user.show_email,
+                  newVal: e.target.checked,
                   tokenRefreshTime,
-                })
-              }
+                });
+              }}
             />
           </Col>
         </Row>
@@ -170,7 +176,6 @@ function Profile(props) {
               <Form.Label>City</Form.Label>
               <Form.Control
                 type="city"
-                // defaultValue={user.city}
                 value={data.city ?? ''}
                 onChange={(e) => {
                   handleChange('city', e.target.value);
@@ -184,7 +189,6 @@ function Profile(props) {
               <Form.Label>State</Form.Label>
               <Form.Control
                 type="state"
-                // defaultValue={user.state}
                 value={data.state ?? ''}
                 onChange={(e) => {
                   handleChange('state', e.target.value);
@@ -200,19 +204,26 @@ function Profile(props) {
             <Form.Switch
               id="show-on-profile-location-switch"
               className="custom-switch-md"
-              checked={user.show_location}
-              onChange={() =>
+              checked={data.show_location}
+              onChange={(e) => {
+                handleChange('show_location', e.target.checked);
                 basicPropUpdate({
                   user,
                   key: 'show_location',
-                  newVal: !user.show_location,
+                  newVal: e.target.checked,
                   tokenRefreshTime,
-                })
-              }
+                });
+              }}
             />
           </Col>
         </Row>
-        <Row className={_.isEqual(user, data) ? 'd-none' : null}>
+        <Row
+          className={
+            _.isEqual(new AccountReqBody(user), new AccountReqBody(data))
+              ? 'd-none'
+              : null
+          }
+        >
           <Col xs={12} xl={6} className="text-center">
             <Button
               variant="info"
