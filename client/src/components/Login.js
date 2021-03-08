@@ -29,7 +29,6 @@ function Login(props) {
    */
   function submitWrapper(e) {
     handleSubmit(e);
-    setValidated(true);
   }
 
   /**

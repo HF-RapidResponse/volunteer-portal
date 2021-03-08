@@ -62,10 +62,9 @@ class AccountReqBody {
     this.password = obj.password;
     this.oauth = obj.oauth;
     this.profile_pic = obj.profile_pic;
+    this.city = obj.city;
+    this.state = obj.state;
     this.roles = obj.roles || [];
-    this.initiative_map = obj.initiative_map || {};
-    this.organizers_can_see = true;
-    this.volunteers_can_see = true;
   }
 }
 
@@ -367,6 +366,43 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   }
 };
 
+export const attemptAccountUpdate = (payload) => async (dispatch) => {
+  const acctPayload = new AccountReqBody(payload);
+  const errors = {
+    firstName: !isAlphaNumericOrUnicode(acctPayload.first_name),
+    lastName: !isAlphaNumericOrUnicode(acctPayload.last_name),
+    username: !isAlphaNumericOrUnicode(acctPayload.username),
+    email: !validateEmail(acctPayload.email),
+    city: !isAlphaNumericOrUnicode(acctPayload.city),
+    state: !isAlphaNumericOrUnicode(acctPayload.state),
+  };
+
+  try {
+    if (formHasNoErrors(errors)) {
+      const accountRes = await axios.put(
+        `/api/accounts/${payload.uuid}`,
+        acctPayload
+      );
+      const user = { ...payload, ...accountRes.data };
+      dispatch(setUser(user));
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  throw errors;
+};
+
+const formHasNoErrors = (errors) => {
+  for (const val of Object.values(errors)) {
+    console.log('what is val?', val);
+    if (val) {
+      return false;
+    }
+  }
+  return true;
+};
+
 /*
   Credit: https://www.w3docs.com/snippets/javascript/how-to-validate-an-e-mail-using-javascript.html
 */
@@ -379,4 +415,11 @@ export const validateEmail = (email) => {
   return res.test(String(email).toLowerCase());
 };
 
+/*
+  Credit: https://stackoverflow.com/questions/388996/regex-for-javascript-to-allow-only-alphanumeric
+*/
+export const isAlphaNumericOrUnicode = (name) => {
+  const pattern = /^([a-zA-Z0-9\u0600-\u06FF\u0660-\u0669\u06F0-\u06F9 _.-]+)$/;
+  return pattern.test(name);
+};
 export default userSlice.reducer;

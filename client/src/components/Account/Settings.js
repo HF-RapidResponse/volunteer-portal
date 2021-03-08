@@ -34,7 +34,7 @@ function Settings(props) {
 
   const handleSubmitResponse = (e) => {
     handleSubmit(e);
-    setValidated(true);
+    // setValidated(true);
   };
 
   const deletePrompt = () => {
@@ -181,7 +181,7 @@ function Settings(props) {
             </Form.Control.Feedback>
             <Form.Control.Feedback type="valid">
               {submitted && formHasNoErrors()
-                ? 'Passwords change successful'
+                ? 'Password change successful'
                 : null}
             </Form.Control.Feedback>
             <Row>

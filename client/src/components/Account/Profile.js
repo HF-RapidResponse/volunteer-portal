@@ -2,31 +2,78 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
-import { basicPropUpdate } from '../../store/user-slice';
+import { basicPropUpdate, attemptAccountUpdate } from '../../store/user-slice';
+import useForm from '../hooks/useForm';
 
 function Profile(props) {
-  const { user, tokenRefreshTime, basicPropUpdate } = props;
+  const {
+    user,
+    tokenRefreshTime,
+    basicPropUpdate,
+    attemptAccountUpdate,
+  } = props;
+  const {
+    handleChange,
+    handleSubmit,
+    data,
+    submitted,
+    validated,
+    setValidated,
+    errors,
+    resetForm,
+  } = useForm(attemptAccountUpdate, user);
+  const clearFormComponent = () => {
+    const formComponent = document.getElementById('acct-profile-form');
+    formComponent.reset();
+  };
+
+  const handleSubmitResponse = (e) => {
+    handleSubmit(e);
+    // setValidated(true);
+  };
+
   return user ? (
     <>
-      <Form className="p-4" style={{ background: 'white' }}>
+      <Form
+        id="acct-profile-form"
+        className="p-4"
+        noValidate
+        validated={validated}
+        onSubmit={handleSubmitResponse}
+        style={{ background: 'white' }}
+      >
         <h4>My Info</h4>
         <Row className="mt-4 mb-4">
           <Col xs={12} md={4}>
             <Form.Group controlId="formFirstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control
-                defaultValue={user.first_name}
+                value={data.first_name ?? user.first_name}
                 placeholder="Enter first name here"
+                onChange={(e) => {
+                  handleChange('first_name', e.target.value);
+                }}
+                isInvalid={errors.firstName}
               />
+              <Form.Control.Feedback type="invalid">
+                First name is invalid!
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12} md={4}>
             <Form.Group controlId="formLastName">
               <Form.Label>Last Name</Form.Label>
               <Form.Control
-                defaultValue={user.last_name}
+                value={data.last_name ?? user.last_name}
                 placeholder="Enter last name here"
+                onChange={(e) => {
+                  handleChange('last_name', e.target.value);
+                }}
+                isInvalid={errors.lastName}
               />
+              <Form.Control.Feedback type="invalid">
+                Last name is invalid!
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12} md={4} className="pl-lg-5">
@@ -50,7 +97,17 @@ function Profile(props) {
           <Col xs={12} md={8}>
             <Form.Group controlId="formUsername">
               <Form.Label>Username (always shown on Profile)</Form.Label>
-              <Form.Control type="username" defaultValue={user.username} />
+              <Form.Control
+                type="username"
+                value={data.username ?? user.username}
+                onChange={(e) => {
+                  handleChange('username', e.target.value);
+                }}
+                isInvalid={errors.username}
+              />
+              <Form.Control.Feedback type="invalid">
+                Username is invalid!
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
@@ -58,7 +115,17 @@ function Profile(props) {
           <Col xs={12} md={8}>
             <Form.Group controlId="formEmail">
               <Form.Label>Email</Form.Label>
-              <Form.Control type="email" defaultValue={user.email} />
+              <Form.Control
+                type="email"
+                value={data.email ?? user.email}
+                onChange={(e) => {
+                  handleChange('email', e.target.value);
+                }}
+                isInvalid={errors.email}
+              />
+              <Form.Control.Feedback type="invalid">
+                Email is invalid!
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12} md={4} className="align-self-center pl-lg-5">
@@ -83,7 +150,11 @@ function Profile(props) {
               <Form.Label>City</Form.Label>
               <Form.Control
                 type="city"
-                defaultValue={user.city}
+                // defaultValue={user.city}
+                value={data.city ?? user.city}
+                onChange={(e) => {
+                  handleChange('city', e.target.value);
+                }}
                 placeholder="Enter city here"
               />
             </Form.Group>
@@ -93,9 +164,16 @@ function Profile(props) {
               <Form.Label>State</Form.Label>
               <Form.Control
                 type="state"
-                defaultValue={user.state}
+                // defaultValue={user.state}
+                value={data.state ?? user.state}
+                onChange={(e) => {
+                  handleChange('state', e.target.value);
+                }}
                 placeholder="Enter state here"
               />
+              <Form.Control.Feedback type="valid">
+                {submitted ? 'Profile change successful' : null}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12} md={4} className="align-self-center pl-lg-5">
@@ -114,6 +192,29 @@ function Profile(props) {
             />
           </Col>
         </Row>
+        <Row>
+          <Col xs={12} xl={6} className="text-center">
+            <Button
+              variant="info"
+              className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
+              type="submit"
+            >
+              Save Changes
+            </Button>
+          </Col>
+          <Col xs={12} xl={6} className="text-center">
+            <Button
+              variant="outline-secondary"
+              className="mt-4 mb-4 pt-2 pb-2 pr-4 pl-4"
+              onClick={() => {
+                clearFormComponent();
+                resetForm();
+              }}
+            >
+              Cancel
+            </Button>
+          </Col>
+        </Row>
       </Form>
     </>
   ) : (
@@ -127,6 +228,6 @@ const mapStateToProps = (state) => {
     tokenRefreshTime: state.userStore.tokenRefreshTime,
   };
 };
-const mapDispatchToProps = { basicPropUpdate };
+const mapDispatchToProps = { basicPropUpdate, attemptAccountUpdate };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
