@@ -1,13 +1,63 @@
-import React, { useState } from 'react';
-import LoadingSpinner from '../components/LoadingSpinner';
+import React, { useEffect, useState } from 'react';
+import RoleCard from './RoleCard';
+import LoadingSpinner from './LoadingSpinner';
+import { Col } from 'react-bootstrap';
+import '../styles/roles.scss';
 
 /**
  * Component that displays the vounteer roles page. Currently, we are using an embedded
  * airtable to render the data.
  */
 function Roles() {
+  const [roles, setRoles] = useState(null);
+  const [fetched, setFetched] = useState(false);
   const [loading, setLoading] = useState(true);
-  document.title = 'HF Volunteer Portal - Volunteer Openings';
+
+  useEffect(() => {
+    document.title = 'HF Volunteer Portal - Volunteer Openings';
+    fetch('/api/volunteer_roles/')
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            setRoles(data);
+          });
+        } else {
+          console.error(response);
+        }
+        setFetched(true);
+      })
+      .catch((err) => {
+        console.error(err);
+        setFetched(true);
+      });
+  }, []);
+
+  // Show a loading spinner until the page gets a response
+  if (!fetched) {
+    return <LoadingSpinner />;
+  }
+
+  // Show an error message if the page has gotten a response but no roles
+  if (!roles) {
+    return (
+      <Col
+        xs={12}
+        lg={9}
+        xl={6}
+        className="shadow-card"
+        key="initiatives_special_failed"
+      >
+        <h2 className="header-3-section-lead">Oops:</h2>
+        <h2 className="header-3-section-breaker">Error loading initiatives.</h2>
+        <p>Please try again later.</p>
+      </Col>
+    );
+  }
+
+  // Build 'em if you got 'em
+  const roleCards = roles.map((role) => RoleCard(role));
+
+  // Return view with role cards
   return (
     <>
       <h1>Volunteer Openings</h1>
@@ -16,17 +66,9 @@ function Roles() {
         forward to growing our teams! Please consider applying, and let us know
         if you have any questions!
       </p>
-      {loading && <LoadingSpinner />}
-      <iframe
-        className="airtable-embed"
-        src="https://airtable.com/embed/shrZmR6ahgCsyUBGy?backgroundColor=greenLight&amp;viewControls=on"
-        frameBorder="0"
-        width="100%"
-        height="1000"
-        onLoad={() => setLoading(false)}
-        title="volunteer-listings"
-        styles="background: transparent; border: 1px solid #ccc;"
-      ></iframe>
+      <div class="role-card-container">
+        {roleCards}
+      </div>
     </>
   );
 }
