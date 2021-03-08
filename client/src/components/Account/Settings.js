@@ -199,13 +199,13 @@ function Settings(props) {
       <Form className="mt-5 mb-5" style={{ background: 'white' }}>
         <Form.Group>
           <Row className="align-items-center">
-            <Col xs={6} className="text-center">
+            <Col xs={12} sm={6} className="text-center">
               <p className="mt-4 mb-4">Delete Account</p>
             </Col>
-            <Col xs={6} className="text-center">
+            <Col xs={12} sm={6} className="text-center">
               <Button
                 variant="danger"
-                className="mt-4 mb-4 ml-2 mr-2 pt-2 pb-2 pr-4 pl-4"
+                className="mt-2 mt-sm-4 mb-4 ml-2 mr-2 pt-2 pb-2 pr-4 pl-4"
                 onClick={() => deletePrompt()}
               >
                 Delete my Account

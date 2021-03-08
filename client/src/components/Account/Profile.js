@@ -67,7 +67,7 @@ function Profile(props) {
             <Form.Group controlId="formFirstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control
-                value={data.first_name ?? user.first_name}
+                value={data.first_name ?? ''}
                 placeholder="Enter first name here"
                 onChange={(e) => {
                   handleChange('first_name', e.target.value);
@@ -83,7 +83,7 @@ function Profile(props) {
             <Form.Group controlId="formLastName">
               <Form.Label>Last Name</Form.Label>
               <Form.Control
-                value={data.last_name ?? user.last_name}
+                value={data.last_name ?? ''}
                 placeholder="Enter last name here"
                 onChange={(e) => {
                   handleChange('last_name', e.target.value);
@@ -118,11 +118,12 @@ function Profile(props) {
               <Form.Label>Username (always shown on Profile)</Form.Label>
               <Form.Control
                 type="username"
-                value={data.username ?? user.username}
+                value={data.username ?? ''}
                 onChange={(e) => {
                   handleChange('username', e.target.value);
                 }}
                 isInvalid={errors.username}
+                required
               />
               <Form.Control.Feedback type="invalid">
                 Username is invalid!
@@ -136,7 +137,7 @@ function Profile(props) {
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
-                value={data.email ?? user.email}
+                value={data.email ?? ''}
                 onChange={(e) => {
                   handleChange('email', e.target.value);
                 }}
@@ -170,7 +171,7 @@ function Profile(props) {
               <Form.Control
                 type="city"
                 // defaultValue={user.city}
-                value={data.city ?? user.city}
+                value={data.city ?? ''}
                 onChange={(e) => {
                   handleChange('city', e.target.value);
                 }}
@@ -184,7 +185,7 @@ function Profile(props) {
               <Form.Control
                 type="state"
                 // defaultValue={user.state}
-                value={data.state ?? user.state}
+                value={data.state ?? ''}
                 onChange={(e) => {
                   handleChange('state', e.target.value);
                 }}

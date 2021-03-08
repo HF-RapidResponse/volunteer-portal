@@ -19,15 +19,10 @@ function AccountNav() {
         key={'acct-nav-sm' + j}
         to={linkObj.url}
         activeClassName="active-profile-mobile"
-        // onDrag={() => console.log('dragging navlink')}
-        // className={j != 0 ? 'd-xs-none' : null}
-        // style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
-        // style={{ display: 'inline' }}
       >
         <Button
           variant="info"
           className="btn-round ml-2 mr-2"
-          // style={{ overflow: 'hidden' }}
           onDrag={() => console.log('dragging button')}
         >
           {linkObj.displayName}
@@ -52,21 +47,6 @@ function AccountNav() {
     setMobileLinks(linksCopy);
   };
 
-  const handleSwipe = (e) => {
-    console.log('on mouse move:', e.clientX);
-    const currX = e.clientX;
-    if (currX < prevX) {
-      setTimeout(() => {
-        leftArrowClick();
-      }, 50);
-    } else if (currX > prevX) {
-      setTimeout(() => {
-        rightArrowClick();
-      }, 50);
-    }
-    setPrevX(currX);
-  };
-
   return (
     <>
       <Nav
@@ -89,23 +69,10 @@ function AccountNav() {
         id="account-nav-mobile"
         className="d-lg-none mt-4 mb-4 text-center"
         style={{ overflow: 'hidden' }}
-        // onDrag={(e) => {
-        //   console.log('What is e.pageX?', e.pageX);
-        //   console.log('What is e.pageY?', e.pageY);
-        //   // console.log('dragging container');
-        // }}
-        // onMouseMove={(e) => {
-        //   if (isMobile) {
-        //     console.log('Are we mobile?', isMobile);
-        //     handleSwipe(e);
-        //   }
-        // }}
-        // style={{ overflow: 'visible' }}
-        // className="text-center"
       >
         <FontAwesomeIcon
           icon={faAngleLeft}
-          className="align-middle m-1"
+          className="align-middle m-1 mb-4 mb-md-1"
           size="lg"
           style={{ fontSize: '2rem', opacity: '0.7' }}
           onClick={() => leftArrowClick()}
@@ -123,7 +90,7 @@ function AccountNav() {
         <FontAwesomeIcon
           icon={faAngleRight}
           size="lg"
-          className="align-middle m-1"
+          className="align-middle m-1 mt-4 mt-md-1"
           style={{ fontSize: '2rem', opacity: '0.7' }}
           onClick={() => rightArrowClick()}
           onDrag={() => console.log('dragging right arrow')}

@@ -163,7 +163,7 @@ ALTER TABLE public.volunteer_openings OWNER TO admin;
 CREATE TABLE public.accounts (
     uuid uuid NOT NULL,
     email text NOT NULL,
-    username character varying(255),
+    username character varying(255) NOT NULL,
     first_name character varying(255) NOT NULL,
     last_name character varying(255) NOT NULL,
     "password" text,

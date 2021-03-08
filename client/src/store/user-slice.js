@@ -379,8 +379,6 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
     lastName: !isAlphaNumericOrUnicode(acctPayload.last_name),
     username: !isAlphaNumericOrUnicode(acctPayload.username),
     email: !validateEmail(acctPayload.email),
-    city: !isAlphaNumericOrUnicode(acctPayload.city),
-    state: !isAlphaNumericOrUnicode(acctPayload.state),
   };
 
   try {
