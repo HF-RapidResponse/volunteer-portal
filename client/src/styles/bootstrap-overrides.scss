@@ -1,4 +1,7 @@
-// .btn-outline-info {
-//   background-color: white;
-//   padding: '.4rem 1.6rem';
-// }
+@import 'variables';
+
+.btn-card {
+  background-color: $btnCyan !important;
+  border-color: $btnCyan !important;
+  color: white !important;
+}
