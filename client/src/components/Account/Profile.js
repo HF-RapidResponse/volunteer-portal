@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
 import { basicPropUpdate, attemptAccountUpdate } from '../../store/user-slice';
 import useForm from '../hooks/useForm';
+const _ = require('lodash');
 
 function Profile(props) {
+  const [disableForm, setDisableForm] = useState(false);
   const {
     user,
     tokenRefreshTime,
@@ -17,20 +19,37 @@ function Profile(props) {
     handleSubmit,
     data,
     submitted,
+    setSubmitted,
     validated,
     setValidated,
     errors,
     resetForm,
   } = useForm(attemptAccountUpdate, user);
+
   const clearFormComponent = () => {
     const formComponent = document.getElementById('acct-profile-form');
     formComponent.reset();
   };
 
-  const handleSubmitResponse = (e) => {
-    handleSubmit(e);
-    // setValidated(true);
+  const submitWrapper = (e) => {
+    if (_.isEqual(user, data) || disableForm) {
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      handleSubmit(e);
+    }
   };
+
+  useEffect(() => {
+    if (validated && submitted) {
+      setDisableForm(true);
+      setTimeout(() => {
+        setValidated(false);
+        setSubmitted(false);
+        setDisableForm(false);
+      }, 3000);
+    }
+  }, [submitted, validated]);
 
   return user ? (
     <>
@@ -39,7 +58,7 @@ function Profile(props) {
         className="p-4"
         noValidate
         validated={validated}
-        onSubmit={handleSubmitResponse}
+        onSubmit={submitWrapper}
         style={{ background: 'white' }}
       >
         <h4>My Info</h4>
@@ -192,7 +211,7 @@ function Profile(props) {
             />
           </Col>
         </Row>
-        <Row>
+        <Row className={_.isEqual(user, data) ? 'd-none' : null}>
           <Col xs={12} xl={6} className="text-center">
             <Button
               variant="info"
