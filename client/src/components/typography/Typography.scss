@@ -1,0 +1,121 @@
+@import "styles/_variables";
+
+h1.component-typography,
+h2.component-typography,
+h3.component-typography,
+p.component-typography {
+  margin: 0;
+}
+
+.component-typography {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  &.jumbo {
+    font-family: Inter;
+    font-weight: 300;
+    font-size: 96px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  &.title-1 {
+    font-family: Inter;
+    font-weight: 600;
+    font-size: 64px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  &.title-2 {
+    font-family: Inter;
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  &.big-copy {
+    font-family: Inter;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 1.3;
+  }
+
+  &.title-3 {
+    font-family: Inter;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.3;
+  }
+
+  &.body-standard {
+    font-family: Inter;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  &.body-bold {
+    font-family: Inter;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+
+  &.tiny-copy {
+    font-family: Inter;
+    font-size: 14px;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+  }
+
+  &.caption {
+    font-family: Inter;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &.center-align {
+    text-align: center;
+  }
+
+  &.blue-forward {
+    color: $blue-forward;
+  }
+
+  &.blue-humanity {
+    color: $blue-humanity;
+  }
+
+  &.blue-button {
+    color: $blue-button;
+  }
+
+  &.gray-0 {
+    color: $gray-0;
+  }
+
+  &.gray-1 {
+    color: $gray-1;
+  }
+
+  &.gray-2 {
+    color: $gray-2;
+  }
+
+  &.gray-3 {
+    color: $gray-3;
+  }
+
+  &.gray-4 {
+    color: $gray-4;
+  }
+
+  &.gray-5 {
+    color: $gray-5;
+  }
+}

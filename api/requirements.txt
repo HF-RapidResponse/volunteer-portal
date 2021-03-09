@@ -21,3 +21,6 @@ airtable-python-wrapper
 sendgrid
 email-validator
 passlib
+twilio
+phonenumbers
+slack-sdk

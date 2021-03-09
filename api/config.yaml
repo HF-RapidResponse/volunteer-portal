@@ -25,6 +25,10 @@ auth_defaults: &auth_defaults
 notification_defaults: &notification_defaults
   email_default_from_address: tripp@movehumanityforward.com
   sendgrid_api_key: portal_notifications_sendgrid_test_api_key
+  sms_default_from_number: '+18053348626'
+  twilio_sid: portal_notifications_twilio_sid
+  twilio_auth_token: portal_notifications_twilio_auth_token
+  slack_bot_auth_token: portal_notifications_slack_bot_auth_token
 
 # Specific configurations for each environment
 

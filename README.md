@@ -26,7 +26,7 @@ Once that's downloaded, open up a terminal to the root `volunteer-portal` direct
 
 Include this [Service Account key](https://storage.cloud.google.com/humanity-forward-infra/gcp_credentials.json) called `gcp_credentials.json` in the `api/` folder. If you can't access this key, your onboarding process may not have been completed. reach out to a team lead to get that sorted.
 
-In the root directory of the repo, run the following command:
+In the root directory of the repo, run the following command to start the dev environment at `http://localhost:8000`:
 
 `docker-compose up`
 
@@ -34,9 +34,11 @@ That command will take a while to run the first time you run it. It'll download 
 
 Once that's done, open up [http://localhost:8000](http://localhost:8000) and you should see the application!
 
+:warning: **The client runs at 8080 and the api runs at 8081, but 8000 is the port you likely want to use for most development.** Using 8080 to access the client you will not be able to interact with the API.
+
 ## Testing
 
-You can enter the api docker container to run tests in there, or use the handy make tasks. For these to work you'll need to have `docker-compse up` running.
+You can enter the api docker container to run tests in there, or use the handy make tasks. For these to work you'll need to have `docker-compose up` running.
 
 `make test`
 
@@ -45,7 +47,6 @@ Runs linting which validates Python static type hints/annotations
 `make validate`
 
 Runs tests. Some data source tests currently (lazily) use real HF databases and require [authentication through the GCP CLI](https://cloud.google.com/sdk/docs/authorizing#authorizing_with_a_user_account).
-
 
 ## Using the Application
 
@@ -66,3 +67,11 @@ We keep track of tasks through an [Asana board here](https://app.asana.com/0/119
 ## Branching and GitHub
 
 To read more about branching, [see this page](/docs/branching.md).
+
+## Storybook
+
+[Storybook](https://storybook.js.org/) helps document our UI components.
+
+To run storybook:
+1. `make shell-client`
+2. `npm run storybook`
