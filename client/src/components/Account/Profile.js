@@ -150,6 +150,7 @@ function Profile(props) {
                   handleChange('email', e.target.value);
                 }}
                 isInvalid={errors.email}
+                readOnly
               />
               <Form.Control.Feedback type="invalid">
                 Email is invalid!
