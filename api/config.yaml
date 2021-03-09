@@ -2,12 +2,12 @@
 
 production_db_defaults: &production_db_defaults
     database:
-        adapter: mysql
+        adapter: postgresql
         generator: secret_generator
-        host: 
-        database: 
-        user: 
-        password: 
+        host: 10.17.1.3
+        database: hf_volunteer_portal
+        user: admin
+        password: humanity-forward_hf-portal_psql-db_admin
 
 development_routes_defaults: &development_routes_defaults
     client: 'http://localhost:8080'
@@ -64,12 +64,19 @@ development:
     notifications:
         <<: *notification_defaults
 staging:
+    # TODO verify that this is fine as long as the traffic is all proxies within a single machine.
+    routes:
+        <<: *development_routes_defaults  
     databases:
         <<: *production_db_defaults
     auth:
         <<: *auth_defaults
+    # TODO update to proper staging config
+    notifications:
+        <<: *notification_defaults  
 production:
     databases:
         <<: *production_db_defaults
     auth:
         <<: *auth_defaults
+    # TODO add production notification configs

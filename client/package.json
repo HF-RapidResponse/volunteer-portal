@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "npm run serve",
-    "serve": "serve -s -n -l 5000 build",
-    "client": "react-scripts start",
+    "serve": "serve -s -n -l 8080 build",
+    "client": "PORT=8080 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
