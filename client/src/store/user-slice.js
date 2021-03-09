@@ -374,6 +374,15 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
     }
   } catch (error) {
     console.error(error);
+    handlePossibleExpiredToken(error);
+    const errorRes = error.response;
+    if (
+      errorRes &&
+      errorRes.data.detail ===
+        `Account with username ${acctPayload.username} already exists!`
+    ) {
+      errors.foundExistingUser = errorRes.data.detail;
+    }
   }
   throw errors;
 };

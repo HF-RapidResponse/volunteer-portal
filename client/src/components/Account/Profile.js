@@ -127,11 +127,14 @@ function Profile(props) {
                 onChange={(e) => {
                   handleChange('username', e.target.value);
                 }}
-                isInvalid={errors.username}
+                isInvalid={errors.username || errors.foundExistingUser}
                 required
               />
               <Form.Control.Feedback type="invalid">
-                Username is invalid!
+                {!data.username
+                  ? 'Username cannot be empty!'
+                  : errors.foundExistingUser ||
+                    'Please only use alphanumeric or unicode characters.'}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>

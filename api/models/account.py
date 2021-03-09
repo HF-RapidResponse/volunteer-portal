@@ -1,6 +1,6 @@
 from models.base import Base
 
-from sqlalchemy import func, select, Column, String, Integer, Text, Boolean
+from sqlalchemy import func, select, Column, String, Integer, Text, Boolean, UniqueConstraint
 from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
 from sqlalchemy.orm import backref, column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -15,7 +15,7 @@ class Account(Base):
     uuid = Column(UUID(as_uuid=True), primary_key=True,
                   default=uuid4, unique=True, nullable=False)
     email = Column('email', Text, unique=True, nullable=False)
-    username = Column('username', String(255), nullable=False)
+    username = Column('username', String(255), unique=True, nullable=False)
     first_name = Column('first_name', String(255), nullable=True)
     last_name = Column('last_name', String(255), nullable=True)
     password = Column('password', Text, nullable=True)
@@ -24,6 +24,8 @@ class Account(Base):
     city = Column('city', String(32), nullable=True)
     state = Column('state', String(32), nullable=True)
     roles = Column('roles', ARRAY(String), default=[], nullable=False)
+
+    UniqueConstraint(email, username, name='unique_acct_emails_usernames')
 
     def __repr__(self):
         return "<Account(uuid='%s', email='%s', username='%s', first_name='%s', last_name='%s', password='%s', oauth='%s', profile_pic='%s', city='%s', state='%s', roles='%s')>" % (

@@ -161,7 +161,7 @@ ALTER TABLE public.volunteer_openings OWNER TO admin;
 --
 
 CREATE TABLE public.accounts (
-    uuid uuid NOT NULL,
+    uuid uuid NOT NULL PRIMARY KEY,
     email text NOT NULL,
     username character varying(255) NOT NULL,
     first_name character varying(255) NOT NULL,
@@ -171,7 +171,8 @@ CREATE TABLE public.accounts (
     profile_pic text,
     city character varying(32),
     "state" character varying(32),
-    roles character varying[]
+    roles character varying[],
+    CONSTRAINT Uni_Acct_Props UNIQUE (email, username)
 );
 
 
@@ -182,7 +183,7 @@ ALTER TABLE public.accounts OWNER TO admin;
 --
 
 CREATE TABLE public.settings (
-    uuid uuid NOT NULL,
+    uuid uuid NOT NULL PRIMARY KEY,
     show_name boolean,
     show_email boolean,
     show_location boolean,
@@ -285,20 +286,6 @@ ALTER TABLE ONLY public.initiatives
 
 ALTER TABLE ONLY public.volunteer_openings
     ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (uuid);
-
---
--- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.accounts
-    ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
-
---
--- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.settings
-    ADD CONSTRAINT settings_pkey PRIMARY KEY (uuid);
 
 --
 -- PostgreSQL database dump complete

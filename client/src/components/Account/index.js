@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { Button, Form, Container, Col, Row, Image } from 'react-bootstrap';
-import { withCookies } from 'react-cookie';
+import { Container, Col, Row, Image } from 'react-bootstrap';
 
 import AccountNav from './AccountNav';
-import placeholderImg from '../../assets/placeholder-img.png';
 import Profile from './Profile';
 import Involvement from './Involvement';
 import Settings from './Settings';
@@ -13,8 +11,11 @@ import Data from './Data';
 import { attemptLogin, startLogout } from '../../store/user-slice.js';
 import '../../styles/account.scss';
 
+import placeholderImg from '../../assets/placeholder-img.png';
+import andyPic from '../../assets/andy-placeholder.jpg';
+
 function AccountIndex(props) {
-  const { user, cookies } = props;
+  const { user } = props;
   const path = window.location.pathname;
 
   let mainContent;
@@ -43,7 +44,12 @@ function AccountIndex(props) {
         <Row className="text-center md-text-left">
           <Col xs={12} md={2}>
             <Image
-              src={user.profile_pic || placeholderImg}
+              src={
+                user.profile_pic ||
+                (user.username === 'andyfromtheblock'
+                  ? andyPic
+                  : placeholderImg)
+              }
               roundedCircle
               fluid
               style={{ maxWidth: '80px' }}
@@ -78,6 +84,4 @@ const mapStateToProps = (state, ownProps) => {
 };
 const mapDispatchToProps = { attemptLogin, startLogout };
 
-export default withCookies(
-  connect(mapStateToProps, mapDispatchToProps)(AccountIndex)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountIndex);

@@ -4,6 +4,7 @@ import { Nav, NavDropdown, Image } from 'react-bootstrap';
 import { withCookies } from 'react-cookie';
 
 import placeholderImg from '../../assets/placeholder-img.png';
+import andyPic from '../../assets/andy-placeholder.jpg';
 
 function LoggedInMenu(props) {
   const { user, profileLinks, cookies, collapse, startLogout } = props;
@@ -46,7 +47,14 @@ function LoggedInMenu(props) {
       >
         {profileDropdown}
       </NavDropdown>
-      <Image src={user.profile_pic || placeholderImg} roundedCircle fluid />
+      <Image
+        src={
+          user.profile_pic ||
+          (user.username === 'andyfromtheblock' ? andyPic : placeholderImg)
+        }
+        roundedCircle
+        fluid
+      />
     </>
   );
 }

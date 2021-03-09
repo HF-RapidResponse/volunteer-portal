@@ -144,10 +144,19 @@ def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
 @app.put("/api/accounts/{uuid}", response_model=AccountResponseSchema)
 def update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
+    check_for_diff_user_with_same_username(uuid, account, db)
     updated_acct = Account(uuid=uuid, **account.dict())
     db.merge(updated_acct)
     db.commit()
     return updated_acct
+
+
+def check_for_diff_user_with_same_username(uuid, account: AccountRequestSchema, db: Session):
+    existing_acct = db.query(Account).filter_by(
+        username=account.username).first()
+    if existing_acct is not None and uuid != existing_acct.uuid:
+        raise HTTPException(status_code=400,
+                            detail=f"Account with username {existing_acct.username} already exists!")
 
 
 @app.patch("/api/accounts/{uuid}", response_model=AccountResponseSchema)

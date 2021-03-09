@@ -78,7 +78,7 @@ function Register(props) {
                 <Form.Control.Feedback type="invalid">
                   {!data.first_name
                     ? 'Please provide a last name.'
-                    : 'Please only use alphanumeric or unicode characters.'}{' '}
+                    : 'Please only use alphanumeric or unicode characters.'}
                 </Form.Control.Feedback>
               </Form.Group>
             </Col>
