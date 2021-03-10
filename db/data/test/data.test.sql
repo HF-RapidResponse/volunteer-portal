@@ -97,6 +97,23 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: account_settings; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.account_settings (
+    uuid uuid NOT NULL,
+    show_name boolean NOT NULL,
+    show_email boolean NOT NULL,
+    show_location boolean NOT NULL,
+    organizers_can_see boolean NOT NULL,
+    volunteers_can_see boolean NOT NULL,
+    initiative_map json NOT NULL
+);
+
+
+ALTER TABLE public.account_settings OWNER TO admin;
+
+--
 -- Name: accounts; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -191,23 +208,6 @@ CREATE TABLE public.notifications (
 ALTER TABLE public.notifications OWNER TO admin;
 
 --
--- Name: settings; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.settings (
-    uuid uuid NOT NULL,
-    show_name boolean NOT NULL,
-    show_email boolean NOT NULL,
-    show_location boolean NOT NULL,
-    organizers_can_see boolean NOT NULL,
-    volunteers_can_see boolean NOT NULL,
-    initiative_map json NOT NULL
-);
-
-
-ALTER TABLE public.settings OWNER TO admin;
-
---
 -- Name: volunteer_openings; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -236,6 +236,14 @@ CREATE TABLE public.volunteer_openings (
 
 
 ALTER TABLE public.volunteer_openings OWNER TO admin;
+
+--
+-- Name: account_settings account_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.account_settings
+    ADD CONSTRAINT account_settings_pkey PRIMARY KEY (uuid);
+
 
 --
 -- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
@@ -275,14 +283,6 @@ ALTER TABLE ONLY public.initiatives
 
 ALTER TABLE ONLY public.notifications
     ADD CONSTRAINT notifications_pkey PRIMARY KEY (notification_uuid);
-
-
---
--- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.settings
-    ADD CONSTRAINT settings_pkey PRIMARY KEY (uuid);
 
 
 --
