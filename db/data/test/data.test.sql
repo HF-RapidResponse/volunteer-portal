@@ -238,27 +238,11 @@ CREATE TABLE public.volunteer_openings (
 ALTER TABLE public.volunteer_openings OWNER TO admin;
 
 --
--- Name: accounts accounts_email_key; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.accounts
-    ADD CONSTRAINT accounts_email_key UNIQUE (email);
-
-
---
 -- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.accounts
     ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: accounts accounts_username_key; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.accounts
-    ADD CONSTRAINT accounts_username_key UNIQUE (username);
 
 
 --
@@ -302,19 +286,25 @@ ALTER TABLE ONLY public.settings
 
 
 --
--- Name: accounts unique_acct_emails_usernames; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.accounts
-    ADD CONSTRAINT unique_acct_emails_usernames UNIQUE (email, username);
-
-
---
 -- Name: volunteer_openings volunteer_openings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.volunteer_openings
     ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: ix_accounts_email; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE UNIQUE INDEX ix_accounts_email ON public.accounts USING btree (email);
+
+
+--
+-- Name: ix_accounts_username; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE UNIQUE INDEX ix_accounts_username ON public.accounts USING btree (username);
 
 
 --
