@@ -17,7 +17,6 @@ class AccountRequestSchema(BaseModel):
 
     class Config:
         orm_mode = True
-        arbitrary_types_allowed = True
 
 
 class AccountResponseSchema(AccountRequestSchema):
@@ -43,6 +42,3 @@ class PartialAccountSchema(BaseModel):
     city: Optional[str]
     state: Optional[str]
     roles: Optional[List]
-
-    # class Config:
-    #     orm_mode = True

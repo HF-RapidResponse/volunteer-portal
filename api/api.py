@@ -1,9 +1,9 @@
 from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Text, Union, Mapping, Any
-from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account, Settings
+from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account, AccountSettings
 from schemas import (NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema,
-                     DonationEmailSchema, AccountRequestSchema, AccountResponseSchema, PartialAccountSchema, SettingsSchema)
+                     DonationEmailSchema, AccountRequestSchema, AccountResponseSchema, PartialAccountSchema, AccountSettingsSchema)
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
@@ -35,8 +35,6 @@ app.include_router(
     auth.router,
     prefix='/api'
 )
-
-CLIENT_ID = "899853639312-rluooarpraulr242vuvfqejefmg1ii8d.apps.googleusercontent.com"
 
 
 @app.exception_handler(AuthJWTException)
@@ -185,44 +183,44 @@ def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(g
     db.commit()
 
 
-@app.post("/api/settings/", response_model=SettingsSchema, status_code=201)
-def create_settings(settings: SettingsSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    existing_settings = db.query(Settings).filter_by(
+@app.post("/api/account_settings/", response_model=AccountSettingsSchema, status_code=201)
+def create_settings(settings: AccountSettingsSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    existing_settings = db.query(AccountSettings).filter_by(
         uuid=settings.uuid).first()
     if existing_settings is not None:
         raise HTTPException(
             status_code=400, detail=f"Settings already exist for that account")
 
-    new_settings = Settings(**settings.dict())
+    new_settings = AccountSettings(**settings.dict())
     db.add(new_settings)
     db.commit()
     create_access_and_refresh_tokens(str(settings.uuid), Authorize)
     return new_settings
 
 
-@app.get("/api/settings/", response_model=List[SettingsSchema])
+@app.get("/api/account_settings/", response_model=List[AccountSettingsSchema])
 def get_all_settings(db: Session = Depends(get_db)):
-    return db.query(Settings).all()
+    return db.query(AccountSettings).all()
 
 
-@app.get("/api/settings/{uuid}", response_model=SettingsSchema)
+@app.get("/api/account_settings/{uuid}", response_model=AccountSettingsSchema)
 def get_settings_by_uuid(uuid, db: Session = Depends(get_db)):
-    return db.query(Settings).filter_by(uuid=uuid).first()
+    return db.query(AccountSettings).filter_by(uuid=uuid).first()
 
 
-@app.put("/api/settings/{uuid}", response_model=SettingsSchema)
-def update_settings(uuid, settings: SettingsSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+@app.put("/api/account_settings/{uuid}", response_model=AccountSettingsSchema)
+def update_settings(uuid, settings: AccountSettingsSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
-    updated_settings = Settings(**settings.dict())
+    updated_settings = AccountSettings(**settings.dict())
     db.merge(updated_settings)
     db.commit()
     return updated_settings
 
 
-@ app.delete("/api/settings/{uuid}", status_code=204)
+@ app.delete("/api/account_settings/{uuid}", status_code=204)
 def delete_settings(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
-    settings_to_delete = db.query(Settings).filter_by(uuid=uuid).first()
+    settings_to_delete = db.query(AccountSettings).filter_by(uuid=uuid).first()
     if settings_to_delete is None:
         raise HTTPException(status_code=400,
                             detail=f"Settings with UUID {uuid} not found")

@@ -182,7 +182,7 @@ ALTER TABLE public.accounts OWNER TO admin;
 -- Name: settings; Type: TABLE; Schema: public; Owner: admin
 --
 
-CREATE TABLE public.settings (
+CREATE TABLE public.account_settings (
     uuid uuid NOT NULL PRIMARY KEY,
     show_name boolean,
     show_email boolean,
@@ -193,7 +193,7 @@ CREATE TABLE public.settings (
 );
 
 
-ALTER TABLE public.settings OWNER TO admin;
+ALTER TABLE public.account_settings OWNER TO admin;
 
 
 --

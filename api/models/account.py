@@ -18,6 +18,7 @@ class Account(Base):
     username = Column('username', String(255), unique=True, nullable=False)
     first_name = Column('first_name', String(255), nullable=True)
     last_name = Column('last_name', String(255), nullable=True)
+    # passwords are encrypted using passlib with pbkdf2_sha256 hashing (see security.py)
     password = Column('password', Text, nullable=True)
     oauth = Column('oauth', String(32), nullable=True)
     profile_pic = Column('profile_pic', Text, nullable=True)

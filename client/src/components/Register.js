@@ -72,6 +72,7 @@ function Register(props) {
                   onChange={(e) => {
                     handleKeyPress('first_name', e);
                   }}
+                  isValid={submitted && !errors.firstName}
                   isInvalid={errors.firstName}
                   required
                 />
@@ -91,6 +92,7 @@ function Register(props) {
                   onChange={(e) => {
                     handleKeyPress('last_name', e);
                   }}
+                  isValid={submitted && !errors.lastName}
                   isInvalid={errors.lastName}
                   required
                 />
@@ -110,7 +112,9 @@ function Register(props) {
               onChange={(e) => {
                 handleKeyPress('username', e);
               }}
+              isValid={submitted && !errors.username}
               isInvalid={errors.username}
+              required
             />
             <Form.Control.Feedback type="invalid">
               {!data.last_name
@@ -126,6 +130,7 @@ function Register(props) {
               onChange={(e) => {
                 handleKeyPress('email', e);
               }}
+              isValid={submitted && !errors.email}
               isInvalid={errors.email}
               required
             />
@@ -141,13 +146,13 @@ function Register(props) {
               onChange={(e) => {
                 handleKeyPress('password', e);
               }}
+              isValid={submitted && !errors.password}
               isInvalid={errors.password}
               required
             />
             <Form.Control.Feedback type="invalid">
-              {
-                'Please enter a password between 6 and 20 characters long with at least 1 letter, 1 nuumber, and 1 special character.'
-              }
+              Please enter a password between 6 and 20 characters long with at
+              least 1 letter, 1 number, and 1 special character.
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formRetypePassword">
@@ -158,6 +163,7 @@ function Register(props) {
               onChange={(e) => {
                 handleKeyPress('retypePass', e);
               }}
+              isValid={submitted && !errors.retypePass}
               isInvalid={errors.retypePass}
               required
             />

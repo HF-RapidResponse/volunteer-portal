@@ -70,9 +70,9 @@ export class AccountReqBody {
 export class SettingsReqBody {
   constructor(obj) {
     this.uuid = obj.uuid;
-    this.show_name = obj.show_name ?? true;
-    this.show_email = obj.show_email ?? true;
-    this.show_location = obj.show_location ?? true;
+    this.show_name = obj.show_name ?? false;
+    this.show_email = obj.show_email ?? false;
+    this.show_location = obj.show_location ?? false;
     this.organizers_can_see = obj.organizers_can_see ?? true;
     this.volunteers_can_see = obj.volunteers_can_see ?? true;
     this.initiative_map = obj.initiative_map || {};
@@ -109,14 +109,14 @@ const getSettings = async (id) => {
   }
 
   try {
-    const getRes = await axios.get(`/api/settings/${id}`);
+    const getRes = await axios.get(`/api/account_settings/${id}`);
     let settings;
     if (getRes.data) {
       settings = getRes.data;
     } else {
       const initiative_map = await updateInitiativeMap();
       const createRes = await axios.post(
-        `/api/settings/`,
+        `/api/account_settings/`,
         new SettingsReqBody({ uuid: id, initiative_map })
       );
       settings = createRes.data;
@@ -285,7 +285,7 @@ export const deleteRole = (payload) => async (dispatch) => {
 export const deleteUser = (uuid) => async (dispatch) => {
   try {
     await refreshAccessToken();
-    await axios.delete(`/api/settings/${uuid}`);
+    await axios.delete(`/api/account_settings/${uuid}`);
     await axios.delete(`/api/accounts/${uuid}`);
     dispatch(completeLogout());
   } catch (error) {
@@ -303,7 +303,9 @@ export const isValidPassword = (payload) => {
   if (!payload) {
     return false;
   }
-  return payload.match(/(?=.*\d)(?=.*[a-zA-Z])(?=.*[!#$%&?]).{6,20}/g);
+  return payload.match(
+    /(?=.*\d)(?=.*[a-zA-Z])(?=.*[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]).{6,20}/g
+  );
 };
 
 export const basicPropUpdate = (payload) => async (dispatch) => {
@@ -314,7 +316,7 @@ export const basicPropUpdate = (payload) => async (dispatch) => {
     dispatch(refreshTokenIfNeeded(tokenRefreshTime));
     const settingsReq = new SettingsReqBody(userCopy);
     const response = await axios.put(
-      `/api/settings/${settingsReq.uuid}`,
+      `/api/account_settings/${settingsReq.uuid}`,
       settingsReq
     );
     userCopy = { ...userCopy, ...response.data };
@@ -343,7 +345,7 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
     dispatch(refreshTokenIfNeeded(tokenRefreshTime));
     const settingsReq = new SettingsReqBody(userCopy);
     const response = await axios.put(
-      `/api/settings/${settingsReq.uuid}`,
+      `/api/account_settings/${settingsReq.uuid}`,
       settingsReq
     );
     userCopy = { ...userCopy, ...response.data };

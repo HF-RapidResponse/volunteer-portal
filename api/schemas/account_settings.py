@@ -3,7 +3,7 @@ from typing import List, Dict, Text, Optional
 from uuid import UUID
 
 
-class SettingsSchema(BaseModel):
+class AccountSettingsSchema(BaseModel):
     uuid: UUID
     show_name: bool
     show_email: bool

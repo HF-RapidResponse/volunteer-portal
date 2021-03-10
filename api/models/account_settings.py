@@ -9,13 +9,13 @@ from sqlalchemy.sql import func
 from uuid import uuid4
 
 
-class Settings(Base):
-    __tablename__ = 'settings'
+class AccountSettings(Base):
+    __tablename__ = 'account_settings'
 
     uuid = Column(UUID(as_uuid=True), primary_key=True,
                   default=uuid4, unique=True, nullable=False)
-    show_name = Column('show_name', Boolean, default=True, nullable=False)
-    show_email = Column('show_email', Boolean, default=True, nullable=False)
+    show_name = Column('show_name', Boolean, default=False, nullable=False)
+    show_email = Column('show_email', Boolean, default=False, nullable=False)
     show_location = Column('show_location', Boolean,
                            default=True, nullable=False)
     organizers_can_see = Column(
@@ -25,5 +25,5 @@ class Settings(Base):
     initiative_map = Column('initiative_map', JSON, default={}, nullable=False)
 
     def __repr__(self):
-        return "<Settings(uuid='%s', show_name='%s', show_email='%s', show_location='%s', organizers_can_see='%s', volunteers_can_see='%s', initiative_map='%s')>" % (
+        return "<AccountSettings(uuid='%s', show_name='%s', show_email='%s', show_location='%s', organizers_can_see='%s', volunteers_can_see='%s', initiative_map='%s')>" % (
             self.uuid, self.show_name, self.show_email, self.show_location, self.organizers_can_see, self.volunteers_can_see, self.initiative_map)

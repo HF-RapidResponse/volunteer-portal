@@ -8,4 +8,4 @@ from models.volunteer_event import VolunteerEvent
 from models.volunteer_role import VolunteerRole
 from models.account import Account
 from models.notification import Notification
-from models.settings import Settings
+from models.account_settings import AccountSettings
