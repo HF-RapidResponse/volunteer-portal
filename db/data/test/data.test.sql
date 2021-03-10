@@ -97,6 +97,27 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: accounts; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.accounts (
+    uuid uuid NOT NULL,
+    email text NOT NULL,
+    username character varying(255) NOT NULL,
+    first_name character varying(255),
+    last_name character varying(255),
+    password text,
+    oauth character varying(32),
+    profile_pic text,
+    city character varying(32),
+    state character varying(32),
+    roles character varying[] NOT NULL
+);
+
+
+ALTER TABLE public.accounts OWNER TO admin;
+
+--
 -- Name: donation_emails; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -114,17 +135,17 @@ ALTER TABLE public.donation_emails OWNER TO admin;
 --
 
 CREATE TABLE public.events (
-    uuid uuid NOT NULL,
     id character varying(255) NOT NULL,
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL,
+    uuid uuid NOT NULL,
     event_name character varying(255) NOT NULL,
     event_graphics json[],
     signup_link text NOT NULL,
     start timestamp without time zone NOT NULL,
     "end" timestamp without time zone,
-    description text,
-    airtable_last_modified timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    is_deleted boolean NOT NULL
+    description text
 );
 
 
@@ -135,18 +156,18 @@ ALTER TABLE public.events OWNER TO admin;
 --
 
 CREATE TABLE public.initiatives (
-    uuid uuid NOT NULL,
     id character varying(255) NOT NULL,
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL,
+    uuid uuid NOT NULL,
     initiative_name character varying(255) NOT NULL,
     "order" integer NOT NULL,
     details_link character varying(255),
     hero_image_urls json[],
     description text NOT NULL,
     roles character varying[] NOT NULL,
-    events character varying[] NOT NULL,
-    airtable_last_modified timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    is_deleted boolean NOT NULL
+    events character varying[] NOT NULL
 );
 
 
@@ -170,12 +191,32 @@ CREATE TABLE public.notifications (
 ALTER TABLE public.notifications OWNER TO admin;
 
 --
+-- Name: settings; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.settings (
+    uuid uuid NOT NULL,
+    show_name boolean NOT NULL,
+    show_email boolean NOT NULL,
+    show_location boolean NOT NULL,
+    organizers_can_see boolean NOT NULL,
+    volunteers_can_see boolean NOT NULL,
+    initiative_map json NOT NULL
+);
+
+
+ALTER TABLE public.settings OWNER TO admin;
+
+--
 -- Name: volunteer_openings; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.volunteer_openings (
-    uuid uuid NOT NULL,
     id character varying(255) NOT NULL,
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL,
+    uuid uuid NOT NULL,
     role_name character varying(255) NOT NULL,
     hero_image_urls json[],
     application_signup_form text,
@@ -190,14 +231,35 @@ CREATE TABLE public.volunteer_openings (
     what_youll_learn text,
     responsibilities_and_duties text,
     qualifications text,
-    role_type public.roletype NOT NULL,
-    airtable_last_modified timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    is_deleted boolean NOT NULL
+    role_type public.roletype NOT NULL
 );
 
 
 ALTER TABLE public.volunteer_openings OWNER TO admin;
+
+--
+-- Name: accounts accounts_email_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts_email_key UNIQUE (email);
+
+
+--
+-- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: accounts accounts_username_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts_username_key UNIQUE (username);
+
 
 --
 -- Name: donation_emails donation_emails_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
@@ -229,6 +291,22 @@ ALTER TABLE ONLY public.initiatives
 
 ALTER TABLE ONLY public.notifications
     ADD CONSTRAINT notifications_pkey PRIMARY KEY (notification_uuid);
+
+
+--
+-- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.settings
+    ADD CONSTRAINT settings_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: accounts unique_acct_emails_usernames; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT unique_acct_emails_usernames UNIQUE (email, username);
 
 
 --

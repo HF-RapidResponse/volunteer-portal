@@ -14,8 +14,8 @@ class Account(Base):
 
     uuid = Column(UUID(as_uuid=True), primary_key=True,
                   default=uuid4, unique=True, nullable=False)
-    email = Column('email', Text, unique=True, nullable=False)
-    username = Column('username', String(255), unique=True, nullable=False)
+    email = Column('email', Text, unique=True, nullable=False, index=True)
+    username = Column('username', String(255), unique=True, nullable=False, index=True)
     first_name = Column('first_name', String(255), nullable=True)
     last_name = Column('last_name', String(255), nullable=True)
     # passwords are encrypted using passlib with pbkdf2_sha256 hashing (see security.py)
@@ -25,8 +25,6 @@ class Account(Base):
     city = Column('city', String(32), nullable=True)
     state = Column('state', String(32), nullable=True)
     roles = Column('roles', ARRAY(String), default=[], nullable=False)
-
-    UniqueConstraint(email, username, name='unique_acct_emails_usernames')
 
     def __repr__(self):
         return "<Account(uuid='%s', email='%s', username='%s', first_name='%s', last_name='%s', password='%s', oauth='%s', profile_pic='%s', city='%s', state='%s', roles='%s')>" % (

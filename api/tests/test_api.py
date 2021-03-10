@@ -15,7 +15,7 @@ from models import Initiative, VolunteerRole, VolunteerEvent, DonationEmail
 
 from tests.fake_data_utils import generate_fake_initiative, generate_fake_volunteer_role
 from tests.fake_data_utils import generate_fake_volunteer_event, generate_fake_donation_email
-from tests.fake_data_utils import generate_fake_initiatives_list
+from tests.fake_data_utils import generate_fake_initiatives_list, generate_fake_account
 
 from sqlalchemy import exc
 
@@ -140,3 +140,70 @@ def test_nullified_initiatives_serving(db):
 
   client.get(f'api/volunteer_initiatives/{initiative.external_id}')
   cleanup_initiative(db, initiative)
+
+def test_create_account(db):
+    account = {'email': 'rebecca03@thomasrivera.com',
+               'username': 'DakotaMcclain',
+               'first_name': 'Jeff',
+               'last_name': 'Long',
+               'password': '^7^Cg&kt*X',
+               'oauth': 'W^9Oa(Qy+L',
+               'profile_pic': 'http://www.davis-burke.com/',
+               'city': 'Lake Robertburgh',
+               'state': 'Virginia',
+               'roles': ['Sales professional,IT',
+                         'Commissioning editor']}
+    response = client.post(f'api/accounts/', json=account)
+    assert response.status_code < 400
+
+    response_account = response.json()
+    assert 'uuid' in response_account
+    uuid = response_account['uuid']
+
+    resp = client.get(f'api/accounts/{uuid}')
+    response_account = resp.json()
+
+    del_resp = client.delete(f'api/accounts/{uuid}')
+    assert del_resp.status_code < 400
+
+    # check db_saved password is encrypted
+    assert response_account['password'] != account['password']
+
+    del response_account['password']
+    del account['password']
+    del response_account['uuid']
+
+    assert response_account == account
+
+def test_create_duplicate_email_account(db):
+    account = {'email': 'rebecca03@thomasrivera.com',
+               'username': 'DakotaMcclain',
+               'first_name': 'Jeff',
+               'last_name': 'Long',
+               'password': '^7^Cg&kt*X',
+               'oauth': 'W^9Oa(Qy+L',
+               'profile_pic': 'http://www.davis-burke.com/',
+               'city': 'Lake Robertburgh',
+               'state': 'Virginia',
+               'roles': ['Sales professional,IT',
+                         'Commissioning editor']}
+    account2 = {'email': 'rebecca03@thomasrivera.com',
+               'username': 'DakotaMcclain2',
+               'first_name': 'Jeff2',
+               'last_name': 'Long2',
+               'password': '^7^Cg&kt*X2',
+               'oauth': 'W^9Oa(Qy+L2',
+               'profile_pic': 'http://www.davis-burke.com/2',
+               'city': 'Lake Robertburgh2',
+               'state': 'Virginia2',
+               'roles': ['Commissioning editor2']}
+    response = client.post(f'api/accounts/', json=account)
+    assert response.status_code < 400
+    assert 'uuid' in response.json()
+    uuid = response.json()['uuid']
+
+    response = client.post(f'api/accounts/', json=account2)
+    assert response.status_code == 400
+
+    del_resp = client.delete(f'api/accounts/{uuid}')
+    assert del_resp.status_code < 400
