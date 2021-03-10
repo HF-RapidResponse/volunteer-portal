@@ -1,4 +1,0 @@
-runtime: python38
-entrypoint: gunicorn api:app -w 4 -k uvicorn.workers.UvicornWorker
-service: volunteer-portal-api-staging
-instance_class: F4  

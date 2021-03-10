@@ -62,8 +62,11 @@ Config = read_config()
 # Generate Database URLs based on the DB connection information
 
 
-def generate_hf_mysql_db_address(connection) -> str:
-    db_pass = get_secret_for_key(db_secret_key)
+def generate_hf_secret_db_address(connection) -> str:
+    secret_client = secretmanager.SecretManagerServiceClient()
+    secret_path = f'projects/humanity-forward/secrets/{connection["password"]}/versions/latest'
+    db_pass = secret_client.access_secret_version(
+        request={"name": secret_path}).payload.data.decode('UTF-8')
     return f'{connection["adapter"]}://{connection["user"]}:{db_pass}@{connection["host"]}/{connection["database"]}'
 
 
@@ -72,7 +75,7 @@ def generate_db_url(connection: Dict) -> str:
 
 
 db_url_generators = {
-    "secret_generator": generate_hf_mysql_db_address,
+    "secret_generator": generate_hf_secret_db_address,
     "db_url_generator": generate_db_url
 }
 
