@@ -2,6 +2,9 @@
 # Use "docker-comppose -f docker-compose.yml -f docker-compose.test.yml up" to extend and override
 # the base configs in docker-compose.yml with this config.
 services:
+  db:
+    volumes:
+    - ./db/data/test:/docker-entrypoint-initdb.d
   api:
     environment:
       ENV: test
