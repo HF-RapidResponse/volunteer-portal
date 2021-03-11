@@ -12,6 +12,7 @@ import {
   loadLoggedInUser,
   setFirstAcctPage,
   syncInitMapAndLoadUser,
+  checkIfCookieIsValid,
 } from '../../store/user-slice.js';
 import { getInitiatives } from '../../store/initiative-slice';
 
@@ -77,19 +78,24 @@ function Header(props) {
     } else if (user) {
       loadLoggedInUser(user);
     } else {
-      const userCookie = cookies.get('user');
-      if (userCookie) {
+      const cookieID = cookies.get('user_id');
+      if (cookieID) {
+        checkIfCookieIsValid(cookies);
         if (firstPath.includes('/account') && !firstAcctPage) {
           setFirstAcctPage(firstPath);
         }
-        syncInitMapAndLoadUser(userCookie.uuid);
+        syncInitMapAndLoadUser(cookieID);
       }
     }
   }, []);
 
   useEffect(() => {
     if (user) {
-      cookies.set('user', user, { path: '/', sameSite: 'None', secure: true });
+      cookies.set('user_id', user.uuid, {
+        path: '/',
+        sameSite: 'None',
+        secure: true,
+      });
     }
   }, [user]);
 

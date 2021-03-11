@@ -59,6 +59,15 @@ function Settings(props) {
     }
   }, [validated, submitted]);
 
+  const submitWrapper = (e) => {
+    if (data.oldPass) {
+      handleSubmit(e);
+    } else {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   return user ? (
     <>
       <Form
@@ -67,7 +76,7 @@ function Settings(props) {
         style={{ background: 'white' }}
         noValidate
         validated={validated}
-        onSubmit={handleSubmit}
+        onSubmit={submitWrapper}
       >
         <h4 className="mb-5">Change Account</h4>
         <Row className="mt-2 mb-2">

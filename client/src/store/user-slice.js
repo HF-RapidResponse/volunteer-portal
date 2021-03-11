@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { createSlice } from '@reduxjs/toolkit';
+import { get } from 'lodash';
 
 const userSlice = createSlice({
   name: 'userStore',
 
   initialState: {
     user: null,
-    shownSettings: {},
     firstAcctPage: null,
     tokenRefreshTime: null,
   },
@@ -22,7 +22,6 @@ const userSlice = createSlice({
     },
     completeLogout: (state) => {
       state.user = null;
-      state.shownSettings = {};
       state.firstAcctPage = null;
       state.tokenRefreshTime = null;
     },
@@ -141,6 +140,23 @@ const updateInitiativeMap = async (initiative_map = {}) => {
   return updatedMap;
 };
 
+export const checkIfCookieIsValid = (cookies) => async (dispatch) => {
+  try {
+    const cookieID = cookies.get('user_id');
+    const refreshTime = await refreshAccessToken();
+    dispatch(setRefreshTime(refreshTime));
+    const getUserRes = await axios.get(`/api/accounts/${cookieID}`);
+    const user = getUserRes.data;
+    if (!user) {
+      throw 'invalid user from cookies';
+    }
+  } catch (error) {
+    console.error(error);
+    cookies.remove('user_id', { path: '/', sameSite: 'None', secure: true });
+    window.location.reload();
+  }
+};
+
 export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
   try {
     const refreshTime = await refreshAccessToken();
@@ -177,10 +193,15 @@ export const refreshTokenIfNeeded = (tokenRefreshTime) => async (dispatch) => {
   }
 };
 
-export const startLogout = () => async (dispatch) => {
+export const startLogout = (cookies) => async (dispatch) => {
   try {
     await refreshAccessToken();
     await axios.delete(`/api/logout`);
+    cookies.remove('user_id', {
+      path: '/',
+      sameSite: 'None',
+      secure: true,
+    });
     dispatch(setRefreshTime(null));
     dispatch(completeLogout());
   } catch (error) {
@@ -239,12 +260,10 @@ export const verifyPassword = (payload) => {
 
 export const changePassword = (payload) => async (dispatch) => {
   const { uuid, oldPass, newPass, retypePass, tokenRefreshTime } = payload;
-  const newPassValidated = isValidPassword(newPass);
-  const newPassesMatch = newPass === retypePass;
   const errors = {
-    oldPassInvalid: true,
-    newPassRetypeMismatch: !newPassesMatch,
-    newPassInvalid: !newPassValidated,
+    oldPassInvalid: !isValidPassword(oldPass),
+    newPassRetypeMismatch: newPass !== retypePass,
+    newPassInvalid: !isValidPassword(newPass),
   };
 
   try {
@@ -255,9 +274,7 @@ export const changePassword = (payload) => async (dispatch) => {
     dispatch(refreshTokenIfNeeded(tokenRefreshTime));
     const oldPassIsValid = await axios.post(`/api/verify_password`, acctReqObj);
 
-    if (oldPassIsValid.data && newPassValidated && newPassesMatch) {
-      errors.oldPassInvalid = false;
-
+    if (oldPassIsValid.data && formHasNoErrors(errors)) {
       const accountRes = await axios.patch(
         `/api/accounts/${uuid}`,
         new AccountReqBody({
@@ -272,8 +289,10 @@ export const changePassword = (payload) => async (dispatch) => {
     }
   } catch (error) {
     console.error(error);
+    errors.oldPassInvalid = true;
     handlePossibleExpiredToken(error);
   }
+  console.log('errors to throw:', errors);
   throw errors;
 };
 
@@ -299,13 +318,15 @@ export const deleteUser = (uuid) => async (dispatch) => {
   Regex is asking for 6 to 20 character length with at least 
   1 letter, 1 number, and 1 special characters
 */
-export const isValidPassword = (payload) => {
-  if (!payload) {
+export const isValidPassword = (password) => {
+  if (!password) {
     return false;
   }
-  return payload.match(
+
+  const regex = new RegExp(
     /(?=.*\d)(?=.*[a-zA-Z])(?=.*[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]).{6,20}/g
   );
+  return regex.test(password);
 };
 
 export const basicPropUpdate = (payload) => async (dispatch) => {
@@ -402,8 +423,8 @@ export const formHasNoErrors = (errors) => {
   Credit: https://www.w3docs.com/snippets/javascript/how-to-validate-an-e-mail-using-javascript.html
 */
 export const isValidEmail = (email) => {
-  const res = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return res.test(String(email).toLowerCase());
+  const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return regex.test(String(email).toLowerCase());
 };
 
 /*
