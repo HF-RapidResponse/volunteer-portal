@@ -3,10 +3,11 @@ from random import seed, randint, choice, shuffle
 from datetime import datetime, timedelta
 
 from faker import Faker  # type: ignore
-from faker.providers import barcode  # type: ignore
+from faker.providers import barcode, job, address  # type: ignore
 
 # from models import Person, Initiative, VolunteerRole, Priority, VolunteerEvent
 from models import Initiative, Person, Priority, RoleType, VolunteerRole, VolunteerEvent, DonationEmail
+from models import Account
 
 fake = Faker()
 fake.add_provider(barcode)
@@ -121,3 +122,23 @@ def generate_fake_initiatives_list(session, count: int = 1, roles_count: int = 2
 def generate_fake_donation_email():
     fake_donation_email = DonationEmail(email=fake.email())
     return fake_donation_email
+
+def get_fake_email():
+    # dash isn't valid in the domain part of an email according to one of our checkers.
+    return fake.unique.email().replace("-", "")
+
+def generate_fake_account():
+    return Account(
+        email=get_fake_email(),
+        username=fake.name().replace(" ", ""),
+        first_name=fake.first_name(),
+        last_name=fake.last_name(),
+        password=fake.password(),
+        oauth=fake.password(),
+        # TODO simple http server to act as testing object storage
+        profile_pic=fake.url(),
+        city=fake.city(),
+        state=fake.state(),
+        roles=[fake.job() for i in range(randint(0,2))],
+
+    )

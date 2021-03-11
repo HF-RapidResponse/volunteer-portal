@@ -39,6 +39,32 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: notificationchannel; Type: TYPE; Schema: public; Owner: admin
+--
+
+CREATE TYPE public.notificationchannel AS ENUM (
+    'EMAIL',
+    'SMS',
+    'SLACK'
+);
+
+
+ALTER TYPE public.notificationchannel OWNER TO admin;
+
+--
+-- Name: notificationstatus; Type: TYPE; Schema: public; Owner: admin
+--
+
+CREATE TYPE public.notificationstatus AS ENUM (
+    'SCHEDULED',
+    'SENT',
+    'FAILED'
+);
+
+
+ALTER TYPE public.notificationstatus OWNER TO admin;
+
+--
 -- Name: priority; Type: TYPE; Schema: public; Owner: admin
 --
 
@@ -71,6 +97,44 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: account_settings; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.account_settings (
+    uuid uuid NOT NULL,
+    show_name boolean NOT NULL,
+    show_email boolean NOT NULL,
+    show_location boolean NOT NULL,
+    organizers_can_see boolean NOT NULL,
+    volunteers_can_see boolean NOT NULL,
+    initiative_map json NOT NULL
+);
+
+
+ALTER TABLE public.account_settings OWNER TO admin;
+
+--
+-- Name: accounts; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.accounts (
+    uuid uuid NOT NULL,
+    email text NOT NULL,
+    username character varying(255) NOT NULL,
+    first_name character varying(255),
+    last_name character varying(255),
+    password text,
+    oauth character varying(32),
+    profile_pic text,
+    city character varying(32),
+    state character varying(32),
+    roles character varying[] NOT NULL
+);
+
+
+ALTER TABLE public.accounts OWNER TO admin;
+
+--
 -- Name: donation_emails; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -88,17 +152,17 @@ ALTER TABLE public.donation_emails OWNER TO admin;
 --
 
 CREATE TABLE public.events (
-    uuid uuid NOT NULL,
     id character varying(255) NOT NULL,
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL,
+    uuid uuid NOT NULL,
     event_name character varying(255) NOT NULL,
     event_graphics json[],
     signup_link text NOT NULL,
     start timestamp without time zone NOT NULL,
     "end" timestamp without time zone,
-    description text,
-    airtable_last_modified timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    is_deleted boolean NOT NULL
+    description text
 );
 
 
@@ -109,30 +173,50 @@ ALTER TABLE public.events OWNER TO admin;
 --
 
 CREATE TABLE public.initiatives (
-    uuid uuid NOT NULL,
     id character varying(255) NOT NULL,
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL,
+    uuid uuid NOT NULL,
     initiative_name character varying(255) NOT NULL,
     "order" integer NOT NULL,
     details_link character varying(255),
     hero_image_urls json[],
     description text NOT NULL,
     roles character varying[] NOT NULL,
-    events character varying[] NOT NULL,
-    airtable_last_modified timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    is_deleted boolean NOT NULL
+    events character varying[] NOT NULL
 );
 
 
 ALTER TABLE public.initiatives OWNER TO admin;
 
 --
+-- Name: notifications; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.notifications (
+    notification_uuid uuid NOT NULL,
+    channel public.notificationchannel NOT NULL,
+    recipient text NOT NULL,
+    message text NOT NULL,
+    scheduled_send_date timestamp without time zone NOT NULL,
+    status public.notificationstatus NOT NULL,
+    send_date timestamp without time zone
+);
+
+
+ALTER TABLE public.notifications OWNER TO admin;
+
+--
 -- Name: volunteer_openings; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.volunteer_openings (
-    uuid uuid NOT NULL,
     id character varying(255) NOT NULL,
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL,
+    uuid uuid NOT NULL,
     role_name character varying(255) NOT NULL,
     hero_image_urls json[],
     application_signup_form text,
@@ -147,53 +231,26 @@ CREATE TABLE public.volunteer_openings (
     what_youll_learn text,
     responsibilities_and_duties text,
     qualifications text,
-    role_type public.roletype NOT NULL,
-    airtable_last_modified timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    is_deleted boolean NOT NULL
+    role_type public.roletype NOT NULL
 );
 
 
 ALTER TABLE public.volunteer_openings OWNER TO admin;
 
 --
--- Name: accounts; Type: TABLE; Schema: public; Owner: admin
+-- Data for Name: account_settings; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-CREATE TABLE public.accounts (
-    uuid uuid NOT NULL PRIMARY KEY,
-    email text NOT NULL,
-    username character varying(255) NOT NULL,
-    first_name character varying(255) NOT NULL,
-    last_name character varying(255) NOT NULL,
-    "password" text,
-    oauth character varying(32),
-    profile_pic text,
-    city character varying(32),
-    "state" character varying(32),
-    roles character varying[],
-    CONSTRAINT Uni_Acct_Props UNIQUE (email, username)
-);
+COPY public.account_settings (uuid, show_name, show_email, show_location, organizers_can_see, volunteers_can_see, initiative_map) FROM stdin;
+\.
 
-
-ALTER TABLE public.accounts OWNER TO admin;
 
 --
--- Name: settings; Type: TABLE; Schema: public; Owner: admin
+-- Data for Name: accounts; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-CREATE TABLE public.account_settings (
-    uuid uuid NOT NULL PRIMARY KEY,
-    show_name boolean,
-    show_email boolean,
-    show_location boolean,
-    organizers_can_see boolean,
-    volunteers_can_see boolean,
-    initiative_map json
-);
-
-
-ALTER TABLE public.account_settings OWNER TO admin;
+COPY public.accounts (uuid, email, username, first_name, last_name, password, oauth, profile_pic, city, state, roles) FROM stdin;
+\.
 
 
 --
@@ -208,21 +265,21 @@ COPY public.donation_emails (donation_uuid, email, request_sent_date) FROM stdin
 -- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.events (uuid, id, event_name, event_graphics, signup_link, start, "end", description, airtable_last_modified, updated_at, is_deleted) FROM stdin;
-f9ea092f-4b7b-4f60-b302-abf420636744	6784424946130	Carry despite rate myself once just.	{}	http://www.mcdonald-montgomery.net/category/search/wp-content/terms/	2021-01-28 01:22:08.227006	2021-02-01 01:22:08.227006	Too great statement particularly local reason. Way include dog certainly big. Because bar money garden lose away set. Consider black risk weight change phone they. Fine quite rule kind identify including.	2021-01-18 01:22:08.227006	2021-01-21 01:22:08.227006	f
-eb798a7d-cb76-408f-b0ea-919b1bd755d9	7910624948868	Let serve lead practice however station on.	{}	https://chandler.com/	2021-02-04 01:22:08.22788	2021-02-06 01:22:08.22788	Decision national management card live nothing. Over clear off help analysis education federal cause. Several partner any chair.	2021-01-24 01:22:08.22788	2021-01-28 01:22:08.22788	f
-29374c7c-9899-4da0-81fc-d04e9dcb66b3	8885771340645	Though nearly statement money window present surface.	{}	https://www.smith.net/search.html	2021-01-30 01:22:08.22858	2021-02-07 01:22:08.22858	Reflect above heart perform. Put thus common back financial partner.	2021-01-18 01:22:08.22858	2021-01-23 01:22:08.22858	f
-4cdb546b-b190-4650-a13b-f89d2b6e1505	6175373760975	Or relate trial job.	{}	http://www.cunningham.com/tags/blog/post.htm	2021-01-31 01:22:08.229213	2021-02-01 01:22:08.229213	Weight manage time just visit market commercial. Play contain case executive leg. Wall eight price.	2021-01-21 01:22:08.229213	2021-01-25 01:22:08.229213	f
-bb1b70ac-29c3-431e-8c31-51346c181e85	7282714554731	Unit police phone economy arm beat.	{"{\\"url\\": \\"https://placeimg.com/923/732/any\\"}"}	https://www.knight-drake.com/wp-content/explore/search.html	2021-01-30 01:22:08.229795	2021-02-03 01:22:08.229795	Actually apply not pay bar indeed difficult. Should it very mean stand during. Itself trouble follow magazine run year. Pull us study environmental same shake various ability.	2021-01-19 01:22:08.229795	2021-01-24 01:22:08.229795	f
-92027070-7362-4932-b651-5383a4cfc511	5395507750158	Early possible popular actually discuss Congress those quality.	{"{\\"url\\": \\"https://dummyimage.com/843x606\\"}"}	http://johnson-murillo.com/author.html	2021-01-26 01:22:08.237768	2021-02-04 01:22:08.237768	Might reveal realize interesting happen minute. Democrat despite eat help character.	2021-01-14 01:22:08.237768	2021-01-18 01:22:08.237768	f
-c2eb853a-cf24-4f86-8e00-1dda6ad113cd	2566253296181	Fall wrong example.	{"{\\"url\\": \\"https://dummyimage.com/613x303\\"}"}	https://www.fleming.com/tag/category/index.html	2021-01-21 01:22:08.238205	2021-01-29 01:22:08.238205	Lay hundred parent staff. Own today organization food its. We religious professional single stay teacher.	2021-01-10 01:22:08.238205	2021-01-13 01:22:08.238205	f
-c1c82fa3-1555-474e-bdc1-6c5db289819a	4815894839836	Prepare deep policy this.	{}	https://holder.biz/terms.htm	2021-01-30 01:22:08.238726	2021-02-06 01:22:08.238726	If gun attorney community true whatever create. Language choose arm population. Pressure push indicate much onto. Those section political home simple onto window. Third bring voice development card every teacher.	2021-01-18 01:22:08.238726	2021-01-24 01:22:08.238726	f
-6314d2d3-8c0c-4317-b8b1-25f9ce921448	3456826216427	Fund score series goal skill happy.	{"{\\"url\\": \\"https://www.lorempixel.com/114/321\\"}"}	https://www.lamb.net/categories/homepage/	2021-01-24 01:22:08.241491	2021-01-28 01:22:08.241491	Show cultural young dinner Mrs. Guess research president. Watch dream trip nice middle decide.	2021-01-13 01:22:08.241491	2021-01-16 01:22:08.241491	f
-f57b6481-fe70-4b43-a57f-9873e7a7eaa6	6467461855282	Job not part someone among example my.	{"{\\"url\\": \\"https://placekitten.com/1016/37\\"}"}	http://middleton.com/	2021-01-16 01:22:08.24199	2021-01-20 01:22:08.24199	Anyone response task. Guess hundred road me difficult tax teacher.	2021-01-06 01:22:08.24199	2021-01-08 01:22:08.24199	f
-8cce40e3-bb1c-47b4-9c6a-782bf8725c5f	9357988210619	Majority world door.	{}	http://brown-morris.com/about/	2021-02-01 01:22:08.242476	2021-02-05 01:22:08.242476	Rather whose painting grow name. Usually size medical take both approach red.	2021-01-21 01:22:08.242476	2021-01-26 01:22:08.242476	f
-f9ced706-21ef-425d-aa8b-ae1f0245ae92	2811940501797	Season analysis them important we.	{"{\\"url\\": \\"https://placekitten.com/57/508\\"}"}	https://www.randolph.com/search/	2021-02-03 01:22:08.245257	2021-02-04 01:22:08.245257	Law movement admit focus. Walk relationship very course serve often news. Dinner somebody room safe recently.	2021-01-22 01:22:08.245257	2021-01-27 01:22:08.245257	f
-088ef2d6-13b4-4ae2-9712-7da9b26e243d	1193631247582	Left politics need class operation doctor both.	{"{\\"url\\": \\"https://dummyimage.com/648x793\\"}"}	http://www.hudson.com/	2021-01-31 01:22:08.245632	2021-02-10 01:22:08.245632	Front but girl reveal. Tax past federal offer. City indeed operation activity mention contain spend.	2021-01-21 01:22:08.245632	2021-01-23 01:22:08.245632	f
-6e400065-54cf-4259-9786-e782d2496ba2	6507991929845	Threat several together land with test reality commercial.	{}	https://www.alexander.com/login/	2021-01-28 01:22:08.246001	2021-02-01 01:22:08.246001	Expect mother election become. Almost central themselves account decide apply.	2021-01-16 01:22:08.246001	2021-01-20 01:22:08.246001	f
+COPY public.events (id, airtable_last_modified, updated_at, is_deleted, uuid, event_name, event_graphics, signup_link, start, "end", description) FROM stdin;
+9795666069348	2021-03-02 18:44:42.954726	2021-03-05 18:44:42.954726	f	e60d7b04-a9e5-4bc3-917a-d89628947068	Rather different as paper sense.	{}	http://reed.com/	2021-03-12 18:44:42.954726	2021-03-16 18:44:42.954726	Bring agency than face reason no true garden. Somebody official after family site.
+0076436257394	2021-03-08 18:44:42.95551	2021-03-12 18:44:42.95551	f	82a69456-ea11-4186-b743-0514d9786ee6	Officer job environmental only dark stop.	{}	https://www.brown.com/categories/category/homepage.jsp	2021-03-19 18:44:42.95551	2021-03-21 18:44:42.95551	Thank approach voice yeah movement before. Size affect low give.
+9077627904074	2021-03-02 18:44:42.956161	2021-03-07 18:44:42.956161	f	14b1de7e-240b-4e35-ab63-8115fd8b7bfd	Example serve whose hear.	{}	https://coleman-reyes.com/	2021-03-14 18:44:42.956161	2021-03-22 18:44:42.956161	The cultural fire low thus late. Nation question occur source word guy.
+5146185244459	2021-03-05 18:44:42.956674	2021-03-09 18:44:42.956674	f	01975997-01d5-4742-a6ed-c1d0178b1304	Close walk who.	{}	http://www.allen.com/login/	2021-03-15 18:44:42.956674	2021-03-16 18:44:42.956674	He food describe improve. Follow between item official. South reduce for week across start.
+1862625240334	2021-03-03 18:44:42.95724	2021-03-08 18:44:42.95724	f	a45df793-553d-4527-978d-6bf5acdf12d4	Tonight herself home likely stage into.	{"{\\"url\\": \\"https://www.lorempixel.com/498/151\\"}"}	http://www.nash.com/main/	2021-03-14 18:44:42.95724	2021-03-18 18:44:42.95724	Force step public win government beautiful economy spend. Training over force science American natural travel. Maybe guy beat economy direction.
+8118871313838	2021-02-26 18:44:42.965278	2021-03-02 18:44:42.965278	f	ec95361a-7c14-4458-ba2c-3201333aedef	Physical along phone child economic arm.	{"{\\"url\\": \\"https://dummyimage.com/815x923\\"}"}	https://www.crawford.org/blog/tags/privacy/	2021-03-10 18:44:42.965278	2021-03-19 18:44:42.965278	Factor society time. Side laugh a impact.
+4273169487982	2021-02-22 18:44:42.965637	2021-02-25 18:44:42.965637	f	a21ea0c2-bedc-47e5-86ff-0bcb6e81976f	Your military society he another million.	{"{\\"url\\": \\"https://placekitten.com/113/404\\"}"}	http://thompson.net/about.php	2021-03-05 18:44:42.965637	2021-03-13 18:44:42.965637	Return model prevent free data tell address. Begin television authority oil.
+8135052026196	2021-03-02 18:44:42.966102	2021-03-08 18:44:42.966102	f	7071b824-4980-4cd9-a569-b6b855319796	Inside responsibility sound.	{}	https://www.wilson.info/faq.htm	2021-03-14 18:44:42.966102	2021-03-21 18:44:42.966102	Director spring then pay. Serious time right coach.
+7326305020493	2021-02-25 18:44:42.968999	2021-02-28 18:44:42.968999	f	1d4736bc-2114-402d-a608-72d1f8f0a230	Listen near eye degree law suddenly stop.	{"{\\"url\\": \\"https://placeimg.com/993/260/any\\"}"}	https://dodson-dodson.net/tag/main/privacy/	2021-03-08 18:44:42.968999	2021-03-12 18:44:42.968999	Record hit sign room. Live source then staff. Voice after hope could physical none. Buy western operation between although foot. Step scientist show green trade behavior.
+5681041905711	2021-02-18 18:44:42.969477	2021-02-20 18:44:42.969477	f	b8234d40-01a1-4e2c-a871-034c715d9039	Art chance resource alone.	{"{\\"url\\": \\"https://www.lorempixel.com/114/424\\"}"}	https://www.kim-west.com/	2021-02-28 18:44:42.969477	2021-03-04 18:44:42.969477	Go quickly light detail nice send. Arrive them miss commercial value step. Great fast brother issue run structure. Of make meet small whole choice. Career pass both plant several must remember over.
+8242114729190	2021-03-05 18:44:42.969913	2021-03-10 18:44:42.969913	f	eb6674d5-9033-409b-bcc2-786e3ef60c81	Season dog color point serious city kitchen.	{}	http://stokes-mills.com/	2021-03-16 18:44:42.969913	2021-03-20 18:44:42.969913	Arrive race Democrat husband article away office by. He be recently type parent. Lot company ground shake difference. Black site let. Ahead sport avoid industry participant.
+8117927086726	2021-03-06 18:44:42.972698	2021-03-11 18:44:42.972698	f	1d4736b5-d40f-4237-8f4c-f6c2e0020dfd	Word son great morning model ok court.	{"{\\"url\\": \\"https://placeimg.com/852/676/any\\"}"}	http://sullivan-evans.com/category/posts/faq/	2021-03-18 18:44:42.972698	2021-03-19 18:44:42.972698	Something same animal else shoulder third evening. Most buy environment important glass whole. Blue ten town little. Within either provide keep help woman.
+9881720466588	2021-03-05 18:44:42.973197	2021-03-07 18:44:42.973197	f	c32b61d3-d343-4183-b963-1e30380dcc47	Skin happy same send information will detail.	{"{\\"url\\": \\"https://placeimg.com/150/577/any\\"}"}	https://www.dean-ponce.com/	2021-03-15 18:44:42.973197	2021-03-25 18:44:42.973197	Stage whom leader design production according tax. Seat just world control. Parent question value push oil figure.
+4041284538489	2021-02-28 18:44:42.973595	2021-03-04 18:44:42.973595	f	3da9d443-dd09-4f3c-b007-18a0e7024b2b	Water head fire few actually.	{}	http://www.ballard-quinn.com/blog/wp-content/register.jsp	2021-03-12 18:44:42.973595	2021-03-16 18:44:42.973595	Place amount kind talk. Your often possible treat. Necessary discover tell husband.
 \.
 
 
@@ -230,10 +287,18 @@ f9ced706-21ef-425d-aa8b-ae1f0245ae92	2811940501797	Season analysis them importan
 -- Data for Name: initiatives; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.initiatives (uuid, id, initiative_name, "order", details_link, hero_image_urls, description, roles, events, airtable_last_modified, updated_at, is_deleted) FROM stdin;
-7bafb2c7-3520-4a2d-bed9-faf5a01e906e	4106864323401	Dawn Randall	1	https://johnson.biz/main/	{"{\\"url\\": \\"https://dummyimage.com/610x539\\"}"}	Day PM seven free meet executive read. Have tough another himself possible second. Democrat training ball cell.	{7729434073444,4576902571093}	{5395507750158,2566253296181,4815894839836}	2021-01-11 01:22:08.239251	2021-01-16 01:22:08.239251	f
-5ffd4b11-16dd-4a30-8c11-20eda2857044	8245341732407	Susan Harper	2	http://patterson.net/posts/main/	{"{\\"url\\": \\"https://www.lorempixel.com/985/561\\"}"}	Individual picture before may or need crime. Be analysis south recent. Tend another citizen environmental.	{4385078100651,9519619906739}	{3456826216427,6467461855282,9357988210619}	2021-01-25 01:22:08.242862	2021-01-28 01:22:08.242862	f
-85eebfcb-94d3-4166-b379-202d06068eb6	2069778697803	Robin Miller	3	https://www.roberts.com/categories/post.asp	{}	School much discuss role. Senior soldier agree upon. Property fact country subject true contain truth.	{3897109175923,6553539697219}	{2811940501797,1193631247582,6507991929845}	2021-01-15 01:22:08.246323	2021-01-19 01:22:08.246323	f
+COPY public.initiatives (id, airtable_last_modified, updated_at, is_deleted, uuid, initiative_name, "order", details_link, hero_image_urls, description, roles, events) FROM stdin;
+7694087271960	2021-02-23 18:44:42.966604	2021-02-28 18:44:42.966604	f	451ab264-262d-44f6-ab0d-e2b119f2bdd4	Danielle Thomas	1	http://www.white-chavez.com/	{"{\\"url\\": \\"https://placeimg.com/901/15/any\\"}"}	Camera system research personal personal here. Something finish receive study partner both field.	{6861749069949,8629011159341}	{8118871313838,4273169487982,8135052026196}
+6539241697181	2021-03-09 18:44:42.97032	2021-03-12 18:44:42.97032	f	41adc192-b75a-44d7-8690-6a84deb01300	Seth Pollard	2	http://evans.com/app/tags/list/search.htm	{"{\\"url\\": \\"https://placekitten.com/724/714\\"}"}	Matter short man mean detail. Street end represent whole century between eye good. One most only voice story.	{9718652962058,5888786203885}	{7326305020493,5681041905711,8242114729190}
+5192579170613	2021-02-27 18:44:42.974004	2021-03-03 18:44:42.974004	f	c7f42e7b-960c-4b52-8956-3e330550e5ee	Matthew Smith	3	https://www.wade-pearson.org/tags/login/	{}	Her single hot security. Nearly two among figure piece.	{8482888789772,6976112891741}	{8117927086726,9881720466588,4041284538489}
+\.
+
+
+--
+-- Data for Name: notifications; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY public.notifications (notification_uuid, channel, recipient, message, scheduled_send_date, status, send_date) FROM stdin;
 \.
 
 
@@ -241,19 +306,35 @@ COPY public.initiatives (uuid, id, initiative_name, "order", details_link, hero_
 -- Data for Name: volunteer_openings; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.volunteer_openings (uuid, id, role_name, hero_image_urls, application_signup_form, more_info_link, priority, team, team_lead_ids, num_openings, minimum_time_commitment_per_week_hours, maximum_time_commitment_per_week_hours, job_overview, what_youll_learn, responsibilities_and_duties, qualifications, role_type, airtable_last_modified, updated_at, is_deleted) FROM stdin;
-42b8640c-cf91-4202-adbe-a6bae0ae8fbb	8437924047187	Nature determine let identify husband.	{"{\\"url\\": \\"https://dummyimage.com/302x959\\"}"}	https://www.simmons-daniels.com/wp-content/tag/category/terms.jsp	http://www.ramirez.org/terms.html	MEDIUM	{3251374294510}	{}	6	2	8	Respond require wall ok black color few. Personal instead now position fund floor. Must them relationship student. National surface assume land three.	Career store same society. Baby energy charge dog place. Spring knowledge issue article.	Guess individual specific nation. Site series pass already remain end find type. Across million anything your statement and as.	Task recent me point successful expert war. Future rock seat company degree support. Leader a should difficult. Way moment these name approach deal else.	REQUIRES_APPLICATION	2021-01-17 01:22:08.209525	2021-01-22 01:22:08.209525	f
-318ac383-c259-4b54-8ba3-033662c37f9e	9048416427678	Picture teacher still physical when.	{"{\\"url\\": \\"https://placeimg.com/571/170/any\\"}"}	http://watson.org/	http://evans-robinson.biz/faq/	MEDIUM	{5643164737358}	{4525726779734}	6	8	4	Summer all animal wish country. Carry teach method us.	Type soldier send popular. Task goal agree I. Reality either word beautiful. Main medical she. Town charge benefit couple dinner today even.	Lawyer young think. Miss officer thought conference. Level song situation fact return business.	Kitchen mission popular bit. Red television paper animal. Strategy upon memory surface guy.	OPEN_TO_ALL	2021-01-10 01:22:08.212245	2021-01-13 01:22:08.212245	f
-c5ca47a1-ba2f-483c-b592-f30212620bb3	6852286956588	Member left head huge drive close.	{"{\\"url\\": \\"https://placekitten.com/384/289\\"}"}	http://stanley-green.net/blog/home/	http://lopez.org/categories/login/	MEDIUM	{9795990930727}	{}	3	8	7	Free nothing east fear. Number same either too money treatment. Reach company always third hotel.	Increase discussion central. Scene allow much simple. Present check their level leader.	Ball show machine reality whatever issue. Season poor trip could above.	Offer sure until. Song attack us write thus improve. Role however company central rest. Company him compare environment line surface. Believe community pull dog.	REQUIRES_APPLICATION	2021-01-11 01:22:08.21418	2021-01-13 01:22:08.21418	f
-4f97a873-fa87-4d23-a10a-76e52336ae7e	8217528947621	Newspaper view feel beat eight.	{"{\\"url\\": \\"https://placeimg.com/1007/458/any\\"}"}	https://www.ramsey.com/explore/list/category/	https://davies-frazier.org/posts/explore/terms/	MEDIUM	{1269480519757}	{9505192625709}	2	5	3	Imagine key it dream civil watch fear. Follow certainly movement why dark least staff. Old and reveal art address people. Pressure top increase action often continue. Public pick nation environmental.	Pattern say then probably join policy reduce. Region population information interest issue could result. Walk fish goal report catch.	Few consider rule phone art. Painting although here consumer much. Together popular special news develop.	Movie seat compare item. Tax star lose save agency. Left relate few. Today summer city serve happy us each billion.	OPEN_TO_ALL	2021-01-20 01:22:08.215663	2021-01-24 01:22:08.215663	f
-332421f4-2d39-4519-bb49-fa25edc1dc05	9133358114004	Perhaps food two represent business anyone research.	{"{\\"url\\": \\"https://www.lorempixel.com/710/449\\"}"}	http://mitchell.com/	https://www.howard.org/privacy.html	MEDIUM	{9451728676960}	{}	5	9	9	Evidence within head. Language garden military most life second. Score turn tend always source. Fear himself sea meet rule political.	Evening employee training sense require. Fly wind success deal field. Population others life standard real cold threat. When safe modern.	Join return follow whether free. Language animal Mr democratic.	Significant heavy site mind very. Accept east suggest.	REQUIRES_APPLICATION	2021-01-16 01:22:08.217559	2021-01-19 01:22:08.217559	f
-bb52433f-cb46-4cf6-8922-965d47456990	7729434073444	Realize attention like sea difference discuss behind.	{"{\\"url\\": \\"https://placeimg.com/785/324/any\\"}"}	https://www.walker-williams.com/	https://ford-hester.com/list/search.html	MEDIUM	{9993910083229}	{2032952952296}	3	9	6	Quite away dog stock billion. Above majority involve blood beautiful.	Fill catch along tend parent set forget. Bill wrong leave garden you personal. They into ready daughter.	Image major mention election property stuff material accept. Teacher or pay great. Describe occur trade medical.	Mind baby current office. Lot each my during.	OPEN_TO_ALL	2021-01-16 01:22:08.235653	2021-01-20 01:22:08.235653	f
-f06f05ce-4767-4f7d-aebf-32d5ba1529dd	4576902571093	Give peace skill pay ask.	{"{\\"url\\": \\"https://placekitten.com/17/744\\"}"}	http://www.kelly.info/login.asp	https://www.casey.biz/tags/about.php	MEDIUM	{5258420923446}	{}	2	4	4	Blood plant must shake air nor white. Eight develop recent new anything.	Heart time bag your sell. Phone four production investment. Less stay Mrs drive wall which subject. Bed man allow quite but as good.	Believe way shake remain a nothing subject role. At lead character finally. Price set throughout somebody. Writer more feel nothing hear. Bad single strong behavior thing marriage.	Sure loss on every whatever. Husband end clearly Congress cold develop well. Possible newspaper continue cultural mission.	OPEN_TO_ALL	2021-01-20 01:22:08.236816	2021-01-24 01:22:08.236816	f
-8526937e-6dce-4b6e-b42d-ceb86e9e8e2c	4385078100651	See peace possible ready prevent kitchen.	{"{\\"url\\": \\"https://www.lorempixel.com/564/722\\"}"}	http://www.hancock.com/index/	https://morris-hill.com/index/	MEDIUM	{6203995579085}	{5616164701070}	3	9	5	Offer degree positive. Operation parent lay major building stand. Player side player ever across. Tend several themselves win above long piece. Owner leg often course what.	Husband one imagine teach back heart. Imagine gas new parent over direction almost. Foreign hope space bill. Itself yeah energy main. Community director strong perform camera modern now.	Movement reason finish charge show. Bring positive nearly entire own very feel forward. Memory prove include top owner. Inside enough whose boy.	His director he family resource stuff everybody. Former music fill ago market majority. Within approach room experience product than.	REQUIRES_APPLICATION	2021-01-08 01:22:08.23979	2021-01-13 01:22:08.23979	f
-2511e891-88a5-4c34-9362-bf5faafb7e63	9519619906739	Media else rate Mr method resource body blue.	{"{\\"url\\": \\"https://www.lorempixel.com/142/162\\"}"}	https://taylor-smith.com/homepage/	http://bass.com/login.htm	MEDIUM	{2752450406816}	{0539596660638}	3	3	6	East him shake put common still look chair. World recently go bring. Provide maintain cold. Language summer time enter skill much.	Feel stock around budget heart type. Us not despite think mention.	Pick so house. Throw popular share eye sometimes may. Whom explain together reach there. Material speech common military.	Coach hope small second show everything billion. Professor financial more. Middle style fill raise blood note.	REQUIRES_APPLICATION	2021-01-09 01:22:08.240649	2021-01-12 01:22:08.240649	f
-ac750e6d-8258-43e6-866d-c8ad86d6a1cc	3897109175923	Throw listen some much although.	{"{\\"url\\": \\"https://www.lorempixel.com/797/803\\"}"}	http://stevens.com/	https://www.fischer.com/	MEDIUM	{3747361773309}	{}	2	8	5	Voice campaign computer recently various its book. Health crime science life forget indicate feeling. Series according high life none series.	Push the push more. Might message area hit without measure. Traditional explain again big life address on.	Thing address man step. Trouble offer feel life economy yard little student. Cover body home worker feeling enjoy.	Person enjoy production. Of quite defense action claim someone hear. Allow test sea large sort different store.	REQUIRES_APPLICATION	2021-01-25 01:22:08.243512	2021-01-28 01:22:08.243512	f
-2c638552-288b-49ed-a8c4-b795f8e9e0f5	6553539697219	Sister different generation successful key expect former.	{}	https://www.khan.com/tag/author.jsp	http://www.watson.com/about.jsp	MEDIUM	{0315127836938}	{7665968926651}	6	4	6	Rate wife pattern can. Least with close officer paper. Property decide test guy later. Person discover now agreement.	Level own thus several Congress seek animal. Mr quality ahead clear any star arrive. Fire civil order maybe account voice. Huge special hair hundred.	End street see. Certainly future fight yard. Pick avoid home painting face. Outside loss action report star hair most.	Political save whether world. Plan million power. Republican reality safe.	REQUIRES_APPLICATION	2021-01-09 01:22:08.244344	2021-01-13 01:22:08.244344	f
+COPY public.volunteer_openings (id, airtable_last_modified, updated_at, is_deleted, uuid, role_name, hero_image_urls, application_signup_form, more_info_link, priority, team, team_lead_ids, num_openings, minimum_time_commitment_per_week_hours, maximum_time_commitment_per_week_hours, job_overview, what_youll_learn, responsibilities_and_duties, qualifications, role_type) FROM stdin;
+3789843573991	2021-03-01 18:44:42.940183	2021-03-06 18:44:42.940183	f	faed777a-0fa1-4b5e-8505-4699bb5820e4	Boy their quickly happy here usually.	{"{\\"url\\": \\"https://dummyimage.com/346x275\\"}"}	http://barnes.com/category.jsp	http://huang-gentry.com/	MEDIUM	{2718121039455}	{}	6	2	8	Challenge entire have day source. Only mouth guess color leader hear out find. Stand drug teach do. Notice perform population wait many movement table. Congress if beyond son guy quickly as.	Reach finish know lawyer way day effort set. Lead including machine detail finish. Question stock picture sense pay commercial race.	Much letter job course. Senior show purpose news.	Quickly market some none. Drive back let place young. Cost south make seem glass east candidate positive.	REQUIRES_APPLICATION
+2121939418945	2021-02-22 18:44:42.942335	2021-02-25 18:44:42.942335	f	c69580fe-5c4a-4ddd-bf2e-653ddf4b1872	Hard page outside fall series risk the key.	{"{\\"url\\": \\"https://placekitten.com/869/186\\"}"}	http://www.brooks.com/search.php	http://www.jackson.com/category.asp	MEDIUM	{6234554738889}	{6751039497227}	6	8	4	Series seek adult better Mr able firm. Media view face arm war fly factor red. Add likely difficult arm require heavy.	Weight different discuss list while memory true. Forget mission mouth church piece whole. Science girl last. Yet sit certainly enter only any.	Picture give sure personal. Wide material four about number. Physical economy mention.	President early investment however blue rather all. Trouble computer us issue. Third industry option early. To trip owner fine back past international. Only media stage big early performance.	OPEN_TO_ALL
+8391000678507	2021-02-23 18:44:42.943569	2021-02-25 18:44:42.943569	f	cb7ebf91-51d8-4f60-b7ff-f55996c16229	Relationship professor draw.	{"{\\"url\\": \\"https://dummyimage.com/496x376\\"}"}	http://hale.net/index.html	https://www.campbell.com/categories/author.asp	MEDIUM	{9975241998021}	{}	3	8	7	Follow hotel bad yet. In apply hear listen. Spend special over care. Energy him create.	Heart matter guess. Study quickly model share heavy none piece.	Yet memory within. Middle forget pay already relationship mouth activity. Pick unit able home become page tonight back.	Responsibility today scientist. Window politics southern certain suffer now. South me ball chance over. Score relate and subject claim conference four sell.	REQUIRES_APPLICATION
+4519749187218	2021-03-04 18:44:42.945254	2021-03-08 18:44:42.945254	f	da1a0569-48db-45a3-b020-51f2315e6fc5	Town almost travel have against minute college.	{"{\\"url\\": \\"https://placekitten.com/949/40\\"}"}	http://www.mercado.com/home/	https://www.figueroa-owens.biz/	MEDIUM	{7162335465350}	{1974356976427}	2	5	3	Kind far another eight gun. Ok she feeling service after. Ability not enter.	Reflect financial authority beautiful defense throw dinner offer. Treatment what concern. Deal significant day. Without easy our account popular. Science ball bank purpose.	Whatever class high we. Remember design music particular. Coach despite truth camera simply store. Join like show for do middle television size.	Just than arrive social not learn development remain. Manager employee reality institution newspaper. Smile foreign near street three thank.	OPEN_TO_ALL
+7802722656724	2021-02-28 18:44:42.946582	2021-03-03 18:44:42.946582	f	304cfdb6-1ee9-4760-816c-c955366fcef7	Animal last own personal.	{"{\\"url\\": \\"https://placekitten.com/21/124\\"}"}	http://www.alvarado-anderson.net/search/terms/	http://lawrence.com/	MEDIUM	{3820308479295}	{}	5	9	9	Adult learn financial simple however space. Professional machine drug choice. Weight safe indicate prove share through can key.	Bit recently war perhaps final. Only key establish various class foreign laugh. Finish character instead list impact arm. Upon require focus small. Week worker firm ask try put.	Strong speech bill serve phone unit company. Mouth speech above think any well often. Become beat ball human here give possible capital. Almost join first answer. Professor personal else whole some people.	Physical contain media against add degree. Difference successful production age generation work. See compare enough name. Poor stand technology likely your office market blood.	REQUIRES_APPLICATION
+6861749069949	2021-02-28 18:44:42.963114	2021-03-04 18:44:42.963114	f	41a97395-8cfa-4815-946e-c26d3254acb7	Guy cultural usually.	{"{\\"url\\": \\"https://dummyimage.com/653x659\\"}"}	http://maxwell-brooks.org/	https://www.morris.com/terms/	MEDIUM	{0321621824883}	{1840260907393}	3	9	6	Partner citizen box itself effort learn. Especially market up boy feeling best during collection.	Book Democrat college. Exist understand authority Mrs dream product.	Few ready court item hundred catch. Car record up career. Fear piece this agency room. Kitchen treatment third main discussion. Participant company appear shake read policy area.	Set foreign analysis often peace toward. Camera election relate reflect tax different who. Executive only see religious. Program them court ball.	OPEN_TO_ALL
+8629011159341	2021-03-04 18:44:42.964267	2021-03-08 18:44:42.964267	f	63ad1538-8b64-4e96-80ed-4d27a43b92d8	Institution believe day.	{"{\\"url\\": \\"https://placekitten.com/234/241\\"}"}	https://torres.net/terms.html	https://cain.com/	MEDIUM	{2046077188423}	{}	2	4	4	Ever like high several site. Value now certain century staff make. Southern knowledge health movement cultural play those.	Site city down. Throughout space while blue. Exactly however result.	Community appear animal scientist. General right risk investment. Join eye three room several. Low career idea range treat individual. Million off attorney tough company.	Eye ahead build show arrive generation. Available beautiful television fill PM example into. Somebody foot paper population.	OPEN_TO_ALL
+9718652962058	2021-02-20 18:44:42.967331	2021-02-25 18:44:42.967331	f	1af1ee8d-2d5f-4762-837b-1c707bab8eb7	Him really walk loss.	{"{\\"url\\": \\"https://dummyimage.com/525x205\\"}"}	https://steele-choi.biz/main/register.htm	https://gibson.org/wp-content/posts/post/	MEDIUM	{9932248566929}	{2980888233296}	3	9	5	Light class pressure. How loss easy again. Coach late about old.	Prepare agreement guy billion certainly practice. Agency bill series certain mother us. Military quickly opportunity Mrs.	Plant because part economy. Own center develop customer majority clearly. That pretty firm make threat. Light religious toward scientist arrive.	Guess baby citizen focus night personal than. Practice once continue prepare job. Sense believe increase.	REQUIRES_APPLICATION
+5888786203885	2021-02-21 18:44:42.968146	2021-02-24 18:44:42.968146	f	5a089f6b-7f93-483e-8505-ecba54c0ac40	American type international upon campaign someone court.	{"{\\"url\\": \\"https://placekitten.com/693/564\\"}"}	http://hicks-glass.com/	https://www.harris-cox.org/search/blog/search.php	MEDIUM	{9395828032083}	{4413681294020}	3	3	6	Rule manage these suggest forget page community. Into ahead deal second town wind. Threat person treatment every inside your.	Statement lead land box. Analysis room forget miss. American shoulder family truth one.	We current first relate once. Relate general hold tend almost. Enjoy recently suffer too. Start or what build kitchen statement. Build bag bag.	Amount condition many. Need next hot focus.	REQUIRES_APPLICATION
+8482888789772	2021-03-09 18:44:42.970948	2021-03-12 18:44:42.970948	f	6bb8630c-125a-4b78-8607-ce2a058345d7	Language gun strategy way choice identify.	{"{\\"url\\": \\"https://placeimg.com/137/711/any\\"}"}	https://lam.com/	https://franklin.com/home.htm	MEDIUM	{2670047923242}	{}	2	8	5	Statement several year more little star teach. News decision especially manager former listen yeah.	Century former small never action serious. Actually executive hand likely. Break share act win identify market. Wrong establish by now.	American war challenge matter. Much turn develop.	Leader economic billion key. Need material way sort attorney local subject. Market indeed wait floor soon miss. Spend simply return position determine south. Dark talk phone.	REQUIRES_APPLICATION
+6976112891741	2021-02-21 18:44:42.971768	2021-02-25 18:44:42.971768	f	15e0ce96-ace7-483e-90c9-5dc64d5d95e6	Attention network believe nothing guess occur.	{}	https://www.beck.info/	http://west-garcia.com/tags/privacy/	MEDIUM	{1737251692591}	{9580274498686}	6	4	6	Beat despite traditional performance gas lead. Member article series describe mother. Human method different hair discover line.	Always production wish book eat card never will. Itself trouble letter rule live. International international most close former condition. Sense at kitchen many degree.	May address bank civil indeed trade remember event. Whatever here reveal challenge property by range. Score ever dog can pull effect. Perhaps TV ever himself health. Upon old red create try.	Five car health conference serve. Economic particularly interesting material prepare wide drop inside.	REQUIRES_APPLICATION
 \.
+
+
+--
+-- Name: account_settings account_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.account_settings
+    ADD CONSTRAINT account_settings_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
 
 
 --
@@ -281,11 +362,34 @@ ALTER TABLE ONLY public.initiatives
 
 
 --
+-- Name: notifications notifications_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.notifications
+    ADD CONSTRAINT notifications_pkey PRIMARY KEY (notification_uuid);
+
+
+--
 -- Name: volunteer_openings volunteer_openings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.volunteer_openings
     ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: ix_accounts_email; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE UNIQUE INDEX ix_accounts_email ON public.accounts USING btree (email);
+
+
+--
+-- Name: ix_accounts_username; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE UNIQUE INDEX ix_accounts_username ON public.accounts USING btree (username);
+
 
 --
 -- PostgreSQL database dump complete
