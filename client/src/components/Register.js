@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import useForm from './hooks/useForm';
 import { attemptCreateAccount } from '../store/user-slice';
 import GoogleOAuthButton from './OAuth/GoogleOAuthButton';
+import LinesAroundOr from './LinesAroundOr';
 
 function Register(props) {
   document.title = 'HF Volunteer Portal - Create an Account';
@@ -66,9 +67,7 @@ function Register(props) {
             xl={2}
             className="d-flex align-items-center justify-content-center"
           >
-            <p className="line-around-text">
-              <span>or</span>
-            </p>
+            <LinesAroundOr />
           </Col>
           <Col xs={12} xl={5}>
             <h3 className="text-center mb-4" style={{ color: 'gray' }}>
