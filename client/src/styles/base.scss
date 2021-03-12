@@ -110,7 +110,10 @@ h1 {
 }
 
 h2 {
-  font-size: 1.75rem;
+  font-size: 1.45rem;
+  @media (min-width: 992px) {
+    font-size: 1.75rem;
+  }
 }
 
 h3 {
@@ -225,5 +228,34 @@ p {
     border-bottom: groove 2px;
     margin: auto 1rem;
     box-shadow: 0 -1px; /* ou 0 1px si border-style:ridge */
+  }
+}
+
+.line-around-text {
+  @media (max-width: 1199.98px) {
+    width: 90%;
+    text-align: center;
+    border-bottom: 1px solid rgb(112, 112, 112);
+    line-height: 0.1em;
+    margin: 2rem auto;
+
+    span {
+      background: $gray-1;
+      padding: 0 10px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    height: 90%;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid rgb(112, 112, 112);
+    line-height: 0.1em;
+    margin: 2rem auto;
+
+    span {
+      background: $gray-1;
+      padding: 10px 0;
+    }
   }
 }

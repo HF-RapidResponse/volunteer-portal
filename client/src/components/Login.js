@@ -41,6 +41,13 @@ function Login(props) {
   ) : (
     <>
       <h2 className="text-center">Welcome Back!</h2>
+      <div className="text-center">
+        <GoogleOAuthButton />
+      </div>
+      <p className="side-line-text">or</p>
+      <h3 className="text-center" style={{ color: 'gray' }}>
+        Login with email
+      </h3>
       <Container className="mt-4 mb-5">
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Form.Group controlId="formBasicEmail">
@@ -93,10 +100,6 @@ function Login(props) {
             </Button>
           </div>
         </Form>
-        <p className="font-weight-bold side-line-text">or</p>
-        <div className="text-center">
-          <GoogleOAuthButton />
-        </div>
       </Container>
     </>
   );

@@ -53,143 +53,159 @@ function Register(props) {
         Create an account with us to manage your volunteering experience.
       </h2>
       <Container className="mt-5 mb-5">
-        <h3 className="text-center" style={{ color: 'gray' }}>
-          Create your account.
-        </h3>
-        <Form
-          noValidate
-          validated={validated}
-          onSubmit={submitWrapper}
-          className="mt-2 mb-2"
-        >
-          <Row>
-            <Col xs={12} lg={6}>
-              <Form.Group controlId="formFirstName">
-                <Form.Label>First Name</Form.Label>
+        <Row>
+          <Col
+            xs={12}
+            xl={5}
+            className="d-flex align-items-center justify-content-center"
+          >
+            <GoogleOAuthButton />
+          </Col>
+          <Col
+            xs={12}
+            xl={2}
+            className="d-flex align-items-center justify-content-center"
+          >
+            <p className="line-around-text">
+              <span>or</span>
+            </p>
+          </Col>
+          <Col xs={12} xl={5}>
+            <h3 className="text-center mb-4" style={{ color: 'gray' }}>
+              Register with email
+            </h3>
+            <Form
+              noValidate
+              validated={validated}
+              onSubmit={submitWrapper}
+              className="mt-2 mb-2"
+            >
+              <Row>
+                <Col xs={12} lg={6} xl={12}>
+                  <Form.Group controlId="formFirstName">
+                    <Form.Label>First Name</Form.Label>
+                    <Form.Control
+                      type="name"
+                      placeholder="First Name"
+                      onChange={(e) => {
+                        handleKeyPress('first_name', e);
+                      }}
+                      isValid={submitted && !errors.firstName}
+                      isInvalid={errors.firstName}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {!data.first_name
+                        ? 'Please provide a last name.'
+                        : 'Please only use alphanumeric or unicode characters.'}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+                <Col xs={12} lg={6} xl={12}>
+                  <Form.Group controlId="formLastName">
+                    <Form.Label>Last Name</Form.Label>
+                    <Form.Control
+                      type="name"
+                      placeholder="Last Name"
+                      onChange={(e) => {
+                        handleKeyPress('last_name', e);
+                      }}
+                      isValid={submitted && !errors.lastName}
+                      isInvalid={errors.lastName}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {!data.last_name
+                        ? 'Please provide a last name.'
+                        : 'Please only use alphanumeric or unicode characters.'}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Form.Group controlId="formUsername">
+                <Form.Label>Username</Form.Label>
                 <Form.Control
-                  type="name"
-                  placeholder="First Name"
+                  type="username"
+                  placeholder="Username"
                   onChange={(e) => {
-                    handleKeyPress('first_name', e);
+                    handleKeyPress('username', e);
                   }}
-                  isValid={submitted && !errors.firstName}
-                  isInvalid={errors.firstName}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  {!data.first_name
-                    ? 'Please provide a last name.'
-                    : 'Please only use alphanumeric or unicode characters.'}
-                </Form.Control.Feedback>
-              </Form.Group>
-            </Col>
-            <Col xs={12} lg={6}>
-              <Form.Group controlId="formLastName">
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control
-                  type="name"
-                  placeholder="Last Name"
-                  onChange={(e) => {
-                    handleKeyPress('last_name', e);
-                  }}
-                  isValid={submitted && !errors.lastName}
-                  isInvalid={errors.lastName}
+                  isValid={submitted && !errors.username}
+                  isInvalid={errors.username}
                   required
                 />
                 <Form.Control.Feedback type="invalid">
                   {!data.last_name
-                    ? 'Please provide a last name.'
+                    ? 'Please provide a username.'
                     : 'Please only use alphanumeric or unicode characters.'}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Col>
-          </Row>
-          <Form.Group controlId="formUsername">
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              type="username"
-              placeholder="Username"
-              onChange={(e) => {
-                handleKeyPress('username', e);
-              }}
-              isValid={submitted && !errors.username}
-              isInvalid={errors.username}
-              required
-            />
-            <Form.Control.Feedback type="invalid">
-              {!data.last_name
-                ? 'Please provide a username.'
-                : 'Please only use alphanumeric or unicode characters.'}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>E-mail address</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="E-mail address"
-              onChange={(e) => {
-                handleKeyPress('email', e);
-              }}
-              isValid={submitted && !errors.email}
-              isInvalid={errors.email}
-              required
-            />
-            <Form.Control.Feedback type="invalid">
-              {'Please provide a valid e-mail address.'}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              onChange={(e) => {
-                handleKeyPress('password', e);
-              }}
-              isValid={submitted && !errors.password}
-              isInvalid={errors.password}
-              required
-            />
-            <Form.Control.Feedback type="invalid">
-              Please enter a password between 6 and 20 characters long with at
-              least 1 letter, 1 number, and 1 special character.
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group controlId="formRetypePassword">
-            <Form.Label>Re-enter your password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Repeat password"
-              onChange={(e) => {
-                handleKeyPress('retypePass', e);
-              }}
-              isValid={submitted && !errors.retypePass}
-              isInvalid={errors.retypePass}
-              required
-            />
-            <Form.Control.Feedback type="invalid">
-              {!data.retypePass
-                ? 'Please re-type your password.'
-                : 'New password and retyped password do not match.'}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Alert variant="danger" className={!errors.api ? 'd-none' : null}>
-            {errors.api}
-          </Alert>
-          <div className="text-center">
-            <Button
-              variant="info"
-              type="submit"
-              className="mt-3 mb-3 pt-2 pb-2 pl-5 pr-5"
-            >
-              Create an Account
-            </Button>
-          </div>
-        </Form>
-        <p className="font-weight-bold side-line-text">or</p>
-        <div className="text-center">
-          <GoogleOAuthButton />
-        </div>
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>E-mail address</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="E-mail address"
+                  onChange={(e) => {
+                    handleKeyPress('email', e);
+                  }}
+                  isValid={submitted && !errors.email}
+                  isInvalid={errors.email}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  {'Please provide a valid e-mail address.'}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  onChange={(e) => {
+                    handleKeyPress('password', e);
+                  }}
+                  isValid={submitted && !errors.password}
+                  isInvalid={errors.password}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please enter a password between 6 and 20 characters long with
+                  at least 1 letter, 1 number, and 1 special character.
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="formRetypePassword">
+                <Form.Label>Re-enter your password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Repeat password"
+                  onChange={(e) => {
+                    handleKeyPress('retypePass', e);
+                  }}
+                  isValid={submitted && !errors.retypePass}
+                  isInvalid={errors.retypePass}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  {!data.retypePass
+                    ? 'Please re-type your password.'
+                    : 'New password and retyped password do not match.'}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Alert variant="danger" className={!errors.api ? 'd-none' : null}>
+                {errors.api}
+              </Alert>
+              <div className="text-center">
+                <Button
+                  variant="info"
+                  type="submit"
+                  className="mt-4 mb-4 pt-2 pb-2 pl-5 pr-5"
+                >
+                  Create an Account
+                </Button>
+              </div>
+            </Form>
+          </Col>
+        </Row>
       </Container>
     </>
   );
