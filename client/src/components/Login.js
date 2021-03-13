@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
-import { Button, Form, Container } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col } from 'react-bootstrap';
 import { attemptLogin } from '../store/user-slice.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import GoogleOAuthButton from './OAuth/GoogleOAuthButton';
+import GitHubOAuthButton from './OAuth/GitHubOAuthButton';
 import LoadingSpinner from './LoadingSpinner';
+import LinesAroundOr from './LinesAroundOr';
+import OAuthGroup from './OAuth/OAuthGroup';
+import '../styles/register-login.scss';
 
 function Login(props) {
   const [loading, setLoading] = useState(false);
@@ -41,12 +45,19 @@ function Login(props) {
   ) : (
     <>
       <h2 className="text-center">Welcome Back!</h2>
-      <div className="text-center">
-        <GoogleOAuthButton />
-      </div>
-      <p className="side-line-text">or</p>
+      <Container className="text-center">
+        <Row>
+          <Col xs={12} md={6}>
+            <GoogleOAuthButton />
+          </Col>
+          <Col xs={12} md={6}>
+            <GitHubOAuthButton />
+          </Col>
+        </Row>
+      </Container>
+      <p className="horiz-line-only">or</p>
       <h3 className="text-center" style={{ color: 'gray' }}>
-        Login with email
+        Log in with e-mail
       </h3>
       <Container className="mt-4 mb-5">
         <Form noValidate validated={validated} onSubmit={handleSubmit}>

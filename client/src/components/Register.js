@@ -4,8 +4,9 @@ import { Button, Form, Container, Row, Col, Alert } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import useForm from './hooks/useForm';
 import { attemptCreateAccount } from '../store/user-slice';
-import GoogleOAuthButton from './OAuth/GoogleOAuthButton';
 import LinesAroundOr from './LinesAroundOr';
+import OAuthGroup from './OAuth/OAuthGroup';
+import '../styles/register-login.scss';
 
 function Register(props) {
   document.title = 'HF Volunteer Portal - Create an Account';
@@ -53,14 +54,14 @@ function Register(props) {
       <h2 className="text-center">
         Create an account with us to manage your volunteering experience.
       </h2>
-      <Container className="mt-5 mb-5">
+      <div className="mt-5 mb-5">
         <Row>
           <Col
             xs={12}
             xl={5}
-            className="d-flex align-items-center justify-content-center"
+            className="d-flex align-items-center justify-content-center flex-column"
           >
-            <GoogleOAuthButton />
+            <OAuthGroup />
           </Col>
           <Col
             xs={12}
@@ -71,7 +72,7 @@ function Register(props) {
           </Col>
           <Col xs={12} xl={5}>
             <h3 className="text-center mb-4" style={{ color: 'gray' }}>
-              Register with email
+              Register with e-mail
             </h3>
             <Form
               noValidate
@@ -205,7 +206,7 @@ function Register(props) {
             </Form>
           </Col>
         </Row>
-      </Container>
+      </div>
     </>
   );
 }

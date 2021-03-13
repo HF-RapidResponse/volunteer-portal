@@ -1,31 +1,31 @@
 import React from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
-import GoogleLogo from './GoogleLogo';
+import GitHubLogo from './GitHubLogo';
 
-function GoogleOAuthButton() {
+function GitHubOAuthButton() {
   return (
     <Button
-      variant="outline-primary"
+      variant="outline-secondary"
       className="mt-4 mb-4"
       onClick={() => {
         const baseUrl =
           window.location.port === '8000'
             ? 'http://localhost:8081'
             : window.location.origin;
-        const oauthUrl = `${baseUrl}/api/login?provider=google`;
+        const oauthUrl = `${baseUrl}/api/login?provider=github`;
         window.location.href = oauthUrl;
       }}
     >
       <Container>
         <Row>
           <Col style={{ maxWidth: '55px' }}>
-            <GoogleLogo />
+            <GitHubLogo />
           </Col>
-          <Col>Log in with Google</Col>
+          <Col>Log in with GitHub</Col>
         </Row>
       </Container>
     </Button>
   );
 }
 
-export default GoogleOAuthButton;
+export default GitHubOAuthButton;
