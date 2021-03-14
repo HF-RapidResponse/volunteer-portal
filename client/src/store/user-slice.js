@@ -34,10 +34,6 @@ const userSlice = createSlice({
         return element != payload;
       });
     },
-    completeUserUpdate: (state, action) => {
-      const { payload } = action;
-      state.user = payload;
-    },
   },
 });
 
@@ -47,7 +43,6 @@ export const {
   completeLogout,
   setFirstAcctPage,
   completeDelete,
-  completeUserUpdate,
 } = userSlice.actions;
 
 export class AccountReqBody {
@@ -344,7 +339,7 @@ export const basicPropUpdate = (payload) => async (dispatch) => {
       settingsReq
     );
     userCopy = { ...userCopy, ...response.data };
-    dispatch(completeUserUpdate(userCopy));
+    dispatch(setUser(userCopy));
   } catch (error) {
     console.error(error);
     handlePossibleExpiredToken(error);
@@ -373,7 +368,7 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
       settingsReq
     );
     userCopy = { ...userCopy, ...response.data };
-    dispatch(completeUserUpdate(userCopy));
+    dispatch(setUser(userCopy));
   } catch (error) {
     console.error(error);
     handlePossibleExpiredToken(error);
