@@ -1,9 +1,9 @@
 import React from 'react';
-import { Col } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 
 function LinesAroundOr() {
   return (
-    <>
+    <Container className="align-items-center justify-content-center">
       <p className="horiz-container">
         <span>or</span>
       </p>
@@ -12,7 +12,7 @@ function LinesAroundOr() {
         <p>or</p>
         <div className="vert-line"></div>
       </div>
-    </>
+    </Container>
   );
 }
 

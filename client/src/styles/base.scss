@@ -117,7 +117,10 @@ h2 {
 }
 
 h3 {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
+  @media (min-width: 992px) {
+    font-size: 1.5rem;
+  }
 }
 
 h4 {

@@ -44,7 +44,7 @@ function Login(props) {
     <Redirect push to={firstAcctPage || '/account/profile'} />
   ) : (
     <>
-      <h2 className="text-center">Welcome Back!</h2>
+      <h2 className="text-center">Welcome back!</h2>
       <Container className="text-center">
         <Row>
           <Col xs={12} md={6}>

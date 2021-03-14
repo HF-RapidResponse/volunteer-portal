@@ -59,19 +59,15 @@ function Register(props) {
           <Col
             xs={12}
             xl={5}
-            className="d-flex align-items-center justify-content-center flex-column"
+            className="d-flex justify-content-center flex-column"
           >
             <OAuthGroup />
           </Col>
-          <Col
-            xs={12}
-            xl={2}
-            className="d-flex align-items-center justify-content-center"
-          >
+          <Col xs={12} xl={2}>
             <LinesAroundOr />
           </Col>
           <Col xs={12} xl={5}>
-            <h3 className="text-center mb-4" style={{ color: 'gray' }}>
+            <h3 className="text-center mt-2 mb-4" style={{ color: 'gray' }}>
               Register with e-mail
             </h3>
             <Form
