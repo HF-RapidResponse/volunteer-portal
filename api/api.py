@@ -16,6 +16,7 @@ from uuid import uuid4, UUID
 from fastapi_jwt_auth import AuthJWT
 import external_data_sync
 from security import encrypt_password, check_encrypted_password
+import re
 
 app = FastAPI()
 
@@ -108,21 +109,25 @@ def get_account_by_uuid(uuid, Authorize: AuthJWT = Depends(), db: Session = Depe
     return db.query(Account).filter_by(uuid=uuid).first()
 
 
-@app.get("/api/accounts/email/{email}", response_model=AccountResponseSchema)
-def get_account_by_email(email, db: Session = Depends(get_db)):
-    return db.query(Account).filter_by(email=email).first()
-
-
 @app.post("/api/accounts/", response_model=AccountResponseSchema, status_code=201)
 def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     check_for_existing_username_or_email(account, db)
     if account.password is not None:
+        check_valid_password(account.password)
         account.password = encrypt_password(account.password)
     account = Account(**account.dict())
     db.add(account)
     db.commit()
     create_access_and_refresh_tokens(str(account.uuid), Authorize)
     return account
+
+
+def check_valid_password(password: str):
+    match = re.search(
+        "^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*\d)(?=.*[`!@#$%^&*()_+\-=[\]{};':\"\\|,.<>/?~]).{6,20}$", password)
+    if match is None:
+        raise HTTPException(status_code=400,
+                            detail=f"Please enter a password between 6 and 20 characters long with at least 1 letter, 1 number, and 1 special character.")
 
 
 def check_for_existing_username_or_email(account: AccountRequestSchema, db: Session):
@@ -177,6 +182,7 @@ def update_password(uuid, partial_account: PartialAccountSchema, Authorize: Auth
         raise HTTPException(
             status_code=400, detail=f"Password is missing")
     else:
+        check_valid_password(partial_account.password)
         account.password = encrypt_password(partial_account.password)
     db.merge(account)
     db.commit()
