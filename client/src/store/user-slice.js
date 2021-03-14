@@ -81,8 +81,8 @@ export class SettingsReqBody {
 export const attemptLogin = (payload) => async (dispatch) => {
   const { email, password } = payload;
   const errors = {
-    email: !isValidEmail(email),
-    password: !isValidPassword(password),
+    email: validateEmail(email),
+    password: validatePassword(password),
   };
   try {
     if (formHasNoErrors(errors)) {
@@ -219,12 +219,12 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
   }
 
   const errors = {
-    firstName: !isAlphaNumericOrUnicode(payload.first_name),
-    lastName: !isAlphaNumericOrUnicode(payload.last_name),
-    username: !isAlphaNumericOrUnicode(payload.username),
-    email: !isValidEmail(payload.email),
-    password: !isValidPassword(payload.password),
-    retypePass: payload.password !== payload.retypePass,
+    firstName: validateAlphaNumericUnicode(payload.first_name),
+    lastName: validateAlphaNumericUnicode(payload.last_name),
+    username: validateAlphaNumericUnicode(payload.username),
+    email: validateEmail(payload.email),
+    password: validatePassword(payload.password),
+    retypePass: validatePassRetype(payload.password, payload.retypePass),
   };
 
   if (formHasNoErrors(errors)) {
@@ -239,15 +239,31 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
       dispatch(setRefreshTime(refreshTime));
       return;
     } catch (error) {
-      console.error('API error when attempting to create user:', error);
-      if (error.response) {
+      handleApiErrors(error.response, errors);
+    }
+  }
+  throw errors;
+};
+
+const handleApiErrors = (response, errors) => {
+  if (response) {
+    if (response) {
+      if (
+        response.data &&
+        response.data.detail &&
+        Object.keys(response.data.detail)
+      ) {
+        Object.entries(response.data.detail).forEach((entry) => {
+          const [key, val] = entry;
+          errors[key] = val;
+        });
+      } else {
         errors.api =
-          error.response.data.detail ||
+          response.data.detail ||
           'Error while attempting to create an account. Please try again later.';
       }
     }
   }
-  throw errors;
 };
 
 export const verifyPassword = (payload) => {
@@ -261,9 +277,9 @@ export const verifyPassword = (payload) => {
 export const changePassword = (payload) => async (dispatch) => {
   const { uuid, oldPass, newPass, retypePass, tokenRefreshTime } = payload;
   const errors = {
-    oldPassInvalid: !isValidPassword(oldPass),
-    newPassRetypeMismatch: newPass !== retypePass,
-    newPassInvalid: !isValidPassword(newPass),
+    oldPassInvalid: validatePassword(oldPass),
+    newPassRetypeMismatch: validatePassRetype(newPass, retypePass),
+    newPassInvalid: validatePassword(newPass),
   };
 
   try {
@@ -319,15 +335,14 @@ export const deleteUser = (uuid, cookies) => async (dispatch) => {
   Regex is asking for 6 to 20 character length with at least 
   1 letter, 1 number, and 1 special characters
 */
-export const isValidPassword = (password) => {
-  if (!password) {
-    return false;
-  }
-
+export const validatePassword = (password) => {
   const regex = new RegExp(
     /(?=.*\d)(?=.*[a-zA-Z])(?=.*[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]).{6,20}/g
   );
-  return regex.test(password);
+  const isValid = password && regex.test(password);
+  return isValid
+    ? null
+    : 'Please enter a password between 6 and 20 characters long with at least 1 letter, 1 number, and 1 special character.';
 };
 
 export const basicPropUpdate = (payload) => async (dispatch) => {
@@ -382,10 +397,10 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
   const { uuid } = payload;
   const acctPayload = new AccountReqBody(payload);
   const errors = {
-    firstName: !isAlphaNumericOrUnicode(acctPayload.first_name),
-    lastName: !isAlphaNumericOrUnicode(acctPayload.last_name),
-    username: !isAlphaNumericOrUnicode(acctPayload.username),
-    email: !isValidEmail(acctPayload.email),
+    firstName: validateAlphaNumericUnicode(acctPayload.first_name),
+    lastName: validateAlphaNumericUnicode(acctPayload.last_name),
+    username: validateAlphaNumericUnicode(acctPayload.username),
+    email: validateEmail(acctPayload.email),
   };
 
   try {
@@ -406,6 +421,8 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
         `Account with username ${acctPayload.username} already exists!`
     ) {
       errors.foundExistingUser = errorRes.data.detail;
+    } else if (errorRes) {
+      errors.api = errorRes.data.detail;
     }
   }
   throw errors;
@@ -423,16 +440,26 @@ export const formHasNoErrors = (errors) => {
 /*
   Credit: https://www.w3docs.com/snippets/javascript/how-to-validate-an-e-mail-using-javascript.html
 */
-export const isValidEmail = (email) => {
+export const validateEmail = (email) => {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return regex.test(String(email).toLowerCase());
+  const isValid = regex.test(String(email).toLowerCase());
+  return isValid
+    ? null
+    : 'Please provide a valid e-mail address (i.e. andy@test.com)';
 };
 
 /*
   Credit: https://stackoverflow.com/questions/388996/regex-for-javascript-to-allow-only-alphanumeric
 */
-export const isAlphaNumericOrUnicode = (name) => {
+export const validateAlphaNumericUnicode = (word) => {
   const pattern = /^([a-zA-Z0-9\u0600-\u06FF\u0660-\u0669\u06F0-\u06F9 _.-]+)$/;
-  return pattern.test(name);
+  const isValid = word && pattern.test(word);
+  return isValid ? null : 'Please only use alphanumeric or unicode characters.';
 };
+
+const validatePassRetype = (password, retypePass) => {
+  const passesMatch = password === retypePass;
+  return passesMatch ? null : 'Password and retyped passwords do not match.';
+};
+
 export default userSlice.reducer;

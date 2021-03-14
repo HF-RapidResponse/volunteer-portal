@@ -86,14 +86,14 @@ function Register(props) {
                       onChange={(e) => {
                         handleKeyPress('first_name', e);
                       }}
-                      isValid={submitted && !errors.firstName}
-                      isInvalid={errors.firstName}
+                      isValid={validated && !errors.firstName}
+                      isInvalid={!!errors.firstName}
                       required
                     />
                     <Form.Control.Feedback type="invalid">
                       {!data.first_name
-                        ? 'Please provide a last name.'
-                        : 'Please only use alphanumeric or unicode characters.'}
+                        ? 'Please provide a first name.'
+                        : errors.firstName}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -106,14 +106,14 @@ function Register(props) {
                       onChange={(e) => {
                         handleKeyPress('last_name', e);
                       }}
-                      isValid={submitted && !errors.lastName}
-                      isInvalid={errors.lastName}
+                      isValid={validated && !errors.lastName}
+                      isInvalid={!!errors.lastName}
                       required
                     />
                     <Form.Control.Feedback type="invalid">
                       {!data.last_name
                         ? 'Please provide a last name.'
-                        : 'Please only use alphanumeric or unicode characters.'}
+                        : errors.lastName}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -126,14 +126,14 @@ function Register(props) {
                   onChange={(e) => {
                     handleKeyPress('username', e);
                   }}
-                  isValid={submitted && !errors.username}
-                  isInvalid={errors.username}
+                  isValid={validated && !errors.username}
+                  isInvalid={!!errors.username}
                   required
                 />
                 <Form.Control.Feedback type="invalid">
-                  {!data.last_name
+                  {!data.username
                     ? 'Please provide a username.'
-                    : 'Please only use alphanumeric or unicode characters.'}
+                    : errors.username}
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="formBasicEmail">
@@ -144,12 +144,14 @@ function Register(props) {
                   onChange={(e) => {
                     handleKeyPress('email', e);
                   }}
-                  isValid={submitted && !errors.email}
-                  isInvalid={errors.email}
+                  isValid={validated && !errors.email}
+                  isInvalid={!!errors.email}
                   required
                 />
                 <Form.Control.Feedback type="invalid">
-                  {'Please provide a valid e-mail address.'}
+                  {!data.email
+                    ? 'Please provide an e-mail address.'
+                    : errors.email}
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="formBasicPassword">
@@ -160,13 +162,14 @@ function Register(props) {
                   onChange={(e) => {
                     handleKeyPress('password', e);
                   }}
-                  isValid={submitted && !errors.password}
-                  isInvalid={errors.password}
+                  isValid={validated && !errors.password}
+                  isInvalid={!!errors.password}
                   required
                 />
                 <Form.Control.Feedback type="invalid">
-                  Please enter a password between 6 and 20 characters long with
-                  at least 1 letter, 1 number, and 1 special character.
+                  {!data.password
+                    ? 'Please provide a password'
+                    : errors.password}
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="formRetypePassword">
@@ -177,14 +180,14 @@ function Register(props) {
                   onChange={(e) => {
                     handleKeyPress('retypePass', e);
                   }}
-                  isValid={submitted && !errors.retypePass}
-                  isInvalid={errors.retypePass}
+                  isValid={validated && !errors.retypePass}
+                  isInvalid={!!errors.retypePass}
                   required
                 />
                 <Form.Control.Feedback type="invalid">
                   {!data.retypePass
                     ? 'Please re-type your password.'
-                    : 'New password and retyped password do not match.'}
+                    : errors.retypePass}
                 </Form.Control.Feedback>
               </Form.Group>
               <Alert variant="danger" className={!errors.api ? 'd-none' : null}>

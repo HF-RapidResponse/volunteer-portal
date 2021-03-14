@@ -95,10 +95,11 @@ def create_donation_link_request(donationEmail: DonationEmailSchema, db: Session
     db.commit()
     return donationEmail
 
-
-@app.get("/api/accounts/", response_model=List[AccountResponseSchema])
-def get_all_accounts(db: Session = Depends(get_db)):
-    return db.query(Account).all()
+# Note: I am leaving this route commented out as it should not be available publicly.
+# However, it is useful to have when running locally for debugging purposes
+# @app.get("/api/accounts/", response_model=List[AccountResponseSchema])
+# def get_all_accounts(db: Session = Depends(get_db)):
+#     return db.query(Account).all()
 
 
 @app.get("/api/accounts/{uuid}", response_model=AccountResponseSchema)
@@ -114,10 +115,11 @@ def get_account_by_email(email, db: Session = Depends(get_db)):
 
 @app.post("/api/accounts/", response_model=AccountResponseSchema, status_code=201)
 def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    existing_acct = db.query(Account).filter_by(email=account.email).first()
-    if existing_acct is not None:
-        raise HTTPException(
-            status_code=400, detail=f"An account with the email address {account.email} already exists")
+    check_for_existing_username_or_email(account, db)
+    # existing_acct = db.query(Account).filter_by(email=account.email).first()
+    # if existing_acct is not None:
+    #     raise HTTPException(
+    #         status_code=400, detail=f"An account with the email address {account.email} already exists")
     if account.password is not None:
         account.password = encrypt_password(account.password)
 
@@ -126,6 +128,21 @@ def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends()
     db.commit()
     create_access_and_refresh_tokens(str(account.uuid), Authorize)
     return account
+
+
+def check_for_existing_username_or_email(account: AccountRequestSchema, db: Session):
+    existing_acct = db.query(Account).filter_by(email=account.email).first()
+    errors = {}
+    if existing_acct is not None:
+        errors['email'] = f"An account with the email address {account.email} already exists"
+    existing_acct = db.query(Account).filter_by(
+        username=account.username).first()
+    if existing_acct is not None:
+        errors['username'] = f"An account with the username {account.username} already exists"
+    print('Are we here?', errors)
+    if len(errors) > 0:
+        raise HTTPException(
+            status_code=400, detail=errors)
 
 
 def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
@@ -174,7 +191,7 @@ def update_password(uuid, partial_account: PartialAccountSchema, Authorize: Auth
 
 @ app.delete("/api/accounts/{uuid}", status_code=204)
 def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    # Authorize.jwt_required()
+    Authorize.jwt_required()
     acct_to_delete = db.query(Account).filter_by(uuid=uuid).first()
     if acct_to_delete is None:
         raise HTTPException(status_code=400,
