@@ -23,20 +23,6 @@ function Login(props) {
     handleChange,
     data,
   } = useForm(attemptLogin);
-  const params = new URLSearchParams(window.location.search);
-
-  useEffect(() => {
-    const userID = params.get('user_id');
-    if (userID) {
-      setLoading(true);
-    }
-  }, [params]);
-
-  useEffect(() => {
-    if (user) {
-      setLoading(false);
-    }
-  }, [user]);
 
   return loading ? (
     <LoadingSpinner />

@@ -160,14 +160,33 @@ def populate_initiative_map(db: Session = Depends(get_db)) -> Dict:
 
 
 @router.get("/auth/github")
-async def authorize_github(request: Request, Authorize: AuthJWT = Depends()):
+async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     try:
         token = await oauth.github.authorize_access_token(request)
     except OAuthError as error:
         return HTMLResponse(f'<h1>{error.error}</h1>')
     resp = await oauth.github.get('user', token=token)
     user = resp.json()
-    return create_token_for_user(Authorize, user['login'])
+    print('What is user here?', user)
+    account = None if user['email'] is None else db.query(Account).filter_by(
+        email=user['email']).first()
+
+    if account is None:
+        new_account = Account(
+            email=user['email'] or user['login'] + '@insertrealemailhere.com',
+            username=user['login'],
+            first_name=user['name'],
+            last_name='no last name',
+            oauth='github',
+            profile_pic=user['avatar_url'],
+            city=user['location'].split(', ')[0],
+            state=user['location'].split(', ')[1],
+        )
+        db.add(new_account)
+        db.commit()
+        db.refresh(new_account)
+        account = new_account
+    return create_token_for_user(Authorize, str(account.uuid))
 
 
 @router.delete("/logout")
