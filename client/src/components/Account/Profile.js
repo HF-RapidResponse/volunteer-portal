@@ -153,7 +153,7 @@ function Profile(props) {
                 readOnly
               />
               <Form.Control.Feedback type="invalid">
-                Email is invalid!
+                E-mail is invalid!
               </Form.Control.Feedback>
             </Form.Group>
           </Col>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
 import { Button, Form, Container, Row, Col } from 'react-bootstrap';
@@ -8,8 +8,6 @@ import { Link } from 'react-router-dom';
 import GoogleOAuthButton from './OAuth/GoogleOAuthButton';
 import GitHubOAuthButton from './OAuth/GitHubOAuthButton';
 import LoadingSpinner from './LoadingSpinner';
-import LinesAroundOr from './LinesAroundOr';
-import OAuthGroup from './OAuth/OAuthGroup';
 import '../styles/register-login.scss';
 
 function Login(props) {
@@ -26,7 +24,7 @@ function Login(props) {
 
   return loading ? (
     <LoadingSpinner />
-  ) : (validated && submitted) || user ? (
+  ) : submitted || user ? (
     <Redirect push to={firstAcctPage || '/account/profile'} />
   ) : (
     <>
