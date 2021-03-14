@@ -301,11 +301,12 @@ export const deleteRole = (payload) => async (dispatch) => {
   dispatch(completeDelete(payload));
 };
 
-export const deleteUser = (uuid) => async (dispatch) => {
+export const deleteUser = (uuid, cookies) => async (dispatch) => {
   try {
     await refreshAccessToken();
     await axios.delete(`/api/account_settings/${uuid}`);
     await axios.delete(`/api/accounts/${uuid}`);
+    cookies.remove('user_id', { path: '/', sameSite: 'None', secure: true });
     dispatch(completeLogout());
   } catch (error) {
     console.error(error);

@@ -39,6 +39,7 @@ function Header(props) {
     initiatives,
     getInitiatives,
     syncInitMapAndLoadUser,
+    checkIfCookieIsValid,
   } = props;
 
   const firstPath = window.location.pathname;
@@ -170,6 +171,7 @@ const mapDispatchToProps = {
   setFirstAcctPage,
   getInitiatives,
   syncInitMapAndLoadUser,
+  checkIfCookieIsValid,
 };
 
 export default withCookies(
