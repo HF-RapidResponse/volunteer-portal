@@ -76,10 +76,12 @@ function Profile(props) {
                 onChange={(e) => {
                   handleChange('first_name', e.target.value);
                 }}
-                isInvalid={errors.firstName}
+                isInvalid={!!errors.firstName}
               />
               <Form.Control.Feedback type="invalid">
-                First name is invalid!
+                {!data.first_name
+                  ? 'Please provide a first name.'
+                  : errors.firstName}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
@@ -92,10 +94,12 @@ function Profile(props) {
                 onChange={(e) => {
                   handleChange('last_name', e.target.value);
                 }}
-                isInvalid={errors.lastName}
+                isInvalid={!!errors.lastName}
               />
               <Form.Control.Feedback type="invalid">
-                Last name is invalid!
+                {!data.last_name
+                  ? 'Please provide a last name.'
+                  : errors.lastName}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
@@ -127,14 +131,13 @@ function Profile(props) {
                 onChange={(e) => {
                   handleChange('username', e.target.value);
                 }}
-                isInvalid={errors.username || errors.foundExistingUser}
+                isInvalid={!!errors.username || !!errors.foundExistingUser}
                 required
               />
               <Form.Control.Feedback type="invalid">
                 {!data.username
                   ? 'Username cannot be empty!'
-                  : errors.foundExistingUser ||
-                    'Please only use alphanumeric or unicode characters.'}
+                  : errors.username || errors.foundExistingUser}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
@@ -149,11 +152,13 @@ function Profile(props) {
                 onChange={(e) => {
                   handleChange('email', e.target.value);
                 }}
-                isInvalid={errors.email}
+                isInvalid={!!errors.email}
                 readOnly
               />
               <Form.Control.Feedback type="invalid">
-                E-mail is invalid!
+                {!data.email
+                  ? 'Please provide an e-mail address.'
+                  : errors.email}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
@@ -184,8 +189,12 @@ function Profile(props) {
                 onChange={(e) => {
                   handleChange('city', e.target.value);
                 }}
+                isInvalid={data.city && !!errors.city}
                 placeholder="Enter city here"
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.city}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12} md={4}>
@@ -197,10 +206,14 @@ function Profile(props) {
                 onChange={(e) => {
                   handleChange('state', e.target.value);
                 }}
+                isInvalid={data.state && !!errors.state}
                 placeholder="Enter state here"
               />
               <Form.Control.Feedback type="valid">
                 {submitted ? 'Profile change successful' : null}
+              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {errors.state}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>

@@ -392,6 +392,12 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
     firstName: validateAlphaNumericUnicode(acctPayload.first_name),
     lastName: validateAlphaNumericUnicode(acctPayload.last_name),
     username: validateAlphaNumericUnicode(acctPayload.username),
+    city: acctPayload.city
+      ? validateAlphaNumericUnicode(acctPayload.city)
+      : null,
+    state: acctPayload.state
+      ? validateAlphaNumericUnicode(acctPayload.state)
+      : null,
     email: validateEmail(acctPayload.email),
   };
 
@@ -445,7 +451,7 @@ export const validateEmail = (email) => {
 */
 export const validateAlphaNumericUnicode = (word) => {
   const pattern = /^([a-zA-Z0-9\u0600-\u06FF\u0660-\u0669\u06F0-\u06F9 _.-]+)$/;
-  const isValid = word && pattern.test(word);
+  const isValid = pattern.test(word);
   return isValid ? null : 'Please only use alphanumeric or unicode characters.';
 };
 
