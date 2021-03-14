@@ -148,12 +148,22 @@ function Profile(props) {
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
-                value={data.email ?? ''}
+                value={
+                  !data.email || data.email.includes('@insertrealemailhere.com')
+                    ? ''
+                    : data.email
+                }
                 onChange={(e) => {
                   handleChange('email', e.target.value);
                 }}
                 isInvalid={!!errors.email}
-                readOnly
+                placeholder="Enter e-mail here"
+                disabled={
+                  user.oauth === 'github' &&
+                  user.email.includes('@insertrealemailhere.com')
+                    ? false
+                    : true
+                }
               />
               <Form.Control.Feedback type="invalid">
                 {!data.email
