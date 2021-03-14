@@ -91,7 +91,9 @@ function _roleCard(role) {
   </div>;
 
   return (
-    <Card children={content}>
+    <Card 
+      key={role.external_id}
+      children={content}>
     </Card>
   );
 }
