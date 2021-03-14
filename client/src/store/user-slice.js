@@ -266,15 +266,7 @@ const handleApiErrors = (response, errors) => {
   }
 };
 
-export const verifyPassword = (payload) => {
-  const responsePayload = {
-    currPassValid: true,
-    newAndRetypeMatch: payload.newPass === payload.retypePass,
-  };
-  return responsePayload;
-};
-
-export const changePassword = (payload) => async (dispatch) => {
+export const attemptChangePassword = (payload) => async (dispatch) => {
   const { uuid, oldPass, newPass, retypePass, tokenRefreshTime } = payload;
   const errors = {
     oldPassInvalid: validatePassword(oldPass),
@@ -333,7 +325,7 @@ export const deleteUser = (uuid, cookies) => async (dispatch) => {
 /*
   Credit: https://stackoverflow.com/questions/2370015/regular-expression-for-password-validation
   Regex is asking for 6 to 20 character length with at least 
-  1 letter, 1 number, and 1 special characters
+  1 letter, 1 number, and 1 special character
 */
 export const validatePassword = (password) => {
   const regex = new RegExp(

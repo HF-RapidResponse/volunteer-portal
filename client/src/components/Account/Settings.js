@@ -6,7 +6,7 @@ import { withCookies } from 'react-cookie';
 
 import useForm from '../hooks/useForm';
 import {
-  changePassword,
+  attemptChangePassword,
   deleteUser,
   basicPropUpdate,
   formHasNoErrors,
@@ -20,7 +20,7 @@ function Settings(props) {
     deleteUser,
     cookies,
     basicPropUpdate,
-    changePassword,
+    attemptChangePassword,
   } = props;
   const {
     handleChange,
@@ -31,7 +31,7 @@ function Settings(props) {
     setValidated,
     errors,
     resetForm,
-  } = useForm(changePassword, { uuid: user.uuid, tokenRefreshTime });
+  } = useForm(attemptChangePassword, { uuid: user.uuid, tokenRefreshTime });
 
   const deletePrompt = () => {
     const userWantsToDelete = confirm(
@@ -235,7 +235,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = { deleteUser, basicPropUpdate, changePassword };
+const mapDispatchToProps = {
+  deleteUser,
+  basicPropUpdate,
+  attemptChangePassword,
+};
 export default withCookies(
   connect(mapStateToProps, mapDispatchToProps)(Settings)
 );

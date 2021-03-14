@@ -54,12 +54,10 @@ function Login(props) {
                 handleChange('email', e.target.value);
               }}
               required
-              isInvalid={validated && (!data.email || errors.email)}
+              isInvalid={!!errors.email}
             />
             <Form.Control.Feedback type="invalid">
-              {!data.email
-                ? 'Please provide an e-mail address.'
-                : 'Invalid e-mail format'}
+              {!data.email ? 'Please provide an e-mail address.' : errors.email}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicPassword">
@@ -71,13 +69,12 @@ function Login(props) {
                 handleChange('password', e.target.value);
               }}
               required
-              isInvalid={
-                validated &&
-                (!data.password || errors.password || errors.message)
-              }
+              isInvalid={!!errors.password || !!errors.message}
             />
             <Form.Control.Feedback type="invalid">
-              {!data.password ? 'Please provide a password.' : errors.message}
+              {!data.password
+                ? 'Please provide a password.'
+                : errors.password || errors.message}
             </Form.Control.Feedback>
             <div className="mt-2 mb-2">
               <Link
