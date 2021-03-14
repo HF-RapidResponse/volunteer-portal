@@ -8,7 +8,7 @@ import {
   AccountReqBody,
 } from '../../store/user-slice';
 import useForm from '../hooks/useForm';
-const _ = require('lodash');
+import { isEqual } from 'lodash';
 
 function Profile(props) {
   const [disableForm, setDisableForm] = useState(false);
@@ -36,7 +36,7 @@ function Profile(props) {
   };
 
   const submitWrapper = (e) => {
-    if (_.isEqual(user, data) || disableForm) {
+    if (isEqual(user, data) || disableForm) {
       e.preventDefault();
       e.stopPropagation();
     } else {
@@ -246,7 +246,7 @@ function Profile(props) {
         </Row>
         <Row
           className={
-            _.isEqual(new AccountReqBody(user), new AccountReqBody(data))
+            isEqual(new AccountReqBody(user), new AccountReqBody(data))
               ? 'd-none'
               : null
           }

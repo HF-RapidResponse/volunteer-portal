@@ -116,13 +116,8 @@ def get_account_by_email(email, db: Session = Depends(get_db)):
 @app.post("/api/accounts/", response_model=AccountResponseSchema, status_code=201)
 def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     check_for_existing_username_or_email(account, db)
-    # existing_acct = db.query(Account).filter_by(email=account.email).first()
-    # if existing_acct is not None:
-    #     raise HTTPException(
-    #         status_code=400, detail=f"An account with the email address {account.email} already exists")
     if account.password is not None:
         account.password = encrypt_password(account.password)
-
     account = Account(**account.dict())
     db.add(account)
     db.commit()

@@ -9,7 +9,6 @@ import {
   attemptChangePassword,
   deleteUser,
   basicPropUpdate,
-  formHasNoErrors,
 } from '../../store/user-slice';
 
 function Settings(props) {
@@ -174,9 +173,7 @@ function Settings(props) {
                 : 'Passwords do not match!'}
             </Form.Control.Feedback>
             <Form.Control.Feedback type="valid">
-              {submitted && formHasNoErrors(errors)
-                ? 'Password change successful'
-                : null}
+              {submitted ? 'Password change successful' : null}
             </Form.Control.Feedback>
             <Row>
               <Col xs={12} xl={6} className="text-center">

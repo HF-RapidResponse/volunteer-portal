@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { createSlice } from '@reduxjs/toolkit';
-import { get } from 'lodash';
 
 const userSlice = createSlice({
   name: 'userStore',
@@ -183,7 +182,7 @@ const refreshAccessToken = async () => {
   }
 };
 
-export const refreshTokenIfNeeded = (tokenRefreshTime) => async (dispatch) => {
+const refreshTokenIfNeeded = (tokenRefreshTime) => async (dispatch) => {
   const currTime = Date.now();
   const timeDiff = currTime - tokenRefreshTime;
 
@@ -247,21 +246,19 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
 
 const handleApiErrors = (response, errors) => {
   if (response) {
-    if (response) {
-      if (
-        response.data &&
-        response.data.detail &&
-        Object.keys(response.data.detail)
-      ) {
-        Object.entries(response.data.detail).forEach((entry) => {
-          const [key, val] = entry;
-          errors[key] = val;
-        });
-      } else {
-        errors.api =
-          response.data.detail ||
-          'Error while attempting to create an account. Please try again later.';
-      }
+    if (
+      response.data &&
+      response.data.detail &&
+      Object.keys(response.data.detail)
+    ) {
+      Object.entries(response.data.detail).forEach((entry) => {
+        const [key, val] = entry;
+        errors[key] = val;
+      });
+    } else {
+      errors.api =
+        response.data.detail ||
+        'Error while attempting to create an account. Please try again later.';
     }
   }
 };
@@ -296,11 +293,9 @@ export const attemptChangePassword = (payload) => async (dispatch) => {
       return;
     }
   } catch (error) {
-    console.error(error);
     errors.oldPassInvalid = true;
     handlePossibleExpiredToken(error);
   }
-  console.log('errors to throw:', errors);
   throw errors;
 };
 
@@ -426,7 +421,7 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
   throw errors;
 };
 
-export const formHasNoErrors = (errors) => {
+const formHasNoErrors = (errors) => {
   for (const val of Object.values(errors)) {
     if (val) {
       return false;
@@ -438,7 +433,7 @@ export const formHasNoErrors = (errors) => {
 /*
   Credit: https://www.w3docs.com/snippets/javascript/how-to-validate-an-e-mail-using-javascript.html
 */
-export const validateEmail = (email) => {
+const validateEmail = (email) => {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const isValid = regex.test(String(email).toLowerCase());
   return isValid
@@ -449,7 +444,7 @@ export const validateEmail = (email) => {
 /*
   Credit: https://stackoverflow.com/questions/388996/regex-for-javascript-to-allow-only-alphanumeric
 */
-export const validateAlphaNumericUnicode = (word) => {
+const validateAlphaNumericUnicode = (word) => {
   const pattern = /^([a-zA-Z0-9\u0600-\u06FF\u0660-\u0669\u06F0-\u06F9 _.-]+)$/;
   const isValid = pattern.test(word);
   return isValid ? null : 'Please only use alphanumeric or unicode characters.';

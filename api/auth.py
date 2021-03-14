@@ -167,7 +167,6 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db:
         return HTMLResponse(f'<h1>{error.error}</h1>')
     resp = await oauth.github.get('user', token=token)
     user = resp.json()
-    print('What is user here?', user)
     account = None if user['email'] is None else db.query(Account).filter_by(
         email=user['email']).first()
 
