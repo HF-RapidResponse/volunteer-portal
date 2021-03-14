@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import RoleCard from './RoleCard';
 import LoadingSpinner from './LoadingSpinner';
-import { Col } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
+import { Card } from 'components/cards/Card';
 import '../styles/roles.scss';
+
+import '../styles/bootstrap-overrides.scss';
 
 /**
  * Component that displays the vounteer roles page. Currently, we are using an embedded
@@ -55,7 +57,7 @@ function Roles() {
   }
 
   // Build 'em if you got 'em
-  const roleCards = roles.map((role) => RoleCard(role));
+  const roleCards = roles.map((role) => _roleCard(role));
 
   // Return view with role cards
   return (
@@ -66,10 +68,31 @@ function Roles() {
         forward to growing our teams! Please consider applying, and let us know
         if you have any questions!
       </p>
-      <div class="role-card-container">
+      <div className="role-card-container">
         {roleCards}
       </div>
     </>
+  );
+}
+
+function _roleCard(role) {
+  const content = 
+  <div className="card-content">
+    <h3>{role.role_name}</h3>
+    <p className="role-highlight">
+      Priority: {role.priority}
+      <br />
+      Weekly time commitment: {role.min_time_commitment}-{role.max_time_commitment} hrs
+    </p>
+    <p className="role-overview">{role.overview}</p>
+    <Button href={role.signup_url} variant="card">
+      { role.role_type == "Requires Application" ? "Apply" : "Sign Up"}
+    </Button>
+  </div>;
+
+  return (
+    <Card children={content}>
+    </Card>
   );
 }
 
