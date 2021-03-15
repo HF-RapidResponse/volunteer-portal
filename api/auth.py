@@ -71,7 +71,7 @@ def get_profile(Authorize: AuthJWT = Depends()) -> Dict:
 async def login(request: Request, provider: OAuthProvider):
     if provider is OAuthProvider.GOOGLE:
         redirect_uri = request.url_for('authorize_google')
-        return await oauth.google.authorize_redirect(request, redirect_uri) result
+        return await oauth.google.authorize_redirect(request, redirect_uri)
     elif provider is OAuthProvider.GITHUB:
         redirect_uri = request.url_for('authorize_github')
         return await oauth.github.authorize_redirect(request, redirect_uri)
@@ -179,8 +179,6 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db:
             last_name='no last name',
             oauth='github',
             profile_pic=user['avatar_url'],
-            city=user['location'].split(', ')[0],
-            state=user['location'].split(', ')[1],
         )
         db.add(new_account)
         db.commit()
