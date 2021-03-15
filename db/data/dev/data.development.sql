@@ -128,6 +128,7 @@ CREATE TABLE public.accounts (
     profile_pic text,
     city character varying(32),
     state character varying(32),
+    zip_code character varying(32),
     roles character varying[] NOT NULL
 );
 
