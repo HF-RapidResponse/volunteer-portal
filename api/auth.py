@@ -167,12 +167,13 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db:
         return HTMLResponse(f'<h1>{error.error}</h1>')
     resp = await oauth.github.get('user', token=token)
     user = resp.json()
-    account = None if user['email'] is None else db.query(Account).filter_by(
-        email=user['email']).first()
+    email_to_use = user['email'] or user['login'] + '@fakegithubemail.com'
+    account = db.query(Account).filter_by(
+        email=email_to_use).first()
 
     if account is None:
         new_account = Account(
-            email=user['email'] or user['login'] + '@insertrealemailhere.com',
+            email=email_to_use,
             username=user['login'],
             first_name=user['name'],
             last_name='no last name',

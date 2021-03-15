@@ -145,25 +145,16 @@ function Profile(props) {
         <Row className="mt-4 mb-4">
           <Col xs={12} md={8}>
             <Form.Group controlId="formEmail">
-              <Form.Label>Email</Form.Label>
+              <Form.Label>E-mail</Form.Label>
               <Form.Control
                 type="email"
-                value={
-                  !data.email || data.email.includes('@insertrealemailhere.com')
-                    ? ''
-                    : data.email
-                }
+                value={data.email ?? ''}
                 onChange={(e) => {
                   handleChange('email', e.target.value);
                 }}
                 isInvalid={!!errors.email}
                 placeholder="Enter e-mail here"
-                disabled={
-                  user.oauth === 'github' &&
-                  user.email.includes('@insertrealemailhere.com')
-                    ? false
-                    : true
-                }
+                readOnly
               />
               <Form.Control.Feedback type="invalid">
                 {!data.email
