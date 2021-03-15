@@ -8,10 +8,7 @@ function GoogleOAuthButton() {
       variant="outline-primary"
       className="mt-4 mb-4"
       onClick={() => {
-        const baseUrl =
-          window.location.port === '8000'
-            ? 'http://localhost:8081'
-            : window.location.origin;
+        const baseUrl = window.location.origin;
         const oauthUrl = `${baseUrl}/api/login?provider=google`;
         window.location.href = oauthUrl;
       }}

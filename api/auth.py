@@ -71,7 +71,7 @@ def get_profile(Authorize: AuthJWT = Depends()) -> Dict:
 async def login(request: Request, provider: OAuthProvider):
     if provider is OAuthProvider.GOOGLE:
         redirect_uri = request.url_for('authorize_google')
-        return await oauth.google.authorize_redirect(request, redirect_uri)
+        return await oauth.google.authorize_redirect(request, redirect_uri) result
     elif provider is OAuthProvider.GITHUB:
         redirect_uri = request.url_for('authorize_github')
         return await oauth.github.authorize_redirect(request, redirect_uri)
