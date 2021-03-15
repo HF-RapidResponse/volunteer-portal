@@ -13,6 +13,7 @@ class AccountRequestSchema(BaseModel):
     profile_pic: Optional[Text]
     city: Optional[str]
     state: Optional[str]
+    zip_code: Optional[str]
     roles: Optional[List]
 
     class Config:
@@ -41,4 +42,5 @@ class PartialAccountSchema(BaseModel):
     profile_pic: Optional[Text]
     city: Optional[str]
     state: Optional[str]
+    zip_code: Optional[str]
     roles: Optional[List]
