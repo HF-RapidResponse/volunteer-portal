@@ -1,9 +1,9 @@
 from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Text, Union, Mapping, Any
-from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account, AccountSettings
+from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail
 from schemas import (NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema,
-                     DonationEmailSchema, AccountRequestSchema, AccountResponseSchema, PartialAccountSchema, AccountSettingsSchema)
+                     DonationEmailSchema)
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
@@ -16,8 +16,6 @@ import logging
 from uuid import uuid4, UUID
 from fastapi_jwt_auth import AuthJWT
 import external_data_sync
-from security import encrypt_password, check_encrypted_password
-import re
 
 app = FastAPI()
 

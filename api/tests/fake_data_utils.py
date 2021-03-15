@@ -123,9 +123,11 @@ def generate_fake_donation_email():
     fake_donation_email = DonationEmail(email=fake.email())
     return fake_donation_email
 
+
 def get_fake_email():
     # dash isn't valid in the domain part of an email according to one of our checkers.
     return fake.unique.email().replace("-", "")
+
 
 def generate_fake_account():
     return Account(
@@ -138,7 +140,8 @@ def generate_fake_account():
         # TODO simple http server to act as testing object storage
         profile_pic=fake.url(),
         city=fake.city(),
+        zip_code=fake.postcode(),
         state=fake.state(),
-        roles=[fake.job() for i in range(randint(0,2))],
+        roles=[fake.job() for i in range(randint(0, 2))],
 
     )
