@@ -140,8 +140,8 @@ def generate_fake_account():
         # TODO simple http server to act as testing object storage
         profile_pic=fake.url(),
         city=fake.city(),
-        zip_code=fake.postcode(),
         state=fake.state(),
+        zip_code=fake.postcode(),
         roles=[fake.job() for i in range(randint(0, 2))],
 
     )

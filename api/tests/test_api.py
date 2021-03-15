@@ -19,24 +19,30 @@ from tests.fake_data_utils import generate_fake_initiatives_list, generate_fake_
 
 from sqlalchemy import exc
 
+
 @pytest.fixture
 def db():
     return Session()
 
 # Will run each test in the `yield` portion
+
+
 @pytest.fixture(autouse=True)
 def setup(db):
     db = Session()
-    yield # this is where the testing happens
+    yield  # this is where the testing happens
     db.rollback()
 
+
 client = TestClient(app)
+
 
 def cleanup_initiative(db, initiative):
     for item in initiative.roles + initiative.events:
         db.delete(item)
     db.delete(initiative)
     db.commit()
+
 
 def test_create_model():
     good_event_kwargs = {
@@ -59,6 +65,7 @@ def test_create_model():
     assert type(good_event.uuid) is UUID
     assert type(good_event.end_datetime) is datetime
 
+
 def test_create_model_error():
     with pytest.raises(error_wrappers.ValidationError):
         bad_event_kwargs = {
@@ -73,6 +80,7 @@ def test_create_model_error():
 
         _ = VolunteerEventSchema(**bad_event_kwargs)
 
+
 def test_get_initiatives_api(db):
     # because Initiatives contain VolunteerEvents and VolunteerRoles, this will test field validations on all three models
     initiatives = generate_fake_initiatives_list(db)
@@ -82,10 +90,12 @@ def test_get_initiatives_api(db):
     assert response.status_code == 200
 
     assert len(json) == 1
-    initiatives_response = [InitiativeSchema(**initiative_kwargs) for initiative_kwargs in json]
+    initiatives_response = [InitiativeSchema(
+        **initiative_kwargs) for initiative_kwargs in json]
     assert type(initiatives_response[0]) is InitiativeSchema
 
     [cleanup_initiative(db, i) for i in initiatives]
+
 
 def test_create_link_request_error():
     with pytest.raises(error_wrappers.ValidationError):
@@ -94,52 +104,57 @@ def test_create_link_request_error():
         }
         DonationEmailSchema(**bad_link_request_kwargs)
 
-def test_create_link_request_error():
-    good_link_request_kwargs = {
-        "email": "name@gmail.com"
-    }
-    good_request = DonationEmailSchema(**good_link_request_kwargs)
-    assert good_request
-    assert type(good_request) is DonationEmailSchema
-    assert good_request.email == 'name@gmail.com'
+
+# def test_create_link_request_error():
+#     good_link_request_kwargs = {
+#         "email": "name@gmail.com"
+#     }
+#     good_request = DonationEmailSchema(**good_link_request_kwargs)
+#     assert good_request
+#     assert type(good_request) is DonationEmailSchema
+#     assert good_request.email == 'name@gmail.com'
+
 
 def set_nullable_columns_null(db_row, db):
-  # Adds column to the DB, and sets all nullable rows to None
-  db_row_dict = db_row.__dict__.copy()
-  db.add(db_row)
-  db.commit()
+    # Adds column to the DB, and sets all nullable rows to None
+    db_row_dict = db_row.__dict__.copy()
+    db.add(db_row)
+    db.commit()
 
+    fields = [x for x in db_row_dict if not x.startswith('_sa_')]
+    for a in fields:
+        try:
+            setattr(db_row, a, None)
+            r = db.commit()
+        except Exception as e:
+            db.rollback()
 
-  fields = [x for x in db_row_dict if not x.startswith('_sa_')]
-  for a in fields:
-    try:
-      setattr(db_row, a, None)
-      r = db.commit()
-    except Exception as e:
-      db.rollback()
 
 def test_nullified_event_serving(db):
-  event = generate_fake_volunteer_event()
-  set_nullable_columns_null(event, db)
+    event = generate_fake_volunteer_event()
+    set_nullable_columns_null(event, db)
 
-  client.get(f'api/volunteer_events/{event.external_id}')
-  db.delete(event)
-  db.commit()
+    client.get(f'api/volunteer_events/{event.external_id}')
+    db.delete(event)
+    db.commit()
+
 
 def test_nullified_roles_serving(db):
-  role = generate_fake_volunteer_role()
-  set_nullable_columns_null(role, db)
+    role = generate_fake_volunteer_role()
+    set_nullable_columns_null(role, db)
 
-  client.get(f'api/volunteer_roles/{role.external_id}')
-  db.delete(role)
-  db.commit()
+    client.get(f'api/volunteer_roles/{role.external_id}')
+    db.delete(role)
+    db.commit()
+
 
 def test_nullified_initiatives_serving(db):
-  initiative = generate_fake_initiative(db)
-  set_nullable_columns_null(initiative, db)
+    initiative = generate_fake_initiative(db)
+    set_nullable_columns_null(initiative, db)
 
-  client.get(f'api/volunteer_initiatives/{initiative.external_id}')
-  cleanup_initiative(db, initiative)
+    client.get(f'api/volunteer_initiatives/{initiative.external_id}')
+    cleanup_initiative(db, initiative)
+
 
 def test_create_account(db):
     account = {'email': 'rebecca03@thomasrivera.com',
@@ -151,6 +166,7 @@ def test_create_account(db):
                'profile_pic': 'http://www.davis-burke.com/',
                'city': 'Lake Robertburgh',
                'state': 'Virginia',
+               'zip_code': '20101',
                'roles': ['Sales professional,IT',
                          'Commissioning editor']}
     response = client.post(f'api/accounts/', json=account)
@@ -175,6 +191,7 @@ def test_create_account(db):
 
     assert response_account == account
 
+
 def test_create_duplicate_email_account(db):
     account = {'email': 'rebecca03@thomasrivera.com',
                'username': 'DakotaMcclain',
@@ -185,18 +202,20 @@ def test_create_duplicate_email_account(db):
                'profile_pic': 'http://www.davis-burke.com/',
                'city': 'Lake Robertburgh',
                'state': 'Virginia',
+               'zip_code': '20101',
                'roles': ['Sales professional,IT',
                          'Commissioning editor']}
     account2 = {'email': 'rebecca03@thomasrivera.com',
-               'username': 'DakotaMcclain2',
-               'first_name': 'Jeff2',
-               'last_name': 'Long2',
-               'password': '^7^Cg&kt*X2',
-               'oauth': 'W^9Oa(Qy+L2',
-               'profile_pic': 'http://www.davis-burke.com/2',
-               'city': 'Lake Robertburgh2',
-               'state': 'Virginia2',
-               'roles': ['Commissioning editor2']}
+                'username': 'DakotaMcclain2',
+                'first_name': 'Jeff2',
+                'last_name': 'Long2',
+                'password': '^7^Cg&kt*X2',
+                'oauth': 'W^9Oa(Qy+L2',
+                'profile_pic': 'http://www.davis-burke.com/2',
+                'city': 'Lake Robertburgh2',
+                'state': 'Virginia2',
+                'zip_code': '20101',
+                'roles': ['Commissioning editor2']}
     response = client.post(f'api/accounts/', json=account)
     assert response.status_code < 400
     assert 'uuid' in response.json()
