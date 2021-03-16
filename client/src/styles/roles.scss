@@ -1,0 +1,51 @@
+@import 'variables';
+
+$card-height: 25em;
+$card-width: 18em;
+$card-margin: 1.5em;
+$card-padding: 1.5em;
+
+.role-highlight {
+  color: $btnCyan;
+}
+
+.role-overview {
+  flex: 1;
+}
+
+.card-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.role-card-container {
+  max-height: 2 * $card-height + 4 * $card-margin;
+  overflow: scroll;
+  display: grid;
+  padding: 1.5em;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+// Styles child card but remains indiffernet to Card implementation
+.role-card-container > * {
+  margin: $card-margin $card-margin;
+}
+
+@media (max-width: 992px) {
+
+  .card-content {
+    height: $card-height;
+    width: $card-width;
+  }
+
+  .role-card-container {
+    overflow-y: hidden;
+    display: flex;
+  }
+
+  .role-card-container > * {
+    display: inline-block;
+    margin: $card-margin;
+  }
+}

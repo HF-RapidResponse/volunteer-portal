@@ -20,3 +20,6 @@ fastapi_jwt_auth
 airtable-python-wrapper
 sendgrid
 email-validator
+twilio
+phonenumbers
+slack-sdk
