@@ -1,5 +1,4 @@
 from models.base import Base
-from models.donation_email import DonationEmail
 from models.initiative import Initiative
 from models.person import Person
 from models.priority import Priority

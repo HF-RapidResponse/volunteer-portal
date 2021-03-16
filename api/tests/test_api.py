@@ -10,11 +10,10 @@ from api.api import app
 from settings import Session
 
 from schemas import InitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema
-from schemas import DonationEmailSchema
-from models import Initiative, VolunteerRole, VolunteerEvent, DonationEmail
+from models import Initiative, VolunteerRole, VolunteerEvent
 
 from tests.fake_data_utils import generate_fake_initiative, generate_fake_volunteer_role
-from tests.fake_data_utils import generate_fake_volunteer_event, generate_fake_donation_email
+from tests.fake_data_utils import generate_fake_volunteer_event
 from tests.fake_data_utils import generate_fake_initiatives_list
 
 from sqlalchemy import exc
@@ -86,22 +85,6 @@ def test_get_initiatives_api(db):
     assert type(initiatives_response[0]) is InitiativeSchema
 
     [cleanup_initiative(db, i) for i in initiatives]
-
-def test_create_link_request_error():
-    with pytest.raises(error_wrappers.ValidationError):
-        bad_link_request_kwargs = {
-            "email": "name@gmail"
-        }
-        DonationEmailSchema(**bad_link_request_kwargs)
-
-def test_create_link_request_error():
-    good_link_request_kwargs = {
-        "email": "name@gmail.com"
-    }
-    good_request = DonationEmailSchema(**good_link_request_kwargs)
-    assert good_request
-    assert type(good_request) is DonationEmailSchema
-    assert good_request.email == 'name@gmail.com'
 
 def set_nullable_columns_null(db_row, db):
   # Adds column to the DB, and sets all nullable rows to None
