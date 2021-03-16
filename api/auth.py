@@ -179,8 +179,10 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db:
             last_name='no last name',
             oauth='github',
             profile_pic=user['avatar_url'],
-            city=user['location'].split(', ')[0],
-            state=user['location'].split(', ')[1],
+            city=None if user['location'] is None else user['location'].split(', ')[
+                0],
+            state=None if user['location'] is None else user['location'].split(', ')[
+                1],
         )
         db.add(new_account)
         db.commit()
@@ -189,7 +191,7 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db:
     return create_token_for_user(Authorize, str(account.uuid))
 
 
-@router.delete("/logout")
+@ router.delete("/logout")
 def logout(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
