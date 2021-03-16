@@ -26,8 +26,7 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 # Create database(s) and tables
 for key in Connections:
     # Connect with `echo` so we can see what's being run
-    db_url = Connections[key]['url'].replace(
-        f'/{Connections[key]["database"]}', '/postgres')
+    db_url = Connections[key]['url']
     engine = create_engine(db_url)
     conn = engine.connect()
     conn.execute("commit")
