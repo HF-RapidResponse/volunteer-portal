@@ -142,11 +142,13 @@ def create_settings(settings: AccountSettingsSchema, Authorize: AuthJWT = Depend
     if existing_settings is not None:
         raise HTTPException(
             status_code=400, detail=f"Settings already exist for that account")
-
+    matching_acct = db.query(Account).filter_by(uuid=settings.uuid).first()
+    if matching_acct is None:
+        raise HTTPException(
+            status_code=400, detail=f"Account with UUID {settings.uuid} not exist. Cannot create settings")
     new_settings = AccountSettings(**settings.dict())
     db.add(new_settings)
     db.commit()
-    create_access_and_refresh_tokens(str(settings.uuid), Authorize)
     return new_settings
 
 

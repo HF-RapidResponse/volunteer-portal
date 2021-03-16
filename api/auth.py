@@ -13,6 +13,7 @@ from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Acc
 from schemas import AccountBasicLoginSchema, AccountPasswordSchema
 from security import encrypt_password, check_encrypted_password
 from sqlalchemy.orm import lazyload
+from account_api import create_access_and_refresh_tokens
 
 router = APIRouter()
 app = FastAPI()
@@ -119,7 +120,7 @@ def verify_password(payload: AccountPasswordSchema, Authorize: AuthJWT = Depends
         return True
     else:
         raise HTTPException(
-            status_code=403, detail=f"Password is is incorrect")
+            status_code=403, detail=f"Password is incorrect")
 
 
 @router.post("/auth/basic")
@@ -207,15 +208,3 @@ def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     Authorize.set_access_cookies(access_token, response)
     Authorize.set_refresh_cookies(refresh_token, response)
     return response
-
-
-def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
-    try:
-        access_token = Authorize.create_access_token(subject=user_id)
-        Authorize.set_access_cookies(access_token)
-        refresh_token = Authorize.create_refresh_token(subject=user_id)
-        Authorize.set_refresh_cookies(refresh_token)
-        return {access_token, refresh_token}
-    except:
-        raise HTTPException(
-            status_code=500, detail=f"Error while trying to create and refresh tokens")
