@@ -56,6 +56,7 @@ export class AccountReqBody {
     this.profile_pic = obj.profile_pic;
     this.city = obj.city;
     this.state = obj.state;
+    this.zip_code = obj.zip_code;
     this.roles = obj.roles || [];
   }
 }
@@ -389,6 +390,7 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
       ? validateAlphaNumericUnicode(acctPayload.state)
       : null,
     email: validateEmail(acctPayload.email),
+    zipCode: validateZipCode(acctPayload.zip_code),
   };
 
   try {
@@ -450,4 +452,9 @@ const validatePassRetype = (password, retypePass) => {
   return passesMatch ? null : 'Password and retyped passwords do not match.';
 };
 
+const validateZipCode = (zipCode) => {
+  const pattern = /^\d{5}(?:[-\s]\d{4})?$/gm;
+  const isValid = pattern.test(zipCode);
+  return isValid ? null : 'Please enter a valid zip code.';
+};
 export default userSlice.reducer;
