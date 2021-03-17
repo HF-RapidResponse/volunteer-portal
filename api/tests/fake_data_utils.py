@@ -5,9 +5,7 @@ from datetime import datetime, timedelta
 from faker import Faker  # type: ignore
 from faker.providers import barcode, job, address  # type: ignore
 
-# from models import Person, Initiative, VolunteerRole, Priority, VolunteerEvent
-from models import Initiative, Person, Priority, RoleType, VolunteerRole, VolunteerEvent, DonationEmail
-from models import Account
+from models import Initiative, Person, Priority, RoleType, VolunteerRole, VolunteerEvent, Account
 
 fake = Faker()
 fake.add_provider(barcode)
@@ -117,11 +115,6 @@ def generate_fake_initiatives_list(session, count: int = 1, roles_count: int = 2
         session.add(initiative)
         initiatives.append(initiative)
     return initiatives
-
-
-def generate_fake_donation_email():
-    fake_donation_email = DonationEmail(email=fake.email())
-    return fake_donation_email
 
 
 def get_fake_email():

@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi_jwt_auth import AuthJWT
 
 from settings import Config, Session, get_db
-from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account
+from models import Initiative, VolunteerEvent, VolunteerRole, Account
 from schemas import AccountBasicLoginSchema, AccountPasswordSchema
 from security import encrypt_password, check_encrypted_password
 from sqlalchemy.orm import lazyload
