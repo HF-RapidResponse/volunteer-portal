@@ -97,6 +97,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+<<<<<<< HEAD
 -- Name: account_settings; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -149,6 +150,8 @@ CREATE TABLE public.donation_emails (
 ALTER TABLE public.donation_emails OWNER TO admin;
 
 --
+=======
+>>>>>>> 6dcdf207f7b5501bcbe37e6316f265acb3371c25
 -- Name: events; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -239,6 +242,7 @@ CREATE TABLE public.volunteer_openings (
 ALTER TABLE public.volunteer_openings OWNER TO admin;
 
 --
+<<<<<<< HEAD
 -- Name: account_settings account_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -263,6 +267,8 @@ ALTER TABLE ONLY public.donation_emails
 
 
 --
+=======
+>>>>>>> 6dcdf207f7b5501bcbe37e6316f265acb3371c25
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 

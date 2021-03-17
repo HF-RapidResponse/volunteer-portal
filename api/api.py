@@ -1,9 +1,15 @@
 from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
+<<<<<<< HEAD
 from typing import List, Optional, Text, Union, Mapping, Any
 from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail
 from schemas import (NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema,
                      DonationEmailSchema)
+=======
+from typing import List, Optional
+from models import Initiative, VolunteerEvent, VolunteerRole
+from schemas import NestedInitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema
+>>>>>>> 6dcdf207f7b5501bcbe37e6316f265acb3371c25
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
@@ -91,6 +97,7 @@ def get_all_initiatives(db: Session = Depends(get_db)) -> List[NestedInitiativeS
 @app.get("/api/initiatives/{initiative_external_id}", response_model=NestedInitiativeSchema)
 def get_initiative_by_external_id(initiative_external_id, db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
     return db.query(Initiative).filter_by(external_id=initiative_external_id).first()
+<<<<<<< HEAD
 
 
 @app.post("/api/donation_link_requests/", response_model=DonationEmailSchema)
@@ -98,3 +105,5 @@ def create_donation_link_request(donationEmail: DonationEmailSchema, db: Session
     db.add(DonationEmail(email=donationEmail.email))
     db.commit()
     return donationEmail
+=======
+>>>>>>> 6dcdf207f7b5501bcbe37e6316f265acb3371c25
