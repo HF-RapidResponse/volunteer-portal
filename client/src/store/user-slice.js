@@ -215,7 +215,9 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
 
   const errors = {
     firstName: validateAlphaNumericUnicode(payload.first_name),
-    lastName: validateAlphaNumericUnicode(payload.last_name),
+    lastName: payload.last_name
+      ? validateAlphaNumericUnicode(payload.last_name)
+      : null,
     username: validateAlphaNumericUnicode(payload.username),
     email: validateEmail(payload.email),
     password: validatePassword(payload.password),

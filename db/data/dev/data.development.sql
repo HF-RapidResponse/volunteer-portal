@@ -121,7 +121,7 @@ CREATE TABLE public.accounts (
     uuid uuid NOT NULL,
     email text NOT NULL,
     username character varying(255) NOT NULL,
-    first_name character varying(255),
+    first_name character varying(255) NOT NULL,
     last_name character varying(255),
     password text,
     oauth character varying(32),

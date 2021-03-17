@@ -73,7 +73,7 @@ function Profile(props) {
               <Form.Control
                 type="text"
                 value={data.first_name ?? ''}
-                placeholder="Enter first name here"
+                placeholder="First name (required)"
                 onChange={(e) => {
                   handleChange('first_name', e.target.value);
                 }}
@@ -92,16 +92,14 @@ function Profile(props) {
               <Form.Control
                 type="text"
                 value={data.last_name ?? ''}
-                placeholder="Enter last name here"
+                placeholder="Last name (optional)"
                 onChange={(e) => {
                   handleChange('last_name', e.target.value);
                 }}
                 isInvalid={!!errors.lastName}
               />
               <Form.Control.Feedback type="invalid">
-                {!data.last_name
-                  ? 'Please provide a last name.'
-                  : errors.lastName}
+                {errors.lastName}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
@@ -134,6 +132,7 @@ function Profile(props) {
                   handleChange('username', e.target.value);
                 }}
                 isInvalid={!!errors.username || !!errors.foundExistingUser}
+                placeholder="Enter username here (required)"
                 required
               />
               <Form.Control.Feedback type="invalid">
@@ -155,7 +154,7 @@ function Profile(props) {
                   handleChange('email', e.target.value);
                 }}
                 isInvalid={!!errors.email}
-                placeholder="Enter e-mail here"
+                placeholder="Enter e-mail here (required)"
                 readOnly
               />
               <Form.Control.Feedback type="invalid">
@@ -193,7 +192,7 @@ function Profile(props) {
                   handleChange('city', e.target.value);
                 }}
                 isInvalid={data.city && !!errors.city}
-                placeholder="Enter city here"
+                placeholder="City (optional)"
               />
               <Form.Control.Feedback type="invalid">
                 {errors.city}
@@ -210,7 +209,7 @@ function Profile(props) {
                   handleChange('state', e.target.value);
                 }}
                 isInvalid={data.state && !!errors.state}
-                placeholder="Enter state here"
+                placeholder="State (optional)"
               />
               <Form.Control.Feedback type="invalid">
                 {errors.state}
@@ -229,7 +228,7 @@ function Profile(props) {
                   handleChange('zip_code', e.target.value);
                 }}
                 isInvalid={data.zip_code && !!errors.zipCode}
-                placeholder="Enter city here"
+                placeholder="Enter zip code here (optional)"
               />
               <Form.Control.Feedback type="invalid">
                 {errors.zipCode}
