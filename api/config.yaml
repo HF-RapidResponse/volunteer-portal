@@ -12,6 +12,9 @@ production_db_defaults: &production_db_defaults
 development_routes_defaults: &development_routes_defaults
   client: 'http://localhost:8000'
 
+staging_routes_defaults: &staging_routes_defaults
+  client:  'https://staging-volunteer-portal-dv734ug3ua-uc.a.run.app'
+
 auth_defaults: &auth_defaults
   jwt:
     secret: portal_auth_jwt_secret
@@ -64,9 +67,8 @@ development:
   notifications:
     <<: *notification_defaults
 staging:
-  # TODO verify that this is fine as long as the traffic is all proxies within a single machine.
   routes:
-    <<: *development_routes_defaults
+    <<: *staging_routes_defaults
   databases:
     <<: *production_db_defaults
   auth:
