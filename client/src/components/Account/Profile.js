@@ -71,8 +71,9 @@ function Profile(props) {
             <Form.Group controlId="formFirstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control
+                type="text"
                 value={data.first_name ?? ''}
-                placeholder="Enter first name here"
+                placeholder="First name (required)"
                 onChange={(e) => {
                   handleChange('first_name', e.target.value);
                 }}
@@ -89,17 +90,16 @@ function Profile(props) {
             <Form.Group controlId="formLastName">
               <Form.Label>Last Name</Form.Label>
               <Form.Control
+                type="text"
                 value={data.last_name ?? ''}
-                placeholder="Enter last name here"
+                placeholder="Last name (optional)"
                 onChange={(e) => {
                   handleChange('last_name', e.target.value);
                 }}
                 isInvalid={!!errors.lastName}
               />
               <Form.Control.Feedback type="invalid">
-                {!data.last_name
-                  ? 'Please provide a last name.'
-                  : errors.lastName}
+                {errors.lastName}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
@@ -126,12 +126,13 @@ function Profile(props) {
             <Form.Group controlId="formUsername">
               <Form.Label>Username (always shown on Profile)</Form.Label>
               <Form.Control
-                type="username"
+                type="text"
                 value={data.username ?? ''}
                 onChange={(e) => {
                   handleChange('username', e.target.value);
                 }}
                 isInvalid={!!errors.username || !!errors.foundExistingUser}
+                placeholder="Enter username here (required)"
                 required
               />
               <Form.Control.Feedback type="invalid">
@@ -153,7 +154,7 @@ function Profile(props) {
                   handleChange('email', e.target.value);
                 }}
                 isInvalid={!!errors.email}
-                placeholder="Enter e-mail here"
+                placeholder="Enter e-mail here (required)"
                 readOnly
               />
               <Form.Control.Feedback type="invalid">
@@ -185,13 +186,13 @@ function Profile(props) {
             <Form.Group controlId="formCity">
               <Form.Label>City</Form.Label>
               <Form.Control
-                type="city"
+                type="text"
                 value={data.city ?? ''}
                 onChange={(e) => {
                   handleChange('city', e.target.value);
                 }}
                 isInvalid={data.city && !!errors.city}
-                placeholder="Enter city here"
+                placeholder="City (optional)"
               />
               <Form.Control.Feedback type="invalid">
                 {errors.city}
@@ -202,19 +203,38 @@ function Profile(props) {
             <Form.Group controlId="formState">
               <Form.Label>State</Form.Label>
               <Form.Control
-                type="state"
+                type="text"
                 value={data.state ?? ''}
                 onChange={(e) => {
                   handleChange('state', e.target.value);
                 }}
                 isInvalid={data.state && !!errors.state}
-                placeholder="Enter state here"
+                placeholder="State (optional)"
               />
-              <Form.Control.Feedback type="valid">
-                {submitted ? 'Profile change successful' : null}
-              </Form.Control.Feedback>
               <Form.Control.Feedback type="invalid">
                 {errors.state}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+        </Row>
+        <Row className="mt-4 mb-4">
+          <Col xs={12} md={8}>
+            <Form.Group controlId="formZipcode">
+              <Form.Label>Zip Code</Form.Label>
+              <Form.Control
+                type="text"
+                value={data.zip_code ?? ''}
+                onChange={(e) => {
+                  handleChange('zip_code', e.target.value);
+                }}
+                isInvalid={data.zip_code && !!errors.zipCode}
+                placeholder="Enter zip code here (optional)"
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.zipCode}
+              </Form.Control.Feedback>
+              <Form.Control.Feedback type="valid">
+                {submitted ? 'Profile change successful' : null}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>

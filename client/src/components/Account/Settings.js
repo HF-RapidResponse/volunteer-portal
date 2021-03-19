@@ -131,6 +131,7 @@ function Settings(props) {
               isInvalid={errors.oldPassInvalid}
               required
               disabled={disableForm}
+              placeholder="Enter current password here (required)"
             />
             <Form.Control.Feedback type="invalid">
               Password is invalid!
@@ -148,6 +149,7 @@ function Settings(props) {
               isInvalid={errors.newPassInvalid}
               required
               disabled={disableForm}
+              placeholder="Enter new password here (required)"
             />
             <Form.Control.Feedback type="invalid">
               Passwords must be between 6 to 20 characters with 1 letter, 1
@@ -166,6 +168,7 @@ function Settings(props) {
               isInvalid={errors.newPassRetypeMismatch}
               required
               disabled={disableForm}
+              placeholder="Retype new password here (required)"
             />
             <Form.Control.Feedback type="invalid">
               {!data.newPass || !data.retypePass

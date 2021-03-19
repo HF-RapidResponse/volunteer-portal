@@ -9,10 +9,11 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi_jwt_auth import AuthJWT
 
 from settings import Config, Session, get_db
-from models import Initiative, VolunteerEvent, VolunteerRole, DonationEmail, Account
+from models import Initiative, VolunteerEvent, VolunteerRole, Account
 from schemas import AccountBasicLoginSchema, AccountPasswordSchema
 from security import encrypt_password, check_encrypted_password
 from sqlalchemy.orm import lazyload
+from account_api import create_access_and_refresh_tokens
 
 router = APIRouter()
 app = FastAPI()
@@ -119,7 +120,7 @@ def verify_password(payload: AccountPasswordSchema, Authorize: AuthJWT = Depends
         return True
     else:
         raise HTTPException(
-            status_code=403, detail=f"Password is is incorrect")
+            status_code=403, detail=f"Password is incorrect")
 
 
 @router.post("/auth/basic")
@@ -179,6 +180,10 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db:
             last_name='no last name',
             oauth='github',
             profile_pic=user['avatar_url'],
+            city=None if user['location'] is None else user['location'].split(', ')[
+                0],
+            state=None if user['location'] is None else user['location'].split(', ')[
+                1],
         )
         db.add(new_account)
         db.commit()
@@ -187,7 +192,7 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db:
     return create_token_for_user(Authorize, str(account.uuid))
 
 
-@router.delete("/logout")
+@ router.delete("/logout")
 def logout(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
@@ -203,15 +208,3 @@ def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     Authorize.set_access_cookies(access_token, response)
     Authorize.set_refresh_cookies(refresh_token, response)
     return response
-
-
-def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
-    try:
-        access_token = Authorize.create_access_token(subject=user_id)
-        Authorize.set_access_cookies(access_token)
-        refresh_token = Authorize.create_refresh_token(subject=user_id)
-        Authorize.set_refresh_cookies(refresh_token)
-        return {access_token, refresh_token}
-    except:
-        raise HTTPException(
-            status_code=500, detail=f"Error while trying to create and refresh tokens")

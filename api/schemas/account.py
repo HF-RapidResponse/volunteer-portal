@@ -7,7 +7,7 @@ class AccountRequestSchema(BaseModel):
     email: EmailStr
     username: Optional[str]
     first_name: str
-    last_name: str
+    last_name: Optional[str]
     password: Optional[Text]
     oauth: Optional[str]
     profile_pic: Optional[Text]

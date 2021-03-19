@@ -121,7 +121,7 @@ CREATE TABLE public.accounts (
     uuid uuid NOT NULL,
     email text NOT NULL,
     username character varying(255) NOT NULL,
-    first_name character varying(255),
+    first_name character varying(255) NOT NULL,
     last_name character varying(255),
     password text,
     oauth character varying(32),
@@ -134,19 +134,6 @@ CREATE TABLE public.accounts (
 
 
 ALTER TABLE public.accounts OWNER TO admin;
-
---
--- Name: donation_emails; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.donation_emails (
-    donation_uuid uuid NOT NULL,
-    email text,
-    request_sent_date timestamp without time zone
-);
-
-
-ALTER TABLE public.donation_emails OWNER TO admin;
 
 --
 -- Name: events; Type: TABLE; Schema: public; Owner: admin
@@ -253,15 +240,6 @@ COPY public.account_settings (uuid, show_name, show_email, show_location, organi
 COPY public.accounts (uuid, email, username, first_name, last_name, password, oauth, profile_pic, city, state, roles) FROM stdin;
 \.
 
-
---
--- Data for Name: donation_emails; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-COPY public.donation_emails (donation_uuid, email, request_sent_date) FROM stdin;
-\.
-
-
 --
 -- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -336,15 +314,6 @@ ALTER TABLE ONLY public.account_settings
 
 ALTER TABLE ONLY public.accounts
     ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: donation_emails donation_emails_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.donation_emails
-    ADD CONSTRAINT donation_emails_pkey PRIMARY KEY (donation_uuid);
-
 
 --
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: admin

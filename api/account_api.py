@@ -27,9 +27,24 @@ router = APIRouter()
 #     return db.query(Account).all()
 
 
+def check_valid_password(password: str):
+    match = re.search(
+        "^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*\d)(?=.*[`!@#$%^&*()_+\-=[\]{};':\"\\|,.<>/?~]).{6,20}$", password)
+    if match is None:
+        raise HTTPException(status_code=400,
+                            detail=f"Please enter a password between 6 and 20 characters long with at least 1 letter, 1 number, and 1 special character.")
+
+
+def check_matching_user(uuid, Authorize: AuthJWT):
+    current_uuid = Authorize.get_jwt_subject()
+    if current_uuid != uuid:
+        raise HTTPException(status_code=403, detail=f"unauthorized")
+
+
 @router.get("/accounts/{uuid}", response_model=AccountResponseSchema)
 def get_account_by_uuid(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
+    check_matching_user(uuid, Authorize)
     return db.query(Account).filter_by(uuid=uuid).first()
 
 
@@ -44,14 +59,6 @@ def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends()
     db.commit()
     create_access_and_refresh_tokens(str(account.uuid), Authorize)
     return account
-
-
-def check_valid_password(password: str):
-    match = re.search(
-        "^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*\d)(?=.*[`!@#$%^&*()_+\-=[\]{};':\"\\|,.<>/?~]).{6,20}$", password)
-    if match is None:
-        raise HTTPException(status_code=400,
-                            detail=f"Please enter a password between 6 and 20 characters long with at least 1 letter, 1 number, and 1 special character.")
 
 
 def check_for_existing_username_or_email(account: AccountRequestSchema, db: Session):
@@ -83,6 +90,7 @@ def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
 @router.put("/accounts/{uuid}", response_model=AccountResponseSchema)
 def update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
+    check_matching_user(uuid, Authorize)
     check_for_diff_user_with_same_username(uuid, account, db)
     updated_acct = Account(uuid=uuid, **account.dict())
     db.merge(updated_acct)
@@ -101,6 +109,7 @@ def check_for_diff_user_with_same_username(uuid, account: AccountRequestSchema, 
 @router.patch("/accounts/{uuid}", response_model=AccountResponseSchema)
 def update_password(uuid, partial_account: PartialAccountSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
+    check_matching_user(uuid, Authorize)
     account = db.query(Account).filter_by(uuid=uuid).first()
     if partial_account.password is None:
         raise HTTPException(
@@ -117,6 +126,7 @@ def update_password(uuid, partial_account: PartialAccountSchema, Authorize: Auth
 @router.delete("/accounts/{uuid}", status_code=204)
 def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
+    check_matching_user(uuid, Authorize)
     acct_to_delete = db.query(Account).filter_by(uuid=uuid).first()
     if acct_to_delete is None:
         raise HTTPException(status_code=400,
@@ -132,27 +142,32 @@ def create_settings(settings: AccountSettingsSchema, Authorize: AuthJWT = Depend
     if existing_settings is not None:
         raise HTTPException(
             status_code=400, detail=f"Settings already exist for that account")
-
+    matching_acct = db.query(Account).filter_by(uuid=settings.uuid).first()
+    if matching_acct is None:
+        raise HTTPException(
+            status_code=400, detail=f"Account with UUID {settings.uuid} not exist. Cannot create settings")
     new_settings = AccountSettings(**settings.dict())
     db.add(new_settings)
     db.commit()
-    create_access_and_refresh_tokens(str(settings.uuid), Authorize)
     return new_settings
 
 
-@router.get("/account_settings/", response_model=List[AccountSettingsSchema])
-def get_all_settings(db: Session = Depends(get_db)):
-    return db.query(AccountSettings).all()
+# @router.get("/account_settings/", response_model=List[AccountSettingsSchema])
+# def get_all_settings(db: Session = Depends(get_db)):
+#     return db.query(AccountSettings).all()
 
 
 @router.get("/account_settings/{uuid}", response_model=AccountSettingsSchema)
-def get_settings_by_uuid(uuid, db: Session = Depends(get_db)):
+def get_settings_by_uuid(uuid, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    check_matching_user(uuid, Authorize)
     return db.query(AccountSettings).filter_by(uuid=uuid).first()
 
 
 @router.put("/account_settings/{uuid}", response_model=AccountSettingsSchema)
 def update_settings(uuid, settings: AccountSettingsSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
+    check_matching_user(uuid, Authorize)
     updated_settings = AccountSettings(**settings.dict())
     db.merge(updated_settings)
     db.commit()
@@ -162,6 +177,7 @@ def update_settings(uuid, settings: AccountSettingsSchema, Authorize: AuthJWT = 
 @router.delete("/account_settings/{uuid}", status_code=204)
 def delete_settings(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
+    check_matching_user(uuid, Authorize)
     settings_to_delete = db.query(AccountSettings).filter_by(uuid=uuid).first()
     if settings_to_delete is None:
         raise HTTPException(status_code=400,

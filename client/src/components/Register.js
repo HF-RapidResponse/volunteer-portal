@@ -88,6 +88,7 @@ function Register(props) {
                       }}
                       isValid={validated && !errors.firstName}
                       isInvalid={!!errors.firstName}
+                      placeholder="Enter first name here (required)"
                       required
                     />
                     <Form.Control.Feedback type="invalid">
@@ -102,18 +103,16 @@ function Register(props) {
                     <Form.Label>Last Name</Form.Label>
                     <Form.Control
                       type="name"
-                      placeholder="Last Name"
+                      placeholder="Enter last name here (optional)"
                       onChange={(e) => {
                         handleKeyPress('last_name', e);
                       }}
                       isValid={validated && !errors.lastName}
                       isInvalid={!!errors.lastName}
-                      required
+                      placeholder="Enter last name here (optional)"
                     />
                     <Form.Control.Feedback type="invalid">
-                      {!data.last_name
-                        ? 'Please provide a last name.'
-                        : errors.lastName}
+                      {errors.lastName}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -122,13 +121,13 @@ function Register(props) {
                 <Form.Label>Username</Form.Label>
                 <Form.Control
                   type="username"
-                  placeholder="Username"
                   onChange={(e) => {
                     handleKeyPress('username', e);
                   }}
                   isValid={validated && !errors.username}
                   isInvalid={!!errors.username}
                   required
+                  placeholder="Enter username here (required)"
                 />
                 <Form.Control.Feedback type="invalid">
                   {!data.username
@@ -147,6 +146,7 @@ function Register(props) {
                   isValid={validated && !errors.email}
                   isInvalid={!!errors.email}
                   required
+                  placeholder="Enter e-mail address here (required)"
                 />
                 <Form.Control.Feedback type="invalid">
                   {!data.email
@@ -164,6 +164,7 @@ function Register(props) {
                   }}
                   isValid={validated && !errors.password}
                   isInvalid={!!errors.password}
+                  placeholder="Enter password here (required)"
                   required
                 />
                 <Form.Control.Feedback type="invalid">
@@ -182,6 +183,7 @@ function Register(props) {
                   }}
                   isValid={validated && !errors.retypePass}
                   isInvalid={!!errors.retypePass}
+                  placeholder="Retype password here (required)"
                   required
                 />
                 <Form.Control.Feedback type="invalid">

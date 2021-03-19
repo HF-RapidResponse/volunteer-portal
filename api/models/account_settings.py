@@ -22,6 +22,7 @@ class AccountSettings(Base):
         'organizers_can_see', Boolean, default=True, nullable=False)
     volunteers_can_see = Column(
         'volunteers_can_see', Boolean, default=True, nullable=False)
+    # dictionary with initiative_name -> isSubscribed
     initiative_map = Column('initiative_map', JSON, default={}, nullable=False)
 
     def __repr__(self):

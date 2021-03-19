@@ -17,7 +17,7 @@ class Account(Base):
     email = Column('email', Text, unique=True, nullable=False, index=True)
     username = Column('username', String(255), unique=True,
                       nullable=False, index=True)
-    first_name = Column('first_name', String(255), nullable=True)
+    first_name = Column('first_name', String(255), nullable=False)
     last_name = Column('last_name', String(255), nullable=True)
     # passwords are encrypted using passlib with pbkdf2_sha256 hashing (see security.py)
     password = Column('password', Text, nullable=True)
