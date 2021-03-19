@@ -61,7 +61,7 @@ function AccountNav() {
       </Nav>
       <Nav
         id="account-nav-mobile"
-        className="d-lg-none mt-4 mb-4 text-center"
+        className="d-lg-none mt-2 mt-md-5 mb-5 text-center"
         style={{ overflow: 'hidden' }}
       >
         <FontAwesomeIcon
