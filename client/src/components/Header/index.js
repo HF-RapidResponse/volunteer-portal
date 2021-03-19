@@ -118,7 +118,7 @@ function Header(props) {
         id="main-header"
         className="pt-3 pb-3"
         fixed="top"
-        expand="xl"
+        expand="xxl"
         expanded={expanded}
       >
         <NavLink className="nav-link" key="home-key" to="/" onClick={collapse}>

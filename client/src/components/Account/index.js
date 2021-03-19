@@ -55,7 +55,7 @@ function AccountIndex(props) {
               style={{ maxWidth: '80px' }}
             />
           </Col>
-          <Col xs={12} md={10} xl={5} className="align-self-center">
+          <Col xs={12} md={10} xl={5} className="mt-3 mb-3 align-self-center">
             <h2>{user.username} / Account</h2>
           </Col>
         </Row>

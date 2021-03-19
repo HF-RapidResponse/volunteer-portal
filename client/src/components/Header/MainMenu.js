@@ -71,7 +71,7 @@ function MainMenu(props) {
   }
 
   return (
-    <Nav className="d-lg-flex align-items-center ml-xl-4 mr-auto">
+    <Nav className="d-xl-flex align-items-center ml-xxl-4 mr-auto">
       {mainLinksToRender}
     </Nav>
   );
