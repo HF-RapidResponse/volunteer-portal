@@ -10,6 +10,7 @@ import '../styles/register-login.scss';
 
 function Register(props) {
   document.title = 'HF Volunteer Portal - Create an Account';
+  const [pendingSubmit, setPendingSubmit] = useState(false);
   const { user, attemptCreateAccount } = props;
   const {
     handleChange,
@@ -23,13 +24,10 @@ function Register(props) {
   } = useForm(attemptCreateAccount);
   const path = window.location.pathname;
 
-  /**
-   * simple helper function that handles form submission by calling several other functions
-   * @param {*} e - event object
-   */
   const submitWrapper = async (e) => {
-    setValidated(true);
+    setPendingSubmit(true);
     await handleSubmit(e);
+    setPendingSubmit(false);
   };
 
   /**
@@ -47,7 +45,7 @@ function Register(props) {
     }
   }
 
-  return (validated && submitted) || user ? (
+  return user && !pendingSubmit ? (
     <Redirect push to="/account/profile" />
   ) : (
     <>
