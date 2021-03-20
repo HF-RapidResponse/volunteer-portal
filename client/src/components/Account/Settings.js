@@ -48,18 +48,18 @@ function Settings(props) {
 
   useEffect(() => {
     if (validated && submitted) {
-      clearFormComponent();
       setDisableForm(true);
       setTimeout(() => {
+        clearFormComponent();
         resetForm();
         setDisableForm(false);
       }, 3000);
     }
   }, [validated, submitted]);
 
-  const submitWrapper = (e) => {
+  const submitWrapper = async (e) => {
     if (data.oldPass) {
-      handleSubmit(e);
+      await handleSubmit(e);
     } else {
       e.preventDefault();
       e.stopPropagation();

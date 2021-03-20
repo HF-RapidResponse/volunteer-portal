@@ -6,7 +6,6 @@ import LoadingSpinner from './LoadingSpinner';
 function LoginCallback(props) {
   const [canRedirect, setCanRedirect] = useState(false);
   const [errorLoading, setErrorLoading] = useState(false);
-
   const { user, firstAcctPage } = props;
 
   useEffect(() => {
@@ -14,7 +13,7 @@ function LoginCallback(props) {
       if (window.location.pathname.includes('/login_callback')) {
         setErrorLoading(true);
       }
-    }, 2000);
+    }, 2500);
   }, []);
 
   useEffect(() => {

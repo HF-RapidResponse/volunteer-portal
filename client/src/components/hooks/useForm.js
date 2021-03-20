@@ -34,23 +34,22 @@ const useForm = (callback, initObj) => {
    * designed to work with HTML page form validation
    * @param {Object} e - event object (we weant to inspect the currentTarget property)
    */
-  const handleSubmit = (e) => {
-    const form = e.currentTarget;
+  const handleSubmit = async (e) => {
     setErrors({});
     e.preventDefault();
     e.stopPropagation();
-    callback(data)
-      .then(() => {
-        setValidated(true);
-        setSubmitted(true);
-        return true;
-      })
-      .catch((error) => {
-        setErrors(error);
-        setValidated(true);
-        setSubmitted(false);
-        return false;
-      });
+
+    try {
+      await callback(data);
+      setValidated(true);
+      setSubmitted(true);
+      return true;
+    } catch (error) {
+      setErrors(error);
+      setValidated(true);
+      setSubmitted(false);
+      return false;
+    }
   };
 
   const resetForm = () => {

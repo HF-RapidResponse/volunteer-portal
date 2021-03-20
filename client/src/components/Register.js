@@ -27,9 +27,9 @@ function Register(props) {
    * simple helper function that handles form submission by calling several other functions
    * @param {*} e - event object
    */
-  const submitWrapper = (e) => {
+  const submitWrapper = async (e) => {
     setValidated(true);
-    handleSubmit(e);
+    await handleSubmit(e);
   };
 
   /**

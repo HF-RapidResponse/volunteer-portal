@@ -35,12 +35,12 @@ function Profile(props) {
     formComponent.reset();
   };
 
-  const submitWrapper = (e) => {
+  const submitWrapper = async (e) => {
     if (isEqual(user, data) || disableForm) {
       e.preventDefault();
       e.stopPropagation();
     } else {
-      handleSubmit(e);
+      await handleSubmit(e);
     }
   };
 
