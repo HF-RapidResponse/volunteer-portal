@@ -12,15 +12,10 @@ import '../styles/register-login.scss';
 
 function Login(props) {
   const [pendingSubmit, setPendingSubmit] = useState(false);
-  const { attemptLogin, user, firstAcctPage } = props;
-  const {
-    validated,
-    submitted,
-    errors,
-    handleSubmit,
-    handleChange,
-    data,
-  } = useForm(attemptLogin);
+  const { attemptLogin, user, firstAcctPage, initLoading } = props;
+  const { validated, errors, handleSubmit, handleChange, data } = useForm(
+    attemptLogin
+  );
 
   const submitWrapper = async (e) => {
     setPendingSubmit(true);
@@ -28,7 +23,9 @@ function Login(props) {
     setPendingSubmit(false);
   };
 
-  return user && !pendingSubmit ? (
+  return initLoading ? (
+    <LoadingSpinner />
+  ) : user && !pendingSubmit ? (
     <Redirect push to={firstAcctPage || '/account/profile'} />
   ) : (
     <>
@@ -105,6 +102,7 @@ const mapStateToProps = (state) => {
   return {
     user: state.userStore.user,
     firstAcctPage: state.userStore.firstAcctPage,
+    initLoading: state.userStore.initLoading,
   };
 };
 

@@ -8,6 +8,7 @@ const userSlice = createSlice({
     user: null,
     firstAcctPage: null,
     tokenRefreshTime: null,
+    initLoading: false,
   },
 
   reducers: {
@@ -34,6 +35,10 @@ const userSlice = createSlice({
         return element != payload;
       });
     },
+    setInitLoading: (state, action) => {
+      const { payload } = action;
+      state.initLoading = payload;
+    },
   },
 });
 
@@ -43,6 +48,7 @@ export const {
   completeLogout,
   setFirstAcctPage,
   completeDelete,
+  setInitLoading,
 } = userSlice.actions;
 
 export class AccountReqBody {
@@ -154,6 +160,7 @@ export const checkIfCookieIsValid = (cookies) => async (dispatch) => {
 
 export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
   try {
+    dispatch(setInitLoading(true));
     const refreshTime = await refreshAccessToken();
     dispatch(setRefreshTime(refreshTime));
     const acctRes = await axios.get(`/api/accounts/${id}`);
@@ -165,6 +172,8 @@ export const syncInitMapAndLoadUser = (id) => async (dispatch) => {
     dispatch(setUser(user));
   } catch (error) {
     console.error(error);
+  } finally {
+    dispatch(setInitLoading(false));
   }
 };
 
