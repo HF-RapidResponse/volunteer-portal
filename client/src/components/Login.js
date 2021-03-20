@@ -11,7 +11,7 @@ import LoadingSpinner from './LoadingSpinner';
 import '../styles/register-login.scss';
 
 function Login(props) {
-  const [loading, setLoading] = useState(false);
+  const [pendingSubmit, setPendingSubmit] = useState(false);
   const { attemptLogin, user, firstAcctPage } = props;
   const {
     validated,
@@ -22,9 +22,13 @@ function Login(props) {
     data,
   } = useForm(attemptLogin);
 
-  return loading ? (
-    <LoadingSpinner />
-  ) : submitted || user ? (
+  const submitWrapper = async (e) => {
+    setPendingSubmit(true);
+    await handleSubmit(e);
+    setPendingSubmit(false);
+  };
+
+  return user && !pendingSubmit ? (
     <Redirect push to={firstAcctPage || '/account/profile'} />
   ) : (
     <>
@@ -44,7 +48,7 @@ function Login(props) {
         Log in with e-mail
       </h3>
       <Container className="mt-4 mb-5">
-        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+        <Form noValidate validated={validated} onSubmit={submitWrapper}>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>E-mail address</Form.Label>
             <Form.Control
