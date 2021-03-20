@@ -12,6 +12,7 @@ import Initiatives from './Initiatives';
 import InitiativeDetail from './InitiativeDetail';
 import NotFound from './NotFound';
 import Login from './Login';
+import LoginCallback from './LoginCallback';
 import Dashboard from './Dashboard';
 import Account from './Account';
 
@@ -47,6 +48,7 @@ function PageViewSwitch() {
           component={withRouter(InitiativeDetail)}
         />
         <Route path="/login" exact component={Login} />
+        <Route path="/login_callback" exact component={LoginCallback} />
         <Route path="/dashboard" exact component={Dashboard} />
         <Route path="/account/*" component={Account} />
         <Route path="*" component={NotFound} />
