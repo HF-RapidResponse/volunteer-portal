@@ -101,21 +101,27 @@ function Profile(props) {
             </Form.Group>
           </Col>
           <Col xs={12} md={4} className="pl-lg-5">
-            <label className="text-muted">Show on Profile</label>
-            <Form.Switch
-              id="show-on-profile-name-switch"
-              className="custom-switch-md"
-              checked={data.show_name}
-              onChange={(e) => {
-                handleChange('show_name', e.target.checked);
-                basicPropUpdate({
-                  user,
-                  key: 'show_name',
-                  newVal: e.target.checked,
-                  tokenRefreshTime,
-                });
-              }}
-            />
+            <Row>
+              <Col xs={8} sm={7} md={12}>
+                <label className="text-muted">Show on Profile</label>
+              </Col>
+              <Col xs={4} sm={5} md={12}>
+                <Form.Switch
+                  id="show-on-profile-name-switch"
+                  className="custom-switch-md"
+                  checked={data.show_name}
+                  onChange={(e) => {
+                    handleChange('show_name', e.target.checked);
+                    basicPropUpdate({
+                      user,
+                      key: 'show_name',
+                      newVal: e.target.checked,
+                      tokenRefreshTime,
+                    });
+                  }}
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
         <Row className="mt-4 mb-4">
@@ -162,20 +168,27 @@ function Profile(props) {
             </Form.Group>
           </Col>
           <Col xs={12} md={4} className="align-self-center pl-lg-5">
-            <Form.Switch
-              id="show-on-profile-email-switch"
-              className="custom-switch-md"
-              checked={data.show_email}
-              onChange={(e) => {
-                handleChange('show_email', e.target.checked);
-                basicPropUpdate({
-                  user,
-                  key: 'show_email',
-                  newVal: e.target.checked,
-                  tokenRefreshTime,
-                });
-              }}
-            />
+            <Row>
+              <Col xs={8} sm={7} className="d-md-none">
+                <label className="text-muted">Show on Profile</label>
+              </Col>
+              <Col xs={4} sm={5} md={12}>
+                <Form.Switch
+                  id="show-on-profile-email-switch"
+                  className="custom-switch-md"
+                  checked={data.show_email}
+                  onChange={(e) => {
+                    handleChange('show_email', e.target.checked);
+                    basicPropUpdate({
+                      user,
+                      key: 'show_email',
+                      newVal: e.target.checked,
+                      tokenRefreshTime,
+                    });
+                  }}
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
         <Row className="mt-4 mb-4">
@@ -236,20 +249,27 @@ function Profile(props) {
             </Form.Group>
           </Col>
           <Col xs={12} md={4} className="align-self-center pl-lg-5">
-            <Form.Switch
-              id="show-on-profile-location-switch"
-              className="custom-switch-md"
-              checked={data.show_location}
-              onChange={(e) => {
-                handleChange('show_location', e.target.checked);
-                basicPropUpdate({
-                  user,
-                  key: 'show_location',
-                  newVal: e.target.checked,
-                  tokenRefreshTime,
-                });
-              }}
-            />
+            <Row>
+              <Col xs={8} sm={7} className="d-md-none">
+                <label className="text-muted">Show on Profile</label>
+              </Col>
+              <Col xs={4} sm={5} md={12}>
+                <Form.Switch
+                  id="show-on-profile-location-switch"
+                  className="custom-switch-md"
+                  checked={data.show_location}
+                  onChange={(e) => {
+                    handleChange('show_location', e.target.checked);
+                    basicPropUpdate({
+                      user,
+                      key: 'show_location',
+                      newVal: e.target.checked,
+                      tokenRefreshTime,
+                    });
+                  }}
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
         <Row
