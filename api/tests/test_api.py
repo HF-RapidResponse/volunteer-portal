@@ -10,7 +10,7 @@ from api.api import app
 from settings import Session
 
 from schemas import NestedInitiativeSchema, InitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema
-from models import NestedInitiative, Initiative, VolunteerRole, VolunteerEvent, DonationEmail
+from models import NestedInitiative, Initiative, VolunteerRole, VolunteerEvent
 
 from tests.fake_data_utils import generate_fake_initiative, generate_fake_volunteer_role
 from tests.fake_data_utils import generate_fake_volunteer_event
@@ -107,22 +107,6 @@ def test_get_initiative_api(db):
     assert hasattr(initiatives_response, 'events')
 
     cleanup_initiative(db, initiative)
-
-def test_create_link_request_error():
-    with pytest.raises(error_wrappers.ValidationError):
-        bad_link_request_kwargs = {
-            "email": "name@gmail"
-        }
-        DonationEmailSchema(**bad_link_request_kwargs)
-
-def test_create_link_request_error():
-    good_link_request_kwargs = {
-        "email": "name@gmail.com"
-    }
-    good_request = DonationEmailSchema(**good_link_request_kwargs)
-    assert good_request
-    assert type(good_request) is DonationEmailSchema
-    assert good_request.email == 'name@gmail.com'
 
 def set_nullable_columns_null(db_row, db):
   # Adds column to the DB, and sets all nullable rows to None
