@@ -1,0 +1,15 @@
+@import "styles/_variables";
+
+.components-cards-card-initiative {
+    .headline {
+        padding: 12px;
+        padding-left: 24px;
+        background: $color-blue-forward;
+    }
+
+    .image {
+        max-height: 350px;
+        width: 100%;
+        object-fit: cover;
+    }
+}
