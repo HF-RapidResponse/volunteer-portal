@@ -1,4 +1,7 @@
-import userReducer, { setUser, completeLogout } from '../store/user-slice.js';
+import userReducer, {
+  setUser,
+  completeLogout,
+} from '../store/user-slice/index.js';
 
 describe('user reducer', () => {
   const testUser = {

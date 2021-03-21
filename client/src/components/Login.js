@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import useForm from './hooks/useForm';
 import { Button, Form, Container, Row, Col } from 'react-bootstrap';
-import { attemptLogin } from '../store/user-slice.js';
+import { attemptLogin } from '../store/user-slice/index.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import GoogleOAuthButton from './OAuth/GoogleOAuthButton';

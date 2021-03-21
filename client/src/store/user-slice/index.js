@@ -1,5 +1,13 @@
 import axios from 'axios';
 import { createSlice } from '@reduxjs/toolkit';
+import { AccountReqBody, SettingsReqBody } from './classes';
+import {
+  validatePassword,
+  validateEmail,
+  validateAlphaNumericUnicode,
+  validatePassRetype,
+  validateZipCode,
+} from './validators';
 
 const userSlice = createSlice({
   name: 'userStore',
@@ -50,34 +58,6 @@ export const {
   completeDelete,
   setInitLoading,
 } = userSlice.actions;
-
-export class AccountReqBody {
-  constructor(obj) {
-    this.username = obj.username;
-    this.email = obj.email;
-    this.first_name = obj.first_name;
-    this.last_name = obj.last_name;
-    this.password = obj.password;
-    this.oauth = obj.oauth;
-    this.profile_pic = obj.profile_pic;
-    this.city = obj.city;
-    this.state = obj.state;
-    this.zip_code = obj.zip_code;
-    this.roles = obj.roles || [];
-  }
-}
-
-export class SettingsReqBody {
-  constructor(obj) {
-    this.uuid = obj.uuid;
-    this.show_name = obj.show_name ?? false;
-    this.show_email = obj.show_email ?? false;
-    this.show_location = obj.show_location ?? false;
-    this.organizers_can_see = obj.organizers_can_see ?? true;
-    this.volunteers_can_see = obj.volunteers_can_see ?? true;
-    this.initiative_map = obj.initiative_map || {};
-  }
-}
 
 export const attemptLogin = (payload) => async (dispatch) => {
   const { email, password } = payload;
@@ -324,21 +304,6 @@ export const deleteUser = (uuid, cookies) => async (dispatch) => {
   }
 };
 
-/*
-  Credit: https://stackoverflow.com/questions/2370015/regular-expression-for-password-validation
-  Regex is asking for 6 to 20 character length with at least 
-  1 letter, 1 number, and 1 special character
-*/
-export const validatePassword = (password) => {
-  const regex = new RegExp(
-    /(?=.*\d)(?=.*[a-zA-Z])(?=.*[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]).{6,20}/g
-  );
-  const isValid = password && regex.test(password);
-  return isValid
-    ? null
-    : 'Please enter a password between 6 and 20 characters long with at least 1 letter, 1 number, and 1 special character.';
-};
-
 export const basicPropUpdate = (payload) => async (dispatch) => {
   const { user, key, newVal, tokenRefreshTime } = payload;
   let userCopy = { ...user };
@@ -438,34 +403,4 @@ const formHasNoErrors = (errors) => {
   return true;
 };
 
-/*
-  Credit: https://www.w3docs.com/snippets/javascript/how-to-validate-an-e-mail-using-javascript.html
-*/
-const validateEmail = (email) => {
-  const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const isValid = regex.test(String(email).toLowerCase());
-  return isValid
-    ? null
-    : 'Please provide a valid e-mail address (i.e. andy@test.com)';
-};
-
-/*
-  Credit: https://stackoverflow.com/questions/388996/regex-for-javascript-to-allow-only-alphanumeric
-*/
-const validateAlphaNumericUnicode = (word) => {
-  const pattern = /^([a-zA-Z0-9\u0600-\u06FF\u0660-\u0669\u06F0-\u06F9 _.-]+)$/;
-  const isValid = pattern.test(word);
-  return isValid ? null : 'Please only use alphanumeric or unicode characters.';
-};
-
-const validatePassRetype = (password, retypePass) => {
-  const passesMatch = password === retypePass;
-  return passesMatch ? null : 'Password and retyped passwords do not match.';
-};
-
-const validateZipCode = (zipCode) => {
-  const pattern = /^\d{5}(?:[-\s]\d{4})?$/gm;
-  const isValid = pattern.test(zipCode);
-  return isValid ? null : 'Please enter a valid zip code.';
-};
 export default userSlice.reducer;

@@ -13,7 +13,7 @@ import {
   setFirstAcctPage,
   syncInitMapAndLoadUser,
   checkIfCookieIsValid,
-} from '../../store/user-slice.js';
+} from '../../store/user-slice/index.js';
 import { getInitiatives } from '../../store/initiative-slice';
 
 import LoggedInMenu from './LoggedInMenu';
