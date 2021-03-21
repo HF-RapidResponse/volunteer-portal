@@ -366,7 +366,9 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
       ? validateAlphaNumericUnicode(acctPayload.state)
       : null,
     email: validateEmail(acctPayload.email),
-    zipCode: validateZipCode(acctPayload.zip_code),
+    zipCode: acctPayload.zip_code
+      ? validateZipCode(acctPayload.zip_code)
+      : null,
   };
 
   try {
