@@ -125,13 +125,14 @@ def set_nullable_columns_null(db_row, db):
     db.add(db_row)
     db.commit()
 
-  fields = [x for x in db_row_dict if not x.startswith('_sa_')]
-  for a in fields:
-    try:
-      setattr(db_row, a, None)
-      r = db.commit()
-    except Exception as e:
-      db.rollback()
+    fields = [x for x in db_row_dict if not x.startswith('_sa_')]
+    for a in fields:
+        try:
+            setattr(db_row, a, None)
+            db.commit()
+        except Exception:
+            db.rollback()
+
 
 def test_nullified_event_serving(db):
     event = generate_fake_volunteer_event()
