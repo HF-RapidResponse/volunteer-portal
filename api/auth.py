@@ -192,7 +192,7 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db:
     return create_token_for_user(Authorize, str(account.uuid))
 
 
-@ router.delete("/logout")
+@router.delete("/logout")
 def logout(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 

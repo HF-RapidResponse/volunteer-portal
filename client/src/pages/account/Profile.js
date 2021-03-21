@@ -137,6 +137,7 @@ function Profile(props) {
                 isInvalid={!!errors.username || !!errors.foundExistingUser}
                 placeholder="Enter username here (required)"
                 required
+                disabled={user.oauth === 'github'}
               />
               <Form.Control.Feedback type="invalid">
                 {!data.username
@@ -152,7 +153,11 @@ function Profile(props) {
               <Form.Label>E-mail</Form.Label>
               <Form.Control
                 type="email"
-                value={data.email ?? ''}
+                value={
+                  data.email.includes('fakegithubemail')
+                    ? `GitHub oauth account: ${data.username}`
+                    : data.email ?? ''
+                }
                 onChange={(e) => {
                   handleChange('email', e.target.value);
                 }}
