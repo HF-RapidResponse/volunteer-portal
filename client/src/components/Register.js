@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Button, Form, Container, Row, Col, Alert } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
-import useForm from './hooks/useForm';
-import { attemptCreateAccount } from '../store/user-slice';
+import useForm from 'components/hooks/useForm';
+import { attemptCreateAccount } from 'store/user-slice';
 import LinesAroundOr from './LinesAroundOr';
-import OAuthGroup from './OAuth/OAuthGroup';
-import '../styles/register-login.scss';
+import OAuthGroup from 'components/oauth/OAuthGroup';
+import 'styles/register-login.scss';
 
 function Register(props) {
   document.title = 'HF Volunteer Portal - Create an Account';
