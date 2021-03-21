@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import LoadingSpinner from './LoadingSpinner';
-import { getOneInitiative } from '../store/initiative-slice';
+import { getOneInitiative } from 'store/initiative-slice';
+import LoadingSpinner from 'components/LoadingSpinner';
 
 /**
  * Component that displays the inintiatives page.
  */
-function InitiativeDetail(props) {
+function Initiative(props) {
   const id = props.match.params.ext_id;
   const [fetched, setFetched] = useState(false);
   const { detailedInitiative, getOneInitiative } = props;
@@ -233,4 +233,4 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = { getOneInitiative };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InitiativeDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(Initiative);
