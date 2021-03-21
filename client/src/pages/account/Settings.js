@@ -78,10 +78,10 @@ function Settings(props) {
       >
         <h4 className="mb-5">Change Account</h4>
         <Row className="mt-2 mb-2">
-          <Col xs={12} md={8}>
+          <Col xs={8}>
             <p>Organizers can see my profile</p>
           </Col>
-          <Col xs={12} md={4}>
+          <Col xs={4}>
             <Form.Switch
               id="organizers-can-see-profile-switch"
               className="custom-switch-md"
@@ -98,10 +98,10 @@ function Settings(props) {
           </Col>
         </Row>
         <Row className="mt-2 mb-2">
-          <Col xs={12} md={8}>
+          <Col xs={8}>
             <p>Other volunteers can see my profile</p>
           </Col>
-          <Col xs={12} md={4}>
+          <Col xs={4}>
             <Form.Switch
               id="other-vounteers-can-see-profile-switch"
               className="custom-switch-md"
