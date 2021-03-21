@@ -18,6 +18,8 @@ class InitiativeSchema(BaseModel):
     content: MarkdownText
     role_ids: List
     event_ids: List
+    roles_count: int
+    events_count: int
 
     class Config:
         orm_mode = True

@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from models import Initiative, VolunteerRole, VolunteerEvent
+from models import Initiative, NestedInitiative, VolunteerRole, VolunteerEvent
 from settings import Session
 from sqlalchemy.orm import lazyload
 from tests.fake_data_utils import generate_fake_initiative
@@ -21,7 +21,7 @@ def setup(db):
 def test_initiative_create_types(db):
     initiative = generate_fake_initiative(db, 2, 3)
     db.add(initiative)
-    new_initiative = db.query(Initiative).filter_by(external_id=initiative.external_id).scalar()
+    new_initiative = db.query(NestedInitiative).filter_by(external_id=initiative.external_id).scalar()
 
     assert new_initiative
 
@@ -56,7 +56,7 @@ def test_initiatives_relationships_scoped(db):
 
     initiative = generate_fake_initiative(db, 2, 3)
     db.add(initiative)
-    new_initiative = db.query(Initiative).filter_by(external_id=initiative.external_id).scalar()
+    new_initiative = db.query(NestedInitiative).filter_by(external_id=initiative.external_id).scalar()
 
     assert len(new_initiative.role_ids) == 2
     assert len(new_initiative.roles) == 2

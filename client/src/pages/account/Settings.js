@@ -178,7 +178,7 @@ function Settings(props) {
             <Form.Control.Feedback type="valid">
               {submitted ? 'Password change successful' : null}
             </Form.Control.Feedback>
-            <Row>
+            <Row className="mt-3 mb-3">
               <Col xs={12} xl={6} className="text-center">
                 <Button
                   variant="info"

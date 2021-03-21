@@ -41,8 +41,8 @@ function Initiatives() {
   const cards = data.map(
     (
       {
-        roles,
-        events,
+        roles_count,
+        events_count,
         external_id,
         details_url,
         initiative_name,
@@ -53,7 +53,7 @@ function Initiatives() {
     ) => {
       let actionHref;
       let actionContent;
-      if (roles.length > 0 || events.length > 0) {
+      if (roles_count > 0 || events_count > 0) {
         actionHref = `/initiatives/${external_id}`;
         actionContent = "View Events & Roles";
       } else if (details_url) {
