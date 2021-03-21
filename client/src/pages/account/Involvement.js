@@ -69,19 +69,26 @@ function Involvement(props) {
               </Form.Group>
             </Col>
             <Col xs={12} md={4}>
-              <Form.Switch
-                id={'involvement-initiative-' + initiative_name}
-                className="custom-switch-md ml-lg-5"
-                checked={isSubscribed}
-                onChange={() =>
-                  toggleInitiativeSubscription({
-                    user,
-                    initiative_name,
-                    isSubscribed,
-                    tokenRefreshTime,
-                  })
-                }
-              />
+              <Row>
+                <Col xs={8} sm={7} md={12} className="d-md-none">
+                  <label className="text-muted ml-lg-5">Subscribed</label>
+                </Col>
+                <Col xs={4} sm={5} md={12}>
+                  <Form.Switch
+                    id={'involvement-initiative-' + initiative_name}
+                    className="custom-switch-md ml-lg-5 text-md-center"
+                    checked={isSubscribed}
+                    onChange={() =>
+                      toggleInitiativeSubscription({
+                        user,
+                        initiative_name,
+                        isSubscribed,
+                        tokenRefreshTime,
+                      })
+                    }
+                  />
+                </Col>
+              </Row>
             </Col>
           </Row>
         );
@@ -99,17 +106,24 @@ function Involvement(props) {
         )}
       </Form>
       <Form className="p-4 mt-5 mb-2" style={{ background: 'white' }}>
-        <h4 className="mb-4">Initiatives</h4>
+        <Row className="align-items-center">
+          <Col xs={12} md={8}>
+            <h4 className="mb-4">Initiatives</h4>
+          </Col>
+          <Col
+            xs={12}
+            md={4}
+            className={
+              initiativesToRender.length
+                ? 'd-none d-md-block text-center'
+                : 'd-none'
+            }
+          >
+            <label className="text-muted ml-lg-5">Subscribed</label>
+          </Col>
+        </Row>
         {initiativesToRender.length ? (
-          <>
-            <Row>
-              <Col xs={12} md={8}></Col>
-              <Col xs={12} md={4}>
-                <label className="text-muted ml-lg-5">Subscribed</label>
-              </Col>
-            </Row>
-            <>{initiativesToRender}</>
-          </>
+          <>{initiativesToRender}</>
         ) : (
           <p className="text-center">No initiatives to display</p>
         )}
