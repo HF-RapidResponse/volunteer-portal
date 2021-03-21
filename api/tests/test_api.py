@@ -10,11 +10,10 @@ from api.api import app
 from settings import Session
 
 from schemas import NestedInitiativeSchema, InitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema
-from schemas import DonationEmailSchema
 from models import NestedInitiative, Initiative, VolunteerRole, VolunteerEvent, DonationEmail
 
 from tests.fake_data_utils import generate_fake_initiative, generate_fake_volunteer_role
-from tests.fake_data_utils import generate_fake_volunteer_event, generate_fake_donation_email
+from tests.fake_data_utils import generate_fake_volunteer_event
 from tests.fake_data_utils import generate_fake_initiatives_list
 
 from sqlalchemy import exc

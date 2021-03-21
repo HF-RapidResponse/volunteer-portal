@@ -103,7 +103,3 @@ def generate_fake_initiatives_list(session, count: int = 1, roles_count: int = 2
         session.add(initiative)
         initiatives.append(initiative)
     return initiatives
-
-def generate_fake_donation_email():
-    fake_donation_email = DonationEmail(email = fake.email())
-    return fake_donation_email

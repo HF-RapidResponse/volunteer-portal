@@ -97,34 +97,21 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: donation_emails; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.donation_emails (
-    donation_uuid uuid NOT NULL,
-    email text,
-    request_sent_date timestamp without time zone
-);
-
-
-ALTER TABLE public.donation_emails OWNER TO admin;
-
---
 -- Name: events; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.events (
-    uuid uuid NOT NULL,
     id character varying(255) NOT NULL,
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL,
+    uuid uuid NOT NULL,
     event_name character varying(255) NOT NULL,
     event_graphics json[],
     signup_link text NOT NULL,
     start timestamp without time zone NOT NULL,
     "end" timestamp without time zone,
-    description text,
-    airtable_last_modified timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    is_deleted boolean NOT NULL
+    description text
 );
 
 
@@ -135,18 +122,18 @@ ALTER TABLE public.events OWNER TO admin;
 --
 
 CREATE TABLE public.initiatives (
-    uuid uuid NOT NULL,
     id character varying(255) NOT NULL,
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL,
+    uuid uuid NOT NULL,
     initiative_name character varying(255) NOT NULL,
     "order" integer NOT NULL,
     details_link character varying(255),
     hero_image_urls json[],
     description text NOT NULL,
     roles character varying[] NOT NULL,
-    events character varying[] NOT NULL,
-    airtable_last_modified timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    is_deleted boolean NOT NULL
+    events character varying[] NOT NULL
 );
 
 
@@ -174,8 +161,11 @@ ALTER TABLE public.notifications OWNER TO admin;
 --
 
 CREATE TABLE public.volunteer_openings (
-    uuid uuid NOT NULL,
     id character varying(255) NOT NULL,
+    airtable_last_modified timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    is_deleted boolean NOT NULL,
+    uuid uuid NOT NULL,
     role_name character varying(255) NOT NULL,
     hero_image_urls json[],
     application_signup_form text,
@@ -190,22 +180,11 @@ CREATE TABLE public.volunteer_openings (
     what_youll_learn text,
     responsibilities_and_duties text,
     qualifications text,
-    role_type public.roletype NOT NULL,
-    airtable_last_modified timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    is_deleted boolean NOT NULL
+    role_type public.roletype NOT NULL
 );
 
 
 ALTER TABLE public.volunteer_openings OWNER TO admin;
-
---
--- Name: donation_emails donation_emails_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.donation_emails
-    ADD CONSTRAINT donation_emails_pkey PRIMARY KEY (donation_uuid);
-
 
 --
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: admin

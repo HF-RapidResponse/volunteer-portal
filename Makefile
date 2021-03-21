@@ -5,7 +5,6 @@ NC=\033[0m # No Color
 
 # Dev is the default config
 TEST = -f docker-compose.yml -f docker-compose.test.yml
-PROD = -f docker-compose.yml -f docker-compose.prod.yml
 
 up:
 	docker-compose up
@@ -38,7 +37,9 @@ db-save-dev:
 db-save-test-from-dev:
 	docker-compose exec db pg_dump --create --schema-only -U admin hf_volunteer_portal_development | sed 's/hf_volunteer_portal_development/hf_volunteer_portal_test/g' > db/data/test/data.test.sql
 db-reset-all-from-python:
-	db-reload-dev db-save-dev db-save-test-from-dev
+	make db-reload-dev
+	make db-save-dev
+	make db-save-test-from-dev
 recreate-db:
 	docker-compose build --no-cache db
 

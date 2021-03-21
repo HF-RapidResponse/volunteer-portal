@@ -4,8 +4,8 @@ import classNames from "classnames";
 
 import "./Card.scss";
 
-export const Card = ({ children, withPadding }) => {
-  const classes = classNames("components-cards-card", {
+export const Card = ({ children, withPadding, className }) => {
+  const classes = classNames("components-cards-card", className, {
     "with-padding": withPadding,
   });
 
@@ -19,4 +19,5 @@ Card.defaultProps = {
 Card.propTypes = {
   children: PropTypes.node.isRequired,
   withPadding: PropTypes.bool,
+  className: PropTypes.string,
 };
