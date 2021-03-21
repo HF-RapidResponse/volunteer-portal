@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Col, Row } from 'react-bootstrap';
-import { basicPropUpdate, attemptAccountUpdate } from 'store/user-slice';
+import { basicPropUpdate, attemptUpdateAccount } from 'store/user-slice';
 import { AccountReqBody } from 'store/user-slice/classes';
 import useForm from 'components/hooks/useForm';
 import { isEqual } from 'lodash';
@@ -13,7 +13,7 @@ function Profile(props) {
     user,
     tokenRefreshTime,
     basicPropUpdate,
-    attemptAccountUpdate,
+    attemptUpdateAccount,
   } = props;
   const {
     handleChange,
@@ -25,7 +25,7 @@ function Profile(props) {
     setValidated,
     errors,
     resetForm,
-  } = useForm(attemptAccountUpdate, user);
+  } = useForm(attemptUpdateAccount, user);
 
   const clearFormComponent = () => {
     const formComponent = document.getElementById('acct-profile-form');
@@ -319,6 +319,6 @@ const mapStateToProps = (state) => {
     tokenRefreshTime: state.userStore.tokenRefreshTime,
   };
 };
-const mapDispatchToProps = { basicPropUpdate, attemptAccountUpdate };
+const mapDispatchToProps = { basicPropUpdate, attemptUpdateAccount };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

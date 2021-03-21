@@ -43,3 +43,39 @@ export const validateZipCode = (zipCode) => {
   const isValid = pattern.test(zipCode);
   return isValid ? null : 'Please enter a valid zip code.';
 };
+
+export const sanitizeData = (payload) => {
+  Object.entries(payload).forEach((entry) => {
+    const [key, val] = entry;
+    /* eslint-disable indent */
+    switch (key) {
+      case 'first_name':
+      case 'last_name':
+      case 'city':
+      case 'state':
+      case 'zip_code':
+      case 'username':
+        payload[key] = val ? val.trim() : val;
+        break;
+      case 'email':
+        if (val) {
+          let strArr = val.trim().toLowerCase().split('@');
+          const saniUser = strArr[0].replace(/\./g, '');
+          payload[key] = `${saniUser}@${strArr[1]}`;
+        }
+        break;
+      default:
+        break;
+    }
+    /* eslint-enable indent */
+  });
+};
+
+export const formHasNoErrors = (errors) => {
+  for (const val of Object.values(errors)) {
+    if (val) {
+      return false;
+    }
+  }
+  return true;
+};

@@ -7,7 +7,9 @@ import {
   validateAlphaNumericUnicode,
   validatePassRetype,
   validateZipCode,
-} from './validators';
+  sanitizeData,
+  formHasNoErrors,
+} from './helpers';
 
 const userSlice = createSlice({
   name: 'userStore',
@@ -212,6 +214,7 @@ export const attemptCreateAccount = (payload) => async (dispatch) => {
     password: validatePassword(payload.password),
     retypePass: validatePassRetype(payload.password, payload.retypePass),
   };
+  sanitizeData(payload);
 
   if (formHasNoErrors(errors)) {
     try {
@@ -352,7 +355,7 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   }
 };
 
-export const attemptAccountUpdate = (payload) => async (dispatch) => {
+export const attemptUpdateAccount = (payload) => async (dispatch) => {
   const { uuid } = payload;
   const acctPayload = new AccountReqBody(payload);
   const errors = {
@@ -370,6 +373,7 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
       ? validateZipCode(acctPayload.zip_code)
       : null,
   };
+  sanitizeData(acctPayload);
 
   try {
     if (formHasNoErrors(errors)) {
@@ -394,15 +398,6 @@ export const attemptAccountUpdate = (payload) => async (dispatch) => {
     }
   }
   throw errors;
-};
-
-const formHasNoErrors = (errors) => {
-  for (const val of Object.values(errors)) {
-    if (val) {
-      return false;
-    }
-  }
-  return true;
 };
 
 export default userSlice.reducer;
