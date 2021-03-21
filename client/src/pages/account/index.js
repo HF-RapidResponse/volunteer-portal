@@ -8,11 +8,11 @@ import Profile from './Profile';
 import Involvement from './Involvement';
 import Settings from './Settings';
 import Data from './Data';
-import { attemptLogin, startLogout } from '../../store/user-slice/index.js';
-import '../../styles/account.scss';
+import { attemptLogin, startLogout } from 'store/user-slice/index.js';
+import './index.scss';
 
-import placeholderImg from '../../assets/placeholder-img.png';
-import andyPic from '../../assets/andy-placeholder.jpg';
+import placeholderImg from 'assets/placeholder-img.png';
+import andyPic from 'assets/andy-placeholder.jpg';
 
 function AccountIndex(props) {
   const { user } = props;

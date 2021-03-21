@@ -10,11 +10,11 @@ import Candidates from './Candidates';
 import Register from './Register';
 import Initiatives from 'pages/initiatives';
 import Initiative from 'pages/initiatives/initiative';
+import Account from 'pages/account';
 import NotFound from './NotFound';
 import Login from './Login';
 import LoginCallback from './LoginCallback';
 import Dashboard from './Dashboard';
-import Account from './Account';
 
 // initialize GA
 // REACT_APP_GA_TRACKING_ID can be found in .env

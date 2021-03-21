@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Col, Row } from 'react-bootstrap';
-import { basicPropUpdate, attemptAccountUpdate } from '../../store/user-slice';
-import { AccountReqBody } from '../../store/user-slice/classes';
-import useForm from '../hooks/useForm';
+import { basicPropUpdate, attemptAccountUpdate } from 'store/user-slice';
+import { AccountReqBody } from 'store/user-slice/classes';
+import useForm from 'components/hooks/useForm';
 import { isEqual } from 'lodash';
 
 function Profile(props) {

@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Form, Col, Row, Dropdown } from 'react-bootstrap';
 import { deleteRole } from '../../store/user-slice';
-import VerticalDots from '../VerticalDots';
-import initiativeSlice from '../../store/initiative-slice';
-import { toggleInitiativeSubscription } from '../../store/user-slice';
+import VerticalDots from 'components/VerticalDots';
+import initiativeSlice from 'store/initiative-slice';
+import { toggleInitiativeSubscription } from 'store/user-slice';
 
 function Involvement(props) {
   const {

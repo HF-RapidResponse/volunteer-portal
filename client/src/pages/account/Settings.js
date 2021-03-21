@@ -4,12 +4,12 @@ import { Redirect } from 'react-router-dom';
 import { Button, Form, Col, Row, Alert } from 'react-bootstrap';
 import { withCookies } from 'react-cookie';
 
-import useForm from '../hooks/useForm';
+import useForm from 'components/hooks/useForm';
 import {
   attemptChangePassword,
   deleteUser,
   basicPropUpdate,
-} from '../../store/user-slice';
+} from 'store/user-slice';
 
 function Settings(props) {
   const [disableForm, setDisableForm] = useState(false);

@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 
 function AccountNav() {
-  const [prevX, setPrevX] = useState(null);
   const profileLinks = [
     { displayName: 'Profile', url: '/account/profile' },
     { displayName: 'Account Settings', url: '/account/settings' },
