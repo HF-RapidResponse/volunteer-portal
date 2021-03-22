@@ -11,6 +11,8 @@ p.component-typography {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  color: $color-gray-5;
+
   &.jumbo {
     font-family: Inter;
     font-weight: 300;
@@ -84,38 +86,46 @@ p.component-typography {
   }
 
   &.blue-forward {
-    color: $blue-forward;
+    color: $color-blue-forward;
   }
 
   &.blue-humanity {
-    color: $blue-humanity;
+    color: $color-blue-humanity;
   }
 
   &.blue-button {
-    color: $blue-button;
+    color: $color-blue-button;
   }
 
   &.gray-0 {
-    color: $gray-0;
+    color: $color-gray-0;
   }
 
   &.gray-1 {
-    color: $gray-1;
+    color: $color-gray-1;
   }
 
   &.gray-2 {
-    color: $gray-2;
+    color: $color-gray-2;
   }
 
   &.gray-3 {
-    color: $gray-3;
+    color: $color-gray-3;
   }
 
   &.gray-4 {
-    color: $gray-4;
+    color: $color-gray-4;
   }
 
   &.gray-5 {
-    color: $gray-5;
+    color: $color-gray-5;
+  }
+  
+  &.success {
+    color: $color-success;
+  }
+
+  &.error {
+    color: $color-error;
   }
 }

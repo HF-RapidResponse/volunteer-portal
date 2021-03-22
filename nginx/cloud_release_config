@@ -1,0 +1,29 @@
+daemon off;
+events {}
+
+http {
+    server {
+        listen 80;
+        listen [::]:80;
+
+        access_log /tmp/nginx;
+        error_log /tmp/nginx;
+
+        location / {
+            proxy_pass http://localhost:8080;
+        }
+
+        location /sockjs-node {
+            proxy_pass http://localhost:8080;
+              proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+            proxy_set_header Host $host;
+        }
+
+        location /api {
+            proxy_set_header Host $host;
+            proxy_pass http://localhost:8081;
+        }
+    }
+}

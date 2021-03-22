@@ -1,7 +1,0 @@
-# Prod Config
-# Use "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d" to extend and override
-# the base configs in docker-compose.yml with this config.
-services:
-  api:
-    environment:
-      ENV: production

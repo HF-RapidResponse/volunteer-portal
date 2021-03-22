@@ -1,0 +1,85 @@
+@import 'styles/_variables';
+
+#account-nav {
+  background: white;
+  a {
+    color: black;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  a.active-profile-nav {
+    font-weight: bold;
+  }
+
+  a.active-profile-nav:before {
+    height: 1.5rem;
+    width: 0.3rem;
+    margin-right: 0.5rem;
+    display: block;
+    content: '';
+    float: left;
+    background-color: $hfCyan;
+  }
+
+  a.active-profile-mobile {
+    button {
+      padding: 2rem;
+    }
+  }
+}
+
+// the styling below overrides the default blue color for input switches
+.custom-control-input:focus ~ .custom-control-label::before {
+  /* when the button is toggled off  
+it is still in focus and a violet border will appear */
+  border-color: #18a856 !important;
+  /* box shadow is blue by default 
+but we do not want any shadow hence we have set  
+all the values as 0 */
+  box-shadow: 0 0 0 0rem rgba(0, 0, 0, 0) !important;
+}
+
+/*sets the background color of 
+switch to cyan when it is checked*/
+.custom-control-input:checked ~ .custom-control-label::before {
+  border-color: #18a856 !important;
+  background-color: #18a856 !important;
+}
+
+/*sets the background color of 
+switch to green when it is active*/
+.custom-control-input:active ~ .custom-control-label::before {
+  background-color: #18a856 !important;
+  border-color: #18a856 !important;
+}
+
+/*sets the border color of switch 
+to green when it is not checked*/
+.custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+  border-color: #18a856 !important;
+}
+
+/* custom medium sized switch class to make switches bigger */
+.custom-switch.custom-switch-md .custom-control-label {
+  padding-left: 2rem;
+  padding-bottom: 1.5rem;
+}
+
+.custom-switch.custom-switch-md .custom-control-label::before {
+  height: 1.5rem;
+  width: calc(2rem + 0.75rem);
+  border-radius: 3rem;
+}
+
+.custom-switch.custom-switch-md .custom-control-label::after {
+  width: calc(1.5rem - 4px);
+  height: calc(1.5rem - 4px);
+  border-radius: calc(2rem - (1.5rem / 2));
+}
+
+.custom-switch.custom-switch-md
+  .custom-control-input:checked
+  ~ .custom-control-label::after {
+  transform: translateX(calc(1.5rem - 0.25rem));
+}

@@ -32,6 +32,15 @@ class Initiative(AirtableRow, Base):
         return self.hero_image_urls[0]['url'] if self.hero_image_urls else placeholder_image()
 
     @hybrid_property
+    def roles_count(self):
+        return len(self.role_ids)
+
+    @hybrid_property
+    def events_count(self):
+        return len(self.event_ids)
+
+class NestedInitiative(Initiative, Base):
+    @hybrid_property
     def roles(self):
         return self.roles_rel.filter(VolunteerRole.external_id.in_(self.role_ids)).all()
 

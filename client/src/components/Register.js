@@ -1,122 +1,219 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Button, Container, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import RecruitmentSocialShare from './RecruitmentSocialShare';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { Button, Form, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
+import useForm from 'components/hooks/useForm';
+import { attemptCreateAccount } from 'store/user-slice';
+import LinesAroundOr from './LinesAroundOr';
+import OAuthGroup from 'components/oauth/OAuthGroup';
+import 'styles/register-login.scss';
 
-function Register() {
-  document.title = 'HF Volunteer Portal - Register';
-  return (
-    <Container>
-      <Col xs={12} xl={10} className="top-light-shadow">
-        <h1 className="header-2">Become a Humanity Forward volunteer!</h1>
-        <p>
-          <b>Do you have some more time to spare?</b>
-          <br />
-          If you have the time and ability to contribute to the cause of UBI,
-          now is the time to step up to the plate and take initiative! There is
-          a lot of work to be done, and every individual can make a difference,
-          no matter how much time you have to help. Register with Humanity
-          Forward to get started and help manifest our goals into reality.
-          Spreading the word to friends and family is a great place to begin, so
-          share your excitement with others, and show them the ways they
-          themselves can get started volunteering with HF.
-        </p>
-      </Col>
-      <Col xs={12} lg={9} xl={6} className="shadow-card">
-        <h2 className="header-3">Register yourself as a volunteer.</h2>
-        <p>
-          Let us keep you up to date on what we have in the works.
-        </p>
-        <div className="text-center">
-          <a href="http://on.movehumanityforward.com/volunteer_signup_short">
-            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-              Register Here
-            </Button>
-          </a>
-        </div>
-      </Col>
-      <Col xs={12} lg={9} xl={6} className="shadow-card">
-        <h2 className="header-3">Tell us more about you.</h2>
-        <p>
-          We’d love to learn more about you. Please fill out our volunteer
-          survey with your interests and talents. This way, we can connect you
-          to the volunteer work you find meaningful while you use your greatest
-          strengths.
-        </p>
-        <div className="text-center">
-          <a href="https://on.movehumanityforward.com/volunteer_survey">
-            <Button variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-              Go to Survey
-            </Button>
-          </a>
-        </div>
-      </Col>
-      <Col xs={12} lg={9} xl={6} className="shadow-card">
-        <h2 className="header-3">Share this portal with others.</h2>
-        <p>
-        Give everyone the opportunity to participate in this historic push for UBI.
-        The best way to make an impact is to get those around you involved! Every
-        drop of water makes the mighty ocean.
-        </p>
-        <RecruitmentSocialShare />
-      </Col>
-      <Col xs={12} lg={9} xl={6} className="shadow-card">
-        <h2 className="header-3">Receive a personal ActBlue link.</h2>
-        <p>
-          Want to show off your fundraising talents? Sign up for a Personal
-          ActBlue Link, so we can highlight your success in moving Humanity
-          Forward!
-        </p>
-        <div className="form-group" id="donor-link-input-area">
-          <input
-            type="email"
-            className="form-control"
-            id="act-blue-email"
-            placeholder="Type email address here..."
-          />
-        </div>
-        <p className="sm-copy">
-          You’ll get a follow-up email with your personal ActBlue link.
-        </p>
-        <div className="text-center">
-          <Button onClick={SendDonorRequestLink}
-            variant="outline-info" style={{ padding: '.35rem 1.5rem' }}>
-            Submit Request
-          </Button>
-        </div>
-      </Col>
-    </Container>
+function Register(props) {
+  document.title = 'HF Volunteer Portal - Create an Account';
+  const [pendingSubmit, setPendingSubmit] = useState(false);
+  const { user, attemptCreateAccount } = props;
+  const {
+    handleChange,
+    handleSubmit,
+    data,
+    submitted,
+    setSubmitted,
+    validated,
+    setValidated,
+    errors,
+  } = useForm(attemptCreateAccount);
+  const path = window.location.pathname;
+
+  const submitWrapper = async (e) => {
+    setPendingSubmit(true);
+    await handleSubmit(e);
+    setPendingSubmit(false);
+  };
+
+  /**
+   * simple helper function that checks for enter key to do for submission
+   * @param {Object} e - event object
+   */
+  function handleKeyPress(key, e) {
+    if (validated) {
+      setValidated(false);
+    }
+    if (e.key === 'Enter') {
+      submitWrapper(e);
+    } else {
+      handleChange(key, e.target.value);
+    }
+  }
+
+  return user && !pendingSubmit ? (
+    <Redirect push to="/account/profile" />
+  ) : (
+    <>
+      <h2 className="text-center">
+        Create an account with us to manage your volunteering experience.
+      </h2>
+      <div className="mt-5 mb-5">
+        <Row>
+          <Col
+            xs={12}
+            xl={5}
+            className="d-flex justify-content-center flex-column"
+          >
+            <OAuthGroup />
+          </Col>
+          <Col xs={12} xl={2}>
+            <LinesAroundOr />
+          </Col>
+          <Col xs={12} xl={5}>
+            <h3 className="text-center mt-2 mb-4" style={{ color: 'gray' }}>
+              Register with e-mail
+            </h3>
+            <Form
+              noValidate
+              validated={validated}
+              onSubmit={submitWrapper}
+              className="mt-2 mb-2"
+            >
+              <Row>
+                <Col xs={12} lg={6} xl={12}>
+                  <Form.Group controlId="formFirstName">
+                    <Form.Label>First Name</Form.Label>
+                    <Form.Control
+                      type="name"
+                      placeholder="First Name"
+                      onChange={(e) => {
+                        handleKeyPress('first_name', e);
+                      }}
+                      isValid={validated && !errors.firstName}
+                      isInvalid={!!errors.firstName}
+                      placeholder="Enter first name here (required)"
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {!data.first_name
+                        ? 'Please provide a first name.'
+                        : errors.firstName}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+                <Col xs={12} lg={6} xl={12}>
+                  <Form.Group controlId="formLastName">
+                    <Form.Label>Last Name</Form.Label>
+                    <Form.Control
+                      type="name"
+                      placeholder="Enter last name here (optional)"
+                      onChange={(e) => {
+                        handleKeyPress('last_name', e);
+                      }}
+                      isValid={validated && !errors.lastName}
+                      isInvalid={!!errors.lastName}
+                      placeholder="Enter last name here (optional)"
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.lastName}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Form.Group controlId="formUsername">
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  type="username"
+                  onChange={(e) => {
+                    handleKeyPress('username', e);
+                  }}
+                  isValid={validated && !errors.username}
+                  isInvalid={!!errors.username}
+                  required
+                  placeholder="Enter username here (required)"
+                />
+                <Form.Control.Feedback type="invalid">
+                  {!data.username
+                    ? 'Please provide a username.'
+                    : errors.username}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>E-mail address</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="E-mail address"
+                  onChange={(e) => {
+                    handleKeyPress('email', e);
+                  }}
+                  isValid={validated && !errors.email}
+                  isInvalid={!!errors.email}
+                  required
+                  placeholder="Enter e-mail address here (required)"
+                />
+                <Form.Control.Feedback type="invalid">
+                  {!data.email
+                    ? 'Please provide an e-mail address.'
+                    : errors.email}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  onChange={(e) => {
+                    handleKeyPress('password', e);
+                  }}
+                  isValid={validated && !errors.password}
+                  isInvalid={!!errors.password}
+                  placeholder="Enter password here (required)"
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  {!data.password
+                    ? 'Please provide a password'
+                    : errors.password}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="formRetypePassword">
+                <Form.Label>Re-enter your password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Repeat password"
+                  onChange={(e) => {
+                    handleKeyPress('retypePass', e);
+                  }}
+                  isValid={validated && !errors.retypePass}
+                  isInvalid={!!errors.retypePass}
+                  placeholder="Retype password here (required)"
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  {!data.retypePass
+                    ? 'Please re-type your password.'
+                    : errors.retypePass}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Alert variant="danger" className={!errors.api ? 'd-none' : null}>
+                {errors.api}
+              </Alert>
+              <div className="text-center">
+                <Button
+                  variant="info"
+                  type="submit"
+                  className="mt-4 mb-4 pt-2 pb-2 pl-5 pr-5"
+                >
+                  Create an Account
+                </Button>
+              </div>
+            </Form>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }
-
-function SendDonorRequestLink() {
-  var input = document.getElementById('act-blue-email');
-  const email = input.value;
-  const invalid_email_message = "Please enter a valid email address.";
-  const unknown_error_message = "We're sorry, we are unable to process your request. Our volunteer development team will sort this out as soon as possible";
-  if ( !email.includes("@") ) {
-    alert(invalid_email_message);
-    return;
-  }
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email })
+const mapStateToProps = (state) => {
+  return {
+    user: state.userStore.user,
   };
-  fetch('/api/donation_link_requests/', requestOptions)
-    .then((response) => {
-      if (response.status >= 200 && response.status <= 299) {
-        input.value = "Thank you!";
-      } else if (response.status == 422) {
-        alert(invalid_email_message);
-      } else {
-        alert(unknown_error_message);
-      }
-    }).catch((error) => {
-      alert(unknown_error_message);
-      console.log(error);
-    });
-}
+};
+const mapDispatchToProps = { attemptCreateAccount };
 
-export default Register;
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
