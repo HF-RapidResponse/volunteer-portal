@@ -6,9 +6,9 @@
 }
 
 #hf-logo {
-  height: auto;
+  // height: auto;
   max-height: 3.25rem;
-  max-width: 100%;
+  // max-width: 100%;
 }
 
 .nav-link {
@@ -17,10 +17,36 @@
   max-width: 80%;
 }
 
-#links-container a{
-  color: #8F8F8F;
+#links-container a {
+  color: #8f8f8f;
 }
 
-#links-container a:hover{
+#links-container a:hover {
   color: #555555;
+}
+
+.account-container {
+  img {
+    max-width: 50px;
+  }
+
+  @media (max-width: 1474.98px) {
+    align-items: center;
+    img {
+      display: none;
+    }
+  }
+}
+
+#title-header {
+  background-color: $hfDarkBlue;
+  margin-top: 4rem;
+  margin-bottom: 2rem;
+
+  h1 {
+    color: white;
+    text-align: center;
+    padding-top: 3rem;
+    padding-bottom: 1rem;
+  }
 }

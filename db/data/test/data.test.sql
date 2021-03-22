@@ -97,6 +97,45 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: account_settings; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.account_settings (
+    uuid uuid NOT NULL,
+    show_name boolean NOT NULL,
+    show_email boolean NOT NULL,
+    show_location boolean NOT NULL,
+    organizers_can_see boolean NOT NULL,
+    volunteers_can_see boolean NOT NULL,
+    initiative_map json NOT NULL
+);
+
+
+ALTER TABLE public.account_settings OWNER TO admin;
+
+--
+-- Name: accounts; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.accounts (
+    uuid uuid NOT NULL,
+    email text NOT NULL,
+    username character varying(255) NOT NULL,
+    first_name character varying(255),
+    last_name character varying(255),
+    password text,
+    oauth character varying(32),
+    profile_pic text,
+    city character varying(32),
+    state character varying(32),
+    zip_code character varying(32),
+    roles character varying[] NOT NULL
+);
+
+
+ALTER TABLE public.accounts OWNER TO admin;
+
+--
 -- Name: events; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -187,6 +226,21 @@ CREATE TABLE public.volunteer_openings (
 ALTER TABLE public.volunteer_openings OWNER TO admin;
 
 --
+-- Name: account_settings account_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.account_settings
+    ADD CONSTRAINT account_settings_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
+
+--
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -216,6 +270,20 @@ ALTER TABLE ONLY public.notifications
 
 ALTER TABLE ONLY public.volunteer_openings
     ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: ix_accounts_email; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE UNIQUE INDEX ix_accounts_email ON public.accounts USING btree (email);
+
+
+--
+-- Name: ix_accounts_username; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE UNIQUE INDEX ix_accounts_username ON public.accounts USING btree (username);
 
 
 --

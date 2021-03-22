@@ -21,6 +21,10 @@ test:
 	docker-compose $(TEST) run --rm api python -m pytest tests/
 test-debug:
 	docker-compose $(TEST) run --rm api python -m pytest tests/  -s --capture=no -vv
+
+# run like: make test-debug-single test="test_account_create_duplicate_email"
+test-debug-single:
+	docker-compose $(TEST) run --rm api python -m pytest tests/  -s --capture=no -vv -k "$(test)"
 # Not currently working.
 # validate:
 # 	docker-compose run --rm api-test mypy /api

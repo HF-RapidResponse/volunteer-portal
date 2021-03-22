@@ -8,12 +8,14 @@
 
 .btn-text,
 .social-icon {
-  line-height: 15px;
   letter-spacing: 0.2px;
   color: white;
   &:hover {
     color: white;
   }
+}
+.smaller-spacing > p.btn-text {
+  line-height: 1rem;
 }
 
 .footer-hr {
