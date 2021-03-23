@@ -137,6 +137,8 @@ def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(g
 
 @router.post("/account_settings/", response_model=AccountSettingsSchema, status_code=201)
 def create_settings(settings: AccountSettingsSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    Authorize.jwt_required()
+    check_matching_user(str(settings.uuid), Authorize)
     existing_settings = db.query(AccountSettings).filter_by(
         uuid=settings.uuid).first()
     if existing_settings is not None:
