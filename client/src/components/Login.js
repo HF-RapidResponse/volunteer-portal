@@ -5,13 +5,17 @@ import { Button, Form, Container, Row, Col } from 'react-bootstrap';
 import { attemptLogin } from 'store/user-slice/index.js';
 import { Redirect } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+
 import GoogleOAuthButton from 'components/oauth/GoogleOAuthButton';
 import GitHubOAuthButton from 'components/oauth/GitHubOAuthButton';
 import LoadingSpinner from './LoadingSpinner';
+import PasswordResetModal from 'components/modals/PasswordResetModal';
+
 import 'styles/register-login.scss';
 
 function Login(props) {
   const [pendingSubmit, setPendingSubmit] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const { attemptLogin, user, firstAcctPage, initLoading } = props;
   const { validated, errors, handleSubmit, handleChange, data } = useForm(
     attemptLogin
@@ -78,13 +82,13 @@ function Login(props) {
                 : errors.password || errors.message}
             </Form.Control.Feedback>
             <div className="mt-2 mb-2">
-              <Link
-                className="font-weight-light"
+              <p
+                className="font-weight-light hover-hand-and-underline"
                 style={{ color: 'gray' }}
-                to="/forgot_password"
+                onClick={() => setShowModal(true)}
               >
-                Forgot Password?
-              </Link>
+                Forgot password?
+              </p>
             </div>
           </Form.Group>
           <div className="text-center">
@@ -93,6 +97,10 @@ function Login(props) {
             </Button>
           </div>
         </Form>
+        <PasswordResetModal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+        />
       </Container>
     </>
   );

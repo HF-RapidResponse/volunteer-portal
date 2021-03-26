@@ -24,6 +24,16 @@ export const validateEmail = (email) => {
     : 'Please provide a valid e-mail address (i.e. andy@test.com)';
 };
 
+export const validateUsername = (username) => {
+  if (!username) {
+    return 'Please provide a username';
+  }
+  const isValidAlphaNumericUni = !validateAlphaNumericUnicode(username);
+  return isValidAlphaNumericUni && username.length > 4 && username.length < 26
+    ? null
+    : 'Please enter a username using alphanumeric characters between 5 and and 25 characters in length';
+};
+
 /*
     Credit: https://stackoverflow.com/questions/388996/regex-for-javascript-to-allow-only-alphanumeric
 */

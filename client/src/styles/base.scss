@@ -219,3 +219,10 @@ p {
   /* Gray 4 */
   color: $btnCyan;
 }
+
+.hover-hand-and-underline {
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

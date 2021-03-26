@@ -7,6 +7,7 @@ import {
   validateAlphaNumericUnicode,
   validatePassRetype,
   validateZipCode,
+  validateUsername,
   sanitizeData,
   formHasNoErrors,
 } from './helpers';
@@ -398,6 +399,20 @@ export const attemptUpdateAccount = (payload) => async (dispatch) => {
     }
   }
   throw errors;
+};
+
+export const attemptSendResetEmail = (payload) => {
+  const { username_or_email } = payload;
+  const errors = {};
+  const hasUsernameErr = validateUsername(username_or_email);
+  const hasEmailErr = validateEmail(username_or_email);
+  if (hasEmailErr && hasUsernameErr) {
+    errors.usernameOrEmail = true;
+    console.error('dat error doe');
+    throw errors;
+  } else {
+    console.log('hooray!');
+  }
 };
 
 export default userSlice.reducer;

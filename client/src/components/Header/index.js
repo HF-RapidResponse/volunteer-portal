@@ -94,7 +94,7 @@ function Header(props) {
     if (user) {
       cookies.set('user_id', user.uuid, {
         path: '/',
-        sameSite: 'None',
+        sameSite: true,
         secure: true,
       });
     }
