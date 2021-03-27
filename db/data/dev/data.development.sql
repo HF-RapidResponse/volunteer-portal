@@ -186,6 +186,7 @@ CREATE TABLE public.notifications (
     notification_uuid uuid NOT NULL,
     channel public.notificationchannel NOT NULL,
     recipient text NOT NULL,
+    subject text,
     message text NOT NULL,
     scheduled_send_date timestamp without time zone NOT NULL,
     status public.notificationstatus NOT NULL,
@@ -277,7 +278,7 @@ COPY public.initiatives (id, airtable_last_modified, updated_at, is_deleted, uui
 -- Data for Name: notifications; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.notifications (notification_uuid, channel, recipient, message, scheduled_send_date, status, send_date) FROM stdin;
+COPY public.notifications (notification_uuid, channel, recipient, subject, message, scheduled_send_date, status, send_date) FROM stdin;
 \.
 
 

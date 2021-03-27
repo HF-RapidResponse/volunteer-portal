@@ -70,7 +70,10 @@ export const sanitizeData = (payload) => {
       case 'email':
         if (val) {
           let strArr = val.trim().toLowerCase().split('@');
-          const saniUser = strArr[0].replace(/\./g, '');
+          const saniUser =
+            strArr[1] === 'gmail.com'
+              ? strArr[0].replace(/\./g, '')
+              : strArr[0];
           payload[key] = `${saniUser}@${strArr[1]}`;
         }
         break;

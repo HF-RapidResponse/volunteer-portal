@@ -401,7 +401,7 @@ export const attemptUpdateAccount = (payload) => async (dispatch) => {
   throw errors;
 };
 
-export const attemptSendResetEmail = (payload) => {
+export const attemptSendResetEmail = async (payload) => {
   const { username_or_email } = payload;
   const errors = {};
   const hasUsernameErr = validateUsername(username_or_email);
@@ -412,6 +412,14 @@ export const attemptSendResetEmail = (payload) => {
     throw errors;
   } else {
     console.log('hooray!');
+    const obj = {};
+    if (!hasEmailErr) {
+      obj.email = username_or_email;
+    } else if (!hasUsernameErr) {
+      obj.username = username_or_email;
+    }
+    sanitizeData(obj);
+    await axios.post(`/api/notifications/`, obj);
   }
 };
 

@@ -186,6 +186,7 @@ CREATE TABLE public.notifications (
     notification_uuid uuid NOT NULL,
     channel public.notificationchannel NOT NULL,
     recipient text NOT NULL,
+    subject text,
     message text NOT NULL,
     scheduled_send_date timestamp without time zone NOT NULL,
     status public.notificationstatus NOT NULL,

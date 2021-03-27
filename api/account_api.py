@@ -2,8 +2,10 @@ from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header, APIR
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Text, Union, Mapping, Any
 from models import Account, AccountSettings
+from models.notification import Notification, NotificationChannel, NotificationStatus
+import notifications_manager as nm
 from schemas import (AccountRequestSchema, AccountResponseSchema,
-                     PartialAccountSchema, AccountSettingsSchema)
+                     PartialAccountSchema, AccountSettingsSchema, AcctUsernameOrEmailSchema)
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
@@ -17,14 +19,18 @@ from fastapi_jwt_auth import AuthJWT
 import external_data_sync
 from security import encrypt_password, check_encrypted_password
 import re
+from datetime import datetime
+import socket
 
 router = APIRouter()
 
 # Note: I am leaving this route commented out as it should not be available publicly.
 # However, it is useful to have when running locally for debugging purposes
-# @router.get("/accounts/", response_model=List[AccountResponseSchema])
-# def get_all_accounts(db: Session = Depends(get_db)):
-#     return db.query(Account).all()
+
+
+@router.get("/accounts/", response_model=List[AccountResponseSchema])
+def get_all_accounts(db: Session = Depends(get_db)):
+    return db.query(Account).all()
 
 
 def check_valid_password(password: str):
@@ -186,3 +192,46 @@ def delete_settings(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(
                             detail=f"Settings with UUID {uuid} not found")
     db.delete(settings_to_delete)
     db.commit()
+
+
+@router.post("/notifications/", status_code=204)
+def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Session = Depends(get_db)):
+    existing_acct = None
+    if username_or_email.email is not None:
+        existing_acct = db.query(Account).filter_by(
+            email=username_or_email.email).first()
+    elif username_or_email.username is not None:
+        existing_acct = db.query(Account).filter_by(
+            email=username_or_email.username).first()
+
+    email_message = None
+    if existing_acct is not None:
+        if existing_acct.oauth is None:
+            base_url = Config['routes']['client']
+            email_message = f'<p>Dear {existing_acct.first_name},</p>\
+                <p>We have received a request to reset your password. To reset your password, \
+                please click here: <a href="{base_url}/forgot_password">{base_url}/forgot_password</a></p> \
+                <p>This link will expire in 15 minutes. If you did not request this change, you can click here \
+                to temporarily lock password resets: \
+                    {base_url}/lock_password_change</p>\
+                <b>If this action was not performed by you, \
+                someone may be targeting your account. You may want to consider changing your e-mail password.</b>\
+                <p>Regards, <br/>HF Volunteer Portal Team </p>'
+        else:
+            email_message = f'<p>Dear {existing_acct.first_name},</p>\
+                <p>We have received a request to reset your password. \
+                Your account was created with {existing_acct.oauth.capitalize()} OAuth; therefore, \
+                you cannot set or reset a password.</p>\
+                <b>If this action was not performed by you, \
+                someone may be targeting your account. You may want to consider changing your e-mail password.</b>\
+                <p>Regards, <br/>HF Volunteer Portal Team </p>'
+
+        nm.send_notification(recipient=existing_acct.email, message=email_message,
+                             channel=NotificationChannel.EMAIL, scheduled_send_date=datetime.now(), subject='HF Volunteer Portal Password Reset')
+
+
+# Note: I am leaving this route commented out as it should not be available publicly.
+# However, it is useful to have when running locally for debugging purposes
+@router.get("/notifications/", status_code=200)
+def get_all_notifications(db: Session = Depends(get_db)):
+    return db.query(Notification).all()

@@ -34,7 +34,7 @@ function PasswordResetModal(props) {
           <div className="text-right">
             <Button
               variant="outline-info"
-              className="m-4"
+              className="m-4 py-2 px-4"
               onClick={clearFormAndHide}
             >
               Return

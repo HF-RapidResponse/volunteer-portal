@@ -27,6 +27,7 @@ class Notification(Base):
         UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
     channel = Column('channel', Enum(NotificationChannel), nullable=False)
     recipient = Column('recipient', Text, nullable=False)
+    subject = Column('subject', Text, nullable=True)
     message = Column('message', Text, nullable=False)
     scheduled_send_date = Column(
         'scheduled_send_date', DateTime, default=func.now(), nullable=False)
