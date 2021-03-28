@@ -13,6 +13,7 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi.encoders import jsonable_encoder
 import auth
 from settings import Config, Session, get_db
+from security import encrypt_password
 import logging
 from uuid import uuid4, UUID
 from fastapi_jwt_auth import AuthJWT
@@ -206,32 +207,48 @@ def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Sessio
 
     email_message = None
     if existing_acct is not None:
+        email_message = f'<p>Dear {existing_acct.first_name},</p>'
         if existing_acct.oauth is None:
             base_url = Config['routes']['client']
-            email_message = f'<p>Dear {existing_acct.first_name},</p>\
-                <p>We have received a request to reset your password. To reset your password, \
-                please click here: <a href="{base_url}/forgot_password">{base_url}/forgot_password</a></p> \
-                <p>This link will expire in 15 minutes. If you did not request this change, you can click here \
-                to temporarily lock password resets: \
-                    {base_url}/lock_password_change</p>\
-                <b>If this action was not performed by you, \
-                someone may be targeting your account. You may want to consider changing your e-mail password.</b>\
-                <p>Regards, <br/>HF Volunteer Portal Team </p>'
-        else:
-            email_message = f'<p>Dear {existing_acct.first_name},</p>\
-                <p>We have received a request to reset your password. \
-                Your account was created with {existing_acct.oauth.capitalize()} OAuth; therefore, \
-                you cannot set or reset a password.</p>\
-                <b>If this action was not performed by you, \
-                someone may be targeting your account. You may want to consider changing your e-mail password.</b>\
-                <p>Regards, <br/>HF Volunteer Portal Team </p>'
+            acct_settings = db.query(AccountSettings).filter_by(
+                uuid=existing_acct.uuid).first()
+            password_reset_hash = encrypt_password(
+                existing_acct.username + datetime.now())
+            updated_settings = AccountSettings(
+                password_reset_hash=password_reset_hash, **acct_settings.dict())
+            db.merge(updated_settings)
+            db.commit()
 
+            email_message += f'<p>We have received a request to reset your password. To reset your password, \
+                please click here: <a href="{base_url}/forgot_password">{base_url}/forgot_password?hash={password_reset_hash}</a></p> \
+                <p>This link will expire in 15 minutes.</p>'
+        else:
+            email_message += f'<p>We have received a request to reset your password. \
+                Your account was created with {existing_acct.oauth.capitalize()} OAuth; therefore, \
+                you cannot set or reset a password.</p>'
+        email_message += '<b> If this action was not performed by you, \
+                someone may be targeting your account. You may want to consider changing your e-mail password. </b>\
+                <p>Regards, <br/>HF Volunteer Portal Team </p>'
         nm.send_notification(recipient=existing_acct.email, message=email_message,
                              channel=NotificationChannel.EMAIL, scheduled_send_date=datetime.now(), subject='HF Volunteer Portal Password Reset')
 
 
+@router.get("/settings_from_reset_hash/{hash}", status_code=200)
+def get_settings_from_hash(hash, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    existing_settings = db.query(AccountSettings).filter_by(
+        password_reset_hash=hash).first()
+    if existing_settings is not None:
+        create_access_and_refresh_tokens(
+            str(existing_settings.uuid), Authorize)
+        return existing_settings
+    else:
+        raise HTTPException(status_code=400,
+                            detail=f"Invalid or expired password reset URL!")
+
 # Note: I am leaving this route commented out as it should not be available publicly.
 # However, it is useful to have when running locally for debugging purposes
+
+
 @router.get("/notifications/", status_code=200)
 def get_all_notifications(db: Session = Depends(get_db)):
     return db.query(Notification).all()

@@ -1,6 +1,6 @@
 from models.base import Base
 
-from sqlalchemy import func, select, Column, String, Integer, Text, Boolean
+from sqlalchemy import func, select, Column, String, Integer, Text, Boolean, DateTime
 from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
 from sqlalchemy.orm import backref, column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -24,7 +24,10 @@ class AccountSettings(Base):
         'volunteers_can_see', Boolean, default=True, nullable=False)
     # dictionary with initiative_name -> isSubscribed
     initiative_map = Column('initiative_map', JSON, default={}, nullable=False)
+    password_reset_hash = Column('password_reset_hash', Text, nullable=True)
+    # password_reset_time = Column(
+    #     'password_reset_time', DateTime, nullable=True)
 
     def __repr__(self):
-        return "<AccountSettings(uuid='%s', show_name='%s', show_email='%s', show_location='%s', organizers_can_see='%s', volunteers_can_see='%s', initiative_map='%s')>" % (
-            self.uuid, self.show_name, self.show_email, self.show_location, self.organizers_can_see, self.volunteers_can_see, self.initiative_map)
+        return "<AccountSettings(uuid='%s', show_name='%s', show_email='%s', show_location='%s', organizers_can_see='%s', volunteers_can_see='%s', initiative_map='%s', password_reset_hash='%s')>" % (
+            self.uuid, self.show_name, self.show_email, self.show_location, self.organizers_can_see, self.volunteers_can_see, self.initiative_map, self.password_reset_hash)

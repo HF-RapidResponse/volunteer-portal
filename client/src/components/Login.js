@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import GoogleOAuthButton from 'components/oauth/GoogleOAuthButton';
 import GitHubOAuthButton from 'components/oauth/GitHubOAuthButton';
 import LoadingSpinner from './LoadingSpinner';
-import PasswordResetModal from 'components/modals/PasswordResetModal';
+import ForgotPasswordModal from 'components/modals/ForgotPasswordModal';
 
 import 'styles/register-login.scss';
 
@@ -97,7 +97,7 @@ function Login(props) {
             </Button>
           </div>
         </Form>
-        <PasswordResetModal
+        <ForgotPasswordModal
           show={showModal}
           onHide={() => setShowModal(false)}
         />

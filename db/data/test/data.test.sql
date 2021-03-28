@@ -107,7 +107,8 @@ CREATE TABLE public.account_settings (
     show_location boolean NOT NULL,
     organizers_can_see boolean NOT NULL,
     volunteers_can_see boolean NOT NULL,
-    initiative_map json NOT NULL
+    initiative_map json NOT NULL,
+    password_reset_hash text
 );
 
 

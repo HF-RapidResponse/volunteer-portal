@@ -423,4 +423,27 @@ export const attemptSendResetEmail = async (payload) => {
   }
 };
 
+export const getSettingsFromHash = async (hash) => {
+  const getSettingsRes = await axios.get(`/settings_from_reset_hash/${hash}`);
+  return getSettingsRes.data;
+};
+
+export const attemptResetPassword = async (payload) => {
+  const { password, retypePass, uuid } = payload;
+  const errors = {
+    password: validatePassword(password),
+    retypePass:
+      validatePassword(retypePass) || validatePassRetype(password, retypePass),
+  };
+
+  if (formHasNoErrors(errors)) {
+    await axios.patch(
+      `/api/accounts/${uuid}`,
+      new AccountReqBody({
+        password,
+      })
+    );
+  }
+};
+
 export default userSlice.reducer;

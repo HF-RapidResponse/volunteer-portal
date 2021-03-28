@@ -1,12 +1,11 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import { Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 
 import useForm from 'components/hooks/useForm';
 import { attemptSendResetEmail } from 'store/user-slice';
 
-function PasswordResetModal(props) {
+function ForgotPasswordModal(props) {
   const {
     validated,
     submitted,
@@ -50,7 +49,7 @@ function PasswordResetModal(props) {
             onSubmit={handleSubmit}
             className="mt-5 mb-5"
           >
-            <Form.Group controlId="reset-password-form">
+            <Form.Group controlId="forgot-password-request">
               <Form.Label>Username or e-mail address</Form.Label>
               <Form.Control
                 type="text"
@@ -80,4 +79,4 @@ function PasswordResetModal(props) {
   );
 }
 
-export default PasswordResetModal;
+export default ForgotPasswordModal;
