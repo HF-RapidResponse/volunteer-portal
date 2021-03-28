@@ -3,4 +3,4 @@ from schemas.volunteer_event import VolunteerEventSchema
 from schemas.volunteer_role import VolunteerRoleSchema
 from schemas.account import (AccountRequestSchema, AccountResponseSchema,
                              AccountBasicLoginSchema, AccountPasswordSchema, PartialAccountSchema, AcctUsernameOrEmailSchema)
-from schemas.account_settings import AccountSettingsSchema
+from schemas.account_settings import AccountSettingsSchema, PasswordResetSchema

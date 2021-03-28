@@ -424,8 +424,17 @@ export const attemptSendResetEmail = async (payload) => {
 };
 
 export const getSettingsFromHash = async (hash) => {
-  const getSettingsRes = await axios.get(`/settings_from_reset_hash/${hash}`);
-  return getSettingsRes.data;
+  const errors = {};
+  try {
+    const getSettingsRes = await axios.get(
+      `/api/settings_from_hash?pw_reset_hash=${hash}`
+    );
+    return getSettingsRes.data;
+  } catch (error) {
+    console.error(error);
+    handleApiErrors(error.response, errors);
+  }
+  throw errors;
 };
 
 export const attemptResetPassword = async (payload) => {
@@ -435,15 +444,22 @@ export const attemptResetPassword = async (payload) => {
     retypePass:
       validatePassword(retypePass) || validatePassRetype(password, retypePass),
   };
-
-  if (formHasNoErrors(errors)) {
-    await axios.patch(
-      `/api/accounts/${uuid}`,
-      new AccountReqBody({
-        password,
-      })
-    );
+  sanitizeData(password);
+  try {
+    if (formHasNoErrors(errors)) {
+      await axios.patch(
+        `/api/accounts/${uuid}`,
+        new AccountReqBody({
+          password,
+        })
+      );
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+    handleApiErrors(error.response, errors);
   }
+  throw errors;
 };
 
 export default userSlice.reducer;

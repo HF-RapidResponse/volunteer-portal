@@ -108,7 +108,8 @@ CREATE TABLE public.account_settings (
     organizers_can_see boolean NOT NULL,
     volunteers_can_see boolean NOT NULL,
     initiative_map json NOT NULL,
-    password_reset_hash text
+    password_reset_hash text,
+    password_reset_time timestamp without time zone
 );
 
 

@@ -65,6 +65,7 @@ export const sanitizeData = (payload) => {
       case 'state':
       case 'zip_code':
       case 'username':
+      case 'password':
         payload[key] = val ? val.trim() : val;
         break;
       case 'email':

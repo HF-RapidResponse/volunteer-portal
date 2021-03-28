@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 import useForm from 'components/hooks/useForm';
 import { attemptResetPassword, getSettingsFromHash } from 'store/user-slice';
@@ -7,22 +8,8 @@ import LoadingSpinner from './LoadingSpinner';
 
 function ResetPassword(props) {
   const [loading, setLoading] = useState(false);
-  // const [errorLoading, setErrorLoading] = useState(false);
+  const [errorLoading, setErrorLoading] = useState(false);
   const [settings, setSettings] = useState(null);
-
-  useEffect(async () => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams(window.location.search);
-      const hash = params.get('hash');
-      const loadedSettings = await getSettingsFromHash(hash);
-      setSettings(loadedSettings);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   const {
     validated,
@@ -31,23 +18,33 @@ function ResetPassword(props) {
     handleSubmit,
     handleChange,
     data,
-    resetForm,
-  } = useForm(attemptResetPassword, { uuid: settings ? settings.uuid : null });
+  } = useForm(attemptResetPassword);
+
+  useEffect(() => {
+    setLoading(true);
+    const params = new URLSearchParams(window.location.search);
+    const hash = params.get('hash');
+    getSettingsFromHash(hash)
+      .then((response) => handleChange('uuid', response.uuid))
+      .catch(() => setErrorLoading(true))
+      .finally(() => setLoading(false));
+  }, []);
 
   return loading ? (
     <LoadingSpinner />
-  ) : settings && submitted ? (
-    <>
-      <h2 className="text-center">Password reset successfully!</h2>
-      <p>
-        You can now go back to the
-        <Link to="/login">login page</Link> and log in with your new password.
+  ) : submitted ? (
+    <div className="mt-5 mb-5 text-center">
+      <h2 className="mt-3 mb-3">Password reset successfully!</h2>
+      <p className="mt-3 mb-3">
+        You can now go back to the <Link to="/login">login page</Link> and log
+        in with your new password.
       </p>
-    </>
-  ) : settings ? (
-    <>
-      <h2>Reset Password</h2>
+    </div>
+  ) : data && data.uuid ? (
+    <div className="mt-5 mb-5">
+      <h2 className="text-center">Reset Password</h2>
       <Form
+        id="acct-reset-pw-form"
         noValidate
         validated={validated}
         onSubmit={handleSubmit}
@@ -65,14 +62,14 @@ function ResetPassword(props) {
             required
           />
           <Form.Control.Feedback type="invalid">
-            {errors.password}
+            {!data.password ? 'Please enter a password' : errors.password}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="reset-retype-password">
           <Form.Label>Retype password</Form.Label>
           <Form.Control
             type="password"
-            placeholder="Enter new password (required)"
+            placeholder="Retype new password (required)"
             onChange={(e) => {
               handleChange('retypePass', e.target.value);
             }}
@@ -80,7 +77,9 @@ function ResetPassword(props) {
             required
           />
           <Form.Control.Feedback type="invalid">
-            {errors.retypePass}
+            {!data.retypePass
+              ? 'Please retype your password.'
+              : errors.retypePass}
           </Form.Control.Feedback>
         </Form.Group>
         <div className="text-center">
@@ -89,18 +88,18 @@ function ResetPassword(props) {
           </Button>
         </div>
       </Form>
-    </>
-  ) : (
-    <>
-      <h2 className="text-center">
+    </div>
+  ) : errorLoading ? (
+    <div className="mt-5 mb-5 text-center">
+      <h2 className="mt-3 mb-3">
         Oops, it looks like this password reset link is invalid or expired!
       </h2>
-      <p>
+      <p className="mt-3 mb-3">
         Please try again by requesting a password reset on the{' '}
         <Link to="/login">login page.</Link>
       </p>
-    </>
-  );
+    </div>
+  ) : null;
 }
 
 export default ResetPassword;

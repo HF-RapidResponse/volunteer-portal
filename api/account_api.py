@@ -5,7 +5,7 @@ from models import Account, AccountSettings
 from models.notification import Notification, NotificationChannel, NotificationStatus
 import notifications_manager as nm
 from schemas import (AccountRequestSchema, AccountResponseSchema,
-                     PartialAccountSchema, AccountSettingsSchema, AcctUsernameOrEmailSchema)
+                     PartialAccountSchema, AccountSettingsSchema, AcctUsernameOrEmailSchema, PasswordResetSchema)
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
@@ -32,6 +32,16 @@ router = APIRouter()
 @router.get("/accounts/", response_model=List[AccountResponseSchema])
 def get_all_accounts(db: Session = Depends(get_db)):
     return db.query(Account).all()
+
+
+@router.get("/account_settings/", status_code=200)
+def get_all_account_settings(db: Session = Depends(get_db)):
+    return db.query(AccountSettings).all()
+
+
+@router.get("/notifications/", status_code=200)
+def get_all_notifications(db: Session = Depends(get_db)):
+    return db.query(Notification).all()
 
 
 def check_valid_password(password: str):
@@ -212,15 +222,17 @@ def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Sessio
             base_url = Config['routes']['client']
             acct_settings = db.query(AccountSettings).filter_by(
                 uuid=existing_acct.uuid).first()
+            curr_time = datetime.now()
             password_reset_hash = encrypt_password(
-                existing_acct.username + datetime.now())
-            updated_settings = AccountSettings(
-                password_reset_hash=password_reset_hash, **acct_settings.dict())
-            db.merge(updated_settings)
+                existing_acct.username + str(curr_time))
+            acct_settings.password_reset_hash = password_reset_hash
+            acct_settings.password_reset_time = curr_time
+            db.merge(acct_settings)
             db.commit()
 
+            url_to_click = f'{base_url}/reset_password?hash={password_reset_hash}'
             email_message += f'<p>We have received a request to reset your password. To reset your password, \
-                please click here: <a href="{base_url}/forgot_password">{base_url}/forgot_password?hash={password_reset_hash}</a></p> \
+                please click here: <a href="{url_to_click}">{url_to_click}</a></p> \
                 <p>This link will expire in 15 minutes.</p>'
         else:
             email_message += f'<p>We have received a request to reset your password. \
@@ -233,10 +245,10 @@ def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Sessio
                              channel=NotificationChannel.EMAIL, scheduled_send_date=datetime.now(), subject='HF Volunteer Portal Password Reset')
 
 
-@router.get("/settings_from_reset_hash/{hash}", status_code=200)
-def get_settings_from_hash(hash, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+@router.get("/settings_from_hash", status_code=200)
+def get_settings_from_hash(pw_reset_hash: str, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     existing_settings = db.query(AccountSettings).filter_by(
-        password_reset_hash=hash).first()
+        password_reset_hash=pw_reset_hash).first()
     if existing_settings is not None:
         create_access_and_refresh_tokens(
             str(existing_settings.uuid), Authorize)
@@ -244,11 +256,3 @@ def get_settings_from_hash(hash, Authorize: AuthJWT = Depends(), db: Session = D
     else:
         raise HTTPException(status_code=400,
                             detail=f"Invalid or expired password reset URL!")
-
-# Note: I am leaving this route commented out as it should not be available publicly.
-# However, it is useful to have when running locally for debugging purposes
-
-
-@router.get("/notifications/", status_code=200)
-def get_all_notifications(db: Session = Depends(get_db)):
-    return db.query(Notification).all()

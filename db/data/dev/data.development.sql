@@ -107,7 +107,9 @@ CREATE TABLE public.account_settings (
     show_location boolean NOT NULL,
     organizers_can_see boolean NOT NULL,
     volunteers_can_see boolean NOT NULL,
-    initiative_map json NOT NULL
+    initiative_map json NOT NULL,
+    password_reset_hash text,
+    password_reset_time timestamp without time zone
 );
 
 
@@ -230,7 +232,7 @@ ALTER TABLE public.volunteer_openings OWNER TO admin;
 -- Data for Name: account_settings; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.account_settings (uuid, show_name, show_email, show_location, organizers_can_see, volunteers_can_see, initiative_map) FROM stdin;
+COPY public.account_settings (uuid, show_name, show_email, show_location, organizers_can_see, volunteers_can_see, initiative_map, password_reset_hash, password_reset_time) FROM stdin;
 \.
 
 

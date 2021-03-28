@@ -11,6 +11,13 @@ class AccountSettingsSchema(BaseModel):
     organizers_can_see: bool
     volunteers_can_see: bool
     initiative_map: Dict
+    password_reset_hash: Optional[Text]
+    password_reset_time: Optional[Text]
 
     class Config:
         orm_mode = True
+
+
+class PasswordResetSchema(BaseModel):
+    password_reset_hash: Optional[Text]
+    password_reset_time: Optional[Text]
