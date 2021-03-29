@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { Button, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { withCookies } from 'react-cookie';
 
 import useForm from 'components/hooks/useForm';
 import { attemptResetPassword, getSettingsFromHash } from 'store/user-slice';
 import LoadingSpinner from './LoadingSpinner';
+import { startLogout } from 'store/user-slice';
 
 function ResetPassword(props) {
   const [loading, setLoading] = useState(false);
   const [errorLoading, setErrorLoading] = useState(false);
+  const { user, cookies, startLogout } = props;
   const {
     validated,
     submitted,
@@ -27,6 +31,12 @@ function ResetPassword(props) {
       .catch(() => setErrorLoading(true))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      startLogout(cookies);
+    }
+  }, [user]);
 
   return loading ? (
     <LoadingSpinner />
@@ -100,4 +110,16 @@ function ResetPassword(props) {
   ) : null;
 }
 
-export default ResetPassword;
+const mapStateToProps = (state) => {
+  return {
+    user: state.userStore.user,
+  };
+};
+
+const mapDispatchToProps = {
+  startLogout,
+};
+
+export default withCookies(
+  connect(mapStateToProps, mapDispatchToProps)(ResetPassword)
+);

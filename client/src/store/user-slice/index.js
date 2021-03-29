@@ -186,7 +186,7 @@ export const startLogout = (cookies) => async (dispatch) => {
     await axios.delete(`/api/logout`);
     cookies.remove('user_id', {
       path: '/',
-      sameSite: 'None',
+      sameSite: 'none',
       secure: true,
     });
     dispatch(setRefreshTime(null));
