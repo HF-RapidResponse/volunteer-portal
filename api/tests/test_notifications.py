@@ -82,7 +82,7 @@ def test_send_email_success(mock_send, db):
 def test_send_email_failure(mock_send, db):
     mock_send.return_value = MockResponse(False)
 
-    email_address = 'good.email@exmaple.com'
+    email_address = 'asdf@!'
     message = fake.paragraph(nb_sentences=10)
     nm.send_notification(email_address, message, NotificationChannel.EMAIL)
 
