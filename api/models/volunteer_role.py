@@ -36,5 +36,5 @@ class VolunteerRole(AirtableRow, Base):
         return self.hero_image_urls[0]['url'] if self.hero_image_urls else placeholder_image()
 
     def __repr__(self):
-        return "<VolunteerRole(role_uuid='%s', role_external_id='%s', name='%s')>" % (
+        return "VolunteerRole(role_uuid='%s', role_external_id='%s', name='%s')" % (
                                 self.uuid, self.external_id, self.role_name)

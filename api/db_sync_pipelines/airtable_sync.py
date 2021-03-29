@@ -20,6 +20,15 @@ class AirtableLoader:
     def GetTable(self):
         return self.airtable_client.get_all(view=self.view)
 
+class FakeAirtableLoader():
+  def __init__(self, response_file):
+    with open("/".join(['tests/db_sync_pipelines', response_file])) as f:
+        self.response = json.loads(f.read())
+
+  def GetTable(self):
+    return self.response
+
+
 def RunAirtableSync(airtable_loader,
                     db,
                     response_converter,
@@ -44,21 +53,23 @@ def RunAirtableSync(airtable_loader,
     airtable_record_ids = set([record.external_id for record in all_records])
     deleted_records = existing_record_ids - airtable_record_ids
 
+    errors = []
     if new_records:
         logging.debug(f"inserting {len(new_records)} records.")
-        InsertRecords(new_records, db)
+        errors += InsertRecords(new_records, db)
 
     if updated_records:
         logging.debug(f"updating {len(updated_records)} records.")
-        UpdateRecords(updated_records, db, db_model)
+        errors += UpdateRecords(updated_records, db, db_model)
 
     if deleted_records and not hard_delete:
         logging.debug(f"marking {len(deleted_records)} records as deleted.")
-        UpdateRecordsAsDeleted(deleted_records, db, db_model)
+        errors += UpdateRecordsAsDeleted(deleted_records, db, db_model)
     elif deleted_records and hard_delete:
         logging.debug(f"deleting {len(deleted_records)} records.")
-        DeleteRecords(deleted_records, db, db_model)
+        errors += DeleteRecords(deleted_records, db, db_model)
 
+    return errors
 def GetAirtableClient(table_key, table_name, secret_client):
     # Load SQL and airtable credentials from secretmanager
     secret_path = f'projects/{PROJECT_ID}/secrets/airtable-api-key/versions/latest'
@@ -112,25 +123,30 @@ def filter_using_re(unicode_string):
 
 def InsertRecords(db_records, db):
     # TODO check Insert Non-acceptableSqlValues
-    try:
-        db.bulk_save_objects(db_records)
-        db.commit()
-    except Exception as e:
-        logging.warning('Failed to execute %s queries: %s' % (len(db_records), e))
-        raise
+    # There is no way to have sqlAlchemy check the records are valid locally before committing.
+    for r in db_records:
+        try:
+            db.add(r)
+            db.commit()
+        except Exception as e:
+            logging.warning('Failed to execute query: %s' % e)
+            db.rollback()
+            yield (r, e)
 
 
 def UpdateRecords(local_records, db, db_model):
-    try:
-        for local_record in local_records:
-            # Feels like there should be a better way to do this.
+    errors = []
+    for local_record in local_records:
+        # Feels like there should be a better way to do this.
+        try:
             db.query(db_model).filter(
                 db_model.external_id == local_record.external_id).delete()
             db.add(local_record)
-        db.commit()
-    except Exception as e:
-        logging.warning('Failed to execute queries: %s' % e)
-        raise
+            db.commit()
+        except Exception as e:
+            logging.warning('Failed to execute query: %s' % e)
+            db.rollback()
+            yield (local_record, e)
 
 
 def UpdateRecordsAsDeleted(to_delete, db, db_model):
@@ -141,7 +157,7 @@ def UpdateRecordsAsDeleted(to_delete, db, db_model):
         db.commit()
     except Exception as e:
         logging.warning('Failed to execute queries: %s' % e)
-        raise
+        yield (f'{len(to_delete)} records', e)
 
 def DeleteRecords(to_delete, db, db_model):
     try:
@@ -151,4 +167,4 @@ def DeleteRecords(to_delete, db, db_model):
         db.commit()
     except Exception as e:
         logging.warning('Failed to execute queries: %s' % e)
-        raise
+        yield (f'{len(to_delete)} records', e)
