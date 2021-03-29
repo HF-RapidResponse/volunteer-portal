@@ -53,7 +53,7 @@ function ForgotPasswordModal(props) {
               <Form.Label>Username or e-mail address</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter username or e-mail address (required)"
+                placeholder="Enter username or e-mail address"
                 onChange={(e) => {
                   handleChange('username_or_email', e.target.value);
                 }}

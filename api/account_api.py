@@ -236,7 +236,7 @@ def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Sessio
             email_message += f'<p>We have received a request to reset your password. \
                 Your account was created with {oauth_type} OAuth; therefore, \
                 you cannot set or reset a password. \
-                "Please try signing in with {oauth_type}.</p>'
+                Please try signing in with {oauth_type}.</p>'
         email_message += '<b> If this action was not performed by you, \
                 someone may be targeting your account. You may want to consider changing your e-mail password. </b>\
                 <p>Regards, <br/>HF Volunteer Portal Team </p>'
