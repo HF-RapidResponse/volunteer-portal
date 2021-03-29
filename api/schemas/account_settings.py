@@ -16,8 +16,3 @@ class AccountSettingsSchema(BaseModel):
 
     class Config:
         orm_mode = True
-
-
-class PasswordResetSchema(BaseModel):
-    password_reset_hash: Optional[Text]
-    password_reset_time: Optional[Text]

@@ -5,7 +5,7 @@ from models import Account, AccountSettings
 from models.notification import Notification, NotificationChannel, NotificationStatus
 import notifications_manager as nm
 from schemas import (AccountRequestSchema, AccountResponseSchema,
-                     PartialAccountSchema, AccountSettingsSchema, AcctUsernameOrEmailSchema, PasswordResetSchema)
+                     PartialAccountSchema, AccountSettingsSchema, AcctUsernameOrEmailSchema)
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
@@ -250,9 +250,26 @@ def get_settings_from_hash(pw_reset_hash: str, Authorize: AuthJWT = Depends(), d
     existing_settings = db.query(AccountSettings).filter_by(
         password_reset_hash=pw_reset_hash).first()
     if existing_settings is not None:
-        create_access_and_refresh_tokens(
-            str(existing_settings.uuid), Authorize)
-        return existing_settings
+        time_diff = minutes_difference(existing_settings.password_reset_time)
+        if time_diff >= 15:
+            existing_settings.password_reset_hash = None
+            existing_settings.password_reset_time = None
+            db.merge(existing_settings)
+            db.commit()
+            raise HTTPException(status_code=400,
+                                detail=f"Invalid or expired password reset URL!")
+        else:
+            create_access_and_refresh_tokens(
+                str(existing_settings.uuid), Authorize)
+            return existing_settings
     else:
         raise HTTPException(status_code=400,
                             detail=f"Invalid or expired password reset URL!")
+
+
+def minutes_difference(reset_req_time):
+    m1 = datetime.now()
+    m2 = datetime.strptime(str(reset_req_time), '%Y-%m-%d %H:%M:%S.%f')
+    seconds_diff = abs((m1 - m2).seconds)
+    minutes_diff = seconds_diff/60
+    return minutes_diff
