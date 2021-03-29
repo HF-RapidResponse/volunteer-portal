@@ -227,7 +227,7 @@ def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Sessio
 
             url_to_click = f'{base_url}/reset_password?hash={password_reset_hash}'
             email_message += f'<p>We have received a request to reset your password. To reset your password, \
-                please click here: <a href="{url_to_click}">{url_to_click}</a></p> \
+                please click the following link: <a href="{url_to_click}">change my password</a></p> \
                 <p>This link will expire in 15 minutes.</p>'
         else:
             email_message += f'<p>We have received a request to reset your password. \
