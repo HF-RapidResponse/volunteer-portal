@@ -22,6 +22,8 @@ from security import encrypt_password, check_encrypted_password
 import re
 from datetime import datetime
 import socket
+import random
+import decimal
 
 router = APIRouter()
 
@@ -208,7 +210,7 @@ def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Sessio
             email=username_or_email.email).first()
     elif username_or_email.username is not None:
         existing_acct = db.query(Account).filter_by(
-            email=username_or_email.username).first()
+            username=username_or_email.username).first()
 
     email_message = None
     if existing_acct is not None:
@@ -218,8 +220,8 @@ def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Sessio
             acct_settings = db.query(AccountSettings).filter_by(
                 uuid=existing_acct.uuid).first()
             curr_time = datetime.now()
-            password_reset_hash = encrypt_password(
-                existing_acct.username + str(curr_time))
+            password_reset_hash = generate_str_for_hash(
+                existing_acct.username, curr_time)
             acct_settings.password_reset_hash = password_reset_hash
             acct_settings.password_reset_time = curr_time
             db.merge(acct_settings)
@@ -230,9 +232,11 @@ def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Sessio
                 please click the following link: <a href="{url_to_click}">change my password</a></p> \
                 <p>This link will expire in 15 minutes.</p>'
         else:
+            oauth_type = existing_acct.oauth.capitalize()
             email_message += f'<p>We have received a request to reset your password. \
-                Your account was created with {existing_acct.oauth.capitalize()} OAuth; therefore, \
-                you cannot set or reset a password.</p>'
+                Your account was created with {oauth_type} OAuth; therefore, \
+                you cannot set or reset a password. \
+                "Please try signing in with {oauth_type}.</p>'
         email_message += '<b> If this action was not performed by you, \
                 someone may be targeting your account. You may want to consider changing your e-mail password. </b>\
                 <p>Regards, <br/>HF Volunteer Portal Team </p>'
@@ -260,6 +264,15 @@ def get_settings_from_hash(pw_reset_hash: str, Authorize: AuthJWT = Depends(), d
     else:
         raise HTTPException(status_code=400,
                             detail=f"Invalid or expired password reset URL!")
+
+
+def generate_str_for_hash(username: str, curr_time: datetime):
+    one_rand_num = random.uniform(1, 101)
+    password_reset_hash = encrypt_password(
+        username +
+        str(curr_time) + str(random.uniform(1, one_rand_num)
+                             + random.uniform(1, one_rand_num) + random.uniform(1, one_rand_num)))
+    return password_reset_hash
 
 
 def minutes_difference(reset_req_time: datetime):
