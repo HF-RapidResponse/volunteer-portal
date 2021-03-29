@@ -25,23 +25,21 @@ import socket
 
 router = APIRouter()
 
-# Note: I am leaving this route commented out as it should not be available publicly.
-# However, it is useful to have when running locally for debugging purposes
+# Note: I am leaving these get all routes commented out as they should not be available publicly.
+# However, they're useful to have when running locally for debugging purposes
+# @router.get("/accounts/", response_model=List[AccountResponseSchema])
+# def get_all_accounts(db: Session = Depends(get_db)):
+#     return db.query(Account).all()
 
 
-@router.get("/accounts/", response_model=List[AccountResponseSchema])
-def get_all_accounts(db: Session = Depends(get_db)):
-    return db.query(Account).all()
+# @router.get("/account_settings/", status_code=200)
+# def get_all_account_settings(db: Session = Depends(get_db)):
+#     return db.query(AccountSettings).all()
 
 
-@router.get("/account_settings/", status_code=200)
-def get_all_account_settings(db: Session = Depends(get_db)):
-    return db.query(AccountSettings).all()
-
-
-@router.get("/notifications/", status_code=200)
-def get_all_notifications(db: Session = Depends(get_db)):
-    return db.query(Notification).all()
+# @router.get("/notifications/", status_code=200)
+# def get_all_notifications(db: Session = Depends(get_db)):
+#     return db.query(Notification).all()
 
 
 def check_valid_password(password: str):
@@ -171,11 +169,6 @@ def create_settings(settings: AccountSettingsSchema, Authorize: AuthJWT = Depend
     return new_settings
 
 
-# @router.get("/account_settings/", response_model=List[AccountSettingsSchema])
-# def get_all_settings(db: Session = Depends(get_db)):
-#     return db.query(AccountSettings).all()
-
-
 @router.get("/account_settings/{uuid}", response_model=AccountSettingsSchema)
 def get_settings_by_uuid(uuid, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
@@ -267,9 +260,8 @@ def get_settings_from_hash(pw_reset_hash: str, Authorize: AuthJWT = Depends(), d
                             detail=f"Invalid or expired password reset URL!")
 
 
-def minutes_difference(reset_req_time):
-    m1 = datetime.now()
-    m2 = datetime.strptime(str(reset_req_time), '%Y-%m-%d %H:%M:%S.%f')
-    seconds_diff = abs((m1 - m2).seconds)
+def minutes_difference(reset_req_time: datetime):
+    curr_time = datetime.now()
+    seconds_diff = abs((curr_time - reset_req_time).seconds)
     minutes_diff = seconds_diff/60
     return minutes_diff

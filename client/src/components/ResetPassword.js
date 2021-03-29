@@ -9,8 +9,6 @@ import LoadingSpinner from './LoadingSpinner';
 function ResetPassword(props) {
   const [loading, setLoading] = useState(false);
   const [errorLoading, setErrorLoading] = useState(false);
-  const [settings, setSettings] = useState(null);
-
   const {
     validated,
     submitted,
