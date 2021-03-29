@@ -81,7 +81,7 @@ function Login(props) {
                 ? 'Please provide a password.'
                 : errors.password || errors.message}
             </Form.Control.Feedback>
-            <div className="mt-2 mb-2">
+            <div className="mt-3 mb-3">
               <p
                 className="font-weight-light hover-hand-and-underline"
                 style={{ color: 'gray' }}

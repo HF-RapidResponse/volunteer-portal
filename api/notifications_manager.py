@@ -60,9 +60,8 @@ def send_email_notification(notification: Notification):
         )
 
         response = email_client.send(email)
-        # open_url = urlopen(response)
-        print('What is response?', response)
-        if response.ok:
+
+        if response.status_code < 300:
             notification.status = NotificationStatus.SENT
             notification.sent_date = datetime.utcnow()
         else:
