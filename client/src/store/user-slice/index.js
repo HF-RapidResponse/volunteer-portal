@@ -408,10 +408,8 @@ export const attemptSendResetEmail = async (payload) => {
   const hasEmailErr = validateEmail(username_or_email);
   if (hasEmailErr && hasUsernameErr) {
     errors.usernameOrEmail = true;
-    console.error('dat error doe');
     throw errors;
   } else {
-    console.log('hooray!');
     const obj = {};
     if (!hasEmailErr) {
       obj.email = username_or_email;
@@ -453,6 +451,7 @@ export const attemptResetPassword = async (payload) => {
           password,
         })
       );
+      await resetPasswordResetInfo(uuid);
       return;
     }
   } catch (error) {
@@ -460,6 +459,23 @@ export const attemptResetPassword = async (payload) => {
     handleApiErrors(error.response, errors);
   }
   throw errors;
+};
+
+const resetPasswordResetInfo = async (id) => {
+  try {
+    const settingsRes = await axios.get(`/api/account_settings/${id}`);
+    const settings = settingsRes ? settingsRes.data : null;
+    if (settings) {
+      const updatedSettings = new SettingsReqBody({
+        ...settings,
+        password_reset_hash: null,
+        password_reset_time: null,
+      });
+      await axios.put(`/api/account_settings/${id}`, updatedSettings);
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export default userSlice.reducer;

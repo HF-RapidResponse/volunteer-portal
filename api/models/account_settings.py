@@ -29,5 +29,5 @@ class AccountSettings(Base):
         'password_reset_time', DateTime, nullable=True)
 
     def __repr__(self):
-        return "<AccountSettings(uuid='%s', show_name='%s', show_email='%s', show_location='%s', organizers_can_see='%s', volunteers_can_see='%s', initiative_map='%s', password_reset_hash='%s')>" % (
-            self.uuid, self.show_name, self.show_email, self.show_location, self.organizers_can_see, self.volunteers_can_see, self.initiative_map, self.password_reset_hash)
+        return "<AccountSettings(uuid='%s', show_name='%s', show_email='%s', show_location='%s', organizers_can_see='%s', volunteers_can_see='%s', initiative_map='%s', password_reset_hash='%s', password_reset_time='%s')>" % (
+            self.uuid, self.show_name, self.show_email, self.show_location, self.organizers_can_see, self.volunteers_can_see, self.initiative_map, self.password_reset_hash, self.password_reset_time)

@@ -23,5 +23,7 @@ export class SettingsReqBody {
     this.organizers_can_see = obj.organizers_can_see ?? true;
     this.volunteers_can_see = obj.volunteers_can_see ?? true;
     this.initiative_map = obj.initiative_map || {};
+    this.password_reset_hash = obj.password_reset_hash ?? null;
+    this.password_reset_time = obj.password_reset_time ?? null;
   }
 }

@@ -27,6 +27,8 @@ router = APIRouter()
 
 # Note: I am leaving these get all routes commented out as they should not be available publicly.
 # However, they're useful to have when running locally for debugging purposes
+
+
 # @router.get("/accounts/", response_model=List[AccountResponseSchema])
 # def get_all_accounts(db: Session = Depends(get_db)):
 #     return db.query(Account).all()
