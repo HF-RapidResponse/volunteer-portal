@@ -221,6 +221,8 @@ p {
 }
 
 .hover-hand-and-underline {
+  display: inline;
+
   &:hover {
     text-decoration: underline;
     cursor: pointer;
