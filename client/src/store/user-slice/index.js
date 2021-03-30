@@ -416,7 +416,6 @@ export const attemptSendResetEmail = async (payload) => {
     } else if (!hasUsernameErr) {
       obj.username = username_or_email;
     }
-    sanitizeData(obj);
     await axios.post(`/api/notifications/`, obj);
   }
 };

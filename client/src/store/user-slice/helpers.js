@@ -68,7 +68,7 @@ export const sanitizeData = (payload) => {
         payload[key] = val ? val.trim() : val;
         break;
       case 'email':
-        if (val) {
+        if (val && !payload.oauth) {
           let strArr = val.trim().toLowerCase().split('@');
           const saniUser =
             strArr[1] === 'gmail.com'

@@ -24,7 +24,7 @@ from datetime import datetime
 import socket
 import random
 import decimal
-
+from helpers import sanitize_email
 router = APIRouter()
 
 # Note: I am leaving these get all routes commented out as they should not be available publicly.
@@ -207,10 +207,11 @@ def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Sessio
     existing_acct = None
     if username_or_email.email is not None:
         existing_acct = db.query(Account).filter_by(
-            email=username_or_email.email).first()
+            email=username_or_email.email).first() or db.query(Account).filter_by(
+                email=sanitize_email(username_or_email.email)).first()
     elif username_or_email.username is not None:
         existing_acct = db.query(Account).filter_by(
-            username=username_or_email.username).first()
+            username=username_or_email.username.strip()).first()
 
     email_message = None
     if existing_acct is not None:

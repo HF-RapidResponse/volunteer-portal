@@ -87,7 +87,7 @@ function Login(props) {
                 style={{ color: 'gray' }}
                 onClick={() => setShowModal(true)}
               >
-                Forgot password?
+                <u>Forgot password?</u>
               </p>
             </div>
           </Form.Group>
