@@ -1,7 +1,7 @@
 import pytest
 import json
 from db_sync_pipelines.airtable_event_converter import AirtableEventConverter
-from db_sync_pipelines.airtable_sync import RunAirtableSync
+from db_sync_pipelines.airtable_sync import RunAirtableSync, FakeAirtableLoader
 from db_sync_pipelines.api_response_converter import ISO8601_DATETIME_FORMAT
 from models import VolunteerEvent
 from datetime import datetime, timezone, timedelta
@@ -38,14 +38,6 @@ def setup(db, response_converter, airtable_loader):
     yield # this is where the testing happens
     db.rollback()
     cleanup(db)
-
-class FakeAirtableLoader():
-  def __init__(self, response_file):
-    with open("/".join(['tests/db_sync_pipelines', response_file])) as f:
-        self.response = json.loads(f.read())
-
-  def GetTable(self):
-    return self.response
 
 def test_event_sync_and_setup(db, response_converter):
   response_converter.GetDBModel()
@@ -108,14 +100,33 @@ def test_update(db, airtable_loader, response_converter):
   assert saved_event.description == "Updated"
   assert saved_event.updated_at > initial_timestamp
 
-def test_missing_nonnullable_field_fails(db, airtable_loader, response_converter):
+def test_missing_nonnullable_field_fails_insert(db, airtable_loader, response_converter):
+  cleanup(db) # start fresh
   event = airtable_loader.response[0]
   event['id'] = "missing_nonnullable_id_test"
   event_id = event['id']
   del event['fields']['Event Name']
   event['fields']['Start'] = None
 
-  with pytest.raises(Exception) as e:
-      RunAirtableSync(airtable_loader, db, response_converter)
+  errors = RunAirtableSync(airtable_loader, db, response_converter)
 
+  saved_test_events = db.query(VolunteerEvent).filter(VolunteerEvent.external_id.like("%_test")).all()
+  assert len(saved_test_events) == 2
+  assert len(errors) == 1
+  failing_record, e = errors[0]
+  assert "event_name" in str(e) or 'start_datetime' in str(e)
+
+def test_missing_nonnullable_field_fails_update(db, airtable_loader, response_converter):
+  event = airtable_loader.response[0]
+  event['id'] = "missing_nonnullable_id_test"
+  event_id = event['id']
+  del event['fields']['Event Name']
+  event['fields']['Start'] = None
+
+  errors = RunAirtableSync(airtable_loader, db, response_converter)
+
+  saved_test_events = db.query(VolunteerEvent).filter(VolunteerEvent.external_id.like("%_test")).all()
+  assert len(saved_test_events) == 3
+  assert len(errors) == 1
+  failing_record, e = errors[0]
   assert "event_name" in str(e) or 'start_datetime' in str(e)
