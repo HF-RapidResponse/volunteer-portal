@@ -70,6 +70,7 @@ export const attemptLogin = (payload) => async (dispatch) => {
   };
   try {
     if (formHasNoErrors(errors)) {
+      sanitizeData(payload);
       const accountRes = await axios.post(`/api/auth/basic`, payload);
       const accountData = accountRes.data;
       const refreshTime = Date.now();

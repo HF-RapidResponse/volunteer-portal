@@ -6,6 +6,7 @@ from models.notification import Notification, NotificationChannel, NotificationS
 import notifications_manager as nm
 from schemas import (AccountRequestSchema, AccountResponseSchema,
                      PartialAccountSchema, AccountSettingsSchema, AcctUsernameOrEmailSchema)
+from sqlalchemy import or_
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
