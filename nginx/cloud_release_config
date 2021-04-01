@@ -6,8 +6,8 @@ http {
         listen 80;
         listen [::]:80;
 
-        access_log /tmp/nginx;
-        error_log /tmp/nginx;
+        access_log off;
+        error_log off;
 
         location / {
             proxy_pass http://localhost:8080;
