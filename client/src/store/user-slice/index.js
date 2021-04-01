@@ -201,37 +201,40 @@ export const loadLoggedInUser = (payload) => (dispatch) => {
   dispatch(setUser(payload));
 };
 
-export const attemptCreateAccount = (payload) => async (dispatch) => {
+export const attemptRegister = (payload) => async (dispatch) => {
   if (!payload) {
-    return false;
+    throw { detail: 'empty register payload' };
   }
 
   const errors = {
     firstName: validateAlphaNumericUnicode(payload.first_name),
-    lastName: payload.last_name
-      ? validateAlphaNumericUnicode(payload.last_name)
-      : null,
-    username: validateAlphaNumericUnicode(payload.username),
+    lastName:
+      payload.last_name && payload.last_name.trim()
+        ? validateAlphaNumericUnicode(payload.last_name)
+        : null,
+    username: validateUsername(payload.username),
     email: validateEmail(payload.email),
     password: validatePassword(payload.password),
     retypePass: validatePassRetype(payload.password, payload.retypePass),
   };
-  sanitizeData(payload);
 
-  if (formHasNoErrors(errors)) {
-    try {
-      const objPayload = new AccountReqBody(payload);
-      const accountRes = await axios.post(`/api/accounts/`, objPayload);
-      const accountData = accountRes.data;
-      const settings = await getSettings(accountData.uuid);
-      const user = { ...accountData, ...settings };
-      dispatch(setUser(user));
-      const refreshTime = await refreshAccessToken();
-      dispatch(setRefreshTime(refreshTime));
-      return;
-    } catch (error) {
-      handleApiErrors(error.response, errors);
-    }
+  if (!formHasNoErrors(errors)) {
+    throw errors;
+  }
+
+  try {
+    sanitizeData(payload);
+    const objPayload = new AccountReqBody(payload);
+    const accountRes = await axios.post(`/api/accounts/`, objPayload);
+    const accountData = accountRes.data;
+    const settings = await getSettings(accountData.uuid);
+    const user = { ...accountData, ...settings };
+    dispatch(setUser(user));
+    const refreshTime = await refreshAccessToken();
+    dispatch(setRefreshTime(refreshTime));
+    return;
+  } catch (error) {
+    handleApiErrors(error.response, errors);
   }
   throw errors;
 };
