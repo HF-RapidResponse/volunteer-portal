@@ -83,7 +83,7 @@ export const attemptLogin = (payload) => async (dispatch) => {
   } catch (error) {
     console.error(error);
   }
-  errors.message = 'Email or password is invalid!';
+  errors.message = 'E-mail or password is invalid!';
   throw errors;
 };
 
@@ -332,7 +332,10 @@ export const basicPropUpdate = (payload) => async (dispatch) => {
 };
 
 const handlePossibleExpiredToken = (error) => {
-  if (error.response && error.response.status === 422) {
+  if (
+    error.response &&
+    (error.response.status === 422 || error.response.status === 401)
+  ) {
     window.location.reload();
   }
 };
@@ -411,7 +414,7 @@ export const attemptSendResetEmail = async (payload) => {
   const hasUsernameErr = validateUsername(username_or_email);
   const hasEmailErr = validateEmail(username_or_email);
   if (hasEmailErr && hasUsernameErr) {
-    errors.usernameOrEmail = true;
+    errors.usernameOrEmail = 'Invalid username or e-mail';
     throw errors;
   } else {
     const obj = {};
@@ -442,19 +445,19 @@ export const attemptResetPassword = async (payload) => {
   const { password, retypePass, uuid } = payload;
   const errors = {
     password: validatePassword(password),
-    retypePass:
-      validatePassword(retypePass) || validatePassRetype(password, retypePass),
+    retypePass: validatePassRetype(password, retypePass),
   };
-  sanitizeData(password);
   try {
     if (formHasNoErrors(errors)) {
+      sanitizeData(password);
       await axios.patch(
         `/api/accounts/${uuid}`,
         new AccountReqBody({
           password,
         })
       );
-      await resetPasswordResetInfo(uuid);
+      await resetPasswordAndInfo(uuid);
+      await axios.delete(`/api/logout`);
       return;
     }
   } catch (error) {
@@ -464,7 +467,7 @@ export const attemptResetPassword = async (payload) => {
   throw errors;
 };
 
-const resetPasswordResetInfo = async (id) => {
+const resetPasswordAndInfo = async (id) => {
   try {
     const settingsRes = await axios.get(`/api/account_settings/${id}`);
     const settings = settingsRes ? settingsRes.data : null;

@@ -57,10 +57,7 @@ function ForgotPasswordModal(props) {
                 onChange={(e) => {
                   handleChange('username_or_email', e.target.value);
                 }}
-                isInvalid={
-                  validated &&
-                  (!data.username_or_email || !!errors.usernameOrEmail)
-                }
+                isInvalid={!!errors.usernameOrEmail}
                 required
               />
               <Form.Control.Feedback type="invalid">

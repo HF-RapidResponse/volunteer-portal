@@ -59,7 +59,7 @@ function Login(props) {
                 handleChange('email', e.target.value);
               }}
               required
-              isInvalid={!!errors.email}
+              isInvalid={!!errors.email || !!errors.message}
             />
             <Form.Control.Feedback type="invalid">
               {!data.email ? 'Please provide an e-mail address.' : errors.email}

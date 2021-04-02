@@ -66,7 +66,7 @@ function ResetPassword(props) {
             onChange={(e) => {
               handleChange('password', e.target.value);
             }}
-            isInvalid={validated && (!data.password || !!errors.password)}
+            isInvalid={!!errors.password}
             required
           />
           <Form.Control.Feedback type="invalid">
@@ -81,7 +81,7 @@ function ResetPassword(props) {
             onChange={(e) => {
               handleChange('retypePass', e.target.value);
             }}
-            isInvalid={validated && (!data.retypePass || !!errors.retypePass)}
+            isInvalid={!!errors.retypePass}
             required
           />
           <Form.Control.Feedback type="invalid">
