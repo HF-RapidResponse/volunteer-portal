@@ -107,7 +107,9 @@ CREATE TABLE public.account_settings (
     show_location boolean NOT NULL,
     organizers_can_see boolean NOT NULL,
     volunteers_can_see boolean NOT NULL,
-    initiative_map json NOT NULL
+    initiative_map json NOT NULL,
+    password_reset_hash text,
+    password_reset_time timestamp without time zone
 );
 
 
@@ -186,6 +188,7 @@ CREATE TABLE public.notifications (
     notification_uuid uuid NOT NULL,
     channel public.notificationchannel NOT NULL,
     recipient text NOT NULL,
+    subject text,
     message text NOT NULL,
     scheduled_send_date timestamp without time zone NOT NULL,
     status public.notificationstatus NOT NULL,

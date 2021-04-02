@@ -9,23 +9,27 @@ from email_validator import validate_email
 from twilio.rest import Client
 import phonenumbers
 from slack_sdk import WebClient
+from urllib.request import urlopen
 
 logging.basicConfig()
 logging.getLogger('notifications_manager').setLevel(logging.INFO)
 
 email_client = SendGridAPIClient(Config['notifications']['sendgrid_api_key'])
-sms_client = Client(Config['notifications']['twilio_sid'], Config['notifications']['twilio_auth_token'])
+sms_client = Client(Config['notifications']['twilio_sid'],
+                    Config['notifications']['twilio_auth_token'])
 slack_client = WebClient(token=Config['notifications']['slack_bot_auth_token'])
 
+
 @validate_arguments(config=dict(arbitrary_types_allowed=True))
-def send_notification(recipient: str, message: str, channel: NotificationChannel, scheduled_send_date: datetime = None):
+def send_notification(recipient: str, message: str, channel: NotificationChannel, scheduled_send_date: datetime = None, subject=None):
     notification = Notification(
-        recipient = recipient,
-        message = message,
-        channel = channel,
-        scheduled_send_date = scheduled_send_date
+        recipient=recipient,
+        subject=subject,
+        message=message,
+        channel=channel,
+        scheduled_send_date=scheduled_send_date
     )
-    
+
     db = Session()
     db.add(notification)
 
@@ -40,6 +44,7 @@ def send_notification(recipient: str, message: str, channel: NotificationChannel
 
     db.commit()
 
+
 @validate_arguments(config=dict(arbitrary_types_allowed=True))
 def send_email_notification(notification: Notification):
     try:
@@ -50,20 +55,22 @@ def send_email_notification(notification: Notification):
         email = Mail(
             from_email=Config['notifications']['email_default_from_address'],
             to_emails=recipient_email_address,
-            subject='This is a test Vol Portal Email',
-            html_content=f'<strong>Test email with message</strong> {notification.message}'
+            subject=notification.subject or 'This is a test Vol Portal Email',
+            html_content=notification.message or '<strong>Test email with message</strong> <p>E-mail is working!</p>'
         )
 
         response = email_client.send(email)
-        if response.ok:
+
+        if response.status_code < 300:
             notification.status = NotificationStatus.SENT
             notification.sent_date = datetime.utcnow()
         else:
             notification.status = NotificationStatus.FAILED
-    
+
     except Exception as e:
         logging.error(e)
         notification.status = NotificationStatus.FAILED
+
 
 @validate_arguments(config=dict(arbitrary_types_allowed=True))
 def send_sms_notification(notification: Notification):
@@ -71,12 +78,14 @@ def send_sms_notification(notification: Notification):
     try:
         assert notification.channel is NotificationChannel.SMS
 
-        recipient_phone_number = phonenumbers.parse(notification.recipient, None)
+        recipient_phone_number = phonenumbers.parse(
+            notification.recipient, None)
         assert phonenumbers.is_valid_number(recipient_phone_number) is True
 
         response = sms_client.messages.create(
             from_=Config['notifications']['sms_default_from_number'],
-            to=phonenumbers.format_number(recipient_phone_number, phonenumbers.PhoneNumberFormat.E164),
+            to=phonenumbers.format_number(
+                recipient_phone_number, phonenumbers.PhoneNumberFormat.E164),
             body=notification.message
         )
 
@@ -85,10 +94,11 @@ def send_sms_notification(notification: Notification):
             notification.sent_date = datetime.utcnow()
         else:
             notification.status = NotificationStatus.FAILED
-    
+
     except Exception as e:
         logging.error(e)
         notification.status = NotificationStatus.FAILED
+
 
 @validate_arguments(config=dict(arbitrary_types_allowed=True))
 def send_slack_notification(notification: Notification):
@@ -103,7 +113,7 @@ def send_slack_notification(notification: Notification):
         # WebClient automatically raises a SlackApiError if response.ok is False; no need to check
         notification.status = NotificationStatus.SENT
         notification.sent_date = datetime.utcnow()
-    
+
     except Exception as e:
         logging.error(e)
         notification.status = NotificationStatus.FAILED

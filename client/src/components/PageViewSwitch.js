@@ -15,6 +15,7 @@ import NotFound from './NotFound';
 import Login from './Login';
 import LoginCallback from './LoginCallback';
 import Dashboard from './Dashboard';
+import ResetPassword from './ResetPassword';
 
 // initialize GA
 // REACT_APP_GA_TRACKING_ID can be found in .env
@@ -51,6 +52,7 @@ function PageViewSwitch() {
         <Route path="/login_callback" exact component={LoginCallback} />
         <Route path="/dashboard" exact component={Dashboard} />
         <Route path="/account/*" component={Account} />
+        <Route path="/reset_password" component={ResetPassword} />
         <Route path="*" component={NotFound} />
       </Switch>
     </Container>

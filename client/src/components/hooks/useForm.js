@@ -44,9 +44,9 @@ const useForm = (callback, initObj) => {
       setValidated(true);
       setSubmitted(true);
       return true;
-    } catch (error) {
-      setErrors(error);
-      setValidated(true);
+    } catch (errors) {
+      setErrors(errors);
+      // setValidated(true);
       setSubmitted(false);
       return false;
     }

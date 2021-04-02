@@ -107,7 +107,9 @@ CREATE TABLE public.account_settings (
     show_location boolean NOT NULL,
     organizers_can_see boolean NOT NULL,
     volunteers_can_see boolean NOT NULL,
-    initiative_map json NOT NULL
+    initiative_map json NOT NULL,
+    password_reset_hash text,
+    password_reset_time timestamp without time zone
 );
 
 
@@ -186,6 +188,7 @@ CREATE TABLE public.notifications (
     notification_uuid uuid NOT NULL,
     channel public.notificationchannel NOT NULL,
     recipient text NOT NULL,
+    subject text,
     message text NOT NULL,
     scheduled_send_date timestamp without time zone NOT NULL,
     status public.notificationstatus NOT NULL,
@@ -229,7 +232,7 @@ ALTER TABLE public.volunteer_openings OWNER TO admin;
 -- Data for Name: account_settings; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.account_settings (uuid, show_name, show_email, show_location, organizers_can_see, volunteers_can_see, initiative_map) FROM stdin;
+COPY public.account_settings (uuid, show_name, show_email, show_location, organizers_can_see, volunteers_can_see, initiative_map, password_reset_hash, password_reset_time) FROM stdin;
 \.
 
 
@@ -277,7 +280,7 @@ COPY public.initiatives (id, airtable_last_modified, updated_at, is_deleted, uui
 -- Data for Name: notifications; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.notifications (notification_uuid, channel, recipient, message, scheduled_send_date, status, send_date) FROM stdin;
+COPY public.notifications (notification_uuid, channel, recipient, subject, message, scheduled_send_date, status, send_date) FROM stdin;
 \.
 
 

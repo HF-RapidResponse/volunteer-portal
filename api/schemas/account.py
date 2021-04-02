@@ -44,3 +44,8 @@ class PartialAccountSchema(BaseModel):
     state: Optional[str]
     zip_code: Optional[str]
     roles: Optional[List]
+
+
+class AcctUsernameOrEmailSchema(BaseModel):
+    username: Optional[str]
+    email: Optional[str]

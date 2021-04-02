@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import useForm from 'components/hooks/useForm';
-import { attemptCreateAccount } from 'store/user-slice';
+import { attemptRegister } from 'store/user-slice';
 import LinesAroundOr from './LinesAroundOr';
 import OAuthGroup from 'components/oauth/OAuthGroup';
 import 'styles/register-login.scss';
@@ -11,7 +11,7 @@ import 'styles/register-login.scss';
 function Register(props) {
   document.title = 'HF Volunteer Portal - Create an Account';
   const [pendingSubmit, setPendingSubmit] = useState(false);
-  const { user, attemptCreateAccount } = props;
+  const { user, attemptRegister } = props;
   const {
     handleChange,
     handleSubmit,
@@ -21,7 +21,7 @@ function Register(props) {
     validated,
     setValidated,
     errors,
-  } = useForm(attemptCreateAccount);
+  } = useForm(attemptRegister);
   const path = window.location.pathname;
 
   const submitWrapper = async (e) => {
@@ -79,7 +79,7 @@ function Register(props) {
                   <Form.Group controlId="formFirstName">
                     <Form.Label>First Name</Form.Label>
                     <Form.Control
-                      type="name"
+                      type="text"
                       placeholder="First Name"
                       onChange={(e) => {
                         handleKeyPress('first_name', e);
@@ -100,7 +100,7 @@ function Register(props) {
                   <Form.Group controlId="formLastName">
                     <Form.Label>Last Name</Form.Label>
                     <Form.Control
-                      type="name"
+                      type="text"
                       placeholder="Enter last name here (optional)"
                       onChange={(e) => {
                         handleKeyPress('last_name', e);
@@ -118,7 +118,7 @@ function Register(props) {
               <Form.Group controlId="formUsername">
                 <Form.Label>Username</Form.Label>
                 <Form.Control
-                  type="username"
+                  type="text"
                   onChange={(e) => {
                     handleKeyPress('username', e);
                   }}
@@ -214,6 +214,6 @@ const mapStateToProps = (state) => {
     user: state.userStore.user,
   };
 };
-const mapDispatchToProps = { attemptCreateAccount };
+const mapDispatchToProps = { attemptRegister };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);
