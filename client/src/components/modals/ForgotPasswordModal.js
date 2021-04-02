@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import { Button, Form } from 'react-bootstrap';
 
 import useForm from 'components/hooks/useForm';
-import { attemptSendResetEmail } from 'store/user-slice';
+import { attemptSendResetEmail } from 'store/user-slice/reset-password';
 
 function ForgotPasswordModal(props) {
   const {
@@ -57,10 +57,7 @@ function ForgotPasswordModal(props) {
                 onChange={(e) => {
                   handleChange('username_or_email', e.target.value);
                 }}
-                isInvalid={
-                  validated &&
-                  (!data.username_or_email || !!errors.usernameOrEmail)
-                }
+                isInvalid={!!errors.usernameOrEmail}
                 required
               />
               <Form.Control.Feedback type="invalid">

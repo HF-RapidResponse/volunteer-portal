@@ -5,7 +5,10 @@ import { Link } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 
 import useForm from 'components/hooks/useForm';
-import { attemptResetPassword, getSettingsFromHash } from 'store/user-slice';
+import {
+  attemptResetPassword,
+  getSettingsFromHash,
+} from 'store/user-slice/reset-password';
 import LoadingSpinner from './LoadingSpinner';
 import { startLogout } from 'store/user-slice';
 
@@ -66,7 +69,7 @@ function ResetPassword(props) {
             onChange={(e) => {
               handleChange('password', e.target.value);
             }}
-            isInvalid={validated && (!data.password || !!errors.password)}
+            isInvalid={!!errors.password}
             required
           />
           <Form.Control.Feedback type="invalid">
@@ -81,7 +84,7 @@ function ResetPassword(props) {
             onChange={(e) => {
               handleChange('retypePass', e.target.value);
             }}
-            isInvalid={validated && (!data.retypePass || !!errors.retypePass)}
+            isInvalid={!!errors.retypePass}
             required
           />
           <Form.Control.Feedback type="invalid">

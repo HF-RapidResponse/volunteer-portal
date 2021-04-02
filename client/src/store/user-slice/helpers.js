@@ -28,8 +28,12 @@ export const validateUsername = (username) => {
   if (!username) {
     return 'Please provide a username';
   }
+
   const isValidAlphaNumericUni = !validateAlphaNumericUnicode(username);
-  return isValidAlphaNumericUni && username.length > 4 && username.length < 26
+  const trimmedUserName = username.trim();
+  return isValidAlphaNumericUni &&
+    trimmedUserName.length > 4 &&
+    trimmedUserName.length < 26
     ? null
     : 'Please enter a username using alphanumeric characters between 5 and and 25 characters in length';
 };
@@ -39,13 +43,19 @@ export const validateUsername = (username) => {
 */
 export const validateAlphaNumericUnicode = (word) => {
   const pattern = /^([a-zA-Z0-9\u0600-\u06FF\u0660-\u0669\u06F0-\u06F9 _.-]+)$/;
-  const isValid = pattern.test(word);
+  const isValid = word && word.trim() && pattern.test(word);
   return isValid ? null : 'Please only use alphanumeric or unicode characters.';
 };
 
 export const validatePassRetype = (password, retypePass) => {
+  if (!retypePass) {
+    return 'Please retype your password.';
+  }
+
   const passesMatch = password === retypePass;
-  return passesMatch ? null : 'Password and retyped passwords do not match.';
+  return passesMatch
+    ? validatePassword(retypePass)
+    : 'Password and retyped password do not match.';
 };
 
 export const validateZipCode = (zipCode) => {
@@ -91,4 +101,32 @@ export const formHasNoErrors = (errors) => {
     }
   }
   return true;
+};
+
+export const handleApiErrors = (response, errors) => {
+  if (response) {
+    if (
+      response.data &&
+      response.data.detail &&
+      Object.keys(response.data.detail)
+    ) {
+      Object.entries(response.data.detail).forEach((entry) => {
+        const [key, val] = entry;
+        errors[key] = val;
+      });
+    } else {
+      errors.api =
+        response.data.detail ||
+        'Error while attempting to create an account. Please try again later.';
+    }
+  }
+};
+
+export const handlePossibleExpiredToken = (error) => {
+  if (
+    error.response &&
+    (error.response.status === 422 || error.response.status === 401)
+  ) {
+    window.location.reload();
+  }
 };
