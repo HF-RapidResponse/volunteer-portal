@@ -46,7 +46,6 @@ const useForm = (callback, initObj) => {
       return true;
     } catch (errors) {
       setErrors(errors);
-      // setValidated(true);
       setSubmitted(false);
       return false;
     }
