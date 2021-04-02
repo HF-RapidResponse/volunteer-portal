@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import useForm from 'components/hooks/useForm';
 import { attemptRegister } from 'store/user-slice';
