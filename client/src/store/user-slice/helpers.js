@@ -102,3 +102,31 @@ export const formHasNoErrors = (errors) => {
   }
   return true;
 };
+
+export const handleApiErrors = (response, errors) => {
+  if (response) {
+    if (
+      response.data &&
+      response.data.detail &&
+      Object.keys(response.data.detail)
+    ) {
+      Object.entries(response.data.detail).forEach((entry) => {
+        const [key, val] = entry;
+        errors[key] = val;
+      });
+    } else {
+      errors.api =
+        response.data.detail ||
+        'Error while attempting to create an account. Please try again later.';
+    }
+  }
+};
+
+export const handlePossibleExpiredToken = (error) => {
+  if (
+    error.response &&
+    (error.response.status === 422 || error.response.status === 401)
+  ) {
+    window.location.reload();
+  }
+};

@@ -10,6 +10,8 @@ import {
   validateUsername,
   sanitizeData,
   formHasNoErrors,
+  handleApiErrors,
+  handlePossibleExpiredToken,
 } from './helpers';
 
 const userSlice = createSlice({
@@ -239,25 +241,6 @@ export const attemptRegister = (payload) => async (dispatch) => {
   throw errors;
 };
 
-const handleApiErrors = (response, errors) => {
-  if (response) {
-    if (
-      response.data &&
-      response.data.detail &&
-      Object.keys(response.data.detail)
-    ) {
-      Object.entries(response.data.detail).forEach((entry) => {
-        const [key, val] = entry;
-        errors[key] = val;
-      });
-    } else {
-      errors.api =
-        response.data.detail ||
-        'Error while attempting to create an account. Please try again later.';
-    }
-  }
-};
-
 export const attemptChangePassword = (payload) => async (dispatch) => {
   const { uuid, oldPass, newPass, retypePass, tokenRefreshTime } = payload;
   const errors = {
@@ -331,15 +314,6 @@ export const basicPropUpdate = (payload) => async (dispatch) => {
   }
 };
 
-const handlePossibleExpiredToken = (error) => {
-  if (
-    error.response &&
-    (error.response.status === 422 || error.response.status === 401)
-  ) {
-    window.location.reload();
-  }
-};
-
 export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
   const { user, initiative_name, isSubscribed, tokenRefreshTime } = payload;
   let userCopy = { ...user };
@@ -406,82 +380,6 @@ export const attemptUpdateAccount = (payload) => async (dispatch) => {
     }
   }
   throw errors;
-};
-
-export const attemptSendResetEmail = async (payload) => {
-  const { username_or_email } = payload;
-  const errors = {};
-  const hasUsernameErr = validateUsername(username_or_email);
-  const hasEmailErr = validateEmail(username_or_email);
-  if (hasEmailErr && hasUsernameErr) {
-    errors.usernameOrEmail = 'Invalid username or e-mail';
-    throw errors;
-  } else {
-    const obj = {};
-    if (!hasEmailErr) {
-      obj.email = username_or_email;
-    } else if (!hasUsernameErr) {
-      obj.username = username_or_email;
-    }
-    await axios.post(`/api/notifications/`, obj);
-  }
-};
-
-export const getSettingsFromHash = async (hash) => {
-  const errors = {};
-  try {
-    const getSettingsRes = await axios.get(
-      `/api/settings_from_hash?pw_reset_hash=${hash}`
-    );
-    return getSettingsRes.data;
-  } catch (error) {
-    console.error(error);
-    handleApiErrors(error.response, errors);
-  }
-  throw errors;
-};
-
-export const attemptResetPassword = async (payload) => {
-  const { password, retypePass, uuid } = payload;
-  const errors = {
-    password: validatePassword(password),
-    retypePass: validatePassRetype(password, retypePass),
-  };
-  try {
-    if (formHasNoErrors(errors)) {
-      sanitizeData(password);
-      await axios.patch(
-        `/api/accounts/${uuid}`,
-        new AccountReqBody({
-          password,
-        })
-      );
-      await resetPasswordAndInfo(uuid);
-      await axios.delete(`/api/logout`);
-      return;
-    }
-  } catch (error) {
-    console.error(error);
-    handleApiErrors(error.response, errors);
-  }
-  throw errors;
-};
-
-const resetPasswordAndInfo = async (id) => {
-  try {
-    const settingsRes = await axios.get(`/api/account_settings/${id}`);
-    const settings = settingsRes ? settingsRes.data : null;
-    if (settings) {
-      const updatedSettings = new SettingsReqBody({
-        ...settings,
-        password_reset_hash: null,
-        password_reset_time: null,
-      });
-      await axios.put(`/api/account_settings/${id}`, updatedSettings);
-    }
-  } catch (error) {
-    console.error(error);
-  }
 };
 
 export default userSlice.reducer;

@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import { Button, Form } from 'react-bootstrap';
 
 import useForm from 'components/hooks/useForm';
-import { attemptSendResetEmail } from 'store/user-slice';
+import { attemptSendResetEmail } from 'store/user-slice/reset-password';
 
 function ForgotPasswordModal(props) {
   const {

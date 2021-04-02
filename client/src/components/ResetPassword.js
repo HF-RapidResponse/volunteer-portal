@@ -5,7 +5,10 @@ import { Link } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 
 import useForm from 'components/hooks/useForm';
-import { attemptResetPassword, getSettingsFromHash } from 'store/user-slice';
+import {
+  attemptResetPassword,
+  getSettingsFromHash,
+} from 'store/user-slice/reset-password';
 import LoadingSpinner from './LoadingSpinner';
 import { startLogout } from 'store/user-slice';
 
