@@ -24,16 +24,9 @@ function Events() {
       </Col>
     );
   }
-  const noEventsComponent = (
-    <h4 className="text-center mt-5 mb-5">
-      No upcoming events. Please check back later!
-    </h4>
-  );
 
   let inner;
-  if (_.isEmpty(data)) {
-    inner = noEventsComponent;
-  } else {
+  if (!_.isEmpty(data)) {
     inner = data
       .map(
         ({
@@ -75,7 +68,9 @@ function Events() {
     return inner && inner.length ? (
       <div className="mt-5 mb-5">{inner}</div>
     ) : (
-      noEventsComponent
+      <h4 className="text-center mt-5 mb-5">
+        No upcoming events. Please check back later!
+      </h4>
     );
   }
 }
@@ -101,6 +96,7 @@ function Calendar() {
       </p>
       <h1 className="text-center mt-4 mb-4">Upcoming Events</h1>
       <Events />
+      {loading && <LoadingSpinner />}
       <iframe
         className="airtable-embed mb-4"
         src="https://airtable.com/embed/shrGk2bE7oadINvFy?backgroundColor=greenLight&amp;viewControls=on"
