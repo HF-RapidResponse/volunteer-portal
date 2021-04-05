@@ -8,6 +8,8 @@ TEST = -f docker-compose.yml -f docker-compose.test.yml
 
 up:
 	docker-compose up
+up-test:
+	docker-compose $(TEST) up
 down:
 	docker-compose down
 recreate-all:
@@ -20,7 +22,7 @@ test:
 	@echo "${ORANGE}If you're getting errors with configuration/database settings, try running \`make down\` first${NC}"
 	docker-compose $(TEST) run --rm api python -m pytest tests/
 test-debug:
-	docker-compose $(TEST) run --rm api python -m pytest tests/  -s --capture=no -vv
+	docker-compose $(TEST) run --rm api python -m pytest tests/  -s -x --capture=no -vv
 
 # run like: make test-debug-single test="test_account_create_duplicate_email"
 test-debug-single:
@@ -36,6 +38,10 @@ recreate-api:
 # Database
 shell-db:
 	docker-compose run --rm db bash
+psql-shell-db-dev:
+	docker-compose run --rm -e PGPASSWORD=password db psql -h db -U admin hf_volunteer_portal_development
+psql-shell-db-test:
+	docker-compose run --rm -e PGPASSWORD=password db psql -h db -U admin hf_volunteer_portal_test
 db-save-dev:
 	docker-compose exec db pg_dump --create -U admin hf_volunteer_portal_development > db/data/dev/data.development.sql
 db-save-test-from-dev:

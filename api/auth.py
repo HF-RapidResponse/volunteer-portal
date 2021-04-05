@@ -13,7 +13,6 @@ from models import Initiative, VolunteerEvent, VolunteerRole, Account
 from schemas import AccountBasicLoginSchema, AccountPasswordSchema
 from security import encrypt_password, check_encrypted_password
 from sqlalchemy.orm import lazyload
-from account_api import create_access_and_refresh_tokens
 
 router = APIRouter()
 app = FastAPI()
@@ -58,15 +57,6 @@ if OAuthProvider.GITHUB.value in Config['auth']:
         api_base_url='https://api.github.com/',
         client_kwargs={'scope': 'user:email'},
     )
-
-
-@router.get("/profile")
-def get_profile(Authorize: AuthJWT = Depends()) -> Dict:
-    Authorize.jwt_required()
-
-    current_user = Authorize.get_jwt_subject()
-    return {"user": current_user}
-
 
 @router.get("/login")
 async def login(request: Request, provider: OAuthProvider):
@@ -208,3 +198,13 @@ def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     Authorize.set_access_cookies(access_token, response)
     Authorize.set_refresh_cookies(refresh_token, response)
     return response
+
+def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
+    try:
+        access_token = Authorize.create_access_token(subject=user_id)
+        Authorize.set_access_cookies(access_token)
+        refresh_token = Authorize.create_refresh_token(subject=user_id)
+        Authorize.set_refresh_cookies(refresh_token)
+    except:
+        raise HTTPException(
+            status_code=500, detail=f"Error while trying to create and refresh tokens")
