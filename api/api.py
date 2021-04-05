@@ -1,8 +1,8 @@
 from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
-from models import NestedInitiative, Initiative, VolunteerEvent, VolunteerRole
-from schemas import NestedInitiativeSchema, InitiativeSchema, VolunteerEventSchema, VolunteerRoleSchema
+from models import VolunteerEvent, VolunteerRole
+from schemas import VolunteerEventSchema, VolunteerRoleSchema
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
@@ -10,6 +10,7 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi.encoders import jsonable_encoder
 import auth
 import account_api
+import initiatives_api
 from settings import Config, Session, get_db
 import logging
 from uuid import uuid4, UUID
@@ -36,6 +37,10 @@ app.include_router(
 )
 app.include_router(
     account_api.router,
+    prefix='/api'
+)
+app.include_router(
+    initiatives_api.router,
     prefix='/api'
 )
 
@@ -80,13 +85,3 @@ def get_all_volunteer_events(db: Session = Depends(get_db)) -> List[VolunteerEve
 @app.get("/api/volunteer_events/{external_id}", response_model=VolunteerEventSchema)
 def get_volunteer_event_by_external_id(external_id, db: Session = Depends(get_db)) -> Optional[VolunteerEventSchema]:
     return db.query(VolunteerEvent).filter_by(external_id=external_id).first()
-
-
-@app.get("/api/initiatives/", response_model=List[InitiativeSchema])
-def get_all_initiatives(db: Session = Depends(get_db)) -> List[InitiativeSchema]:
-    return db.query(Initiative).options(lazyload(Initiative.roles_rel)).all()
-
-
-@app.get("/api/initiatives/{initiative_external_id}", response_model=NestedInitiativeSchema)
-def get_initiative_by_external_id(initiative_external_id, db: Session = Depends(get_db)) -> List[NestedInitiativeSchema]:
-    return db.query(NestedInitiative).filter_by(external_id=initiative_external_id).first()

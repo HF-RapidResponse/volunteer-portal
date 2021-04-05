@@ -96,18 +96,7 @@ const getSettings = async (id) => {
 
   try {
     const getRes = await axios.get(`/api/account_settings/${id}`);
-    let settings;
-    if (getRes.data) {
-      settings = getRes.data;
-    } else {
-      const initiative_map = await updateInitiativeMap();
-      const createRes = await axios.post(
-        `/api/account_settings/`,
-        new SettingsReqBody({ uuid: id, initiative_map })
-      );
-      settings = createRes.data;
-    }
-    return settings;
+    return getRes.data;
   } catch (error) {
     console.error(error);
   }
@@ -228,12 +217,12 @@ export const attemptRegister = (payload) => async (dispatch) => {
     sanitizeData(payload);
     const objPayload = new AccountReqBody(payload);
     const accountRes = await axios.post(`/api/accounts/`, objPayload);
+    const refreshTime = Date.now();
+    dispatch(setRefreshTime(refreshTime));
     const accountData = accountRes.data;
     const settings = await getSettings(accountData.uuid);
     const user = { ...accountData, ...settings };
     dispatch(setUser(user));
-    const refreshTime = await refreshAccessToken();
-    dispatch(setRefreshTime(refreshTime));
     return;
   } catch (error) {
     handleApiErrors(error.response, errors);
@@ -285,7 +274,6 @@ export const deleteRole = (payload) => async (dispatch) => {
 export const deleteUser = (uuid, cookies) => async (dispatch) => {
   try {
     await refreshAccessToken();
-    await axios.delete(`/api/account_settings/${uuid}`);
     await axios.delete(`/api/accounts/${uuid}`);
     cookies.remove('user_id', { path: '/', sameSite: 'None', secure: true });
     dispatch(completeLogout());

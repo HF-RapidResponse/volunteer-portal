@@ -6,6 +6,7 @@ from settings import Session
 from sqlalchemy.orm import lazyload
 from tests.fake_data_utils import generate_fake_account
 from uuid import UUID
+from models import Account
 
 @pytest.fixture
 def db():
@@ -17,7 +18,8 @@ def db():
 def setup(db):
     db = Session()
     yield # this is where the testing happens
-    db.rollback()
+    db.query(Account).delete()
+    db.commit()
 
 def test_account_create_valid(db):
     account = generate_fake_account()
