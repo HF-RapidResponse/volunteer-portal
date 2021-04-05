@@ -2,17 +2,20 @@ from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header, APIR
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Text, Union, Mapping, Any
 from models import Account, AccountSettings
+from schemas import (AccountCreateRequestSchema, AccountResponseSchema,
+                     AccountNewPasswordSchema, AccountSettingsSchema, AccountBaseSchema)
 from models.notification import Notification, NotificationChannel, NotificationStatus
 import notifications_manager as nm
-from schemas import (AccountRequestSchema, AccountResponseSchema,
-                     PartialAccountSchema, AccountSettingsSchema, AcctUsernameOrEmailSchema)
+from schemas import (AccountCreateRequestSchema, AccountResponseSchema, AccountBaseSchema,
+                     AccountNewPasswordSchema, AccountSettingsSchema, AcctUsernameOrEmailSchema)
 from sqlalchemy import or_
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi.encoders import jsonable_encoder
-import auth
+from auth import create_access_and_refresh_tokens
+from initiatives_api import GetAllInitiativeNames
 from settings import Config, Session, get_db
 from security import encrypt_password
 import logging
@@ -69,7 +72,7 @@ def get_account_by_uuid(uuid, Authorize: AuthJWT = Depends(), db: Session = Depe
 
 
 @router.post("/accounts/", response_model=AccountResponseSchema, status_code=201)
-def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+def create_account(account: AccountCreateRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     check_for_existing_username_or_email(account, db)
     if account.password is not None:
         check_valid_password(account.password)
@@ -77,11 +80,28 @@ def create_account(account: AccountRequestSchema, Authorize: AuthJWT = Depends()
     account = Account(**account.dict())
     db.add(account)
     db.commit()
+    create_account_settings(account.uuid, db)
     create_access_and_refresh_tokens(str(account.uuid), Authorize)
     return account
 
+def create_account_settings(uuid, db):
+    existing_settings = db.query(AccountSettings).filter_by(
+        uuid=uuid).first()
+    if existing_settings is not None:
+        raise HTTPException(
+            status_code=400, detail=f"Settings already exist for that account")
+    matching_acct = db.query(Account).filter_by(uuid=uuid).first()
+    if matching_acct is None:
+        raise HTTPException(
+            status_code=400, detail=f"Account with UUID {settings.uuid} not exist. Cannot create settings")
+    initiative_map = {i[0]: False for i in GetAllInitiativeNames(db)}
+    new_settings = AccountSettings(**{"uuid": uuid, 'initiative_map': initiative_map})
+    db.add(new_settings)
+    db.commit()
+    return new_settings
 
-def check_for_existing_username_or_email(account: AccountRequestSchema, db: Session):
+
+def check_for_existing_username_or_email(account: AccountBaseSchema, db: Session):
     existing_acct = db.query(Account).filter_by(email=account.email).first()
     errors = {}
     if existing_acct is not None:
@@ -90,25 +110,13 @@ def check_for_existing_username_or_email(account: AccountRequestSchema, db: Sess
         username=account.username).first()
     if existing_acct is not None:
         errors['username'] = f"An account with the username {account.username} already exists"
-    print('Are we here?', errors)
     if len(errors) > 0:
         raise HTTPException(
             status_code=400, detail=errors)
 
 
-def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
-    try:
-        access_token = Authorize.create_access_token(subject=user_id)
-        Authorize.set_access_cookies(access_token)
-        refresh_token = Authorize.create_refresh_token(subject=user_id)
-        Authorize.set_refresh_cookies(refresh_token)
-    except:
-        raise HTTPException(
-            status_code=500, detail=f"Error while trying to create and refresh tokens")
-
-
 @router.put("/accounts/{uuid}", response_model=AccountResponseSchema)
-def update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+def update_account(uuid, account: AccountBaseSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
     check_matching_user(uuid, Authorize)
     check_for_diff_user_with_same_username(uuid, account, db)
@@ -118,7 +126,7 @@ def update_account(uuid, account: AccountRequestSchema, Authorize: AuthJWT = Dep
     return updated_acct
 
 
-def check_for_diff_user_with_same_username(uuid, account: AccountRequestSchema, db: Session):
+def check_for_diff_user_with_same_username(uuid, account: AccountCreateRequestSchema, db: Session):
     existing_acct = db.query(Account).filter_by(
         username=account.username).first()
     if existing_acct is not None and str(uuid) != str(existing_acct.uuid):
@@ -127,19 +135,23 @@ def check_for_diff_user_with_same_username(uuid, account: AccountRequestSchema, 
 
 
 @router.patch("/accounts/{uuid}", response_model=AccountResponseSchema)
-def update_password(uuid, partial_account: PartialAccountSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    Authorize.jwt_required()
-    check_matching_user(uuid, Authorize)
-    account = db.query(Account).filter_by(uuid=uuid).first()
-    if partial_account.password is None:
-        raise HTTPException(
-            status_code=400, detail=f"Password is missing")
-    else:
-        check_valid_password(partial_account.password)
-        account.password = encrypt_password(partial_account.password)
-    db.merge(account)
-    db.commit()
-    db.refresh(account)
+def update_password(uuid, partial_account: AccountNewPasswordSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    try:
+        Authorize.jwt_required()
+        check_matching_user(uuid, Authorize)
+        account = db.query(Account).filter_by(uuid=uuid).first()
+        if partial_account.password is None:
+            raise HTTPException(
+                status_code=400, detail=f"Password is missing")
+        else:
+            check_valid_password(partial_account.password)
+            account.password = encrypt_password(partial_account.password)
+        db.merge(account)
+        db.commit()
+        db.refresh(account)
+    except Exception as e:
+        logging.warning(e)
+        raise e
     return account
 
 
@@ -154,24 +166,16 @@ def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(g
     db.delete(acct_to_delete)
     db.commit()
 
+    delete_settings(uuid, db)
 
-@router.post("/account_settings/", response_model=AccountSettingsSchema, status_code=201)
-def create_settings(settings: AccountSettingsSchema, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    Authorize.jwt_required()
-    check_matching_user(str(settings.uuid), Authorize)
-    existing_settings = db.query(AccountSettings).filter_by(
-        uuid=settings.uuid).first()
-    if existing_settings is not None:
-        raise HTTPException(
-            status_code=400, detail=f"Settings already exist for that account")
-    matching_acct = db.query(Account).filter_by(uuid=settings.uuid).first()
-    if matching_acct is None:
-        raise HTTPException(
-            status_code=400, detail=f"Account with UUID {settings.uuid} not exist. Cannot create settings")
-    new_settings = AccountSettings(**settings.dict())
-    db.add(new_settings)
+
+def delete_settings(uuid, db):
+    settings_to_delete = db.query(AccountSettings).filter_by(uuid=uuid).first()
+    if settings_to_delete is None:
+        raise HTTPException(status_code=400,
+                            detail=f"Settings with UUID {uuid} not found")
+    db.delete(settings_to_delete)
     db.commit()
-    return new_settings
 
 
 @router.get("/account_settings/{uuid}", response_model=AccountSettingsSchema)
@@ -189,18 +193,6 @@ def update_settings(uuid, settings: AccountSettingsSchema, Authorize: AuthJWT = 
     db.merge(updated_settings)
     db.commit()
     return updated_settings
-
-
-@router.delete("/account_settings/{uuid}", status_code=204)
-def delete_settings(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    Authorize.jwt_required()
-    check_matching_user(uuid, Authorize)
-    settings_to_delete = db.query(AccountSettings).filter_by(uuid=uuid).first()
-    if settings_to_delete is None:
-        raise HTTPException(status_code=400,
-                            detail=f"Settings with UUID {uuid} not found")
-    db.delete(settings_to_delete)
-    db.commit()
 
 
 @router.post("/notifications/", status_code=204)
