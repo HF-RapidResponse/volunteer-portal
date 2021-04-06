@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import LoadingSpinner from "../components/LoadingSpinner";
-import { Button, Col } from "react-bootstrap";
-import { useQuery } from "react-query";
-import moment from "moment";
-import _ from "lodash";
-import "twix";
+import React, { useState } from 'react';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { Button, Col } from 'react-bootstrap';
+import { useQuery } from 'react-query';
+import moment from 'moment';
+import _ from 'lodash';
+import 'twix';
 
 function Events() {
-  const { isLoading, error, data } = useQuery("events", () =>
-    fetch("/api/volunteer_events/").then((response) => response.json())
+  const { isLoading, error, data } = useQuery('events', () =>
+    fetch('/api/volunteer_events/').then((response) => response.json())
   );
 
   if (isLoading) {
@@ -26,46 +26,52 @@ function Events() {
   }
 
   let inner;
-  if (_.isEmpty(data)) {
-    inner = <p>No upcoming events. Please check back later!</p>;
-  } else {
-    inner = data.map(
-      ({
-        uuid,
-        external_id,
-        event_name,
-        description,
-        start_datetime,
-        end_datetime,
-        signup_url,
-      }) => {
-        const startDate = moment(`${start_datetime}Z`);
-        const endDate = moment(`${end_datetime}Z`);
-        const dateRange = moment(startDate).twix(endDate).format();
+  if (!_.isEmpty(data)) {
+    inner = data
+      .map(
+        ({
+          uuid,
+          external_id,
+          event_name,
+          description,
+          start_datetime,
+          end_datetime,
+          signup_url,
+        }) => {
+          const startDate = moment(`${start_datetime}Z`);
+          const endDate = moment(`${end_datetime}Z`);
+          const dateRange = moment(startDate).twix(endDate).format();
 
-        if (startDate.isAfter()) {
-          return (
-            <Col
-              xs={12}
-              lg={8}
-              className="shadow-card"
-              key={`${uuid}-${external_id}`}
-            >
-              <h2 className="header-4">{event_name}</h2>
-              <p className="btn-cyan">{dateRange}</p>
-              <p>{description}</p>
-              <Button variant="info" href={signup_url}>
-                Register
-              </Button>
-            </Col>
-          );
-        } else {
-          return null;
+          if (startDate.isAfter()) {
+            return (
+              <Col
+                xs={12}
+                lg={8}
+                className="shadow-card"
+                key={`${uuid}-${external_id}`}
+              >
+                <h2 className="header-4">{event_name}</h2>
+                <p className="btn-cyan">{dateRange}</p>
+                <p>{description}</p>
+                <Button variant="info" href={signup_url}>
+                  Register
+                </Button>
+              </Col>
+            );
+          } else {
+            return null;
+          }
         }
-      }
-    );
+      )
+      .filter((event) => !!event);
 
-    return <div className="mb-5">{inner}</div>;
+    return inner && inner.length ? (
+      <div className="mt-5 mb-5">{inner}</div>
+    ) : (
+      <h4 className="text-center mt-5 mb-5">
+        No upcoming events. Please check back later!
+      </h4>
+    );
   }
 }
 
@@ -75,7 +81,7 @@ function Events() {
  */
 function Calendar() {
   const [loading, setLoading] = useState(true);
-  document.title = "HF Volunteer Portal - Calendar";
+  document.title = 'HF Volunteer Portal - Calendar';
   return (
     <>
       <h1>Attend an Event</h1>
@@ -88,6 +94,8 @@ function Calendar() {
         &nbsp;be sure to check our #announcements channel for updates and event
         postings.
       </p>
+      <h1 className="text-center mt-4 mb-4">Upcoming Events</h1>
+      <Events />
       {loading && <LoadingSpinner />}
       <iframe
         className="airtable-embed mb-4"
@@ -99,9 +107,6 @@ function Calendar() {
         title="calendar"
         styles="background: transparent; border: 1px solid #ccc;"
       />
-
-      <h1 className="text-center mb-5">Upcoming Events</h1>
-      <Events />
     </>
   );
 }
