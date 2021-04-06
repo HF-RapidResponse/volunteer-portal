@@ -13,7 +13,7 @@ function LoginCallback(props) {
       if (window.location.pathname.includes('/login_callback')) {
         setErrorLoading(true);
       }
-    }, 5000);
+    }, 3000);
   }, []);
 
   useEffect(() => {
