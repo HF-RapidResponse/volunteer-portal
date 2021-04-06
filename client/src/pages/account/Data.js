@@ -1,26 +1,27 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTools, faRobot } from '@fortawesome/free-solid-svg-icons';
+import DataPageComingSoon from 'assets/data-page-coming-soon.png';
+import { Card } from 'components/cards/Card';
 
 function Data(props) {
   const { user } = props;
+  const children = (
+    <>
+      <h2>See my data</h2>
+      <div className="text-center">
+        <Image src={DataPageComingSoon} fluid />
+      </div>
+      <h4 className="font-weight-light" style={{ color: 'gray' }}>
+        We value your data. We won't sell or share any of it, and you'll be able
+        to keep track of it here.
+      </h4>
+    </>
+  );
+
   return user ? (
-    <Container className="text-center mt-3 mb-3">
-      <h2>The data page is currently under construction!</h2>
-      <FontAwesomeIcon
-        icon={faTools}
-        style={{ fontSize: '3rem' }}
-        className="m-4"
-      />
-      <FontAwesomeIcon
-        icon={faRobot}
-        style={{ fontSize: '3rem' }}
-        className="m-4"
-      />
-    </Container>
+    <Card children={children} withPadding={true} className="mt-3 mb-3" />
   ) : (
     <Redirect push to="/login" />
   );
