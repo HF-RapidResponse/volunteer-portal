@@ -40,7 +40,7 @@ function AccountIndex(props) {
 
   return user && mainContent ? (
     <>
-      <Container className="mt-1 mb-4">
+      <div className="mt-1 mb-4">
         <Row className="text-center md-text-left">
           <Col xs={12} md={2}>
             <Image
@@ -67,7 +67,7 @@ function AccountIndex(props) {
             {mainContent}
           </Col>
         </Row>
-      </Container>
+      </div>
     </>
   ) : mainContent ? (
     <Redirect push to="/login" />
