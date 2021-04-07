@@ -14,7 +14,6 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi.encoders import jsonable_encoder
-# from auth import create_access_and_refresh_tokens
 from initiatives_api import GetAllInitiativeNames
 from settings import Config, Session, get_db
 from security import encrypt_password
