@@ -79,7 +79,7 @@ def get_volunteer_role_by_external_id(role_external_id, db: Session = Depends(ge
 
 @app.get("/api/volunteer_events/", response_model=List[VolunteerEventSchema])
 def get_all_volunteer_events(db: Session = Depends(get_db)) -> List[VolunteerEventSchema]:
-    return db.query(VolunteerEvent).all()
+    return db.query(VolunteerEvent).order_by(VolunteerEvent.start_datetime.asc()).all()
 
 
 @app.get("/api/volunteer_events/{external_id}", response_model=VolunteerEventSchema)

@@ -46,7 +46,8 @@ class NestedInitiative(Initiative, Base):
 
     @hybrid_property
     def events(self):
-        return self.events_rel.filter(VolunteerEvent.external_id.in_(self.event_ids)).all()
+        return self.events_rel.filter(VolunteerEvent.external_id.in_(self.event_ids))\
+                              .order_by(VolunteerEvent.start_datetime.asc()).all()
 
 # Initiative & Roles
 initiaitves_roles_selection = select([func.unnest(Initiative.role_ids).label("role_external_id"), Initiative.external_id.label("initiative_external_id")]).alias()
