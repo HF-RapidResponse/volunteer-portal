@@ -42,17 +42,3 @@ def test_volunteer_event_create_types(db):
     assert event.event_name == new_event.event_name
 
 
-
-# def test_volunteer_role_attributes():
-
-
-
-# def test_volunteer_role_list_result():
-#
-#     query_results = db.query(VolunteerRole).all()
-#     assert type(query_results) is ResultProxy
-#
-#     row = query_results.fetchone()
-#     assert row
-#     assert type(row['AirtableData.events_event_id']) is str
-#     assert type(row['AirtableData.events_start']) is datetime

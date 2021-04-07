@@ -13,7 +13,7 @@ from schemas import NestedInitiativeSchema, InitiativeSchema, VolunteerEventSche
 from models import NestedInitiative, Initiative, VolunteerRole, VolunteerEvent
 
 from tests.fake_data_utils import generate_fake_initiative, generate_fake_volunteer_role
-from tests.fake_data_utils import generate_fake_volunteer_event
+from tests.fake_data_utils import generate_fake_volunteer_event, generate_fake_volunteer_events_list
 from tests.fake_data_utils import generate_fake_initiatives_list
 
 from sqlalchemy import exc
@@ -156,7 +156,9 @@ def test_nullified_initiatives_serving(db):
     initiative = generate_fake_initiative(db)
     set_nullable_columns_null(initiative, db)
 
-    client.get(f'api/volunteer_initiatives/{initiative.external_id}')
+    resp = client.get(f'api/initiatives/{initiative.external_id}')
+    assert resp.status_code < 400
+
     cleanup_initiative(db, initiative)
 
 def test_sync_events_test_route(db):
@@ -174,3 +176,37 @@ def test_sync_events_test_route(db):
         db.delete(e)
     db.commit()
 
+
+def check_events_ordered(event_list):
+    last = None
+    for event in event_list:
+        assert last is None or event['start_datetime'] >= last
+        last = event['start_datetime']
+
+def test_volunteer_event_create_types(db):
+    events = generate_fake_volunteer_events_list(db, 10)
+    db.commit()
+
+    resp = client.get(f'api/volunteer_events')
+    events_response = resp.json()
+    assert len(events_response) == 10
+
+    check_events_ordered(events_response)
+
+    db.query(VolunteerEvent).delete()
+    db.commit()
+
+def test_events_ordered_in_initiatives(db):
+    db_initiatives = generate_fake_initiatives_list(db, count=4, events_count = 10)
+    db.commit()
+
+    initiatives = client.get(f'api/initiatives').json()
+
+    for initiative in initiatives:
+        uuid = initiative['external_id']
+        full_initiative = client.get(f'api/initiatives/{uuid}').json()
+        events = full_initiative['events']
+        check_events_ordered(events)
+
+    for i in db_initiatives:
+        cleanup_initiative(db, i)
