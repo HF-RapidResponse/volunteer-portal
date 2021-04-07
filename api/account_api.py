@@ -14,7 +14,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi.encoders import jsonable_encoder
-from auth import create_access_and_refresh_tokens
+# from auth import create_access_and_refresh_tokens
 from initiatives_api import GetAllInitiativeNames
 from settings import Config, Session, get_db
 from security import encrypt_password
@@ -48,6 +48,17 @@ router = APIRouter()
 # @router.get("/notifications/", status_code=200)
 # def get_all_notifications(db: Session = Depends(get_db)):
 #     return db.query(Notification).all()
+
+
+def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
+    try:
+        access_token = Authorize.create_access_token(subject=user_id)
+        Authorize.set_access_cookies(access_token)
+        refresh_token = Authorize.create_refresh_token(subject=user_id)
+        Authorize.set_refresh_cookies(refresh_token)
+    except:
+        raise HTTPException(
+            status_code=500, detail=f"Error while trying to create and refresh tokens")
 
 
 def check_valid_password(password: str):
@@ -84,6 +95,7 @@ def create_account(account: AccountCreateRequestSchema, Authorize: AuthJWT = Dep
     create_access_and_refresh_tokens(str(account.uuid), Authorize)
     return account
 
+
 def create_account_settings(uuid, db):
     existing_settings = db.query(AccountSettings).filter_by(
         uuid=uuid).first()
@@ -93,9 +105,10 @@ def create_account_settings(uuid, db):
     matching_acct = db.query(Account).filter_by(uuid=uuid).first()
     if matching_acct is None:
         raise HTTPException(
-            status_code=400, detail=f"Account with UUID {settings.uuid} not exist. Cannot create settings")
+            status_code=400, detail=f"Account with UUID {uuid} does not exist. Cannot create settings")
     initiative_map = {i[0]: False for i in GetAllInitiativeNames(db)}
-    new_settings = AccountSettings(**{"uuid": uuid, 'initiative_map': initiative_map})
+    new_settings = AccountSettings(
+        **{"uuid": uuid, 'initiative_map': initiative_map})
     db.add(new_settings)
     db.commit()
     return new_settings
@@ -165,7 +178,6 @@ def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(g
                             detail=f"Account with UUID {uuid} not found")
     db.delete(acct_to_delete)
     db.commit()
-
     delete_settings(uuid, db)
 
 

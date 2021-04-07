@@ -37,6 +37,7 @@ const userSlice = createSlice({
       state.user = null;
       state.firstAcctPage = null;
       state.tokenRefreshTime = null;
+      state.initLoading = false;
     },
     setFirstAcctPage: (state, action) => {
       const { payload } = action;
@@ -96,21 +97,28 @@ const getSettings = async (id) => {
 
   try {
     const getRes = await axios.get(`/api/account_settings/${id}`);
-    return getRes.data;
+    const settings = getRes.data;
+    if (settings) {
+      settings.initiative_map = await updateInitiativeMap(
+        settings.initiative_map
+      );
+    }
+    return settings;
   } catch (error) {
     console.error(error);
   }
 };
 
-const updateInitiativeMap = async (initiative_map = {}) => {
+const updateInitiativeMap = async (initiative_map) => {
   const initiativeResponse = await axios.get(`/api/initiatives/`);
   const updatedMap = {};
   const initiatives = initiativeResponse.data;
 
   if (initiatives && initiatives.length) {
     initiatives.forEach((item) => {
-      updatedMap[item.initiative_name] =
-        initiative_map[item.initiative_name] || false;
+      updatedMap[item.initiative_name] = initiative_map
+        ? initiative_map[item.initiative_name]
+        : false;
     });
   }
   return updatedMap;
@@ -276,10 +284,10 @@ export const deleteUser = (uuid, cookies) => async (dispatch) => {
     await refreshAccessToken();
     await axios.delete(`/api/accounts/${uuid}`);
     cookies.remove('user_id', { path: '/', sameSite: 'None', secure: true });
-    dispatch(completeLogout());
   } catch (error) {
     console.error(error);
-    handlePossibleExpiredToken(error);
+  } finally {
+    dispatch(completeLogout());
   }
 };
 
