@@ -109,19 +109,25 @@ const getSettings = async (id) => {
   }
 };
 
-const updateInitiativeMap = async (initiative_map) => {
-  const initiativeResponse = await axios.get(`/api/initiatives/`);
+export const updateInitiativeMap = async (payload) => {
+  const initiative_map = payload ?? {};
   const updatedMap = {};
-  const initiatives = initiativeResponse.data;
 
-  if (initiatives && initiatives.length) {
-    initiatives.forEach((item) => {
-      updatedMap[item.initiative_name] = initiative_map
-        ? initiative_map[item.initiative_name]
-        : false;
-    });
+  try {
+    const initiativeResponse = await axios.get(`/api/initiatives/`);
+    const initiatives = initiativeResponse.data;
+
+    if (initiatives) {
+      initiatives.forEach((item) => {
+        updatedMap[item.initiative_name] =
+          initiative_map[item.initiative_name] ?? false;
+      });
+    }
+    return updatedMap;
+  } catch {
+    console.error('error while attempting to update initiative map');
+    return initiative_map;
   }
-  return updatedMap;
 };
 
 export const checkIfCookieIsValid = (cookies) => async (dispatch) => {
