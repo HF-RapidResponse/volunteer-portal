@@ -86,7 +86,8 @@ async def authorize_google(request: Request, Authorize: AuthJWT = Depends(), db:
             first_name=user.given_name,
             last_name=user.family_name,
             oauth='google',
-            profile_pic=user.picture
+            profile_pic=user.picture,
+            is_verified=True,
         )
         db.add(new_account)
         db.commit()
@@ -126,6 +127,10 @@ def authorize_basic(account: AccountBasicLoginSchema, Authorize: AuthJWT = Depen
     if verified_pw is False:
         raise HTTPException(
             status_code=403, detail=f"Password is incorrect")
+    if existing_acct.is_verified is False:
+        raise HTTPException(
+            status_code=403, detail=f"Account has not been verified. Please check your e-mail."
+        )
     create_access_and_refresh_tokens(str(existing_acct.uuid), Authorize)
     return existing_acct
 
@@ -176,6 +181,7 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db:
                 0],
             state=None if user['location'] is None else user['location'].split(', ')[
                 1],
+            is_verified=True
         )
         db.add(new_account)
         db.commit()

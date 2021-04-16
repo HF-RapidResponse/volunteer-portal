@@ -7,7 +7,7 @@ from schemas import (AccountCreateRequestSchema, AccountResponseSchema,
 from models.notification import Notification, NotificationChannel, NotificationStatus
 import notifications_manager as nm
 from schemas import (AccountCreateRequestSchema, AccountResponseSchema, AccountBaseSchema,
-                     AccountNewPasswordSchema, AccountSettingsSchema, AcctUsernameOrEmailSchema)
+                     AccountNewPasswordSchema, AccountSettingsSchema, AccountNotificationSchema)
 from sqlalchemy import or_
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
@@ -207,15 +207,15 @@ def update_settings(uuid, settings: AccountSettingsSchema, Authorize: AuthJWT = 
 
 
 @router.post("/notifications/", status_code=204)
-def create_notification(username_or_email: AcctUsernameOrEmailSchema, db: Session = Depends(get_db)):
+def create_notification(notification_payload: AccountNotificationSchema, db: Session = Depends(get_db)):
     existing_acct = None
-    if username_or_email.email is not None:
+    if notification_payload.email is not None:
         existing_acct = db.query(Account).filter_by(
-            email=username_or_email.email).first() or db.query(Account).filter_by(
-                email=sanitize_email(username_or_email.email)).first()
-    elif username_or_email.username is not None:
+            email=notification_payload.email).first() or db.query(Account).filter_by(
+                email=sanitize_email(notification_payload.email)).first()
+    elif notification_payload.username is not None:
         existing_acct = db.query(Account).filter_by(
-            username=username_or_email.username.strip()).first()
+            username=notification_payload.username.strip()).first()
 
     email_message = None
     if existing_acct is not None:

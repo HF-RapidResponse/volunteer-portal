@@ -131,7 +131,8 @@ CREATE TABLE public.accounts (
     city character varying(32),
     state character varying(32),
     zip_code character varying(32),
-    roles character varying[] NOT NULL
+    roles character varying[] NOT NULL,
+    is_verified boolean NOT NULL
 );
 
 
