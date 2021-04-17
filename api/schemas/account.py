@@ -45,3 +45,4 @@ class AccountNewPasswordSchema(BaseModel):
 class AccountNotificationSchema(BaseModel):
     username: Optional[str]
     email: Optional[str]
+    notification_type: str

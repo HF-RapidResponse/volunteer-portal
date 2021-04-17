@@ -19,7 +19,9 @@ export const attemptSendResetEmail = async (payload) => {
     errors.usernameOrEmail = 'Invalid username or e-mail';
     throw errors;
   } else {
-    const obj = {};
+    const obj = {
+      notification_type: 'password_reset',
+    };
     if (!hasEmailErr) {
       obj.email = username_or_email;
     } else if (!hasUsernameErr) {

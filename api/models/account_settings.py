@@ -27,6 +27,7 @@ class AccountSettings(Base):
     password_reset_hash = Column('password_reset_hash', Text, nullable=True)
     password_reset_time = Column(
         'password_reset_time', DateTime, nullable=True)
+    verify_account_hash = Column('password_reset_hash', Text, nullable=True)
 
     def __repr__(self):
         return "<AccountSettings(uuid='%s', show_name='%s', show_email='%s', show_location='%s', organizers_can_see='%s', volunteers_can_see='%s', initiative_map='%s', password_reset_hash='%s', password_reset_time='%s')>" % (

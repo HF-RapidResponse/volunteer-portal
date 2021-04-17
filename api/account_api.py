@@ -216,37 +216,61 @@ def create_notification(notification_payload: AccountNotificationSchema, db: Ses
     elif notification_payload.username is not None:
         existing_acct = db.query(Account).filter_by(
             username=notification_payload.username.strip()).first()
+    create_email(notification_payload, existing_acct, db)
 
+
+def create_email(notification_payload: AccountNotificationSchema, existing_acct: Account, db: Session):
     email_message = None
     if existing_acct is not None:
-        email_message = f'<p>Dear {existing_acct.first_name},</p>'
-        if existing_acct.oauth is None:
+        if notification_payload.notification_type == 'password_reset':
+            email_message = f'<p>Dear {existing_acct.first_name},</p>'
+            if existing_acct.oauth is None:
+                base_url = Config['routes']['client']
+                acct_settings = db.query(AccountSettings).filter_by(
+                    uuid=existing_acct.uuid).first()
+                curr_time = datetime.now()
+                password_reset_hash = generate_str_for_hash(
+                    existing_acct.username, curr_time)
+                acct_settings.password_reset_hash = password_reset_hash
+                acct_settings.password_reset_time = curr_time
+                db.merge(acct_settings)
+                db.commit()
+
+                url_to_click = f'{base_url}/reset_password?hash={password_reset_hash}'
+                email_message += f'<p>We have received a request to reset your password. To reset your password, \
+                        please click the following link: <a href="{url_to_click}">change my password</a></p> \
+                        <p>This link will expire in 15 minutes.</p>'
+            else:
+                oauth_type = existing_acct.oauth.capitalize()
+                email_message += f'<p>We have received a request to reset your password. \
+                    Your account was created with {oauth_type} OAuth; therefore, \
+                    you cannot set or reset a password. \
+                    Please try signing in with {oauth_type}.</p>'
+            email_message += '<b>If this action was not performed by you, \
+                    someone may be targeting your account. You may want to consider changing your e-mail password. </b>\
+                    <p>Regards, <br/>HF Volunteer Portal Team </p>'
+            nm.send_notification(recipient=existing_acct.email, message=email_message,
+                                 channel=NotificationChannel.EMAIL, scheduled_send_date=datetime.now(), subject='HF Volunteer Portal Password Reset')
+        elif notification_payload.notification_type == 'verify_registration':
             base_url = Config['routes']['client']
             acct_settings = db.query(AccountSettings).filter_by(
                 uuid=existing_acct.uuid).first()
             curr_time = datetime.now()
-            password_reset_hash = generate_str_for_hash(
+            verify_account_hash = generate_str_for_hash(
                 existing_acct.username, curr_time)
-            acct_settings.password_reset_hash = password_reset_hash
-            acct_settings.password_reset_time = curr_time
+            acct_settings.verify_account_hash = verify_account_hash
             db.merge(acct_settings)
             db.commit()
-
-            url_to_click = f'{base_url}/reset_password?hash={password_reset_hash}'
-            email_message += f'<p>We have received a request to reset your password. To reset your password, \
-                please click the following link: <a href="{url_to_click}">change my password</a></p> \
-                <p>This link will expire in 15 minutes.</p>'
-        else:
-            oauth_type = existing_acct.oauth.capitalize()
-            email_message += f'<p>We have received a request to reset your password. \
-                Your account was created with {oauth_type} OAuth; therefore, \
-                you cannot set or reset a password. \
-                Please try signing in with {oauth_type}.</p>'
-        email_message += '<b> If this action was not performed by you, \
-                someone may be targeting your account. You may want to consider changing your e-mail password. </b>\
-                <p>Regards, <br/>HF Volunteer Portal Team </p>'
-        nm.send_notification(recipient=existing_acct.email, message=email_message,
-                             channel=NotificationChannel.EMAIL, scheduled_send_date=datetime.now(), subject='HF Volunteer Portal Password Reset')
+            email_message = f'<p>Dear {existing_acct.first_name},</p>'
+            verify_url = f'{base_url}/verify_account?hash={verify_account_hash}'
+            cancel_url = f'{base_url}/cancel_registration?hash={verify_account_hash}'
+            email_message += f'<p>We have received a request to create an account. Accounts not created with OAuth require \
+                        e-mail verification. Please click the following link: <a href="{verify_url}">verify my account</a></p>'
+            email_message += f'<b>If this action was not performed by you or performed by accident, \
+                    you may click the following link to undo account creation: <a href="{cancel_url}">undo account registration</a></b>\
+                    <p>Regards, <br/>HF Volunteer Portal Team </p>'
+            nm.send_notification(recipient=existing_acct.email, message=email_message,
+                                 channel=NotificationChannel.EMAIL, scheduled_send_date=datetime.now(), subject='HF Volunteer Portal Account Registration')
 
 
 @router.get("/settings_from_hash", status_code=200)
