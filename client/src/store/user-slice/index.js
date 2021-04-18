@@ -76,17 +76,19 @@ export const attemptLogin = (payload) => async (dispatch) => {
       sanitizeData(payload);
       const accountRes = await axios.post(`/api/auth/basic`, payload);
       const accountData = accountRes.data;
-      const refreshTime = Date.now();
-      dispatch(setRefreshTime(refreshTime));
-      const settings = await getSettings(accountData.uuid);
-      const user = { ...accountData, ...settings };
-      dispatch(setUser(user));
-      return;
+      if (accountData) {
+        const refreshTime = Date.now();
+        dispatch(setRefreshTime(refreshTime));
+        const settings = await getSettings(accountData.uuid);
+        const user = { ...accountData, ...settings };
+        dispatch(setUser(user));
+        return;
+      }
     }
   } catch (error) {
     console.error(error);
+    errors.api = error.response.data.detail;
   }
-  errors.message = 'E-mail or password is invalid!';
   throw errors;
 };
 
@@ -231,12 +233,21 @@ export const attemptRegister = (payload) => async (dispatch) => {
     sanitizeData(payload);
     const objPayload = new AccountReqBody(payload);
     const accountRes = await axios.post(`/api/accounts/`, objPayload);
-    const refreshTime = Date.now();
-    dispatch(setRefreshTime(refreshTime));
-    const accountData = accountRes.data;
-    const settings = await getSettings(accountData.uuid);
-    const user = { ...accountData, ...settings };
-    dispatch(setUser(user));
+    const createdAcct = accountRes.data;
+    if (createdAcct) {
+      const obj = {
+        notification_type: 'verify_registration',
+        email: createdAcct.email,
+        username: createdAcct.username,
+      };
+      await axios.post(`/api/notifications/`, obj);
+    }
+    // const refreshTime = Date.now();
+    // dispatch(setRefreshTime(refreshTime));
+    // const accountData = accountRes.data;
+    // const settings = await getSettings(accountData.uuid);
+    // const user = { ...accountData, ...settings };
+    // dispatch(setUser(user));
     return;
   } catch (error) {
     handleApiErrors(error.response, errors);

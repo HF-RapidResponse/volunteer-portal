@@ -11,6 +11,7 @@ export class AccountReqBody {
     this.state = obj.state;
     this.zip_code = obj.zip_code;
     this.roles = obj.roles || [];
+    this.is_verified = obj.is_verified || false;
   }
 }
 

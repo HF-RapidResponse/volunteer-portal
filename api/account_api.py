@@ -261,9 +261,11 @@ def create_email(notification_payload: AccountNotificationSchema, existing_acct:
             acct_settings.verify_account_hash = verify_account_hash
             db.merge(acct_settings)
             db.commit()
-            email_message = f'<p>Dear {existing_acct.first_name},</p>'
+
             verify_url = f'{base_url}/verify_account?hash={verify_account_hash}'
             cancel_url = f'{base_url}/cancel_registration?hash={verify_account_hash}'
+
+            email_message = f'<p>Dear {existing_acct.first_name},</p>'
             email_message += f'<p>We have received a request to create an account. Accounts not created with OAuth require \
                         e-mail verification. Please click the following link: <a href="{verify_url}">verify my account</a></p>'
             email_message += f'<b>If this action was not performed by you or performed by accident, \
@@ -293,6 +295,25 @@ def get_settings_from_hash(pw_reset_hash: str, Authorize: AuthJWT = Depends(), d
     else:
         raise HTTPException(status_code=400,
                             detail=f"Invalid or expired password reset URL!")
+
+
+@router.get("/verify_account_from_hash", status_code=200)
+def complete_account_registration(verify_hash: str, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    existing_settings = db.query(AccountSettings).filter_by(
+        verify_account_hash=verify_hash).first()
+    if existing_settings is not None:
+        existing_settings.verify_account_hash = None
+        db.merge(existing_settings)
+        db.commit()
+        existing_account = db.query(Account).filter_by(
+            uuid=existing_settings.uuid).first()
+        if existing_account is not None:
+            existing_account.is_verified = True
+            db.merge(existing_account)
+            db.commit()
+    else:
+        raise HTTPException(status_code=400,
+                            detail=f"invalid hash or account does not exist")
 
 
 def generate_str_for_hash(username: str, curr_time: datetime):

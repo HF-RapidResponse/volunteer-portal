@@ -121,12 +121,12 @@ def authorize_basic(account: AccountBasicLoginSchema, Authorize: AuthJWT = Depen
     existing_acct = db.query(Account).filter_by(email=account.email).first()
     if existing_acct is None:
         raise HTTPException(
-            status_code=400, detail=f"An account with the email address {account.email} does not exist")
+            status_code=403, detail=f"E-mail or password is invalid!")
     verified_pw = check_encrypted_password(
         account.password, existing_acct.password)
     if verified_pw is False:
         raise HTTPException(
-            status_code=403, detail=f"Password is incorrect")
+            status_code=403, detail=f"E-mail or password is invalid!")
     if existing_acct.is_verified is False:
         raise HTTPException(
             status_code=403, detail=f"Account has not been verified. Please check your e-mail."
