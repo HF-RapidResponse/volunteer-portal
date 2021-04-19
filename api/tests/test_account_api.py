@@ -223,7 +223,8 @@ def test_account_settings_update(db):
 @patch('notifications_manager.email_client.send')
 def test_account_password_reset_notification(mock_send, db):
     # no notification for missing user
-    resp = client.post(f'api/notifications/', {"username": "no_user_exists"})
+    resp = client.post(f'api/notifications/',
+                       {"username": "no_user_exists", "notification_type": "password_reset"})
     mock_send.assert_not_called
     assert mock_send.call_args is None
 
@@ -232,14 +233,14 @@ def test_account_password_reset_notification(mock_send, db):
 
     # notification for valid username
     resp = client.post(f'api/notifications/',
-                       json={"username": "DakotaMcclain"})
+                       json={"username": "DakotaMcclain", "notification_type": "password_reset"})
     mock_send.assert_called
     assert mock_send.call_args is not None
     # can't verify Arg contents :(
 
     # notification for email username
     resp = client.post(f'api/notifications/',
-                       json={"email": "rebecca03@thomasrivera.com"})
+                       json={"email": "rebecca03@thomasrivera.com", "notification_type": "password_reset"})
     mock_send.assert_called
     assert mock_send.call_args is not None
 
@@ -256,7 +257,7 @@ def test_account_password_reset_hash_stored(db):
 
     # notification for valid username
     resp = client.post(f'api/notifications/',
-                       json={"username": "DakotaMcclain"})
+                       json={"username": "DakotaMcclain", "notification_type": "password_reset"})
 
     resp = client.get(f'api/account_settings/{uuid}')
     settings = resp.json()
@@ -277,7 +278,7 @@ def test_reset_account_password_with_hash(db):
 
     # notification for valid username
     resp = client.post(f'api/notifications/',
-                       json={"username": "DakotaMcclain"})
+                       json={"username": "DakotaMcclain", "notification_type": "password_reset"})
 
     settings = client.get(f'api/account_settings/{uuid}').json()
     print(settings)
