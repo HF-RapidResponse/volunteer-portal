@@ -10,7 +10,7 @@ import {
   validateUsername,
   sanitizeData,
   formHasNoErrors,
-  handleApiErrors,
+  handleRegisterErrors,
   handlePossibleExpiredToken,
 } from './helpers';
 
@@ -250,7 +250,7 @@ export const attemptRegister = (payload) => async (dispatch) => {
     // dispatch(setUser(user));
     return;
   } catch (error) {
-    handleApiErrors(error.response, errors);
+    handleRegisterErrors(error.response, errors);
   }
   throw errors;
 };

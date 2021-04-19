@@ -103,7 +103,7 @@ export const formHasNoErrors = (errors) => {
   return true;
 };
 
-export const handleApiErrors = (response, errors) => {
+export const handleRegisterErrors = (response, errors) => {
   if (response) {
     if (
       response.data &&
