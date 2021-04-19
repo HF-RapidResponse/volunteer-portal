@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 
 import LoadingSpinner from './LoadingSpinner';
-import { getAccountAndSettingsFromHash } from 'store/user-slice/verify-account';
+import { cancelRegistrationFromhash } from 'store/user-slice/verify-account';
 import { startLogout } from 'store/user-slice';
 
-function VerifyAccount(props) {
+function CancelRegistration(props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { user, cookies, startLogout } = props;
@@ -17,7 +16,7 @@ function VerifyAccount(props) {
     const params = new URLSearchParams(window.location.search);
     const hash = params.get('hash');
 
-    getAccountAndSettingsFromHash(hash)
+    cancelRegistrationFromhash(hash)
       .catch((error) => setError(error))
       .finally(() => setLoading(false));
   }, []);
@@ -32,17 +31,17 @@ function VerifyAccount(props) {
     <LoadingSpinner />
   ) : error ? (
     <div className="mt-5 mb-5 text-center">
-      <h2 className="mt-3 mb-3">
-        Oops, it looks like this account verification link is invalid!
+      <h2 className="mt-4 mb-4">
+        Oops, it looks like this registration cancellation link is invalid!
       </h2>
     </div>
   ) : (
     <>
       <div className="mt-5 mb-5 text-center">
-        <h2 className="mt-3 mb-3">Account Registered</h2>
+        <h2 className="mt-4 mb-4">Cancel Registration</h2>
         <p className="mt-3 mb-3">
-          Your account has been verified. You can now{' '}
-          <Link to="/login">log in here.</Link>
+          Your registration has been cancelled. We apologize for any
+          inconvenience.
         </p>
       </div>
     </>
@@ -60,5 +59,5 @@ const mapDispatchToProps = {
 };
 
 export default withCookies(
-  connect(mapStateToProps, mapDispatchToProps)(VerifyAccount)
+  connect(mapStateToProps, mapDispatchToProps)(CancelRegistration)
 );

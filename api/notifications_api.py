@@ -75,11 +75,14 @@ def create_email(notification_payload: AccountNotificationSchema, existing_acct:
             verify_account_hash = generate_str_for_hash(
                 existing_acct.username, curr_time)
             acct_settings.verify_account_hash = verify_account_hash
+            cancel_registration_hash = generate_str_for_hash(
+                existing_acct.username, curr_time)
+            acct_settings.cancel_registration_hash = cancel_registration_hash
             db.merge(acct_settings)
             db.commit()
 
             verify_url = f'{base_url}/verify_account?hash={verify_account_hash}'
-            cancel_url = f'{base_url}/cancel_registration?hash={verify_account_hash}'
+            cancel_url = f'{base_url}/cancel_registration?hash={cancel_registration_hash}'
 
             email_message = f'<p>Dear {existing_acct.first_name},</p>'
             email_message += f'<p>We have received a request to create an account. Accounts not created with OAuth require \
@@ -130,6 +133,20 @@ def complete_account_registration(verify_hash: str, Authorize: AuthJWT = Depends
     else:
         raise HTTPException(status_code=400,
                             detail=f"invalid hash or account does not exist")
+
+
+@router.delete("/cancel_registration", status_code=204)
+def delete_account_from_hash(cancel_hash: str, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+    settings_to_delete = db.query(AccountSettings).filter_by(
+        cancel_registration_hash=cancel_hash).first()
+    if settings_to_delete is None:
+        raise HTTPException(status_code=400,
+                            detail=f"Account settings with hash {cancel_hash} not found")
+    acct_uuid = settings_to_delete.uuid
+    acct_to_delete = db.query(Account).filter_by(uuid=acct_uuid).first()
+    db.delete(settings_to_delete)
+    db.delete(acct_to_delete)
+    db.commit()
 
 
 def generate_str_for_hash(username: str, curr_time: datetime):

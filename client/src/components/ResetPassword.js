@@ -45,7 +45,7 @@ function ResetPassword(props) {
     <LoadingSpinner />
   ) : submitted ? (
     <div className="mt-5 mb-5 text-center">
-      <h2 className="mt-3 mb-3">Password reset successfully!</h2>
+      <h2 className="mt-4 mb-4">Password reset successfully!</h2>
       <p className="mt-3 mb-3">
         You can now go back to the <Link to="/login">login page</Link> and log
         in with your new password.

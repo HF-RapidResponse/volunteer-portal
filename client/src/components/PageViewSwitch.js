@@ -18,6 +18,7 @@ import Dashboard from './Dashboard';
 import ResetPassword from './ResetPassword';
 import CheckRegisterEmail from './CheckRegisterEmail';
 import VerifyAccount from './VerifyAccount';
+import CancelRegistration from './CancelRegistration';
 
 // initialize GA
 // REACT_APP_GA_TRACKING_ID can be found in .env
@@ -50,6 +51,11 @@ function PageViewSwitch() {
           component={CheckRegisterEmail}
         />
         <Route path="/verify_account" exact component={VerifyAccount} />
+        <Route
+          path="/cancel_registration"
+          exact
+          component={CancelRegistration}
+        />
         <Route path="/initiatives" exact component={Initiatives} />
         <Route
           path="/initiatives/:ext_id"

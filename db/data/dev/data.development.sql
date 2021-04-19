@@ -110,7 +110,8 @@ CREATE TABLE public.account_settings (
     initiative_map json NOT NULL,
     password_reset_hash text,
     password_reset_time timestamp without time zone,
-    verify_account_hash text
+    verify_account_hash text,
+    cancel_registration_hash text
 );
 
 
