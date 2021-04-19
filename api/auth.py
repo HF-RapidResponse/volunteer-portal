@@ -13,6 +13,7 @@ from models import Initiative, VolunteerEvent, VolunteerRole, Account
 from schemas import AccountBasicLoginSchema, AccountPasswordSchema
 from security import encrypt_password, check_encrypted_password
 from sqlalchemy.orm import lazyload
+from account_api import create_access_and_refresh_tokens, create_account_settings
 
 router = APIRouter()
 app = FastAPI()
@@ -58,6 +59,7 @@ if OAuthProvider.GITHUB.value in Config['auth']:
         client_kwargs={'scope': 'user:email'},
     )
 
+
 @router.get("/login")
 async def login(request: Request, provider: OAuthProvider):
     if provider is OAuthProvider.GOOGLE:
@@ -89,8 +91,8 @@ async def authorize_google(request: Request, Authorize: AuthJWT = Depends(), db:
         db.add(new_account)
         db.commit()
         db.refresh(new_account)
+        create_account_settings(new_account.uuid, db)
         account = new_account
-
     return create_token_for_user(Authorize, str(account.uuid))
 
 
@@ -178,6 +180,7 @@ async def authorize_github(request: Request, Authorize: AuthJWT = Depends(), db:
         db.add(new_account)
         db.commit()
         db.refresh(new_account)
+        create_account_settings(new_account.uuid, db)
         account = new_account
     return create_token_for_user(Authorize, str(account.uuid))
 
@@ -198,13 +201,3 @@ def create_token_for_user(Authorize: AuthJWT, user_id: str) -> Dict:
     Authorize.set_access_cookies(access_token, response)
     Authorize.set_refresh_cookies(refresh_token, response)
     return response
-
-def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
-    try:
-        access_token = Authorize.create_access_token(subject=user_id)
-        Authorize.set_access_cookies(access_token)
-        refresh_token = Authorize.create_refresh_token(subject=user_id)
-        Authorize.set_refresh_cookies(refresh_token)
-    except:
-        raise HTTPException(
-            status_code=500, detail=f"Error while trying to create and refresh tokens")

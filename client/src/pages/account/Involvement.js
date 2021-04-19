@@ -59,41 +59,43 @@ function Involvement(props) {
       );
     }
 
-    Object.entries(user.initiative_map).forEach(
-      ([initiative_name, isSubscribed]) => {
-        initiativesToRender.push(
-          <Row className="mt-2 mb-2" key={'initiative-' + initiative_name}>
-            <Col xs={12} md={8}>
-              <Form.Group>
-                <Form.Control type="name" value={initiative_name} readOnly />
-              </Form.Group>
-            </Col>
-            <Col xs={12} md={4}>
-              <Row>
-                <Col xs={8} sm={7} md={12} className="d-md-none">
-                  <label className="text-muted ml-lg-5">Subscribed</label>
-                </Col>
-                <Col xs={4} sm={5} md={12}>
-                  <Form.Switch
-                    id={'involvement-initiative-' + initiative_name}
-                    className="custom-switch-md ml-lg-5 text-md-center"
-                    checked={isSubscribed}
-                    onChange={() =>
-                      toggleInitiativeSubscription({
-                        user,
-                        initiative_name,
-                        isSubscribed,
-                        tokenRefreshTime,
-                      })
-                    }
-                  />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        );
-      }
-    );
+    if (user.initiative_map) {
+      Object.entries(user.initiative_map).forEach(
+        ([initiative_name, isSubscribed]) => {
+          initiativesToRender.push(
+            <Row className="mt-2 mb-2" key={'initiative-' + initiative_name}>
+              <Col xs={12} md={8}>
+                <Form.Group>
+                  <Form.Control type="name" value={initiative_name} readOnly />
+                </Form.Group>
+              </Col>
+              <Col xs={12} md={4}>
+                <Row>
+                  <Col xs={8} sm={7} md={12} className="d-md-none">
+                    <label className="text-muted ml-lg-5">Subscribed</label>
+                  </Col>
+                  <Col xs={4} sm={5} md={12}>
+                    <Form.Switch
+                      id={'involvement-initiative-' + initiative_name}
+                      className="custom-switch-md ml-lg-5 text-md-center"
+                      checked={isSubscribed}
+                      onChange={() =>
+                        toggleInitiativeSubscription({
+                          user,
+                          initiative_name,
+                          isSubscribed,
+                          tokenRefreshTime,
+                        })
+                      }
+                    />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          );
+        }
+      );
+    }
   }
   return user ? (
     <>
