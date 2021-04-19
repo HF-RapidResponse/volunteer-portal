@@ -242,17 +242,10 @@ export const attemptRegister = (payload) => async (dispatch) => {
       };
       await axios.post(`/api/notifications/`, obj);
     }
-    // const refreshTime = Date.now();
-    // dispatch(setRefreshTime(refreshTime));
-    // const accountData = accountRes.data;
-    // const settings = await getSettings(accountData.uuid);
-    // const user = { ...accountData, ...settings };
-    // dispatch(setUser(user));
-    return;
   } catch (error) {
     handleRegisterErrors(error.response, errors);
+    throw errors;
   }
-  throw errors;
 };
 
 export const attemptChangePassword = (payload) => async (dispatch) => {
@@ -292,7 +285,6 @@ export const attemptChangePassword = (payload) => async (dispatch) => {
 };
 
 export const deleteRole = (payload) => async (dispatch) => {
-  //const response = await axios.delete(`/users/${userSlice.user.ID}/roles/${payload.roleID}`);
   dispatch(completeDelete(payload));
 };
 
