@@ -13,7 +13,7 @@ from datetime import datetime
 import socket
 import random
 import decimal
-from helpers import sanitize_email
+from helpers import sanitize_email, row2dict
 from account_api import create_access_and_refresh_tokens
 router = APIRouter()
 
@@ -32,10 +32,10 @@ def create_notification(notification_payload: AccountNotificationSchema, db: Ses
     elif notification_payload.username is not None:
         existing_acct = db.query(Account).filter_by(
             username=notification_payload.username.strip()).first()
-    create_email(notification_payload, existing_acct, db)
+    create_and_send_email(notification_payload, existing_acct, db)
 
 
-def create_email(notification_payload: AccountNotificationSchema, existing_acct: Account, db: Session):
+def create_and_send_email(notification_payload: AccountNotificationSchema, existing_acct: Account, db: Session):
     email_message = None
     if existing_acct is not None:
         if notification_payload.notification_type == 'password_reset':
@@ -118,18 +118,24 @@ def get_settings_from_hash(pw_reset_hash: str, Authorize: AuthJWT = Depends(), d
 
 @router.get("/verify_account_from_hash", status_code=200)
 def complete_account_registration(verify_hash: str, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    existing_settings = db.query(AccountSettings).filter_by(
+    settings = db.query(AccountSettings).filter_by(
         verify_account_hash=verify_hash).first()
-    if existing_settings is not None:
-        existing_settings.verify_account_hash = None
-        db.merge(existing_settings)
+    if settings is not None:
+        acct_uuid = settings.uuid
+        settings.verify_account_hash = None
+        db.merge(settings)
         db.commit()
-        existing_account = db.query(Account).filter_by(
-            uuid=existing_settings.uuid).first()
-        if existing_account is not None:
-            existing_account.is_verified = True
-            db.merge(existing_account)
+        account = db.query(Account).filter_by(
+            uuid=acct_uuid).first()
+        if account is not None:
+            account.is_verified = True
+            db.merge(account)
             db.commit()
+            create_access_and_refresh_tokens(
+                str(acct_uuid), Authorize)
+            user = row2dict(account)
+            user.update(row2dict(settings))
+            return user
     else:
         raise HTTPException(status_code=400,
                             detail=f"invalid hash or account does not exist")

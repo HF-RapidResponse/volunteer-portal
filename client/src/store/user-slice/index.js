@@ -197,7 +197,6 @@ export const startLogout = (cookies) => async (dispatch) => {
       sameSite: 'none',
       secure: true,
     });
-    dispatch(setRefreshTime(null));
     dispatch(completeLogout());
   } catch (error) {
     console.error(error);
@@ -387,4 +386,33 @@ export const attemptUpdateAccount = (payload) => async (dispatch) => {
   throw errors;
 };
 
+export const getAccountAndSettingsFromHash = (hash, cookies) => async (
+  dispatch
+) => {
+  const errors = {};
+  if (!hash) {
+    errors.message = 'required hash is missing';
+    throw errors;
+  }
+
+  try {
+    cookies.remove('user_id', {
+      path: '/',
+      sameSite: 'none',
+      secure: true,
+    });
+    dispatch(completeLogout());
+    const userRes = await axios.get(
+      `/api/verify_account_from_hash?verify_hash=${hash}`
+    );
+    const refreshTime = Date.now();
+    dispatch(setRefreshTime(refreshTime));
+    dispatch(setUser(userRes.data));
+    return;
+  } catch (error) {
+    console.error(error);
+    errors.api = 'failed to verify account from hash';
+  }
+  throw errors;
+};
 export default userSlice.reducer;
