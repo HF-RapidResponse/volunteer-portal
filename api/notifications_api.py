@@ -32,6 +32,9 @@ def create_notification(notification_payload: AccountNotificationSchema, db: Ses
     elif notification_payload.username is not None:
         existing_acct = db.query(Account).filter_by(
             username=notification_payload.username.strip()).first()
+    else:
+        raise HTTPException(status_code=400,
+                            detail=f"Invalid username or e-mail!")
     create_and_send_email(notification_payload, existing_acct, db)
 
 
