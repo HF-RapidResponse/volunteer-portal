@@ -350,14 +350,52 @@ def test_verify_account_with_hash(db):
     verify_hash = settings['verify_account_hash']
     assert verify_hash is not None
 
-    resp = client.get(f'api/verify_account_from_hash?verify_hash={verify_hash}')
+    resp = client.get(
+        f'api/verify_account_from_hash?verify_hash={verify_hash}')
     resp_json = resp.json()
 
     assert resp.status_code == 200
     assert resp_json['verify_account_hash'] is None
-    assert resp_json['cancel_registration_hash'] is not None
+    assert resp_json['cancel_registration_hash'] is None
     assert resp_json['is_verified'] is True
 
     # Cleanup account
     resp = client.delete(f'api/accounts/{uuid}')
     assert resp.status_code < 400
+
+
+def test_cancel_registration_with_hash(db):
+    new_account = {'email': 'rebecca03@thomasrivera.com',
+                   'username': 'DakotaMcclain',
+                   'first_name': 'Jeff',
+                   'last_name': 'Long',
+                   'password': '^7^Cg&kt*X',
+                   'oauth': 'W^9Oa(Qy+L',
+                   'profile_pic': 'http://www.davis-burke.com/',
+                   'city': 'Lake Robertburgh',
+                   'state': 'Virginia',
+                   'zip_code': '20101',
+                   'roles': ['Sales professional,IT',
+                             'Commissioning editor'],
+                   'is_verified': False}
+    account = new_account.copy()
+    account['oauth'] = None
+    response = client.post(f'api/accounts/', json=account).json()
+    uuid = response['uuid']
+
+    # notification for verifying registration
+    resp = client.post(f'api/notifications/',
+                       json={"username": "DakotaMcclain", "email": "rebecca03@thomasrivera.com", "notification_type": "verify_registration"})
+    resp = client.get(f'api/account_settings/{uuid}')
+
+    settings = resp.json()
+    cancel_hash = settings['cancel_registration_hash']
+
+    resp = client.delete(
+        f'api/cancel_registration_from_hash?cancel_hash={cancel_hash}')
+    assert resp.status_code == 204
+
+    resp = client.get(f'api/accounts/{uuid}')
+    assert resp.status_code == 200
+    account = resp.json()
+    assert account is None

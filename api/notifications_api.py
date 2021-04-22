@@ -126,6 +126,7 @@ def complete_account_registration(verify_hash: str, Authorize: AuthJWT = Depends
     if settings is not None:
         acct_uuid = settings.uuid
         settings.verify_account_hash = None
+        settings.cancel_registration_hash = None
         db.merge(settings)
         db.commit()
         account = db.query(Account).filter_by(
@@ -144,8 +145,8 @@ def complete_account_registration(verify_hash: str, Authorize: AuthJWT = Depends
                             detail=f"invalid hash or account does not exist")
 
 
-@router.delete("/cancel_registration", status_code=204)
-def delete_account_from_hash(cancel_hash: str, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+@router.delete("/cancel_registration_from_hash", status_code=204)
+def cancel_account_registration(cancel_hash: str, db: Session = Depends(get_db)):
     settings_to_delete = db.query(AccountSettings).filter_by(
         cancel_registration_hash=cancel_hash).first()
     if settings_to_delete is None:

@@ -26,5 +26,7 @@ export class SettingsReqBody {
     this.initiative_map = obj.initiative_map || {};
     this.password_reset_hash = obj.password_reset_hash ?? null;
     this.password_reset_time = obj.password_reset_time ?? null;
+    this.verify_account_hash = obj.verify_account_hash ?? null;
+    this.cancel_registration_hash = obj.cancel_registration_hash ?? null;
   }
 }

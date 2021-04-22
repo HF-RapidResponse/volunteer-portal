@@ -8,7 +8,9 @@ export const cancelRegistrationFromhash = async (hash) => {
   }
 
   try {
-    await axios.delete(`/api/cancel_registration?cancel_hash=${hash}`);
+    await axios.delete(
+      `/api/cancel_registration_from_hash?cancel_hash=${hash}`
+    );
   } catch (error) {
     console.error(error);
     errors.api = 'failed to cancel registration';
