@@ -51,7 +51,7 @@ def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
 
 def check_valid_password(password: str):
     match = re.search(
-        "^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*\d)(?=.*[`!@#$%^&*()_+\-=[\]{};':\"\\|,.<>/?~]).{6,20}$", password)
+        r"^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*\d)(?=.*[`!@#$%^&*()_+\-=[\]{};':\"\\|,.<>/?~]).{6,20}$", password)
     if match is None:
         raise HTTPException(status_code=400,
                             detail=f"Please enter a password between 6 and 20 characters long with at least 1 letter, 1 number, and 1 special character.")
