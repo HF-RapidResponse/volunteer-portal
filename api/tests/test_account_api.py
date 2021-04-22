@@ -334,7 +334,7 @@ def test_verify_account_with_hash(db):
     response = client.post(f'api/accounts/', json=account).json()
     uuid = response['uuid']
 
-    # notification for
+    # notification for verifying registration
     resp = client.post(f'api/notifications/',
                        json={"username": "DakotaMcclain", "email": "rebecca03@thomasrivera.com", "notification_type": "verify_registration"})
     assert resp.status_code == 204
@@ -342,18 +342,22 @@ def test_verify_account_with_hash(db):
     resp = client.get(f'api/account_settings/{uuid}')
     assert resp.status_code == 200
 
-    # settings = resp.json()
-    # reset_hash = settings['password_reset_hash']
-    # assert reset_hash is None
-    # cancel_hash = settings['cancel_registration_hash']
-    # assert cancel_hash is not None
-    # verify_hash = settings['verify_account_hash']
-    # assert verify_hash is not None
+    settings = resp.json()
+    reset_hash = settings['password_reset_hash']
+    assert reset_hash is None
+    cancel_hash = settings['cancel_registration_hash']
+    assert cancel_hash is not None
+    verify_hash = settings['verify_account_hash']
+    assert verify_hash is not None
 
-    # resp = client.get(f'/verify_account_from_hash?verify_hash={verify_hash}')
-    # resp_json = resp.json()
+    resp = client.get(f'api/verify_account_from_hash?verify_hash={verify_hash}')
+    resp_json = resp.json()
 
-    # assert resp.status_code == 204
-    # assert resp_json['verify_account_hash'] is None
-    # assert resp_json['cancel_registration_hash'] is not None
-    # assert resp_json['is_verified'] is True
+    assert resp.status_code == 200
+    assert resp_json['verify_account_hash'] is None
+    assert resp_json['cancel_registration_hash'] is not None
+    assert resp_json['is_verified'] is True
+
+    # Cleanup account
+    resp = client.delete(f'api/accounts/{uuid}')
+    assert resp.status_code < 400
