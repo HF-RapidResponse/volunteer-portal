@@ -14,7 +14,7 @@ import socket
 import random
 import decimal
 from helpers import sanitize_email, row2dict
-from account_api import create_access_and_refresh_tokens
+from account_api import create_access_and_refresh_tokens, delete_user
 router = APIRouter()
 
 # @router.get("/notifications/", status_code=200)
@@ -153,10 +153,7 @@ def cancel_account_registration(cancel_hash: str, db: Session = Depends(get_db))
         raise HTTPException(status_code=400,
                             detail=f"Account settings with hash {cancel_hash} not found")
     acct_uuid = settings_to_delete.uuid
-    acct_to_delete = db.query(Account).filter_by(uuid=acct_uuid).first()
-    db.delete(settings_to_delete)
-    db.delete(acct_to_delete)
-    db.commit()
+    delete_user(acct_uuid, db)
 
 
 def generate_str_for_hash(username: str, curr_time: datetime):

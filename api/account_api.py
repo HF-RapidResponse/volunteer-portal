@@ -157,19 +157,27 @@ def update_password(uuid, partial_account: AccountNewPasswordSchema, Authorize: 
 
 
 @router.delete("/accounts/{uuid}", status_code=204)
-def delete_account(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+def remove_user(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
     check_matching_user(uuid, Authorize)
+    delete_user(uuid, db)
+
+
+def delete_user(uuid: UUID, db):
+    delete_settings(uuid, db)
+    delete_account(uuid, db)
+
+
+def delete_account(uuid: UUID, db: Session):
     acct_to_delete = db.query(Account).filter_by(uuid=uuid).first()
     if acct_to_delete is None:
         raise HTTPException(status_code=400,
                             detail=f"Account with UUID {uuid} not found")
     db.delete(acct_to_delete)
     db.commit()
-    delete_settings(uuid, db)
 
 
-def delete_settings(uuid, db):
+def delete_settings(uuid: UUID, db: Session):
     settings_to_delete = db.query(AccountSettings).filter_by(uuid=uuid).first()
     if settings_to_delete is None:
         raise HTTPException(status_code=400,
