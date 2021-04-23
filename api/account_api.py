@@ -1,16 +1,13 @@
 from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header, APIRouter
 from typing import List, Optional, Text, Union, Mapping, Any
 from models import Account, AccountSettings
-import notifications_manager as nm
 from schemas import (AccountCreateRequestSchema, AccountResponseSchema, AccountBaseSchema,
                      AccountNewPasswordSchema, AccountSettingsSchema, AccountNotificationSchema)
-from sqlalchemy import or_
 from sqlalchemy.orm import lazyload
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.encoders import jsonable_encoder
 from initiatives_api import GetAllInitiativeNames
 from settings import Config, Session, get_db
-from security import encrypt_password
 import logging
 from uuid import uuid4, UUID
 from fastapi_jwt_auth import AuthJWT
@@ -18,9 +15,6 @@ import external_data_sync
 from security import encrypt_password, check_encrypted_password
 import re
 from datetime import datetime
-import socket
-import random
-import decimal
 from helpers import sanitize_email
 router = APIRouter()
 
@@ -163,7 +157,7 @@ def remove_user(uuid, Authorize: AuthJWT = Depends(), db: Session = Depends(get_
     delete_user(uuid, db)
 
 
-def delete_user(uuid: UUID, db):
+def delete_user(uuid: UUID, db: Session):
     delete_settings(uuid, db)
     delete_account(uuid, db)
 
