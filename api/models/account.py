@@ -27,7 +27,8 @@ class Account(Base):
     state = Column('state', String(32), nullable=True)
     roles = Column('roles', ARRAY(String), default=[], nullable=False)
     zip_code = Column('zip_code', String(32), nullable=True)
+    is_verified = Column('is_verified', Boolean, default=False, nullable=False)
 
     def __repr__(self):
-        return "<Account(uuid='%s', email='%s', username='%s', first_name='%s', last_name='%s', password='%s', oauth='%s', profile_pic='%s', city='%s', state='%s', zip_code='%s', roles='%s')>" % (
-            self.uuid, self.email, self.username, self.first_name, self.last_name, self.password, self.oauth, self.profile_pic, self.city, self.state, self.zip_code, self.roles)
+        return "<Account(uuid='%s', email='%s', username='%s', first_name='%s', last_name='%s', password='%s', oauth='%s', profile_pic='%s', city='%s', state='%s', zip_code='%s', roles='%s', is_verified='%s')>" % (
+            self.uuid, self.email, self.username, self.first_name, self.last_name, self.password, self.oauth, self.profile_pic, self.city, self.state, self.zip_code, self.roles, self.is_verified)

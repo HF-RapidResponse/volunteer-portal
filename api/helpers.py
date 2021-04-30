@@ -20,3 +20,7 @@ def sanitize_data(payload):
             continue
         else:
             payload[key] = trim_str(payload[key])
+
+
+def row2dict(row):
+    return dict((col, getattr(row, col)) for col in row.__table__.columns.keys())

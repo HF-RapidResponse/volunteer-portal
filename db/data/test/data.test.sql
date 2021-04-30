@@ -109,7 +109,9 @@ CREATE TABLE public.account_settings (
     volunteers_can_see boolean NOT NULL,
     initiative_map json NOT NULL,
     password_reset_hash text,
-    password_reset_time timestamp without time zone
+    password_reset_time timestamp without time zone,
+    verify_account_hash text,
+    cancel_registration_hash text
 );
 
 
@@ -131,7 +133,8 @@ CREATE TABLE public.accounts (
     city character varying(32),
     state character varying(32),
     zip_code character varying(32),
-    roles character varying[] NOT NULL
+    roles character varying[] NOT NULL,
+    is_verified boolean NOT NULL
 );
 
 

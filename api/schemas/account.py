@@ -14,12 +14,15 @@ class AccountBaseSchema(BaseModel):
     state: Optional[str]
     zip_code: Optional[str]
     roles: Optional[List]
+    is_verified: Optional[bool]
 
     class Config:
         orm_mode = True
 
+
 class AccountCreateRequestSchema(AccountBaseSchema):
     password: Text
+
 
 class AccountResponseSchema(AccountBaseSchema):
     uuid: UUID
@@ -39,6 +42,7 @@ class AccountNewPasswordSchema(BaseModel):
     password: Text
 
 
-class AcctUsernameOrEmailSchema(BaseModel):
+class AccountNotificationSchema(BaseModel):
     username: Optional[str]
     email: Optional[str]
+    notification_type: str
