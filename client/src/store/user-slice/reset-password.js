@@ -7,7 +7,6 @@ import {
   validateUsername,
   sanitizeData,
   formHasNoErrors,
-  handleApiErrors,
 } from './helpers';
 
 export const attemptSendResetEmail = async (payload) => {
@@ -19,7 +18,9 @@ export const attemptSendResetEmail = async (payload) => {
     errors.usernameOrEmail = 'Invalid username or e-mail';
     throw errors;
   } else {
-    const obj = {};
+    const obj = {
+      notification_type: 'password_reset',
+    };
     if (!hasEmailErr) {
       obj.email = username_or_email;
     } else if (!hasUsernameErr) {
@@ -38,7 +39,7 @@ export const getSettingsFromHash = async (hash) => {
     return getSettingsRes.data;
   } catch (error) {
     console.error(error);
-    handleApiErrors(error.response, errors);
+    errors.api = 'an error occurred while trying to get settings from hash';
   }
   throw errors;
 };
@@ -63,7 +64,7 @@ export const attemptResetPassword = async (payload) => {
     }
   } catch (error) {
     console.error(error);
-    handleApiErrors(error.response, errors);
+    errors.api = 'an error occurred while trying to reset password';
   }
   throw errors;
 };
