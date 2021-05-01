@@ -38,7 +38,7 @@ function CancelRegistration(props) {
   ) : (
     <>
       <div className="mt-5 mb-5 text-center">
-        <h2 className="mt-4 mb-4">Cancel Registration</h2>
+        <h2 className="mt-4 mb-4">Registration Cancelled</h2>
         <p className="mt-3 mb-3">
           Your registration has been cancelled. We apologize for any
           inconvenience.
