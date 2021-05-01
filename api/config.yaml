@@ -26,8 +26,8 @@ auth_defaults: &auth_defaults
     client_secret: portal_auth_github_client_secret
 
 notification_defaults: &notification_defaults
-  email_default_from_address: tripp@movehumanityforward.com
-  sendgrid_api_key: portal_notifications_sendgrid_test_api_key
+  email_default_from_address: volportal@movehumanityforward.com
+  sendgrid_api_key: portal_notifications_sendgrid_api_key
   sms_default_from_number: '+18053348626'
   twilio_sid: portal_notifications_twilio_sid
   twilio_auth_token: portal_notifications_twilio_auth_token
