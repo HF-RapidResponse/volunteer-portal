@@ -10,7 +10,7 @@ import {
   validateUsername,
   sanitizeData,
   formHasNoErrors,
-  handleApiErrors,
+  handleRegisterErrors,
   handlePossibleExpiredToken,
 } from './helpers';
 
@@ -76,17 +76,19 @@ export const attemptLogin = (payload) => async (dispatch) => {
       sanitizeData(payload);
       const accountRes = await axios.post(`/api/auth/basic`, payload);
       const accountData = accountRes.data;
-      const refreshTime = Date.now();
-      dispatch(setRefreshTime(refreshTime));
-      const settings = await getSettings(accountData.uuid);
-      const user = { ...accountData, ...settings };
-      dispatch(setUser(user));
-      return;
+      if (accountData) {
+        const refreshTime = Date.now();
+        dispatch(setRefreshTime(refreshTime));
+        const settings = await getSettings(accountData.uuid);
+        const user = { ...accountData, ...settings };
+        dispatch(setUser(user));
+        return;
+      }
     }
   } catch (error) {
     console.error(error);
+    errors.api = error.response.data.detail;
   }
-  errors.message = 'E-mail or password is invalid!';
   throw errors;
 };
 
@@ -195,7 +197,6 @@ export const startLogout = (cookies) => async (dispatch) => {
       sameSite: 'none',
       secure: true,
     });
-    dispatch(setRefreshTime(null));
     dispatch(completeLogout());
   } catch (error) {
     console.error(error);
@@ -231,17 +232,19 @@ export const attemptRegister = (payload) => async (dispatch) => {
     sanitizeData(payload);
     const objPayload = new AccountReqBody(payload);
     const accountRes = await axios.post(`/api/accounts/`, objPayload);
-    const refreshTime = Date.now();
-    dispatch(setRefreshTime(refreshTime));
-    const accountData = accountRes.data;
-    const settings = await getSettings(accountData.uuid);
-    const user = { ...accountData, ...settings };
-    dispatch(setUser(user));
-    return;
+    const createdAcct = accountRes.data;
+    if (createdAcct) {
+      const obj = {
+        notification_type: 'verify_registration',
+        email: createdAcct.email,
+        username: createdAcct.username,
+      };
+      await axios.post(`/api/notifications/`, obj);
+    }
   } catch (error) {
-    handleApiErrors(error.response, errors);
+    handleRegisterErrors(error.response, errors);
+    throw errors;
   }
-  throw errors;
 };
 
 export const attemptChangePassword = (payload) => async (dispatch) => {
@@ -281,7 +284,6 @@ export const attemptChangePassword = (payload) => async (dispatch) => {
 };
 
 export const deleteRole = (payload) => async (dispatch) => {
-  //const response = await axios.delete(`/users/${userSlice.user.ID}/roles/${payload.roleID}`);
   dispatch(completeDelete(payload));
 };
 
@@ -384,4 +386,33 @@ export const attemptUpdateAccount = (payload) => async (dispatch) => {
   throw errors;
 };
 
+export const getAccountAndSettingsFromHash = (hash, cookies) => async (
+  dispatch
+) => {
+  const errors = {};
+  if (!hash) {
+    errors.message = 'required hash is missing';
+    throw errors;
+  }
+
+  try {
+    cookies.remove('user_id', {
+      path: '/',
+      sameSite: 'none',
+      secure: true,
+    });
+    dispatch(completeLogout());
+    const userRes = await axios.get(
+      `/api/verify_account_from_hash?verify_hash=${hash}`
+    );
+    const refreshTime = Date.now();
+    dispatch(setRefreshTime(refreshTime));
+    dispatch(setUser(userRes.data));
+    return;
+  } catch (error) {
+    console.error(error);
+    errors.api = 'failed to verify account from hash';
+  }
+  throw errors;
+};
 export default userSlice.reducer;

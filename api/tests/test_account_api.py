@@ -14,6 +14,7 @@ from tests.test_api import cleanup_initiative
 from tests.test_notifications import MockResponse
 import notifications_manager as nm
 
+
 @pytest.fixture
 def db():
     return Session()
@@ -30,17 +31,19 @@ def setup(db):
 client = TestClient(app)
 
 valid_account = {'email': 'rebecca03@thomasrivera.com',
-           'username': 'DakotaMcclain',
-           'first_name': 'Jeff',
-           'last_name': 'Long',
-           'password': '^7^Cg&kt*X',
-           'oauth': 'W^9Oa(Qy+L',
-           'profile_pic': 'http://www.davis-burke.com/',
-           'city': 'Lake Robertburgh',
-           'state': 'Virginia',
-           'zip_code': '20101',
-           'roles': ['Sales professional,IT',
-                     'Commissioning editor']}
+                 'username': 'DakotaMcclain',
+                 'first_name': 'Jeff',
+                 'last_name': 'Long',
+                 'password': '^7^Cg&kt*X',
+                 'oauth': 'W^9Oa(Qy+L',
+                 'profile_pic': 'http://www.davis-burke.com/',
+                 'city': 'Lake Robertburgh',
+                 'state': 'Virginia',
+                 'zip_code': '20101',
+                 'roles': ['Sales professional,IT',
+                           'Commissioning editor'],
+                 'is_verified': True}
+
 
 def test_create_account(db):
     response = client.post(f'api/accounts/', json=valid_account)
@@ -119,7 +122,7 @@ def test_account_creation_and_deletion(db):
     resp = client.get(f'api/account_settings/{uuid}')
     assert response.status_code < 400
     resp = resp.json()
-    #check default settings
+    # check default settings
     assert resp['show_name'] == False
     assert resp['show_email'] == False
     assert resp['show_location'] == True
@@ -150,14 +153,16 @@ def test_bad_auth_cookie_fails_account_get(db):
 
     # messs up access token
     access_token_cookie = client.cookies.get('access_token_cookie')
-    bad_access_token_cookie = access_token_cookie[:-4]+ "aaaa"
-    client.cookies.set('access_token_cookie', bad_access_token_cookie, domain='testserver.local')
+    bad_access_token_cookie = access_token_cookie[:-4] + "aaaa"
+    client.cookies.set('access_token_cookie',
+                       bad_access_token_cookie, domain='testserver.local')
 
     resp = client.get(f'api/accounts/{uuid}')
     assert resp.status_code == 422
     assert resp.json()['detail'] == 'Signature verification failed'
 
-    client.cookies.set('access_token_cookie', access_token_cookie, domain='testserver.local')
+    client.cookies.set('access_token_cookie',
+                       access_token_cookie, domain='testserver.local')
     del_resp = client.delete(f'api/accounts/{uuid}')
     assert del_resp.status_code < 400
 
@@ -218,7 +223,8 @@ def test_account_settings_update(db):
 @patch('notifications_manager.email_client.send')
 def test_account_password_reset_notification(mock_send, db):
     # no notification for missing user
-    resp = client.post(f'api/notifications/', {"username":"no_user_exists"})
+    resp = client.post(f'api/notifications/',
+                       {"username": "no_user_exists", "notification_type": "password_reset"})
     mock_send.assert_not_called
     assert mock_send.call_args is None
 
@@ -226,19 +232,22 @@ def test_account_password_reset_notification(mock_send, db):
     uuid = response['uuid']
 
     # notification for valid username
-    resp = client.post(f'api/notifications/', json={"username":"DakotaMcclain"})
+    resp = client.post(f'api/notifications/',
+                       json={"username": "DakotaMcclain", "notification_type": "password_reset"})
     mock_send.assert_called
     assert mock_send.call_args is not None
     # can't verify Arg contents :(
 
     # notification for email username
-    resp = client.post(f'api/notifications/', json={"email":"rebecca03@thomasrivera.com"})
+    resp = client.post(f'api/notifications/',
+                       json={"email": "rebecca03@thomasrivera.com", "notification_type": "password_reset"})
     mock_send.assert_called
     assert mock_send.call_args is not None
 
     resp = client.get(f'api/account_settings/{uuid}')
     assert resp.json()['password_reset_hash'] is None
     client.delete(f'api/accounts/{uuid}')
+
 
 def test_account_password_reset_hash_stored(db):
     account = valid_account.copy()
@@ -247,7 +256,8 @@ def test_account_password_reset_hash_stored(db):
     uuid = response['uuid']
 
     # notification for valid username
-    resp = client.post(f'api/notifications/', json={"username":"DakotaMcclain"})
+    resp = client.post(f'api/notifications/',
+                       json={"username": "DakotaMcclain", "notification_type": "password_reset"})
 
     resp = client.get(f'api/account_settings/{uuid}')
     settings = resp.json()
@@ -255,6 +265,7 @@ def test_account_password_reset_hash_stored(db):
     assert settings['password_reset_hash'] is not None
     assert settings['password_reset_time'] is not None
     client.delete(f'api/accounts/{uuid}')
+
 
 def test_reset_account_password_with_hash(db):
     # Create an account, set a reset hash, create a new client without tokens, get new tokens from
@@ -266,36 +277,125 @@ def test_reset_account_password_with_hash(db):
     uuid = response['uuid']
 
     # notification for valid username
-    resp = client.post(f'api/notifications/', json={"username":"DakotaMcclain"})
+    resp = client.post(f'api/notifications/',
+                       json={"username": "DakotaMcclain", "notification_type": "password_reset"})
 
     settings = client.get(f'api/account_settings/{uuid}').json()
     print(settings)
     # Can't get hash from email
     reset_hash = settings['password_reset_hash']
 
-    #get a new client to remove existing cookies
+    # get a new client to remove existing cookies
     new_client = TestClient(app)
     resp = new_client.get(f'api/account_settings/{uuid}')
     assert resp.status_code > 400
     resp = new_client.get(f'api/settings_from_hash')
     assert resp.status_code > 400
 
-    resp = new_client.patch(f'api/accounts/{uuid}', json={'password': 'new_password.123'})
+    resp = new_client.patch(
+        f'api/accounts/{uuid}', json={'password': 'new_password.123'})
     assert resp.status_code == 401
 
     resp = new_client.get(f'api/settings_from_hash?pw_reset_hash={reset_hash}')
     assert resp.status_code < 400, resp.json()
 
-    resp = new_client.patch(f'api/accounts/{uuid}', json={'password': 'new_password.123'})
+    resp = new_client.patch(
+        f'api/accounts/{uuid}', json={'password': 'new_password.123'})
     assert resp.status_code < 400
 
     new_client = TestClient(app)
-    resp = new_client.post(f'api/auth/basic', json={'email':'rebecca03@thomasrivera.com',
-                                                        'password': 'wrong_password.123'})
+    resp = new_client.post(f'api/auth/basic', json={'email': 'rebecca03@thomasrivera.com',
+                                                    'password': 'wrong_password.123'})
     assert resp.status_code > 400
-    resp = new_client.post(f'api/auth/basic', json={'email':'rebecca03@thomasrivera.com',
+    resp = new_client.post(f'api/auth/basic', json={'email': 'rebecca03@thomasrivera.com',
                                                     'password': 'new_password.123'})
     assert resp.status_code < 400
 
     resp = client.delete(f'api/accounts/{uuid}')
     assert resp.status_code < 400
+
+
+def test_verify_account_with_hash(db):
+    new_account = {'email': 'rebecca03@thomasrivera.com',
+                   'username': 'DakotaMcclain',
+                   'first_name': 'Jeff',
+                   'last_name': 'Long',
+                   'password': '^7^Cg&kt*X',
+                   'oauth': 'W^9Oa(Qy+L',
+                   'profile_pic': 'http://www.davis-burke.com/',
+                   'city': 'Lake Robertburgh',
+                   'state': 'Virginia',
+                   'zip_code': '20101',
+                   'roles': ['Sales professional,IT',
+                             'Commissioning editor'],
+                   'is_verified': False}
+    account = new_account.copy()
+    account['oauth'] = None
+    response = client.post(f'api/accounts/', json=account).json()
+    uuid = response['uuid']
+
+    # notification for verifying registration
+    resp = client.post(f'api/notifications/',
+                       json={"username": "DakotaMcclain", "email": "rebecca03@thomasrivera.com", "notification_type": "verify_registration"})
+    assert resp.status_code == 204
+
+    resp = client.get(f'api/account_settings/{uuid}')
+    assert resp.status_code == 200
+
+    settings = resp.json()
+    reset_hash = settings['password_reset_hash']
+    assert reset_hash is None
+    cancel_hash = settings['cancel_registration_hash']
+    assert cancel_hash is not None
+    verify_hash = settings['verify_account_hash']
+    assert verify_hash is not None
+
+    resp = client.get(
+        f'api/verify_account_from_hash?verify_hash={verify_hash}')
+    resp_json = resp.json()
+
+    assert resp.status_code == 200
+    assert resp_json['verify_account_hash'] is None
+    assert resp_json['cancel_registration_hash'] is None
+    assert resp_json['is_verified'] is True
+
+    # Cleanup account
+    resp = client.delete(f'api/accounts/{uuid}')
+    assert resp.status_code < 400
+
+
+def test_cancel_registration_with_hash(db):
+    new_account = {'email': 'rebecca03@thomasrivera.com',
+                   'username': 'DakotaMcclain',
+                   'first_name': 'Jeff',
+                   'last_name': 'Long',
+                   'password': '^7^Cg&kt*X',
+                   'oauth': 'W^9Oa(Qy+L',
+                   'profile_pic': 'http://www.davis-burke.com/',
+                   'city': 'Lake Robertburgh',
+                   'state': 'Virginia',
+                   'zip_code': '20101',
+                   'roles': ['Sales professional,IT',
+                             'Commissioning editor'],
+                   'is_verified': False}
+    account = new_account.copy()
+    account['oauth'] = None
+    response = client.post(f'api/accounts/', json=account).json()
+    uuid = response['uuid']
+
+    # notification for verifying registration
+    resp = client.post(f'api/notifications/',
+                       json={"username": "DakotaMcclain", "email": "rebecca03@thomasrivera.com", "notification_type": "verify_registration"})
+    resp = client.get(f'api/account_settings/{uuid}')
+
+    settings = resp.json()
+    cancel_hash = settings['cancel_registration_hash']
+
+    resp = client.delete(
+        f'api/cancel_registration_from_hash?cancel_hash={cancel_hash}')
+    assert resp.status_code == 204
+
+    resp = client.get(f'api/accounts/{uuid}')
+    assert resp.status_code == 200
+    account = resp.json()
+    assert account is None
