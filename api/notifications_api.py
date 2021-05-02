@@ -227,7 +227,7 @@ BUTTON_TEMPLATE = f"""<tr><td align="center">
 text-align: center; vertical-align: middle; -webkit-user-select: none; user-select: none; border:
 1px solid transparent; padding: .375rem .75rem; font-size: 1rem; line-height: 1.5;
 border-radius: .25rem; color: #fff; background-color: {button_color}; border-color: {button_color};
-text-decoration: none;">
+text-decoration: none; margin: 1rem auto;">
 {{button_text}}
 </a></td></tr>"""
 
