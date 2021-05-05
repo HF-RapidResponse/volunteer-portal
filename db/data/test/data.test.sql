@@ -81,6 +81,19 @@ CREATE TYPE public.priority AS ENUM (
 ALTER TYPE public.priority OWNER TO admin;
 
 --
+-- Name: relationship; Type: TYPE; Schema: public; Owner: admin
+--
+
+CREATE TYPE public.relationship AS ENUM (
+    'MEMBER',
+    'ADMIN',
+    'BOOKMARK'
+);
+
+
+ALTER TYPE public.relationship OWNER TO admin;
+
+--
 -- Name: roletype; Type: TYPE; Schema: public; Owner: admin
 --
 
@@ -125,15 +138,15 @@ CREATE TABLE public.accounts (
     uuid uuid NOT NULL,
     email text NOT NULL,
     username character varying(255) NOT NULL,
-    first_name character varying(255),
+    first_name character varying(255) NOT NULL,
     last_name character varying(255),
     password text,
     oauth character varying(32),
     profile_pic text,
     city character varying(32),
     state character varying(32),
-    zip_code character varying(32),
     roles character varying[] NOT NULL,
+    zip_code character varying(32),
     is_verified boolean NOT NULL
 );
 
@@ -160,6 +173,23 @@ CREATE TABLE public.events (
 
 
 ALTER TABLE public.events OWNER TO admin;
+
+--
+-- Name: groups; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.groups (
+    uuid uuid NOT NULL,
+    group_name character varying(128) NOT NULL,
+    location_description character varying(128),
+    description text,
+    zip_code character varying(32),
+    approved_public boolean NOT NULL,
+    social_media_links json NOT NULL
+);
+
+
+ALTER TABLE public.groups OWNER TO admin;
 
 --
 -- Name: initiatives; Type: TABLE; Schema: public; Owner: admin
@@ -200,6 +230,20 @@ CREATE TABLE public.notifications (
 
 
 ALTER TABLE public.notifications OWNER TO admin;
+
+--
+-- Name: user_group_relations; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.user_group_relations (
+    uuid uuid NOT NULL,
+    user_id uuid NOT NULL,
+    group_id uuid NOT NULL,
+    relationship public.relationship NOT NULL
+);
+
+
+ALTER TABLE public.user_group_relations OWNER TO admin;
 
 --
 -- Name: volunteer_openings; Type: TABLE; Schema: public; Owner: admin
@@ -246,12 +290,29 @@ ALTER TABLE ONLY public.account_settings
 ALTER TABLE ONLY public.accounts
     ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
 
+
 --
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.events
     ADD CONSTRAINT events_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: groups groups_group_name_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.groups
+    ADD CONSTRAINT groups_group_name_key UNIQUE (group_name);
+
+
+--
+-- Name: groups groups_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.groups
+    ADD CONSTRAINT groups_pkey PRIMARY KEY (uuid);
 
 
 --
@@ -268,6 +329,14 @@ ALTER TABLE ONLY public.initiatives
 
 ALTER TABLE ONLY public.notifications
     ADD CONSTRAINT notifications_pkey PRIMARY KEY (notification_uuid);
+
+
+--
+-- Name: user_group_relations user_group_relations_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.user_group_relations
+    ADD CONSTRAINT user_group_relations_pkey PRIMARY KEY (uuid);
 
 
 --
@@ -290,6 +359,13 @@ CREATE UNIQUE INDEX ix_accounts_email ON public.accounts USING btree (email);
 --
 
 CREATE UNIQUE INDEX ix_accounts_username ON public.accounts USING btree (username);
+
+
+--
+-- Name: ix_user_group_relations_user_id; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX ix_user_group_relations_user_id ON public.user_group_relations USING btree (user_id);
 
 
 --

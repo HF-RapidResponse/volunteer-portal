@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from google.cloud import secretmanager  # type: ignore
 from models import Initiative, VolunteerEvent, VolunteerRole, Account, Notification, AccountSettings
+from models import UserGroupRelation, Group
 
 ENV = os.environ.get('ENV') if os.environ.get('ENV') else "development"
 
@@ -102,6 +103,8 @@ Session = sessionmaker(binds={
     Account: engine,
     AccountSettings: engine,
     Notification: engine,
+    Group: engine,
+    UserGroupRelation: engine
 })
 
 # Api Dependency

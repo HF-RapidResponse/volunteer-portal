@@ -12,10 +12,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from models import Base, Initiative, VolunteerEvent, VolunteerRole, Account, Notification, AccountSettings
+from models import UserGroupRelation, Group
 from settings import Connections, Session, ENV
 from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_volunteer_events_list, generate_fake_initiatives_list
-# from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_fake_initiatives_list
-
+from tests.fake_data_utils import generate_fake_users_groups_and_relations
+from sqlalchemy_utils.functions import drop_database, create_database
 
 import logging
 
@@ -27,27 +28,15 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 for key in Connections:
     # Connect with `echo` so we can see what's being run
     db_url = Connections[key]['url']
-    engine = create_engine(db_url)
-    conn = engine.connect()
-    conn.execute("commit")
-
-    # conn.execute(f"SELECT 'DROP DATABASE {Connections[key]['database']}' WHERE EXISTS (SELECT FROM pg_database WHERE datname = '{Connections[key]['database']}')")
     try:
-        print(f'\n\nBootstrapping connection {key}')
-        conn.execute(f"DROP DATABASE {Connections[key]['database']}")
-    except:
-        print(f'---- Could not drop database connection {key}')
-    finally:
-        conn.execute("commit")
+        drop_database(db_url)
+    except Exception as e:
+        print(f'---- Could not drop database connection {key} -- {db_url}')
 
     try:
-        print('Creating DB')
-        conn.execute(f"CREATE DATABASE {Connections[key]['database']}")
+        create_database(db_url)
     except:
-        print(f'---- Could not create database connection {key}')
-    finally:
-        conn.execute("commit")
-    conn.close()
+        print(f'---- Could not create database connection {key}  -- {db_url}')
 
 # Connect to all databases
 engines = {}
@@ -62,7 +51,9 @@ Session = sessionmaker(binds={
     VolunteerRole: engines['database'],
     Account: engines['database'],
     Notification: engines['database'],
-    AccountSettings: engines['database']
+    AccountSettings: engines['database'],
+    Group: engines['database'],
+    UserGroupRelation: engines['database']
 })
 
 # Create all tables
@@ -81,4 +72,8 @@ if ENV == 'development':
 
     session.query(Initiative).delete()
     generate_fake_initiatives_list(session, 3, 2, 3)
+    session.commit()
+
+    session.query(Group).delete()
+    generate_fake_users_groups_and_relations(session, user_count=100, group_count=30)
     session.commit()

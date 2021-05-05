@@ -18,7 +18,7 @@ class Group(Base):
 
     zip_code = Column('zip_code', String(32), nullable=True)
 
-    approved = Column('approved', Boolean, nullable=False, default=False)
+    approved_public = Column('approved_public', Boolean, nullable=False, default=False)
 
     # A map of social media names to links. e.g. {"Facebook": "www.facebook.com/yang_gang_nyc"}
     social_media_links = Column('social_media_links', JSON, default={}, nullable=False)

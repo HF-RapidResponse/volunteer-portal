@@ -10,4 +10,4 @@ from models.notification import Notification
 from models.account_settings import AccountSettings
 from models.account import Account
 from models.group import Group
-from models.user_group_relation import UserGroupRelation
+from models.user_group_relation import UserGroupRelation, Relationship
