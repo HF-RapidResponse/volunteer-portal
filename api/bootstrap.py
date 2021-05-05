@@ -18,11 +18,15 @@ from tests.fake_data_utils import generate_fake_volunteer_roles_list, generate_f
 from tests.fake_data_utils import generate_fake_users_groups_and_relations
 from sqlalchemy_utils.functions import drop_database, create_database
 
+from fastapi.testclient import TestClient
+from api import app
+
 import logging
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
+client = TestClient(app)
 
 # Create database(s) and tables
 for key in Connections:
@@ -75,5 +79,5 @@ if ENV == 'development':
     session.commit()
 
     session.query(Group).delete()
-    generate_fake_users_groups_and_relations(session, user_count=100, group_count=30)
+    generate_fake_users_groups_and_relations(session, client, user_count=100, group_count=30)
     session.commit()

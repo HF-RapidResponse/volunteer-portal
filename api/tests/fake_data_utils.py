@@ -9,14 +9,9 @@ from models import (NestedInitiative, Initiative, Person, Priority,
                     RoleType, VolunteerRole, VolunteerEvent, Account, Group, UserGroupRelation,
                     Relationship)
 
-from fastapi.testclient import TestClient
-from api import app
-
 fake = Faker()
 fake.add_provider(barcode)
 seed(1000)
-
-client = TestClient(app)
 
 def generate_fake_volunteer_role() -> VolunteerRole:
     post_datetime = datetime.today() + timedelta(days=randint(-10, 10))
@@ -145,7 +140,7 @@ def generate_fake_account():
         is_verified=True
     )
 
-def create_fake_account():
+def create_fake_account(client):
     account = {'email': get_fake_email(),
                'username': fake.name().replace(" ", ""),
                'first_name': fake.first_name(),
@@ -161,16 +156,16 @@ def create_fake_account():
     response = client.post('api/accounts/', json=account).json()
     return response
 
-def create_fake_accounts(count):
+def create_fake_accounts(client, count):
     accounts = []
-    # not using the above since
-    for i in range(count):
-        accounts.append(create_fake_account())
+    for _ in range(count):
+        accounts.append(create_fake_account(client))
 
-def generate_fake_group() -> Group:
+def generate_fake_group(unique=0) -> Group:
     social_medias = ["Facebook", "twitter", "discord"]
+    name = fake.state() + " Yang Gang " + (str(unique) if unique else "")
     return Group(
-        group_name=fake.name() + " Yang Gang",
+        group_name=name,
         location_description=fake.state(),
         description=fake.paragraph(nb_sentences=4),
         zip_code=fake.postcode(),
@@ -181,7 +176,7 @@ def generate_fake_group() -> Group:
 def generate_fake_groups_list(session, count) -> List[Group]:
     groups = []
     for i in range(count):
-        group = generate_fake_group()
+        group = generate_fake_group(i)
         session.add(group)
         groups.append(group)
     return groups
@@ -192,18 +187,16 @@ def create_user_group_relationship(user_object, group_object, relationship="Memb
         group_id=group_object.uuid,
         relationship=Relationship(relationship))
 
-def generate_fake_users_groups_and_relations(session, user_count, group_count):
+def generate_fake_users_groups_and_relations(session, client, user_count, group_count):
     # generate n groups and m users, create ~2m admin (1 or 2 per group)
     # some admin should be admin to multiple groups
 
-    create_fake_accounts(user_count)
+    create_fake_accounts(client, user_count)
     generate_fake_groups_list(session, group_count)
+
     # get users accounts and groups from db so that uuids are populated
     users = session.query(Account).all()
     groups = session.query(Group).all()
-
-    [session.add(g) for g in groups]
-
     # make a single admin per group
     admin_list = []
     for i, g in enumerate(groups):

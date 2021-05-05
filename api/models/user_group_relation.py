@@ -1,7 +1,7 @@
 from models.base import Base
 
 import enum
-from sqlalchemy import Column, Enum
+from sqlalchemy import Column, Enum, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 
@@ -15,11 +15,10 @@ class UserGroupRelation(Base):
 
     uuid = Column(UUID(as_uuid=True), primary_key=True,
                   default=uuid4, unique=True, nullable=False)
-    # uuid from accounts
-    user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
 
-    # uuid from groups
-    group_id = Column(UUID(as_uuid=True), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('accounts.uuid'), nullable=False, index=True)
+
+    group_id = Column(UUID(as_uuid=True), ForeignKey('groups.uuid'), nullable=False, )
 
     relationship = Column('relationship', Enum(Relationship), nullable=False)
 

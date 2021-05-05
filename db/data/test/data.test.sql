@@ -369,6 +369,22 @@ CREATE INDEX ix_user_group_relations_user_id ON public.user_group_relations USIN
 
 
 --
+-- Name: user_group_relations user_group_relations_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.user_group_relations
+    ADD CONSTRAINT user_group_relations_group_id_fkey FOREIGN KEY (group_id) REFERENCES public.groups(uuid);
+
+
+--
+-- Name: user_group_relations user_group_relations_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.user_group_relations
+    ADD CONSTRAINT user_group_relations_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.accounts(uuid);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
