@@ -1,17 +1,17 @@
 from typing import List
-from random import seed, randint, choice, shuffle
+from random import seed, randint, choice, shuffle, sample
 from datetime import datetime, timedelta
 
 from faker import Faker  # type: ignore
 from faker.providers import barcode, job, address  # type: ignore
 
 from models import (NestedInitiative, Initiative, Person, Priority,
-                    RoleType, VolunteerRole, VolunteerEvent, Account)
+                    RoleType, VolunteerRole, VolunteerEvent, Account, Group, UserGroupRelation,
+                    Relationship)
 
 fake = Faker()
 fake.add_provider(barcode)
 seed(1000)
-
 
 def generate_fake_volunteer_role() -> VolunteerRole:
     post_datetime = datetime.today() + timedelta(days=randint(-10, 10))
@@ -137,4 +137,86 @@ def generate_fake_account():
         state=fake.state(),
         zip_code=fake.postcode(),
         roles=[fake.job() for i in range(randint(0, 2))],
+        is_verified=True
     )
+
+def create_fake_account(client):
+    account = {'email': get_fake_email(),
+               'username': fake.name().replace(" ", ""),
+               'first_name': fake.first_name(),
+               'last_name': fake.last_name(),
+               'password': "test.1234",
+               'oauth': None,
+               'profile_pic': fake.url(),
+               'city': fake.city(),
+               'state': fake.state(),
+               'zip_code': fake.postcode(),
+               'roles': [fake.job() for i in range(randint(0, 2))],
+               'is_verified': True}
+    response = client.post('api/accounts/', json=account).json()
+    return response
+
+def create_fake_accounts(client, count):
+    accounts = []
+    for _ in range(count):
+        accounts.append(create_fake_account(client))
+
+def generate_fake_group(unique=0) -> Group:
+    social_medias = ["Facebook", "twitter", "discord"]
+    name = fake.state() + " Yang Gang " + (str(unique) if unique else "")
+    return Group(
+        group_name=name,
+        location_description=fake.state(),
+        description=fake.paragraph(nb_sentences=4),
+        zip_code=fake.postcode(),
+        approved_public=True,
+        social_media_links={choice(social_medias): fake.uri() for i in range(randint(0, 3))},
+    )
+
+def generate_fake_groups_list(session, count) -> List[Group]:
+    groups = []
+    for i in range(count):
+        group = generate_fake_group(i)
+        session.add(group)
+        groups.append(group)
+    return groups
+
+def create_user_group_relationship(user_object, group_object, relationship="Member"):
+    return UserGroupRelation(
+        user_id=user_object.uuid,
+        group_id=group_object.uuid,
+        relationship=Relationship(relationship))
+
+def generate_fake_users_groups_and_relations(session, client, user_count, group_count):
+    # generate n groups and m users, create ~2m admin (1 or 2 per group)
+    # some admin should be admin to multiple groups
+
+    create_fake_accounts(client, user_count)
+    generate_fake_groups_list(session, group_count)
+
+    # get users accounts and groups from db so that uuids are populated
+    users = session.query(Account).all()
+    groups = session.query(Group).all()
+    # make a single admin per group
+    admin_list = []
+    for i, g in enumerate(groups):
+        admin = users[i]
+        admin_list.append(admin)
+        rel = create_user_group_relationship(admin, g, 'Admin')
+        session.add(rel)
+
+    # make half of those admins admin of other groups & members of those groups
+    for i, admin in enumerate(admin_list[:len(admin_list) // 2]):
+        g = groups[-1 * i]
+        rel = create_user_group_relationship(admin, g, 'Admin')
+        session.add(rel)
+        rel = create_user_group_relationship(admin, g, 'Member')
+        session.add(rel)
+
+    # make each user a member of 1-5 groups
+    assert len(groups) > 5, "Must create more than 5 groups"
+    for user in users:
+        group_selection = sample(groups, randint(1, 5))
+        for g in group_selection:
+            rel = create_user_group_relationship(user, g, 'Member')
+            session.add(rel)

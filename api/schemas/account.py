@@ -2,6 +2,15 @@ from pydantic import BaseModel, EmailStr
 from typing import List, Dict, Text, Optional
 from uuid import UUID
 
+class AccountPublicBaseSchema(BaseModel):
+    username: Optional[str]
+    first_name: Optional[str]
+    profile_pic: Optional[Text]
+    city: Optional[str]
+    state: Optional[str]
+
+    class Config:
+        orm_mode = True
 
 class AccountBaseSchema(BaseModel):
     email: Optional[EmailStr]

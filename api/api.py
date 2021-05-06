@@ -12,6 +12,8 @@ import auth
 import account_api
 import initiatives_api
 import notifications_api
+import groups_api
+
 from settings import Config, Session, get_db
 import logging
 from uuid import uuid4, UUID
@@ -32,6 +34,7 @@ app.add_middleware(
 
 app.add_middleware(SessionMiddleware,
                    secret_key=Config['auth']['jwt']['secret'])
+
 app.include_router(
     auth.router,
     prefix='/api'
@@ -47,6 +50,11 @@ app.include_router(
 app.include_router(
     notifications_api.router,
     prefix='/api'
+)
+
+app.include_router(
+    groups_api.router,
+    prefix='/api/groups'
 )
 
 
