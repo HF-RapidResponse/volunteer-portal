@@ -63,3 +63,12 @@ def test_initiatives_relationships_scoped(db):
 
     assert len(new_initiative.event_ids) == 3
     assert len(new_initiative.events) == 3
+
+def test_initiative_default_image(db):
+    initiative = generate_fake_initiative(db, 2, 3)
+    initiative.hero_image_urls = None
+    db.add(initiative)
+
+    new_initiative = db.query(Initiative).filter_by(external_id=initiative.external_id).first()
+
+    assert new_initiative.hero_image_url and "https://" in new_initiative.hero_image_url
