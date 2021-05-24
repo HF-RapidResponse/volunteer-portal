@@ -230,7 +230,6 @@ export const attemptRegister = (payload) => async (dispatch) => {
 
   try {
     sanitizeData(payload);
-    console.log(payload);
     let request = { account: payload,
       identifier: { identifier: payload.email,
         type: 'email'},
@@ -408,9 +407,6 @@ export const getAccountAndSettingsFromOTP = (token_id, otp, cookies) => async (
       `/api/verify_identifier/finish?token=${token_id}&otp=${otp}`
     );
     const account = { ...userRes.data.account };
-    console.log("AAAAAApAAA");
-    console.log(userRes);
-    console.log(account);
     const refreshTime = Date.now();
     dispatch(setRefreshTime(refreshTime));
     dispatch(setUser(account));

@@ -105,11 +105,10 @@ def oauth_login_or_creation(id_type,
                             identifier_class=PersonalIdentifier,
                             city=None,
                             state=None):
-    print("AAAAAAAAAAAAAAAA", identifier_value)
     id_state, identifier = get_or_create_identifier(id_type,
                                                     identifier_value, db,
                                                     identifier_class)
-    print(identifier)
+
     if id_state is IdentifierState.NONE_MATCHING \
        or id_state is IdentifierState.NO_ACCOUNT_IS_VERIFIED \
        or id_state is IdentifierState.NO_ACCOUNT_NOT_VERIFIED:

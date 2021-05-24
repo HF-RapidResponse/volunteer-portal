@@ -29,11 +29,8 @@ def get_identifier(id_type, value, db, id_class=PersonalIdentifier):
 
 def get_or_create_identifier(id_type, value, db, id_class=PersonalIdentifier):
     state, identifier = get_identifier(id_type, value, db)
-    print("Bbbbbbbbb", value)
     if state == IdentifierState.NONE_MATCHING:
-        print("ccccccccccccccccc", value)
         new_identifier = id_class(type=id_type, value=value)
-        print("NEW ID", new_identifier)
         db.add(new_identifier)
         identifier = new_identifier
         db.commit()
