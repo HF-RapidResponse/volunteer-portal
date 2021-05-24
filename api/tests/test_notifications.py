@@ -5,7 +5,7 @@ import notifications_manager as nm
 from models.notification import Notification, NotificationChannel, NotificationStatus
 from slack_sdk.errors import SlackApiError
 
-from tests.fake_data_utils import fake
+from tests.fake_data_utils import fake, run_delete
 from pydantic import error_wrappers
 
 
@@ -18,16 +18,16 @@ def db():
 
 @pytest.fixture(autouse=True)
 def setup(db):
-    db = Session()
     yield  # this is where the testing happens
     db.rollback()
+    run_delete(Notification, db)
 
 
 class MockResponse(object):
     def __init__(self, success: bool):
         # mocks request.reponse behavior returned by SendGrid
         self.ok = success
-        self.status_code = 202
+        self.status_code = 202 if success else 500
         # mocks object from Twilio response
         self.error_code = None if success else 1234
 
@@ -61,7 +61,7 @@ def test_validate_bad_email(mock_send, db):
 def test_send_email_success(mock_send, db):
     mock_send.return_value = MockResponse(True)
 
-    email_address = 'good.email@exmaple.com'
+    email_address = 'good.email@example.com'
     message = fake.paragraph(nb_sentences=10)
     nm.send_notification(email_address, message, NotificationChannel.EMAIL)
 
@@ -82,7 +82,7 @@ def test_send_email_success(mock_send, db):
 def test_send_email_failure(mock_send, db):
     mock_send.return_value = MockResponse(False)
 
-    email_address = 'asdf@!'
+    email_address = 'good.email@example.com'
     message = fake.paragraph(nb_sentences=10)
     nm.send_notification(email_address, message, NotificationChannel.EMAIL)
 

@@ -36,49 +36,54 @@ notification_defaults: &notification_defaults
 # Specific configurations for each environment
 
 test:
-  routes:
-    <<: *development_routes_defaults
-  databases:
-    database:
-      generator: db_url_generator
-      adapter: postgresql
-      host: db
-      database: hf_volunteer_portal_test
-      user: admin
-      password: password
-  auth:
-    <<: *auth_defaults
-  notifications:
-    <<: *notification_defaults
+    public_facing_org_name: "[TEST] Humanity Forward's Volunteer Program"
+    routes:
+        <<: *development_routes_defaults
+    databases:
+        database:
+            generator: db_url_generator
+            adapter: postgresql
+            host: db
+            database: hf_volunteer_portal_test
+            user: admin
+            password: password
+    auth:
+        <<: *auth_defaults
+    notifications:
+        <<: *notification_defaults
 development:
-  routes:
-    <<: *development_routes_defaults
-  databases:
-    database:
-      generator: db_url_generator
-      adapter: postgresql
-      host: db
-      database: hf_volunteer_portal_development
-      user: admin
-      password: password
-  auth:
-    # import_auth_credentials_from_secret_store: false
-    <<: *auth_defaults
-  notifications:
-    <<: *notification_defaults
+    public_facing_org_name: "[DEV] Humanity Forward's Volunteer Program"
+    routes:
+        <<: *development_routes_defaults
+    databases:
+        database:
+            generator: db_url_generator
+            adapter: postgresql
+            host: db
+            database: hf_volunteer_portal_development
+            user: admin
+            password: password
+    auth:
+        # import_auth_credentials_from_secret_store: false
+        <<: *auth_defaults
+    notifications:
+        <<: *notification_defaults
 staging:
-  routes:
-    <<: *staging_routes_defaults
-  databases:
-    <<: *production_db_defaults
-  auth:
-    <<: *auth_defaults
-  # TODO update to proper staging config
-  notifications:
-    <<: *notification_defaults
+    public_facing_org_name: "[STAGING] Humanity Forward's Volunteer Program"
+    # TODO verify that this is fine as long as the traffic is all proxies within a single machine.
+    routes:
+        <<: *development_routes_defaults  
+    databases:
+        <<: *production_db_defaults
+    auth:
+        <<: *auth_defaults
+    # TODO update to proper staging config
+    notifications:
+        <<: *notification_defaults  
 production:
-  databases:
-    <<: *production_db_defaults
-  auth:
-    <<: *auth_defaults
-  # TODO add production notification configs
+    public_facing_org_name: "Humanity Forward's Volunteer Program"
+    databases:
+        <<: *production_db_defaults
+    auth:
+        <<: *auth_defaults
+    # TODO add production notification configs

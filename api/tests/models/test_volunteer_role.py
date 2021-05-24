@@ -1,5 +1,5 @@
 import pytest
-from models import VolunteerRole, Person, Priority, RoleType
+from models import VolunteerRole, Priority, RoleType
 from settings import Session
 from typing import List
 from tests.fake_data_utils import generate_fake_volunteer_role

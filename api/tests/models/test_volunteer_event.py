@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from models import VolunteerEvent, Person
+from models import VolunteerEvent
 from settings import Session
 from tests.fake_data_utils import generate_fake_volunteer_event
 from uuid import UUID

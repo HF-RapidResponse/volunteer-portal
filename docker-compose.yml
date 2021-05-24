@@ -3,11 +3,14 @@ version: "3.7"
 services:
   api:
     build: ./api
-    command: uvicorn --host 0.0.0.0 api:app --app-dir . --port 8081 --reload
+    command: bash -c "jupyter notebook --port 8889 --ip 0.0.0.0 --allow-root --NotebookApp.token='easy' & uvicorn --host 0.0.0.0 api:app --app-dir . --port 8081 --reload"
+    environment:
+      JUPYTER_TOKEN: easy
     depends_on:
       db:
         condition: service_healthy
     ports:
+    - 8889:8889
     - 8081:8081
     volumes:
     - ./api:/api

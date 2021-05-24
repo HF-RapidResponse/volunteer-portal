@@ -8,4 +8,5 @@ services:
   api:
     environment:
       ENV: test
+      JUPYTER_TOKEN: easy
       GOOGLE_APPLICATION_CREDENTIALS: ./gcp_credentials.json

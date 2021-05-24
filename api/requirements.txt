@@ -8,6 +8,7 @@ uvicorn[standard]
 gunicorn
 requests
 sqlalchemy
+sqlalchemy-utils
 pybigquery
 pymysql
 psycopg2-binary
@@ -24,3 +25,4 @@ passlib
 twilio
 phonenumbers
 slack-sdk
+pyotp

@@ -21,7 +21,7 @@ export const validateEmail = (email) => {
   const isValid = regex.test(String(email).toLowerCase());
   return isValid
     ? null
-    : 'Please provide a valid e-mail address (i.e. andy@test.com)';
+    : 'Please provide a valid e-mail address (e.g. andy@test.com)';
 };
 
 export const validateUsername = (username) => {

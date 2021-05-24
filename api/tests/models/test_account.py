@@ -26,17 +26,6 @@ def test_account_create_valid(db):
     db.add(account)
     db.commit()
 
-def test_account_create_duplicate_email(db):
-    account = generate_fake_account()
-    db.add(account)
-    account2 = generate_fake_account()
-    account2.email = account.email
-    db.add(account2)
-
-    with pytest.raises(IntegrityError):
-      db.commit()
-
-
 def test_account_create_duplicate_username(db):
     account = generate_fake_account()
     db.add(account)

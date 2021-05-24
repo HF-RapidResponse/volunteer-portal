@@ -1,17 +1,28 @@
-export class AccountReqBody {
+export class AccountBody {
   constructor(obj) {
     this.username = obj.username;
-    this.email = obj.email;
     this.first_name = obj.first_name;
     this.last_name = obj.last_name;
-    this.password = obj.password;
-    this.oauth = obj.oauth;
     this.profile_pic = obj.profile_pic;
     this.city = obj.city;
     this.state = obj.state;
     this.zip_code = obj.zip_code;
     this.roles = obj.roles || [];
-    this.is_verified = obj.is_verified || false;
+  }
+}
+
+export class Identifier {
+  constructor(obj) {
+    this.identifier = obj.identifier;
+    this.type = obj.type;
+  }
+}
+
+export class AccountCreateReqBody {
+  constructor(obj) {
+    this.account = new AccountBody(obj.account);
+    this.identifier = new Identifier(obj.identifier);
+    this.password = obj.password;
   }
 }
 
