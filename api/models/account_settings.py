@@ -1,6 +1,6 @@
 from models.base import Base
 
-from sqlalchemy import func, select, Column, String, Integer, Text, Boolean, DateTime
+from sqlalchemy import func, select, Column, String, Integer, Text, Boolean, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
 from sqlalchemy.orm import backref, column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -14,6 +14,7 @@ class AccountSettings(Base):
 
     uuid = Column(UUID(as_uuid=True), primary_key=True,
                   default=uuid4, unique=True, nullable=False)
+    account_uuid = Column(UUID(as_uuid=True), ForeignKey('accounts.uuid'), nullable=True)
     show_name = Column('show_name', Boolean, default=False, nullable=False)
     show_email = Column('show_email', Boolean, default=False, nullable=False)
     show_location = Column('show_location', Boolean,
@@ -27,9 +28,6 @@ class AccountSettings(Base):
     password_reset_hash = Column('password_reset_hash', Text, nullable=True)
     password_reset_time = Column(
         'password_reset_time', DateTime, nullable=True)
-    verify_account_hash = Column('verify_account_hash', Text, nullable=True)
-    cancel_registration_hash = Column(
-        'cancel_registration_hash', Text, nullable=True)
 
     def __repr__(self):
         return "<AccountSettings(uuid='%s', show_name='%s', show_email='%s', show_location='%s', organizers_can_see='%s', volunteers_can_see='%s', initiative_map='%s', password_reset_hash='%s', password_reset_time='%s')>" % (

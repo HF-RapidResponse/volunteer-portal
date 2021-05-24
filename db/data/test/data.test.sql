@@ -46,7 +46,8 @@ CREATE TYPE public.identifiertype AS ENUM (
     'EMAIL',
     'PHONE',
     'SLACK_ID',
-    'GOOGLE_ID'
+    'GOOGLE_ID',
+    'GITHUB_ID'
 );
 
 
@@ -111,27 +112,12 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: accounts; Type: TABLE; Schema: public; Owner: admin
---
-
-CREATE TABLE public.accounts (
-    uuid uuid NOT NULL,
-    username character varying(255),
-    first_name character varying(255),
-    last_name character varying(255),
-    _primary_email_identifier_uuid uuid,
-    _primary_phone_number_identifier_uuid uuid
-);
-
-
-ALTER TABLE public.accounts OWNER TO admin;
-
---
--- Name: donation_emails; Type: TABLE; Schema: public; Owner: admin
+-- Name: account_settings; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.account_settings (
     uuid uuid NOT NULL,
+    account_uuid uuid,
     show_name boolean NOT NULL,
     show_email boolean NOT NULL,
     show_location boolean NOT NULL,
@@ -139,9 +125,7 @@ CREATE TABLE public.account_settings (
     volunteers_can_see boolean NOT NULL,
     initiative_map json NOT NULL,
     password_reset_hash text,
-    password_reset_time timestamp without time zone,
-    verify_account_hash text,
-    cancel_registration_hash text
+    password_reset_time timestamp without time zone
 );
 
 
@@ -153,18 +137,17 @@ ALTER TABLE public.account_settings OWNER TO admin;
 
 CREATE TABLE public.accounts (
     uuid uuid NOT NULL,
-    email text NOT NULL,
-    username character varying(255) NOT NULL,
+    username character varying(255),
     first_name character varying(255),
     last_name character varying(255),
     password text,
-    oauth character varying(32),
     profile_pic text,
     city character varying(32),
     state character varying(32),
-    zip_code character varying(32),
     roles character varying[] NOT NULL,
-    is_verified boolean NOT NULL
+    zip_code character varying(32),
+    _primary_email_identifier_uuid uuid,
+    _primary_phone_number_identifier_uuid uuid
 );
 
 
@@ -293,15 +276,7 @@ CREATE TABLE public.volunteer_openings (
 ALTER TABLE public.volunteer_openings OWNER TO admin;
 
 --
--- Name: accounts accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY public.accounts
-    ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
-
-
---
--- Name: donation_emails donation_emails_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: account_settings account_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.account_settings
@@ -315,12 +290,37 @@ ALTER TABLE ONLY public.account_settings
 ALTER TABLE ONLY public.accounts
     ADD CONSTRAINT accounts_pkey PRIMARY KEY (uuid);
 
+
+--
+-- Name: accounts accounts_username_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.accounts
+    ADD CONSTRAINT accounts_username_key UNIQUE (username);
+
+
+--
+-- Name: events events_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.events
+    ADD CONSTRAINT events_id_key UNIQUE (id);
+
+
 --
 -- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.events
     ADD CONSTRAINT events_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: initiatives initiatives_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.initiatives
+    ADD CONSTRAINT initiatives_id_key UNIQUE (id);
 
 
 --
@@ -348,6 +348,14 @@ ALTER TABLE ONLY public.personal_identifiers
 
 
 --
+-- Name: personal_identifiers personal_identifiers_type_value_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.personal_identifiers
+    ADD CONSTRAINT personal_identifiers_type_value_key UNIQUE (type, value);
+
+
+--
 -- Name: verification_tokens verification_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -356,11 +364,55 @@ ALTER TABLE ONLY public.verification_tokens
 
 
 --
+-- Name: volunteer_openings volunteer_openings_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.volunteer_openings
+    ADD CONSTRAINT volunteer_openings_id_key UNIQUE (id);
+
+
+--
 -- Name: volunteer_openings volunteer_openings_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.volunteer_openings
     ADD CONSTRAINT volunteer_openings_pkey PRIMARY KEY (uuid);
+
+
+--
+-- Name: ix_account_uuid; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX ix_account_uuid ON public.personal_identifiers USING hash (account_uuid);
+
+
+--
+-- Name: ix_event_id; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX ix_event_id ON public.events USING hash (id);
+
+
+--
+-- Name: ix_role_id; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX ix_role_id ON public.volunteer_openings USING hash (id);
+
+
+--
+-- Name: ix_value; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX ix_value ON public.personal_identifiers USING hash (value);
+
+
+--
+-- Name: account_settings account_settings_account_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.account_settings
+    ADD CONSTRAINT account_settings_account_uuid_fkey FOREIGN KEY (account_uuid) REFERENCES public.accounts(uuid);
 
 
 --
@@ -398,3 +450,4 @@ ALTER TABLE ONLY public.verification_tokens
 --
 -- PostgreSQL database dump complete
 --
+

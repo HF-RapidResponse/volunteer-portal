@@ -1,7 +1,7 @@
 from constants import placeholder_image
 from models import Base
 from models.airtable_row import AirtableRow
-from sqlalchemy import Column, String, Text, DateTime
+from sqlalchemy import Column, String, Text, DateTime, Index
 from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql import func
@@ -25,3 +25,5 @@ class VolunteerEvent(AirtableRow, Base):
     def __repr__(self):
         return "VolunteerEvent(uuid='%s', external_id='%s', name='%s')" % (
                                 self.uuid, self.external_id, self.event_name)
+
+    __table_args__ = (Index('ix_event_id', 'id', postgresql_using='hash'),)

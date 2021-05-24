@@ -51,6 +51,7 @@ db-reset-all-from-python:
 	make db-save-dev
 	make db-save-test-from-dev
 	make recreate-db
+	make down
 recreate-db:
 	docker-compose build --no-cache db
 

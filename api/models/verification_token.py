@@ -58,7 +58,6 @@ class VerificationToken(Base):
             if self.personal_identifier:
                 self.personal_identifier.verified = True
 
-            session.add(self)
             session.commit()
 
         return verified

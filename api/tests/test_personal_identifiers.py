@@ -9,9 +9,20 @@ from email_validator import EmailNotValidError, validate_email
 from phonenumbers.phonenumberutil import NumberParseException
 from fastapi_jwt_auth import AuthJWT
 
-from models import Account, PersonalIdentifier, EmailIdentifier, PhoneNumberIdentifier, IdentifierType, VerificationToken
+from models import Account, PersonalIdentifier, StandardEmailIdentifier, PhoneNumberIdentifier, IdentifierType, VerificationToken, AccountSettings
 from api.api import app
 import auth
+from tests.test_account_api import valid_account_creation_request
+from tests.fake_data_utils import run_delete
+from identifiers_helper import get_or_create_identifier
+
+@pytest.fixture(autouse=True)
+def setup(db):
+    yield  # this is where the testing happens
+    db.rollback()
+    run_delete(Account, db)
+    run_delete(PersonalIdentifier, db)
+    run_delete(VerificationToken, db)
 
 @pytest.fixture(scope='function')
 def client():
@@ -24,9 +35,10 @@ def db():
 def test_personal_identifiers_relationships_and_polymorphism(db):
     account = Account(first_name='Test', last_name='Success')
 
-    account_email = EmailIdentifier(value='good.email@example.com')
+    account_email = StandardEmailIdentifier(value='good.email@example.com')
     account.primary_email_identifier = account_email
-    other_email = EmailIdentifier(value='another.good.email@example.com')
+
+    other_email = StandardEmailIdentifier(value='another.good.email@example.com')
 
     account_phone_number = PhoneNumberIdentifier(value='+1 1-800-444-4444')
     account.primary_phone_number_identifier = account_phone_number
@@ -42,9 +54,12 @@ def test_personal_identifiers_relationships_and_polymorphism(db):
     assert other_email.account is None
     assert other_phone_number.account is None
 
+    other_email.account_uuid = account.uuid
+
     linked_email = account.primary_email_identifier
     linked_phone_number = account.primary_phone_number_identifier
     assert linked_email.uuid == account_email.uuid
+    assert linked_email.account_uuid == account.uuid
     assert linked_email in account.personal_identifiers
     assert linked_phone_number.uuid == account_phone_number.uuid
     assert linked_phone_number in account.personal_identifiers
@@ -59,15 +74,13 @@ def test_personal_identifiers_relationships_and_polymorphism(db):
     assert queried_email.uuid == account_email.uuid
     assert queried_phone_number.uuid == account_phone_number.uuid
 
-    [db.delete(record) for record in [account, other_email, other_phone_number]]
-    db.commit()
 
 def test_email_validation():
-    good_email = EmailIdentifier(value='good.email@example.com')
+    good_email = StandardEmailIdentifier(value='good.email@example.com')
     assert good_email.value == 'good.email@example.com'
 
     with pytest.raises(EmailNotValidError):
-        _ = EmailIdentifier(value='@not.a good email')
+        _ = StandardEmailIdentifier(value='@not.a good email')
 
     with pytest.raises(AssertionError):
         account = Account(first_name=' Test', last_name='Success')
@@ -83,7 +96,7 @@ def test_phone_number_validation():
 
     with pytest.raises(AssertionError):
         account = Account(first_name=' Test', last_name='Success')
-        good_email = EmailIdentifier(value='good.email@example.com')
+        good_email = StandardEmailIdentifier(value='good.email@example.com')
         account.primary_phone_number_identifier = good_email
 
 @patch('auth.notifications_manager.send_notification')
@@ -93,56 +106,47 @@ def test_verify_personal_identifier_without_account(mock_send, db, client):
         json = {'identifier': 'email_to_verify@example.com', 'type': 'email'}
     )
 
-    assert begin_response.status_code == 200
+    assert begin_response.status_code == 200, begin_response.json()
     assert begin_response.json()['verification_token_uuid']
     assert mock_send.called
 
     token = db.query(VerificationToken).filter(and_(PersonalIdentifier.type==IdentifierType.EMAIL, PersonalIdentifier.value=='email_to_verify@example.com')).order_by(VerificationToken.created_at.desc()).first()
 
-    finish_response = client.post(
-        'api/verify_identifier/finish',
-        json = {'verification_token_uuid': str(token.uuid), 'otp': token.otp}
-    )
+    finish_response = client.get(
+        f'api/verify_identifier/finish?token={str(token.uuid)}&otp={token.otp}')
 
     assert finish_response.status_code == 200
-    assert finish_response.json() == {'msg': 'The provided token\'s personal identifier has been verified'}
+    expected = {'msg': 'The provided token\'s personal identifier has been verified',
+                'account': None}
+    assert finish_response.json() == expected
 
-    db.delete(token)
-    db.commit()
 
-# Can't figure out how to mock an authenticated session
-# Not sure what magic fastapi_jwt_auth is doing here: 
-# https://github.com/IndominusByte/fastapi-jwt-auth/blob/master/tests/test_url_protected.py
+@patch('auth.notifications_manager.send_notification')
+def test_verify_personal_identifier_with_account(mock_send, db, client):
+    account = client.post(f'api/accounts/', json=valid_account_creation_request).json()
+    settings = client.get(f'api/account_settings/{account["uuid"]}').json()
 
-# @patch('auth.notifications_manager.send_notification')
-# def test_verify_personal_identifier_with_account(mock_send, db, client, Authorize):
-#     account = Account(first_name='Verification', last_name='Test')
-#     db.add(account)
-#     db.commit()
-#     jwt = Authorize.create_access_token(subject=str(account.uuid))
+    account['settings'] = settings
+    # this will be a logged out notification - cant get tokens until after verification.
+    begin_response = client.post(
+        'api/verify_identifier/start',
+            json = {'identifier': 'another_email_to_verify@example.com', 'type': 'email'}
+    )
 
-#     begin_response = client.post(
-#         'api/verify_identifier/start',
-#         headers = {"Authorization":f"Bearer {jwt}"},
-#         json = {'identifier': 'another_email_to_verify@example.com', 'type': 'email'}
-#     )
+    assert begin_response.status_code == 200
+    assert begin_response.json()['verification_token_uuid']
+    assert mock_send.called
 
-#     assert begin_response.status_code == 200
-#     assert begin_response.json()['verification_token_uuid']
-#     assert mock_send.called
+    token = db.query(VerificationToken).filter(and_(PersonalIdentifier.type==IdentifierType.EMAIL, PersonalIdentifier.value=='another_email_to_verify@example.com')).order_by(VerificationToken.created_at.desc()).first()
+    assert str(token.personal_identifier.account.uuid) == account['uuid']
 
-#     token = db.query(VerificationToken).filter(and_(PersonalIdentifier.type==IdentifierType.EMAIL, PersonalIdentifier.value=='another_email_to_verify@example.com')).order_by(VerificationToken.created_at.desc()).first()
-#     assert token.personal_identifier.account.uuid == account.uuid
+    finish_response = client.get(
+        f'api/verify_identifier/finish?token={str(token.uuid)}&otp={token.otp}')
 
-#     finish_response = client.post(
-#         'api/verify_identifier/finish',
-#         headers = {"Authorization":f"Bearer {jwt}"},
-#         json = {'verification_token_uuid': str(token.uuid), 'otp': token.otp}
-#     )
+    assert finish_response.status_code == 200, finish_response.json()
+    expected = {'msg': None, 'account': account}
+    assert finish_response.json() == expected
 
-#     assert finish_response.status_code == 200
-#     assert finish_response.json() == {'msg': 'The provided token\'s personal identifier has been verified'}
-
-#     db.delete(account)
-#     db.delete(token)
-#     db.commit()
+def test_duplicate_identifier_values_with_different_types(db):
+    state1, identifier1 =  get_or_create_identifier(IdentifierType.EMAIL, 'test@gmail.com', db)
+    state2, identifier2 =  get_or_create_identifier(IdentifierType.GOOGLE_ID, 'test@gmail.com', db)

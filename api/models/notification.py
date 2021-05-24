@@ -23,11 +23,9 @@ class NotificationStatus(enum.Enum):
 class Notification(Base):
     __tablename__ = 'notifications'
 
-    # TODO check this over - need to find all instances of notification_uuid
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
     channel = Column('channel', Enum(NotificationChannel), nullable=False)
     recipient = Column('recipient', Text, nullable=False)
-    # TODO subject nullable or title? need to check this over too where is trip using it/how
     title = Column('title', Text)
     message = Column('message', Text, nullable=False)
     scheduled_send_date = Column(

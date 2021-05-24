@@ -5,8 +5,9 @@ from datetime import datetime, timedelta
 from faker import Faker  # type: ignore
 from faker.providers import barcode, job, address  # type: ignore
 
-from models import (NestedInitiative, Initiative, Person, Priority,
-                    RoleType, VolunteerRole, VolunteerEvent, Account)
+from models import (NestedInitiative, Initiative, Priority,
+                    RoleType, VolunteerRole, VolunteerEvent, Account,
+                    PersonalIdentifier)
 
 fake = Faker()
 fake.add_provider(barcode)
@@ -122,15 +123,20 @@ def get_fake_email():
     # dash isn't valid in the domain part of an email according to one of our checkers.
     return fake.unique.email().replace("-", "")
 
+def generate_identifier(type='email'):
+    if type == 'email':
+        return PersonalIdentifier(type=type,
+                                  value=get_fake_email(),
+                                  verified = True)
+    else:
+        raise Exception("Unemplemented behavior")
 
 def generate_fake_account():
     return Account(
-        email=get_fake_email(),
         username=fake.name().replace(" ", ""),
         first_name=fake.first_name(),
         last_name=fake.last_name(),
         password=fake.password(),
-        oauth=fake.password(),
         # TODO simple http server to act as testing object storage
         profile_pic=fake.url(),
         city=fake.city(),
@@ -138,3 +144,14 @@ def generate_fake_account():
         zip_code=fake.postcode(),
         roles=[fake.job() for i in range(randint(0, 2))],
     )
+
+def link_identifier(account, identifier, session):
+    if not account.uuid:
+        session.add(account)
+    identifier.account_uuid = account.uuid
+    session.commit()
+
+def run_delete(table, db):
+    for i in db.query(table).all():
+        db.delete(i)
+    db.commit()

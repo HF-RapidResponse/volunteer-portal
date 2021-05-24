@@ -48,7 +48,7 @@ def send_notification(recipient: str, message: str, channel: NotificationChannel
 
 @validate_arguments(config=dict(arbitrary_types_allowed=True))
 def send_email_notification(notification: Notification):
-    logging.error(f'Attempting to send email notification {notification.uuid}')
+    logging.info(f'Attempting to send email notification {notification.uuid}')
     try:
         assert notification.channel is NotificationChannel.EMAIL
 

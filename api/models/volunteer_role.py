@@ -1,10 +1,9 @@
 from models.base import Base
 from models.airtable_row import AirtableRow
-from models.person import Person
 from models.priority import Priority
 from models.role_type import RoleType
 from constants import placeholder_image
-from sqlalchemy import Column, Enum, String, Integer, Text
+from sqlalchemy import Column, Enum, String, Integer, Text, Index
 from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
 from sqlalchemy.orm import column_property, relationship, synonym
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -38,3 +37,4 @@ class VolunteerRole(AirtableRow, Base):
     def __repr__(self):
         return "VolunteerRole(role_uuid='%s', role_external_id='%s', name='%s')" % (
                                 self.uuid, self.external_id, self.role_name)
+    __table_args__ = (Index('ix_role_id', 'id', postgresql_using='hash'),)

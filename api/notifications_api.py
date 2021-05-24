@@ -1,10 +1,10 @@
 from fastapi import Depends, FastAPI, Form, Request, HTTPException, Header, APIRouter
 from typing import List, Optional, Text, Union, Mapping, Any
-from models import Account, AccountSettings
+from models import Account, AccountSettings, PersonalIdentifier, IdentifierType
 from models.notification import Notification, NotificationChannel, NotificationStatus
 import notifications_manager as nm
 from schemas import (AccountCreateRequestSchema, AccountResponseSchema, AccountBaseSchema,
-                     AccountNewPasswordSchema, AccountSettingsSchema, AccountNotificationSchema)
+                     AccountNewPasswordSchema, AccountNotificationSchema)
 from settings import Config, Session, get_db
 from uuid import uuid4, UUID
 from fastapi_jwt_auth import AuthJWT
@@ -26,87 +26,82 @@ router = APIRouter()
 def create_notification(notification_payload: AccountNotificationSchema, db: Session = Depends(get_db)):
     existing_acct = None
     if notification_payload.email is not None:
-        existing_acct = db.query(Account).filter_by(
-            email=notification_payload.email).first() or db.query(Account).filter_by(
-                email=sanitize_email(notification_payload.email)).first()
+        identifier = db.query(PersonalIdentifier).filter_by(
+            value=notification_payload.email).first() \
+            or db.query(Personalidentifier).filter_by(
+                value=sanitize_email(notification_payload.email)).first()
+        existing_acct = identifier.account
     elif notification_payload.username is not None:
         existing_acct = db.query(Account).filter_by(
             username=notification_payload.username.strip()).first()
+        identifier = existing_acct.primary_email_identifier
     else:
         raise HTTPException(status_code=400,
                             detail=f"Invalid username or e-mail!")
-    create_and_send_email(notification_payload, existing_acct, db)
+    if existing_acct and existing_acct.email:
+        create_and_send_email(notification_payload, existing_acct, identifier.type, db)
 
 
-def create_and_send_email(notification_payload: AccountNotificationSchema, existing_acct: Account, db: Session):
+def create_and_send_email(notification_payload: AccountNotificationSchema, existing_acct: Account, id_type, db: Session):
     email_message = None
-    if existing_acct is not None:
-        if notification_payload.notification_type == 'password_reset':
-            email_message = f'<p>Dear {existing_acct.first_name},</p>'
-            if existing_acct.oauth is None:
-                base_url = Config['routes']['client']
-                acct_settings = db.query(AccountSettings).filter_by(
-                    uuid=existing_acct.uuid).first()
-                curr_time = datetime.now()
-                password_reset_hash = generate_str_for_hash(
-                    existing_acct.username, curr_time)
-                acct_settings.password_reset_hash = password_reset_hash
-                acct_settings.password_reset_time = curr_time
-                db.merge(acct_settings)
-                db.commit()
+    if notification_payload.notification_type == 'password_reset':
+        email_message = create_password_reset_email(existing_acct, id_type, db)
+        nm.send_notification(recipient=existing_acct.email, message=email_message,
+                             channel=NotificationChannel.EMAIL,
+                             scheduled_send_date=datetime.now(),
+                             title='HF Volunteer Portal Password Reset')
 
-                reset_url = f'{base_url}/reset_password?hash={password_reset_hash}'
-                message_body = CreateParagraph(
-                    f"""We have received a request to reset your password. To reset your password,
-                        please click the following""")
-                message_body += CreateButton("Reset Password", reset_url)
-                message_body += CreateParagraph("This link will expire in 15 minutes")
-            else:
-                oauth_type = existing_acct.oauth.capitalize()
-                message_body = CreateParagraph(
-                    f"""We have received a request to reset your password.
-                    Your account was created with {oauth_type} OAuth; therefore,
-                    you cannot set or reset a password.
-                    Please try signing in with {oauth_type}.""")
-            message_body += CreateParagraph(
-                '<b>If this action was not performed by you, please ignore this message.</b>')
+def create_password_reset_email(existing_acct: Account, id_type, db: Session):
+    """Returns an email containing a reset link with a hash associated with the account.
+    Or returns an email indicating no password reset possible for OAUTH accounts.
+    """
+    email_message = f'<p>Dear {existing_acct.first_name},</p>'
+    if id_type is IdentifierType.EMAIL:
+        base_url = Config['routes']['client']
+        acct_settings = existing_acct.settings
 
-            email_message = BASE_EMAIL_TEMPLATE.format(body_text=message_body)
-            nm.send_notification(recipient=existing_acct.email, message=email_message,
-                                 channel=NotificationChannel.EMAIL, scheduled_send_date=datetime.now(), subject='HF Volunteer Portal Password Reset')
-        elif notification_payload.notification_type == 'verify_registration':
-            base_url = Config['routes']['client']
-            acct_settings = db.query(AccountSettings).filter_by(
-                uuid=existing_acct.uuid).first()
-            curr_time = datetime.now()
-            verify_account_hash = generate_str_for_hash(
-                existing_acct.username, curr_time)
-            acct_settings.verify_account_hash = verify_account_hash
-            cancel_registration_hash = generate_str_for_hash(
-                existing_acct.username, curr_time)
-            acct_settings.cancel_registration_hash = cancel_registration_hash
-            db.merge(acct_settings)
-            db.commit()
+        curr_time = datetime.now()
+        password_reset_hash = generate_str_for_hash(
+            existing_acct.username, curr_time)
+        acct_settings.password_reset_hash = password_reset_hash
+        acct_settings.password_reset_time = curr_time
+        db.merge(acct_settings)
+        db.commit()
 
-            verify_url = f'{base_url}/verify_account?hash={verify_account_hash}'
-            cancel_url = f'{base_url}/cancel_registration?hash={cancel_registration_hash}'
+        reset_url = f'{base_url}/reset_password?hash={password_reset_hash}'
+        message_body = CreateParagraph(
+            f"""We have received a request to reset your password. To reset your password,
+                please click the following""")
+        message_body += CreateButton("Reset Password", reset_url)
+        message_body += CreateParagraph("This link will expire in 15 minutes")
+    else:
+        oauth_type = id_type.value.replace("_id", "").replace("_member", "").capitalize()
+        message_body = CreateParagraph(
+            f"""We have received a request to reset your password.
+            Your account was created with {oauth_type} OAuth; therefore,
+            you cannot set or reset a password.
+            Please try signing in with {oauth_type}.""")
+    message_body += CreateParagraph(
+        '<b>If this action was not performed by you, please ignore this message.</b>')
+    email_message = BASE_EMAIL_TEMPLATE.format(body_text=message_body)
+    return email_message
 
-            message_body = CreateParagraph(f'Hi {existing_acct.first_name},')
-            message_body += CreateParagraph(
-                f"""We have received a request to create an account associated with this email.
-                Please click below to verify your account""")
-            message_body += CreateButton("Verify My Account", verify_url)
+def create_verification_registration_email(first_name: str,
+                                           verify_url: str,
+                                           db: Session):
 
-            message_body += CreateParagraph(
-                f"""If this action was not performed by you or performed by accident,
-                you may click the following to undo account creation""")
-            message_body += CreateButton("Undo Account Registration", cancel_url)
+    message_body = CreateParagraph(f'Hi {first_name},')
+    message_body += CreateParagraph(
+        f"""We have received a request to create an account associated with this email.
+        Please click below to verify your account""")
+    message_body += CreateButton("Verify My Account", verify_url)
 
-            email_message = BASE_EMAIL_TEMPLATE.format(body_text=message_body)
+    message_body += CreateParagraph(
+        f"""If this action was not performed by you or performed by accident,
+        please ignore this message and the registration will be cancelled.""")
 
-            nm.send_notification(recipient=existing_acct.email, message=email_message,
-                                 channel=NotificationChannel.EMAIL, scheduled_send_date=datetime.now(), subject='HF Volunteer Portal Account Registration')
-
+    email_message = BASE_EMAIL_TEMPLATE.format(body_text=message_body)
+    return email_message
 
 @router.get("/settings_from_hash", status_code=200)
 def get_settings_from_hash(pw_reset_hash: str, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
@@ -128,43 +123,6 @@ def get_settings_from_hash(pw_reset_hash: str, Authorize: AuthJWT = Depends(), d
     else:
         raise HTTPException(status_code=400,
                             detail=f"Invalid or expired password reset URL!")
-
-
-@router.get("/verify_account_from_hash", status_code=200)
-def complete_account_registration(verify_hash: str, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    settings = db.query(AccountSettings).filter_by(
-        verify_account_hash=verify_hash).first()
-    if settings is not None:
-        acct_uuid = settings.uuid
-        settings.verify_account_hash = None
-        settings.cancel_registration_hash = None
-        db.merge(settings)
-        db.commit()
-        account = db.query(Account).filter_by(
-            uuid=acct_uuid).first()
-        if account is not None:
-            account.is_verified = True
-            db.merge(account)
-            db.commit()
-            create_access_and_refresh_tokens(
-                str(acct_uuid), Authorize)
-            user = row2dict(account)
-            user.update(row2dict(settings))
-            return user
-    else:
-        raise HTTPException(status_code=400,
-                            detail=f"invalid hash or account does not exist")
-
-
-@router.delete("/cancel_registration_from_hash", status_code=204)
-def cancel_account_registration(cancel_hash: str, db: Session = Depends(get_db)):
-    settings_to_delete = db.query(AccountSettings).filter_by(
-        cancel_registration_hash=cancel_hash).first()
-    if settings_to_delete is None:
-        raise HTTPException(status_code=400,
-                            detail=f"Account settings with hash {cancel_hash} not found")
-    acct_uuid = settings_to_delete.uuid
-    delete_user(acct_uuid, db)
 
 
 def generate_str_for_hash(username: str, curr_time: datetime):

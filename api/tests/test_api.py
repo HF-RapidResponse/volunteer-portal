@@ -14,7 +14,7 @@ from models import NestedInitiative, Initiative, VolunteerRole, VolunteerEvent
 
 from tests.fake_data_utils import generate_fake_initiative, generate_fake_volunteer_role
 from tests.fake_data_utils import generate_fake_volunteer_event, generate_fake_volunteer_events_list
-from tests.fake_data_utils import generate_fake_initiatives_list
+from tests.fake_data_utils import generate_fake_initiatives_list, run_delete
 
 from sqlalchemy import exc
 
@@ -31,7 +31,10 @@ def setup(db):
     db = Session()
     yield  # this is where the testing happens
     db.rollback()
-
+    run_delete(NestedInitiative, db)
+    run_delete(Initiative, db)
+    run_delete(VolunteerRole, db)
+    run_delete(VolunteerEvent, db)
 
 client = TestClient(app)
 
