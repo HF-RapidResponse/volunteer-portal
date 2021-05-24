@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Button, Form, Col, Row } from 'react-bootstrap';
 import { basicPropUpdate, attemptUpdateAccount } from 'store/user-slice';
-import { AccountReqBody } from 'store/user-slice/classes';
+import { AccountBody } from 'store/user-slice/classes';
 import useForm from 'components/hooks/useForm';
 import { isEqual } from 'lodash';
 
@@ -279,7 +279,7 @@ function Profile(props) {
         </Row>
         <Row
           className={
-            isEqual(new AccountReqBody(user), new AccountReqBody(data))
+            isEqual(new AccountBody(user), new AccountBody(data))
               ? 'd-none'
               : null
           }

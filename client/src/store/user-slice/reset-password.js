@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AccountReqBody, SettingsReqBody } from './classes';
+import { AccountBody, SettingsReqBody } from './classes';
 import {
   validatePassword,
   validateEmail,
@@ -54,10 +54,7 @@ export const attemptResetPassword = async (payload) => {
     if (formHasNoErrors(errors)) {
       sanitizeData(password);
       await axios.patch(
-        `/api/accounts/${uuid}`,
-        new AccountReqBody({
-          password,
-        })
+        `/api/accounts/${uuid}`, { password: password }
       );
       await resetPasswordAndInfo(uuid);
       return;

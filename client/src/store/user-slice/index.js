@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { createSlice } from '@reduxjs/toolkit';
-import { AccountReqBody, SettingsReqBody } from './classes';
+import { AccountCreateReqBody, AccountBody, SettingsReqBody } from './classes';
 import {
   validatePassword,
   validateEmail,
@@ -230,16 +230,22 @@ export const attemptRegister = (payload) => async (dispatch) => {
 
   try {
     sanitizeData(payload);
-    const objPayload = new AccountReqBody(payload);
+    console.log(payload);
+    let request = { account: payload,
+      identifier: { identifier: payload.email,
+        type: 'email'},
+      password: payload.password};
+
+    const objPayload = new AccountCreateReqBody(request);
     const accountRes = await axios.post(`/api/accounts/`, objPayload);
     const createdAcct = accountRes.data;
     if (createdAcct) {
       const obj = {
-        notification_type: 'verify_registration',
-        email: createdAcct.email,
-        username: createdAcct.username,
+        account_uuid: createdAcct.uuid,
+        identifier: createdAcct.email,
+        type: "email",
       };
-      await axios.post(`/api/notifications/`, obj);
+      await axios.post(`/api/verify_identifier/start`, obj);
     }
   } catch (error) {
     handleRegisterErrors(error.response, errors);
@@ -265,10 +271,7 @@ export const attemptChangePassword = (payload) => async (dispatch) => {
 
     if (oldPassIsValid.data && formHasNoErrors(errors)) {
       const accountRes = await axios.patch(
-        `/api/accounts/${uuid}`,
-        new AccountReqBody({
-          password: newPass,
-        })
+        `/api/accounts/${uuid}`, { password: newPass }
       );
 
       const settings = await getSettings(uuid);
@@ -343,7 +346,7 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
 
 export const attemptUpdateAccount = (payload) => async (dispatch) => {
   const { uuid } = payload;
-  const acctPayload = new AccountReqBody(payload);
+  const acctPayload = new AccountBody(payload);
   const errors = {
     firstName: validateAlphaNumericUnicode(acctPayload.first_name),
     lastName: validateAlphaNumericUnicode(acctPayload.last_name),
@@ -354,7 +357,6 @@ export const attemptUpdateAccount = (payload) => async (dispatch) => {
     state: acctPayload.state
       ? validateAlphaNumericUnicode(acctPayload.state)
       : null,
-    email: validateEmail(acctPayload.email),
     zipCode: acctPayload.zip_code
       ? validateZipCode(acctPayload.zip_code)
       : null,
@@ -386,12 +388,12 @@ export const attemptUpdateAccount = (payload) => async (dispatch) => {
   throw errors;
 };
 
-export const getAccountAndSettingsFromHash = (hash, cookies) => async (
+export const getAccountAndSettingsFromOTP = (token_id, otp, cookies) => async (
   dispatch
 ) => {
   const errors = {};
-  if (!hash) {
-    errors.message = 'required hash is missing';
+  if (!otp) {
+    errors.message = 'required One Time Pad is missing';
     throw errors;
   }
 
@@ -403,11 +405,15 @@ export const getAccountAndSettingsFromHash = (hash, cookies) => async (
     });
     dispatch(completeLogout());
     const userRes = await axios.get(
-      `/api/verify_account_from_hash?verify_hash=${hash}`
+      `/api/verify_identifier/finish?token=${token_id}&otp=${otp}`
     );
+    const account = { ...userRes.data.account };
+    console.log("AAAAAApAAA");
+    console.log(userRes);
+    console.log(account);
     const refreshTime = Date.now();
     dispatch(setRefreshTime(refreshTime));
-    dispatch(setUser(userRes.data));
+    dispatch(setUser(account));
     return;
   } catch (error) {
     console.error(error);

@@ -4,21 +4,22 @@ import { Link, Redirect } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 
 import LoadingSpinner from './LoadingSpinner';
-import { getAccountAndSettingsFromHash } from 'store/user-slice';
+import { getAccountAndSettingsFromOTP } from 'store/user-slice';
 import { startLogout } from 'store/user-slice';
 
 function VerifyAccount(props) {
   const [loading, setLoading] = useState(false);
   const [hasError, setHasError] = useState(null);
   const [canRedirect, setCanRedirect] = useState();
-  const { user, cookies, getAccountAndSettingsFromHash } = props;
+  const { user, cookies, getAccountAndSettingsFromOTP } = props;
 
   useEffect(() => {
     setLoading(true);
     const params = new URLSearchParams(window.location.search);
-    const hash = params.get('hash');
+    const token_id = params.get('token');
+    const otp = params.get('otp');
 
-    getAccountAndSettingsFromHash(hash, cookies)
+    getAccountAndSettingsFromOTP(token_id, otp, cookies)
       .then(() => {
         setTimeout(() => {
           setCanRedirect(true);
@@ -65,7 +66,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   startLogout,
-  getAccountAndSettingsFromHash,
+  getAccountAndSettingsFromOTP,
 };
 
 export default withCookies(
