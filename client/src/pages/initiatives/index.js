@@ -1,4 +1,5 @@
 import React from "react";
+import axios from 'axios';
 import { Container, Row, Col } from "react-bootstrap";
 import { useQuery } from "react-query";
 
@@ -6,10 +7,19 @@ import { Card } from "components/cards/Card";
 import LoadingSpinner from "components/LoadingSpinner";
 import { Typography } from "components/typography/Typography";
 import { CardInitiative } from "components/cards/CardInitiative";
+import { Identifier } from 'store/user-slice/classes';
 
 import "./index.scss";
 
-function Initiatives() {
+function Initiatives(props) {
+  const {
+    user,
+    tokenRefreshTime,
+    deleteRole,
+    initiatives,
+    toggleInitiativeSubscription,
+  } = props;
+
   document.title = "HF Volunteer Portal - Initiatives";
 
   const { isLoading, error, data } = useQuery("initiatives", () =>
@@ -41,6 +51,7 @@ function Initiatives() {
   const cards = data.map(
     (
       {
+        uuid,
         roles_count,
         events_count,
         external_id,
@@ -61,14 +72,25 @@ function Initiatives() {
         actionContent = "Learn More";
       }
 
-      const handleSubmitSubscribe = (values) => {
+      const handleSubmitSubscribe = async (values) => {
         // TODO: update when subscribe endpoint is up
-        return new Promise((resolve) =>
-          setTimeout(() => {
-            resolve();
-            alert(`Submitted!\n\n${JSON.stringify(values, null, 4)}`);
-          }, 500)
-        );
+        const errors = {};
+        try {
+          const requestBody = {
+            entity_type: 'initiative',
+            entity_uuid: uuid,
+            identifier: new Identifier({ identifier: values.email, type: 'email' })
+          };
+
+          await axios.post(
+            `/api/subscriptions/subscribe`, requestBody
+          );
+
+        } catch (error) {
+          console.error(error);
+          errors.api = 'an error occurred while subscribing to the initiative';
+        }
+        throw errors;
       };
 
       return (
@@ -82,6 +104,7 @@ function Initiatives() {
               actionHref={actionHref}
               actionContent={actionContent}
               onSubmitSubscribe={handleSubmitSubscribe}
+              user={user}
             />
           </Col>
         </Row>

@@ -8,6 +8,8 @@ import { Card } from "components/cards/Card";
 import { Icon } from "components/Icon";
 import { Typography } from "components/typography/Typography";
 
+import { toggleInitiativeSubscription } from 'store/user-slice';
+
 import "./CardInitiative.scss";
 import { colors } from "util/colors";
 
@@ -45,44 +47,16 @@ function SubscribeForm({ onSubmit }) {
 
   return (
     <Formik
-      initialValues={{ email: "", contactMe: false, zipcode: "" }}
+      initialValues={{ email: "" }}
       onSubmit={handleSubmit}
       validationSchema={yup.object({
         email: yup
           .string()
           .email("Please enter a valid email")
           .required("Please enter an email"),
-        contactMe: yup.boolean(),
-        zipcode: yup.string().when("contactMe", {
-          is: true,
-          then: yup
-            .string()
-            .required("Please enter a zip code")
-            .matches(VALID_US_ZIPCODE, "Please enter a valid US zip code"),
-        }),
       })}
     >
       {({ handleSubmit, handleChange, values, errors, isSubmitting }) => {
-        let zipcodeField;
-        if (values.contactMe) {
-          zipcodeField = (
-            <Form.Group>
-              <Form.Label>ZIP Code</Form.Label>
-              <Form.Control
-                type="text"
-                name="zipcode"
-                placeholder="Enter your zipcode"
-                value={values.zipcode}
-                onChange={handleChange}
-                isInvalid={Boolean(errors.zipcode)}
-              />
-              <FormControl.Feedback type="invalid">
-                {errors.zipcode}
-              </FormControl.Feedback>
-            </Form.Group>
-          );
-        }
-
         return (
           <Form noValidate onSubmit={handleSubmit}>
             <Form.Group>
@@ -99,18 +73,6 @@ function SubscribeForm({ onSubmit }) {
                 {errors.email}
               </FormControl.Feedback>
             </Form.Group>
-
-            <Form.Group>
-              <Form.Check
-                name="contactMe"
-                label="Organizers may contact me about this initiative’s volunteer opportunities in my area."
-                onChange={handleChange}
-                isInvalid={Boolean(errors.contactMe)}
-                feedback={errors.terms}
-              />
-            </Form.Group>
-
-            {zipcodeField}
 
             <Form.Group>
               <Button
@@ -153,7 +115,24 @@ export function CardInitiative({
             </Typography>
           </Col>
           <Col sm={6}>
-            <SubscribeForm onSubmit={onSubmitSubscribe} />
+            { count != 1 ? (<SubscribeForm onSubmit={onSubmitSubscribe} />) :(
+              <Col xs={12} md={4}>
+                <label className="text-muted ml-lg-5">Subscribed</label>
+                <Form.Switch
+                  id={'involvement-initiative-' + header}
+                  className="custom-switch-md ml-lg-5 text-md-center"
+                  checked={ false}
+                  onChange={() =>
+                    toggleInitiativeSubscription({
+                      user: null,
+                      header,
+                      isSubscribed: false,
+                      tokenRefreshTime: null,
+                    })
+                  }
+                />
+              </Col>
+            )}
           </Col>
         </Row>
       </Card>

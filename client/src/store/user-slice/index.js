@@ -404,7 +404,7 @@ export const getAccountAndSettingsFromOTP = (token_id, otp, cookies) => async (
     });
     dispatch(completeLogout());
     const userRes = await axios.get(
-      `/api/verify_identifier/finish?token=${token_id}&otp=${otp}`
+      `/api/verify_token/finish?token=${token_id}&otp=${otp}`
     );
     const account = { ...userRes.data.account };
     const refreshTime = Date.now();

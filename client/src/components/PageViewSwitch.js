@@ -50,7 +50,7 @@ function PageViewSwitch() {
           exact
           component={CheckRegisterEmail}
         />
-        <Route path="/verify_account" exact component={VerifyAccount} />
+        <Route path="/verify_token" exact component={VerifyAccount} />
         <Route
           path="/cancel_registration"
           exact
