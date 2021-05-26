@@ -287,6 +287,13 @@ def test_account_password_reset_hash_stored(db):
     assert settings.password_reset_time is not None
     client.delete(f'api/accounts/{uuid}')
 
+def create_test_account(mock_send, db, client):
+    mock_send.return_value = MockResponse(True)
+    response = client.post(f'api/accounts/', json=valid_account_creation_request).json()
+    uuid = response['uuid']
+    verify_account_with_uuid(db, client, uuid)
+    mock_send.reset_mock()
+    return response
 
 def test_reset_account_password_with_hash(db):
     # Create an account, set a reset hash, create a new client without tokens, get new tokens from
@@ -298,7 +305,7 @@ def test_reset_account_password_with_hash(db):
     response = client.post(f'api/accounts/', json=request).json()
     uuid = response['uuid']
 
-    verify_account_with_uuid(db, uuid)
+    verify_account_with_uuid(db, client, uuid)
 
     # notification for valid username
     resp = client.post(f'api/notifications/',
@@ -339,7 +346,7 @@ def test_reset_account_password_with_hash(db):
     assert resp.status_code < 400
 
 # Testing helper only
-def verify_account_with_uuid(db, uuid):
+def verify_account_with_uuid(db, client, uuid):
     account_obj = db.query(Account).filter_by(uuid=uuid).first()
     identifiers = account_obj.personal_identifiers
     for identifier in identifiers:
@@ -352,7 +359,7 @@ def verify_account_with_uuid(db, uuid):
         token = identifier.verification_token
 
         resp = client.get(
-            f'api/verify_identifier/finish?token={str(token.uuid)}&otp={token.otp}')
+            f'api/verify_token/finish?token={str(token.uuid)}&otp={token.otp}')
         assert resp.status_code == 200, resp.json()
 
 def test_verify_account_with_token(db):
@@ -381,7 +388,7 @@ def test_verify_account_with_token(db):
     token = identifier.verification_token
 
     resp = client.get(
-        f'api/verify_identifier/finish?token={str(token.uuid)}&otp={token.otp}')
+        f'api/verify_token/finish?token={str(token.uuid)}&otp={token.otp}')
 
     # account w/ settings
     assert resp.status_code == 200

@@ -90,7 +90,7 @@ def create_verification_registration_email(first_name: str,
                                            verify_url: str,
                                            db: Session):
 
-    message_body = CreateParagraph(f'Hi {first_name},')
+    message_body = CreateParagraph(f'Hi {first_name}, ')
     message_body += CreateParagraph(
         f"""We have received a request to create an account associated with this email.
         Please click below to verify your account""")
@@ -99,6 +99,23 @@ def create_verification_registration_email(first_name: str,
     message_body += CreateParagraph(
         f"""If this action was not performed by you or performed by accident,
         please ignore this message and the registration will be cancelled.""")
+
+    email_message = BASE_EMAIL_TEMPLATE.format(body_text=message_body)
+    return email_message
+
+def create_subscription_verification_email(verify_url: str,
+                                           entity_type: str,
+                                           entity_name: str):
+
+    message_body = CreateParagraph(f'Hi Friend, ')
+    message_body += CreateParagraph(
+        f"""We have received a request to subscribe this email to the
+        {entity_type} "{entity_name}". Please click below to verify this subscription.""")
+    message_body += CreateButton("Subscribe", verify_url)
+
+    message_body += CreateParagraph(
+        f"""If this action was not performed by you or performed by accident,
+        please ignore this message and the subscription will be cancelled.""")
 
     email_message = BASE_EMAIL_TEMPLATE.format(body_text=message_body)
     return email_message

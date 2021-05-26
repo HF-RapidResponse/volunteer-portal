@@ -25,7 +25,7 @@ class Initiative(AirtableRow, Base):
 
     def __repr__(self):
         return "Initiative(initiative_uuid='%s', initiative_external_id='%s', name='%s')" % (
-                                self.uuid, self.external_id, self.name)
+            self.uuid, self.external_id, self.initiative_name)
 
     @hybrid_property
     def hero_image_url(self):

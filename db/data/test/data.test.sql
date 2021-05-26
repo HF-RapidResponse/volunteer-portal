@@ -107,6 +107,17 @@ CREATE TYPE public.roletype AS ENUM (
 
 ALTER TYPE public.roletype OWNER TO admin;
 
+--
+-- Name: subscriptionentity; Type: TYPE; Schema: public; Owner: admin
+--
+
+CREATE TYPE public.subscriptionentity AS ENUM (
+    'INITIATIVE'
+);
+
+
+ALTER TYPE public.subscriptionentity OWNER TO admin;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -231,6 +242,22 @@ CREATE TABLE public.personal_identifiers (
 ALTER TABLE public.personal_identifiers OWNER TO admin;
 
 --
+-- Name: subscriptions; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.subscriptions (
+    uuid uuid NOT NULL,
+    entity_type public.subscriptionentity NOT NULL,
+    entity_uuid uuid,
+    verified boolean NOT NULL,
+    identifier_uuid uuid,
+    account_uuid uuid
+);
+
+
+ALTER TABLE public.subscriptions OWNER TO admin;
+
+--
 -- Name: verification_tokens; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -239,7 +266,8 @@ CREATE TABLE public.verification_tokens (
     created_at timestamp without time zone NOT NULL,
     already_used boolean NOT NULL,
     counter bigint NOT NULL,
-    personal_identifier_uuid uuid
+    personal_identifier_uuid uuid,
+    subscription_uuid uuid
 );
 
 
@@ -356,6 +384,14 @@ ALTER TABLE ONLY public.personal_identifiers
 
 
 --
+-- Name: subscriptions subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.subscriptions
+    ADD CONSTRAINT subscriptions_pkey PRIMARY KEY (uuid);
+
+
+--
 -- Name: verification_tokens verification_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -401,6 +437,20 @@ CREATE INDEX ix_role_id ON public.volunteer_openings USING hash (id);
 
 
 --
+-- Name: ix_sub_account_uuid; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX ix_sub_account_uuid ON public.subscriptions USING hash (account_uuid);
+
+
+--
+-- Name: ix_sub_id_uuid; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX ix_sub_id_uuid ON public.subscriptions USING hash (identifier_uuid);
+
+
+--
 -- Name: ix_value; Type: INDEX; Schema: public; Owner: admin
 --
 
@@ -440,11 +490,35 @@ ALTER TABLE ONLY public.personal_identifiers
 
 
 --
+-- Name: subscriptions subscriptions_account_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.subscriptions
+    ADD CONSTRAINT subscriptions_account_uuid_fkey FOREIGN KEY (account_uuid) REFERENCES public.accounts(uuid);
+
+
+--
+-- Name: subscriptions subscriptions_identifier_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.subscriptions
+    ADD CONSTRAINT subscriptions_identifier_uuid_fkey FOREIGN KEY (identifier_uuid) REFERENCES public.personal_identifiers(uuid);
+
+
+--
 -- Name: verification_tokens verification_tokens_personal_identifier_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.verification_tokens
     ADD CONSTRAINT verification_tokens_personal_identifier_uuid_fkey FOREIGN KEY (personal_identifier_uuid) REFERENCES public.personal_identifiers(uuid);
+
+
+--
+-- Name: verification_tokens verification_tokens_subscription_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.verification_tokens
+    ADD CONSTRAINT verification_tokens_subscription_uuid_fkey FOREIGN KEY (subscription_uuid) REFERENCES public.subscriptions(uuid);
 
 
 --

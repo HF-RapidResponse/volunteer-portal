@@ -30,6 +30,8 @@ class VerificationToken(Base):
     _counter = Column('counter', BigInteger, default=generate_otp_counter, nullable=False)
     personal_identifier_uuid = Column(UUID(as_uuid=True), ForeignKey('personal_identifiers.uuid'))
     personal_identifier = relationship('PersonalIdentifier', foreign_keys=[personal_identifier_uuid], back_populates='verification_token')
+    subscription_uuid = Column(UUID(as_uuid=True), ForeignKey('subscriptions.uuid'))
+    subscription = relationship('Subscription', foreign_keys=[subscription_uuid], back_populates='verification_token')
 
     @hybrid_property
     def otp(self) -> str:
@@ -48,8 +50,6 @@ class VerificationToken(Base):
             raise ValueError(f'Verification token {self.uuid} has expired')
         elif self.already_used:
             raise ValueError(f'Verification token {self.uuid} has been previously successfully verified')
-        elif not self.personal_identifier:
-            raise ValueError(f'Verification token {self.uuid} is no longer verifiable')
 
         verified = otp_generator.verify(otp, self._counter)
         if verified:
@@ -57,6 +57,8 @@ class VerificationToken(Base):
 
             if self.personal_identifier:
                 self.personal_identifier.verified = True
+            if self.subscription:
+                self.subscription.verified = True
 
             session.commit()
 

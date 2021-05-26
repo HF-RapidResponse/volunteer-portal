@@ -3,9 +3,9 @@ import pytest
 from unittest.mock import patch
 from settings import Session
 
+from pydantic import EmailError
 from fastapi.testclient import TestClient
 from sqlalchemy import and_
-from email_validator import EmailNotValidError, validate_email
 from phonenumbers.phonenumberutil import NumberParseException
 from fastapi_jwt_auth import AuthJWT
 
@@ -79,7 +79,7 @@ def test_email_validation():
     good_email = StandardEmailIdentifier(value='good.email@example.com')
     assert good_email.value == 'good.email@example.com'
 
-    with pytest.raises(EmailNotValidError):
+    with pytest.raises(EmailError):
         _ = StandardEmailIdentifier(value='@not.a good email')
 
     with pytest.raises(AssertionError):
@@ -113,10 +113,10 @@ def test_verify_personal_identifier_without_account(mock_send, db, client):
     token = db.query(VerificationToken).filter(and_(PersonalIdentifier.type==IdentifierType.EMAIL, PersonalIdentifier.value=='email_to_verify@example.com')).order_by(VerificationToken.created_at.desc()).first()
 
     finish_response = client.get(
-        f'api/verify_identifier/finish?token={str(token.uuid)}&otp={token.otp}')
+        f'api/verify_token/finish?token={str(token.uuid)}&otp={token.otp}')
 
     assert finish_response.status_code == 200
-    expected = {'msg': 'The provided token\'s personal identifier has been verified',
+    expected = {'msg': 'The provided token\'s associated values have been verified',
                 'account': None}
     assert finish_response.json() == expected
 
@@ -141,7 +141,7 @@ def test_verify_personal_identifier_with_account(mock_send, db, client):
     assert str(token.personal_identifier.account.uuid) == account['uuid']
 
     finish_response = client.get(
-        f'api/verify_identifier/finish?token={str(token.uuid)}&otp={token.otp}')
+        f'api/verify_token/finish?token={str(token.uuid)}&otp={token.otp}')
 
     assert finish_response.status_code == 200, finish_response.json()
     expected = {'msg': None, 'account': account}
