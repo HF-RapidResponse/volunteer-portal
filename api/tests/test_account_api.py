@@ -267,7 +267,9 @@ def test_account_password_reset_notification(mock_send, db):
     client.delete(f'api/accounts/{uuid}')
 
 
-def test_account_password_reset_hash_stored(db):
+@patch('notifications_manager.email_client.send')
+def test_account_password_reset_hash_stored(mock_send, db):
+    mock_send.return_value = MockResponse(True)
     account = valid_account.copy()
     request = valid_account_creation_request.copy()
     request['account'] = account
@@ -291,11 +293,12 @@ def create_test_account(mock_send, db, client):
     mock_send.return_value = MockResponse(True)
     response = client.post(f'api/accounts/', json=valid_account_creation_request).json()
     uuid = response['uuid']
-    verify_account_with_uuid(db, client, uuid)
+    verify_account_with_uuid(mock_send, db, client, uuid)
     mock_send.reset_mock()
     return response
 
-def test_reset_account_password_with_hash(db):
+@patch('notifications_manager.email_client.send')
+def test_reset_account_password_with_hash(mock_send, db):
     # Create an account, set a reset hash, create a new client without tokens, get new tokens from
     # the reset hash link, update password, check old password does not work and new does with
     # the basic auth api.
@@ -305,7 +308,7 @@ def test_reset_account_password_with_hash(db):
     response = client.post(f'api/accounts/', json=request).json()
     uuid = response['uuid']
 
-    verify_account_with_uuid(db, client, uuid)
+    verify_account_with_uuid(mock_send, db, client, uuid)
 
     # notification for valid username
     resp = client.post(f'api/notifications/',
@@ -346,7 +349,8 @@ def test_reset_account_password_with_hash(db):
     assert resp.status_code < 400
 
 # Testing helper only
-def verify_account_with_uuid(db, client, uuid):
+def verify_account_with_uuid(mock_send, db, client, uuid):
+    mock_send.return_value = MockResponse(True)
     account_obj = db.query(Account).filter_by(uuid=uuid).first()
     identifiers = account_obj.personal_identifiers
     for identifier in identifiers:
@@ -362,7 +366,9 @@ def verify_account_with_uuid(db, client, uuid):
             f'api/verify_token/finish?token={str(token.uuid)}&otp={token.otp}')
         assert resp.status_code == 200, resp.json()
 
-def test_verify_account_with_token(db):
+@patch('notifications_manager.email_client.send')
+def test_verify_account_with_token(mock_send, db):
+    mock_send.return_value = MockResponse(True)
     account = valid_account.copy()
     request = valid_account_creation_request.copy()
     request['account'] = account

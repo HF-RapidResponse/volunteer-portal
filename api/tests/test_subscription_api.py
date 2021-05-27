@@ -127,7 +127,9 @@ def test_delete_subscription_with_account(mock_send, db, initiative, client):
   assert account is not None
   assert account.primary_email_identifier is not None
 
-def test_delete_subscription_without_account(db, initiative, client):
+@patch('notifications_manager.email_client.send')
+def test_delete_subscription_without_account(mock_send, db, initiative, client):
+  mock_send.return_value = MockResponse(True)
   id = {'identifier': 'test2@gmail.com',
         'type': 'email'}
   request = { 'entity_type': 'initiative',
