@@ -1,15 +1,15 @@
-import React from "react";
+import React from 'react';
 import axios from 'axios';
-import { Container, Row, Col } from "react-bootstrap";
-import { useQuery } from "react-query";
+import { Container, Row, Col } from 'react-bootstrap';
+import { useQuery } from 'react-query';
 
-import { Card } from "components/cards/Card";
-import LoadingSpinner from "components/LoadingSpinner";
-import { Typography } from "components/typography/Typography";
-import { CardInitiative } from "components/cards/CardInitiative";
+import { Card } from 'components/cards/Card';
+import LoadingSpinner from 'components/LoadingSpinner';
+import { Typography } from 'components/typography/Typography';
+import { CardInitiative } from 'components/cards/CardInitiative';
 import { Identifier } from 'store/user-slice/classes';
 
-import "./index.scss";
+import './index.scss';
 
 function Initiatives(props) {
   const {
@@ -20,10 +20,10 @@ function Initiatives(props) {
     toggleInitiativeSubscription,
   } = props;
 
-  document.title = "HF Volunteer Portal - Initiatives";
+  document.title = 'HF Volunteer Portal - Initiatives';
 
-  const { isLoading, error, data } = useQuery("initiatives", () =>
-    fetch("/api/initiatives/").then((response) => response.json())
+  const { isLoading, error, data } = useQuery('initiatives', () =>
+    fetch('/api/initiatives/').then((response) => response.json())
   );
 
   if (isLoading) {
@@ -66,10 +66,10 @@ function Initiatives(props) {
       let actionContent;
       if (roles_count > 0 || events_count > 0) {
         actionHref = `/initiatives/${external_id}`;
-        actionContent = "View Events & Roles";
+        actionContent = 'View Events & Roles';
       } else if (details_url) {
         actionHref = details_url;
-        actionContent = "Learn More";
+        actionContent = 'Learn More';
       }
 
       const handleSubmitSubscribe = async (values) => {
@@ -79,13 +79,13 @@ function Initiatives(props) {
           const requestBody = {
             entity_type: 'initiative',
             entity_uuid: uuid,
-            identifier: new Identifier({ identifier: values.email, type: 'email' })
+            identifier: new Identifier({
+              identifier: values.email,
+              type: 'email',
+            }),
           };
 
-          await axios.post(
-            `/api/subscriptions/subscribe`, requestBody
-          );
-
+          await axios.post(`/api/subscriptions/subscribe`, requestBody);
         } catch (error) {
           console.error(error);
           errors.api = 'an error occurred while subscribing to the initiative';
@@ -99,6 +99,7 @@ function Initiatives(props) {
             <CardInitiative
               count={idx + 1}
               header={initiative_name}
+              uuid={uuid}
               description={content}
               imageSrc={hero_image_url}
               actionHref={actionHref}

@@ -19,14 +19,14 @@ router = APIRouter()
 # However, they're useful to have when running locally for debugging purposes
 
 
-# @router.get("/accounts/", response_model=List[AccountResponseSchema])
-# def get_all_accounts(db: Session = Depends(get_db)):
-#     return db.query(Account).all()
+@router.get("/accounts/", response_model=List[AccountResponseSchema])
+def get_all_accounts(db: Session = Depends(get_db)):
+    return db.query(Account).all()
 
 
-# @router.get("/account_settings/", status_code=200)
-# def get_all_account_settings(db: Session = Depends(get_db)):
-#     return db.query(AccountSettings).all()
+@router.get("/account_settings/", status_code=200)
+def get_all_account_settings(db: Session = Depends(get_db)):
+    return db.query(AccountSettings).all()
 
 
 def create_access_and_refresh_tokens(user_id: str, Authorize: AuthJWT):
@@ -121,6 +121,7 @@ def check_identifier_on_create(id_state, identifier):
         message = f"An account with the {identifier.type.value} {identifier.value} already exists"
         raise HTTPException(
             status_code=400, detail={identifier.type.value: message})
+
 
 def check_for_existing_username(username: str, db: Session):
 

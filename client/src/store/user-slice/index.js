@@ -22,6 +22,7 @@ const userSlice = createSlice({
     firstAcctPage: null,
     tokenRefreshTime: null,
     initLoading: false,
+    subscriptions: [],
   },
 
   reducers: {
@@ -98,12 +99,14 @@ const getSettings = async (id) => {
   }
 
   try {
-    const getRes = await axios.get(`/api/account_settings/${id}`);
-    const settings = getRes.data;
-    if (settings) {
-      settings.initiative_map = await updateInitiativeMap(
-        settings.initiative_map
-      );
+    const settingsRes = await axios.get(`/api/account_settings/${id}`);
+    const initMapRes = await axios.get(
+      `/api/subscriptions/account/${id}/initiative_map`
+    );
+    const settings = settingsRes.data;
+    const initiativeMap = initMapRes.data;
+    if (settings && initiativeMap) {
+      settings.initiative_map = await updateInitiativeMap(initiativeMap);
     }
     return settings;
   } catch (error) {
@@ -230,10 +233,11 @@ export const attemptRegister = (payload) => async (dispatch) => {
 
   try {
     sanitizeData(payload);
-    let request = { account: payload,
-      identifier: { identifier: payload.email,
-        type: 'email'},
-      password: payload.password};
+    let request = {
+      account: payload,
+      identifier: { identifier: payload.email, type: 'email' },
+      password: payload.password,
+    };
 
     const objPayload = new AccountCreateReqBody(request);
     const accountRes = await axios.post(`/api/accounts/`, objPayload);
@@ -242,7 +246,7 @@ export const attemptRegister = (payload) => async (dispatch) => {
       const obj = {
         account_uuid: createdAcct.uuid,
         identifier: createdAcct.email,
-        type: "email",
+        type: 'email',
       };
       await axios.post(`/api/verify_identifier/start`, obj);
     }
@@ -269,9 +273,9 @@ export const attemptChangePassword = (payload) => async (dispatch) => {
     const oldPassIsValid = await axios.post(`/api/verify_password`, acctReqObj);
 
     if (oldPassIsValid.data && formHasNoErrors(errors)) {
-      const accountRes = await axios.patch(
-        `/api/accounts/${uuid}`, { password: newPass }
-      );
+      const accountRes = await axios.patch(`/api/accounts/${uuid}`, {
+        password: newPass,
+      });
 
       const settings = await getSettings(uuid);
       const userCopy = { ...accountRes.data, ...settings };
@@ -321,21 +325,39 @@ export const basicPropUpdate = (payload) => async (dispatch) => {
 };
 
 export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
-  const { user, initiative_name, isSubscribed, tokenRefreshTime } = payload;
+  const {
+    user,
+    uuid,
+    initiative_name,
+    isSubscribed,
+    tokenRefreshTime,
+  } = payload;
   let userCopy = { ...user };
   userCopy.initiative_map = {
     ...userCopy.initiative_map,
   };
-  userCopy.initiative_map[initiative_name] = !isSubscribed;
-
+  userCopy.initiative_map[initiative_name] = isSubscribed;
   try {
     dispatch(refreshTokenIfNeeded(tokenRefreshTime));
-    const settingsReq = new SettingsReqBody(userCopy);
-    const response = await axios.put(
-      `/api/account_settings/${settingsReq.uuid}`,
-      settingsReq
-    );
-    userCopy = { ...userCopy, ...response.data };
+    if (isSubscribed) {
+      const subscribeReqObj = {
+        entity_type: 'initiative',
+        entity_uuid: uuid,
+        identifier: {
+          identifier: user.email,
+          type: 'email',
+        },
+      };
+      await axios.post(`/api/subscriptions/subscribe`, subscribeReqObj);
+    } else {
+      const unsubReqObj = {
+        data: {
+          entity_type: 'initiative',
+          entity_uuid: uuid,
+        },
+      };
+      await axios.delete(`/api/subscriptions/${uuid}`, unsubReqObj);
+    }
     dispatch(setUser(userCopy));
   } catch (error) {
     console.error(error);

@@ -18,7 +18,9 @@ router = APIRouter()
 
 # map the entity type to a DB orm object and function for extracting values needed
 # for the notification
-entity_type_map = {'initiative': (Initiative, lambda x: {'name': x.initiative_name})}
+entity_type_map = {'initiative': (
+    Initiative, lambda x: {'name': x.initiative_name})}
+
 
 @router.post("/subscribe")
 def subscribe(request: SubscribeRequest, Authorize: AuthJWT = Depends(),
@@ -29,7 +31,8 @@ def subscribe(request: SubscribeRequest, Authorize: AuthJWT = Depends(),
 
     entity_type = request.entity_type
     db_model, field_lookup_fn = entity_type_map[entity_type]
-    subscription_entity = db.query(db_model).filter_by(uuid=request.entity_uuid).first()
+    subscription_entity = db.query(db_model).filter_by(
+        uuid=request.entity_uuid).first()
     if not subscription_entity:
         raise HTTPException(status_code=404,
                             detail="The requested {entity_type} cannot be found.")
@@ -39,7 +42,8 @@ def subscribe(request: SubscribeRequest, Authorize: AuthJWT = Depends(),
 
     if account:
         if request.identifier:
-            logging.warning("Ignoring identifier in subscription for logged-in account.")
+            logging.warning(
+                "Ignoring identifier in subscription for logged-in account.")
         identifier = account.primary_email_identifier
 
         existing_subscription = db.query(Subscription)\
@@ -92,13 +96,14 @@ def subscribe(request: SubscribeRequest, Authorize: AuthJWT = Depends(),
 
 
 @router.delete("/{uuid}")
-def unsubscribe(uuid: str, request: UnsubscribeRequest, Authorize: AuthJWT = Depends(),
+def unsubscribe(uuid, request: UnsubscribeRequest, Authorize: AuthJWT = Depends(),
                 db: Session = Depends(get_db)):
     Authorize.jwt_optional()
     account_uuid = Authorize.get_jwt_subject()
-
+    print('what is account_uuid?', account_uuid)
+    print('What is uuid?', uuid)
     if account_uuid:
-        sub = db.query(Subscription).filter_by(uuid=uuid)\
+        sub = db.query(Subscription).filter_by(entity_uuid=uuid)\
                                     .filter_by(account_uuid=account_uuid).first()
         if sub:
             db.delete(sub)
@@ -123,12 +128,14 @@ def unsubscribe(uuid: str, request: UnsubscribeRequest, Authorize: AuthJWT = Dep
     raise HTTPException(status_code=404,
                         detail="Subscription not found")
 
-@router.get("/account/{uuid}/initiatives")
+
+@ router.get("/account/{uuid}/initiatives")
 def list_account_initiative_subscriptions(uuid: str, uuids_only: bool = False, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
     check_matching_user(uuid, Authorize)
 
     return get_subscribed_initiatives_for_account(db, uuid, uuids_only)
+
 
 def get_subscribed_initiatives_for_account(db, account_uuid, uuids_only=False):
     subscriptions = db.query(Subscription).filter_by(account_uuid=account_uuid)\
@@ -137,16 +144,18 @@ def get_subscribed_initiatives_for_account(db, account_uuid, uuids_only=False):
     if uuids_only:
         return [s.entity_uuid for s in subscriptions]
 
-    initiatives = [db.query(Initiative).filter_by(uuid=s.entity_uuid).first() for s in subscriptions]
+    initiatives = [db.query(Initiative).filter_by(
+        uuid=s.entity_uuid).first() for s in subscriptions]
     return initiatives
 
 
-@router.get("/account/{uuid}/initiative_map")
+@ router.get("/account/{uuid}/initiative_map")
 def get_account_initiative_map(uuid: str, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_required()
     check_matching_user(uuid, Authorize)
 
-    subscribed_initiatives = set(get_subscribed_initiatives_for_account(db, uuid, uuids_only=True))
+    subscribed_initiatives = set(
+        get_subscribed_initiatives_for_account(db, uuid, uuids_only=True))
     all_initiatives = GetAllInitiatives(db)
 
     # map initiative_name: boolean is_subscribed
