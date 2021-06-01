@@ -233,7 +233,7 @@ export const attemptRegister = (payload) => async (dispatch) => {
 
   try {
     sanitizeData(payload);
-    let request = {
+    const request = {
       account: payload,
       identifier: { identifier: payload.email, type: 'email' },
       password: payload.password,
@@ -329,17 +329,17 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
     user,
     uuid,
     initiative_name,
-    isSubscribed,
+    willSubscribe,
     tokenRefreshTime,
   } = payload;
-  let userCopy = { ...user };
+  const userCopy = { ...user };
   userCopy.initiative_map = {
     ...userCopy.initiative_map,
   };
-  userCopy.initiative_map[initiative_name] = isSubscribed;
+  userCopy.initiative_map[initiative_name] = willSubscribe;
   try {
     dispatch(refreshTokenIfNeeded(tokenRefreshTime));
-    if (isSubscribed) {
+    if (willSubscribe) {
       const subscribeReqObj = {
         entity_type: 'initiative',
         entity_uuid: uuid,

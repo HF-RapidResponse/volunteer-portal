@@ -8,8 +8,6 @@ import { Card } from 'components/cards/Card';
 import { Icon } from 'components/Icon';
 import { Typography } from 'components/typography/Typography';
 
-import { toggleInitiativeSubscription } from 'store/user-slice';
-
 import './CardInitiative.scss';
 import { colors } from 'util/colors';
 
@@ -100,7 +98,9 @@ export function CardInitiative({
   actionContent,
   imageSrc,
   onSubmitSubscribe,
+  initiative_name,
   user,
+  toggleInitiativeSubscription,
 }) {
   let subscribeCard;
   if (onSubmitSubscribe) {
@@ -117,25 +117,27 @@ export function CardInitiative({
             </Typography>
           </Col>
           <Col sm={6}>
-            {count != 1 ? (
-              <SubscribeForm onSubmit={onSubmitSubscribe} />
-            ) : (
+            {user ? (
               <Col xs={12} md={4}>
                 <label className="text-muted ml-lg-5">Subscribed</label>
                 <Form.Switch
                   id={'involvement-initiative-' + header}
                   className="custom-switch-md ml-lg-5 text-md-center"
+                  checked={!!user.initiative_map[initiative_name]}
                   onChange={() =>
                     toggleInitiativeSubscription({
                       user,
                       uuid,
                       header,
-                      isSubscribed: false,
+                      initiative_name,
+                      willSubscribe: !user.initiative_map[initiative_name],
                       tokenRefreshTime: null,
                     })
                   }
                 />
               </Col>
+            ) : (
+              <SubscribeForm onSubmit={onSubmitSubscribe} />
             )}
           </Col>
         </Row>

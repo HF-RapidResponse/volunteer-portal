@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useQuery } from 'react-query';
 
@@ -8,6 +9,7 @@ import LoadingSpinner from 'components/LoadingSpinner';
 import { Typography } from 'components/typography/Typography';
 import { CardInitiative } from 'components/cards/CardInitiative';
 import { Identifier } from 'store/user-slice/classes';
+import { toggleInitiativeSubscription } from 'store/user-slice';
 
 import './index.scss';
 
@@ -106,6 +108,8 @@ function Initiatives(props) {
               actionContent={actionContent}
               onSubmitSubscribe={handleSubmitSubscribe}
               user={user}
+              initiative_name={initiative_name}
+              toggleInitiativeSubscription={toggleInitiativeSubscription}
             />
           </Col>
         </Row>
@@ -140,4 +144,13 @@ function Initiatives(props) {
   );
 }
 
-export default Initiatives;
+const mapStateToProps = (state) => {
+  return {
+    user: state.userStore.user,
+    tokenRefreshTime: state.userStore.tokenRefreshTime,
+  };
+};
+
+const mapDispatchToProps = { toggleInitiativeSubscription };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Initiatives);
