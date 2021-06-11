@@ -30,6 +30,7 @@ class AccountCreateRequestSchema(BaseModel):
 class AccountResponseSchema(AccountBaseSchema):
     uuid: UUID
     email: Optional[EmailStr]
+    primary_identifier_type: Optional[str]
 
 
 class AccountBasicLoginSchema(BaseModel):

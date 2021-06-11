@@ -44,6 +44,7 @@ valid_account = {'username': 'DakotaMcclain',
                  'city': 'Lake Robertburgh',
                  'state': 'Virginia',
                  'zip_code': '20101',
+                 'primary_identifier_type': 'email',
                  'roles': ['Sales professional,IT',
                            'Commissioning editor']}
 valid_email_identifier = {'identifier':'rebecca03@thomasrivera.com',

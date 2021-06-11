@@ -117,7 +117,7 @@ function Settings(props) {
             />
           </Col>
         </Row>
-        <Form.Group className={user.oauth ? 'd-none' : null}>
+        <Form.Group className={user.primary_identifier_type == 'email' ? null : 'd-none'}>
           <div className={'mt-3 ' + (data.oldPass ? 'mb-5' : 'mb-4')}>
             <Form.Label>Change Password</Form.Label>
             <Form.Control

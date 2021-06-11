@@ -58,6 +58,18 @@ class Account(Base):
     _primary_phone_number_identifier = relationship('PhoneNumberIdentifier', foreign_keys=[_primary_phone_number_identifier_uuid], uselist=False, post_update=True)
 
     @hybrid_property
+    def primary_identifier(self):
+        if self._primary_email_identifier:
+            return self._primary_email_identifier
+        assert len(self.personal_identifiers) > 0, (
+            'unexpected account state with no identifiers')
+        return self.personal_identifiers[0]
+
+    @hybrid_property
+    def primary_identifier_type(self):
+        return self.primary_identifier.type.value
+
+    @hybrid_property
     def primary_email_identifier(self):
         return self._primary_email_identifier
 
