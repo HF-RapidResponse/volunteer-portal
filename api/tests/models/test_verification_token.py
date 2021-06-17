@@ -70,7 +70,7 @@ def test_already_used_otp(db):
     db.delete(identifier_to_verify)
     db.commit()
 
-def test_previous_token_unverifiable(db):
+def test_previous_token_verification_has_no_affect(db):
     previous_token = VerificationToken()
     identifier_to_verify = PhoneNumberIdentifier(value='+1 1-800-444-4444')
     previous_token.personal_identifier = identifier_to_verify
@@ -82,12 +82,15 @@ def test_previous_token_unverifiable(db):
     db.add(new_token)
     db.commit()
 
-    with pytest.raises(ValueError) as e:
-        otp = previous_token.otp
-        previous_token.verify(otp, db)
-    assert 'is no longer verifiable' in e.value.args[0]
+    otp = previous_token.otp
+    previous_token.verify(otp, db)
+
     assert not identifier_to_verify.verified
 
+    otp = new_token.otp
+    new_token.verify(otp, db)
+
+    assert identifier_to_verify.verified
     db.delete(previous_token)
     db.delete(new_token)
     db.delete(identifier_to_verify)

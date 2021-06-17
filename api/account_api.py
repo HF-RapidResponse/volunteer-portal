@@ -107,9 +107,8 @@ def create_account_settings(uuid, db):
     if matching_acct is None:
         raise HTTPException(
             status_code=400, detail=f"Account with UUID {uuid} does not exist. Cannot create settings")
-    initiative_map = {i[0]: False for i in GetAllInitiativeNames(db)}
     new_settings = AccountSettings(
-        **{"uuid": uuid, 'account_uuid': uuid, 'initiative_map': initiative_map})
+        **{"uuid": uuid, 'account_uuid': uuid})
     db.add(new_settings)
     db.commit()
     return new_settings
@@ -121,6 +120,7 @@ def check_identifier_on_create(id_state, identifier):
         message = f"An account with the {identifier.type.value} {identifier.value} already exists"
         raise HTTPException(
             status_code=400, detail={identifier.type.value: message})
+
 
 def check_for_existing_username(username: str, db: Session):
 

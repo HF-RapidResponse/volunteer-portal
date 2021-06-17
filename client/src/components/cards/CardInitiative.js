@@ -1,34 +1,34 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Button, Row, Col, Form, FormControl, Image } from "react-bootstrap";
-import { Formik } from "formik";
-import * as yup from "yup";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Button, Row, Col, Form, FormControl, Image } from 'react-bootstrap';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
-import { Card } from "components/cards/Card";
-import { Icon } from "components/Icon";
-import { Typography } from "components/typography/Typography";
+import { Card } from 'components/cards/Card';
+import { Icon } from 'components/Icon';
+import { Typography } from 'components/typography/Typography';
 
-import "./CardInitiative.scss";
-import { colors } from "util/colors";
+import './CardInitiative.scss';
+import { colors } from 'util/colors';
 
 const VALID_US_ZIPCODE = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
 function SubscribeForm({ onSubmit }) {
-  const [submission, setSubmission] = React.useState("initial");
+  const [submission, setSubmission] = React.useState('initial');
 
   const handleSubmit = (values, actions) => {
     return onSubmit(values, actions)
       .then(() => {
         actions.setSubmitting(false);
-        setSubmission("success");
+        setSubmission('success');
       })
       .catch(() => {
         actions.setSubmitting(false);
-        setSubmission("error");
+        setSubmission('error');
       });
   };
 
-  if (submission === "success") {
+  if (submission === 'success') {
     return (
       <>
         <Typography kind="big-copy" className="mb-2">
@@ -45,44 +45,16 @@ function SubscribeForm({ onSubmit }) {
 
   return (
     <Formik
-      initialValues={{ email: "", contactMe: false, zipcode: "" }}
+      initialValues={{ email: '' }}
       onSubmit={handleSubmit}
       validationSchema={yup.object({
         email: yup
           .string()
-          .email("Please enter a valid email")
-          .required("Please enter an email"),
-        contactMe: yup.boolean(),
-        zipcode: yup.string().when("contactMe", {
-          is: true,
-          then: yup
-            .string()
-            .required("Please enter a zip code")
-            .matches(VALID_US_ZIPCODE, "Please enter a valid US zip code"),
-        }),
+          .email('Please enter a valid email')
+          .required('Please enter an email'),
       })}
     >
       {({ handleSubmit, handleChange, values, errors, isSubmitting }) => {
-        let zipcodeField;
-        if (values.contactMe) {
-          zipcodeField = (
-            <Form.Group>
-              <Form.Label>ZIP Code</Form.Label>
-              <Form.Control
-                type="text"
-                name="zipcode"
-                placeholder="Enter your zipcode"
-                value={values.zipcode}
-                onChange={handleChange}
-                isInvalid={Boolean(errors.zipcode)}
-              />
-              <FormControl.Feedback type="invalid">
-                {errors.zipcode}
-              </FormControl.Feedback>
-            </Form.Group>
-          );
-        }
-
         return (
           <Form noValidate onSubmit={handleSubmit}>
             <Form.Group>
@@ -101,25 +73,13 @@ function SubscribeForm({ onSubmit }) {
             </Form.Group>
 
             <Form.Group>
-              <Form.Check
-                name="contactMe"
-                label="Organizers may contact me about this initiative’s volunteer opportunities in my area."
-                onChange={handleChange}
-                isInvalid={Boolean(errors.contactMe)}
-                feedback={errors.terms}
-              />
-            </Form.Group>
-
-            {zipcodeField}
-
-            <Form.Group>
               <Button
                 variant="info"
                 type="submit"
                 disabled={isSubmitting}
                 className="float-right"
               >
-                {isSubmitting ? "Subscribing..." : "Subscribe"}
+                {isSubmitting ? 'Subscribing...' : 'Subscribe'}
               </Button>
             </Form.Group>
           </Form>
@@ -131,12 +91,16 @@ function SubscribeForm({ onSubmit }) {
 
 export function CardInitiative({
   count,
+  uuid,
   header,
   description,
   actionHref,
   actionContent,
   imageSrc,
   onSubmitSubscribe,
+  initiative_name,
+  user,
+  toggleInitiativeSubscription,
 }) {
   let subscribeCard;
   if (onSubmitSubscribe) {
@@ -153,7 +117,27 @@ export function CardInitiative({
             </Typography>
           </Col>
           <Col sm={6}>
-            <SubscribeForm onSubmit={onSubmitSubscribe} />
+            {user ? (
+              <Col xs={12} md={4}>
+                <label className="text-muted ml-lg-5">Subscribed</label>
+                <Form.Switch
+                  id={'involvement-initiative-' + header}
+                  className="custom-switch-md ml-lg-5 text-md-center"
+                  checked={!!user.initiative_map[initiative_name].subscription_uuid}
+                  onChange={() =>
+                    toggleInitiativeSubscription({
+                      user,
+                      uuid,
+                      header,
+                      initiative_name,
+                      tokenRefreshTime: null,
+                    })
+                  }
+                />
+              </Col>
+            ) : (
+              <SubscribeForm onSubmit={onSubmitSubscribe} />
+            )}
           </Col>
         </Row>
       </Card>

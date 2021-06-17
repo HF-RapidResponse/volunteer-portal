@@ -107,6 +107,17 @@ CREATE TYPE public.roletype AS ENUM (
 
 ALTER TYPE public.roletype OWNER TO admin;
 
+--
+-- Name: subscriptionentity; Type: TYPE; Schema: public; Owner: admin
+--
+
+CREATE TYPE public.subscriptionentity AS ENUM (
+    'INITIATIVE'
+);
+
+
+ALTER TYPE public.subscriptionentity OWNER TO admin;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -123,7 +134,6 @@ CREATE TABLE public.account_settings (
     show_location boolean NOT NULL,
     organizers_can_see boolean NOT NULL,
     volunteers_can_see boolean NOT NULL,
-    initiative_map json NOT NULL,
     password_reset_hash text,
     password_reset_time timestamp without time zone
 );
@@ -158,7 +168,7 @@ ALTER TABLE public.accounts OWNER TO admin;
 --
 
 CREATE TABLE public.events (
-    id character varying(255) NOT NULL,
+    external_id character varying(255) NOT NULL,
     airtable_last_modified timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     is_deleted boolean NOT NULL,
@@ -179,18 +189,18 @@ ALTER TABLE public.events OWNER TO admin;
 --
 
 CREATE TABLE public.initiatives (
-    id character varying(255) NOT NULL,
+    external_id character varying(255) NOT NULL,
     airtable_last_modified timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     is_deleted boolean NOT NULL,
     uuid uuid NOT NULL,
     initiative_name character varying(255) NOT NULL,
     "order" integer NOT NULL,
-    details_link character varying(255),
+    details_url character varying(255),
     hero_image_urls json[],
-    description text NOT NULL,
-    roles character varying[] NOT NULL,
-    events character varying[] NOT NULL
+    content text NOT NULL,
+    role_ids character varying[] NOT NULL,
+    event_ids character varying[] NOT NULL
 );
 
 
@@ -231,6 +241,22 @@ CREATE TABLE public.personal_identifiers (
 ALTER TABLE public.personal_identifiers OWNER TO admin;
 
 --
+-- Name: subscriptions; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.subscriptions (
+    uuid uuid NOT NULL,
+    entity_type public.subscriptionentity NOT NULL,
+    entity_uuid uuid,
+    verified boolean NOT NULL,
+    identifier_uuid uuid,
+    account_uuid uuid
+);
+
+
+ALTER TABLE public.subscriptions OWNER TO admin;
+
+--
 -- Name: verification_tokens; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -239,7 +265,8 @@ CREATE TABLE public.verification_tokens (
     created_at timestamp without time zone NOT NULL,
     already_used boolean NOT NULL,
     counter bigint NOT NULL,
-    personal_identifier_uuid uuid
+    personal_identifier_uuid uuid,
+    subscription_uuid uuid
 );
 
 
@@ -250,7 +277,7 @@ ALTER TABLE public.verification_tokens OWNER TO admin;
 --
 
 CREATE TABLE public.volunteer_openings (
-    id character varying(255) NOT NULL,
+    external_id character varying(255) NOT NULL,
     airtable_last_modified timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     is_deleted boolean NOT NULL,
@@ -300,11 +327,11 @@ ALTER TABLE ONLY public.accounts
 
 
 --
--- Name: events events_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: events events_external_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.events
-    ADD CONSTRAINT events_id_key UNIQUE (id);
+    ADD CONSTRAINT events_external_id_key UNIQUE (external_id);
 
 
 --
@@ -316,11 +343,11 @@ ALTER TABLE ONLY public.events
 
 
 --
--- Name: initiatives initiatives_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: initiatives initiatives_external_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.initiatives
-    ADD CONSTRAINT initiatives_id_key UNIQUE (id);
+    ADD CONSTRAINT initiatives_external_id_key UNIQUE (external_id);
 
 
 --
@@ -356,6 +383,14 @@ ALTER TABLE ONLY public.personal_identifiers
 
 
 --
+-- Name: subscriptions subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.subscriptions
+    ADD CONSTRAINT subscriptions_pkey PRIMARY KEY (uuid);
+
+
+--
 -- Name: verification_tokens verification_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -364,11 +399,11 @@ ALTER TABLE ONLY public.verification_tokens
 
 
 --
--- Name: volunteer_openings volunteer_openings_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: volunteer_openings volunteer_openings_external_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.volunteer_openings
-    ADD CONSTRAINT volunteer_openings_id_key UNIQUE (id);
+    ADD CONSTRAINT volunteer_openings_external_id_key UNIQUE (external_id);
 
 
 --
@@ -390,14 +425,28 @@ CREATE INDEX ix_account_uuid ON public.personal_identifiers USING hash (account_
 -- Name: ix_event_id; Type: INDEX; Schema: public; Owner: admin
 --
 
-CREATE INDEX ix_event_id ON public.events USING hash (id);
+CREATE INDEX ix_event_id ON public.events USING hash (external_id);
 
 
 --
 -- Name: ix_role_id; Type: INDEX; Schema: public; Owner: admin
 --
 
-CREATE INDEX ix_role_id ON public.volunteer_openings USING hash (id);
+CREATE INDEX ix_role_id ON public.volunteer_openings USING hash (external_id);
+
+
+--
+-- Name: ix_sub_account_uuid; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX ix_sub_account_uuid ON public.subscriptions USING hash (account_uuid);
+
+
+--
+-- Name: ix_sub_id_uuid; Type: INDEX; Schema: public; Owner: admin
+--
+
+CREATE INDEX ix_sub_id_uuid ON public.subscriptions USING hash (identifier_uuid);
 
 
 --
@@ -440,11 +489,35 @@ ALTER TABLE ONLY public.personal_identifiers
 
 
 --
+-- Name: subscriptions subscriptions_account_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.subscriptions
+    ADD CONSTRAINT subscriptions_account_uuid_fkey FOREIGN KEY (account_uuid) REFERENCES public.accounts(uuid);
+
+
+--
+-- Name: subscriptions subscriptions_identifier_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.subscriptions
+    ADD CONSTRAINT subscriptions_identifier_uuid_fkey FOREIGN KEY (identifier_uuid) REFERENCES public.personal_identifiers(uuid);
+
+
+--
 -- Name: verification_tokens verification_tokens_personal_identifier_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.verification_tokens
     ADD CONSTRAINT verification_tokens_personal_identifier_uuid_fkey FOREIGN KEY (personal_identifier_uuid) REFERENCES public.personal_identifiers(uuid);
+
+
+--
+-- Name: verification_tokens verification_tokens_subscription_uuid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.verification_tokens
+    ADD CONSTRAINT verification_tokens_subscription_uuid_fkey FOREIGN KEY (subscription_uuid) REFERENCES public.subscriptions(uuid);
 
 
 --

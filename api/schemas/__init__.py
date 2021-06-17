@@ -6,3 +6,4 @@ from schemas.account import (AccountCreateRequestSchema, AccountResponseSchema, 
                              AccountWithSettings)
 from schemas.account_settings import AccountSettingsSchema
 from schemas.personal_identifier_verification import IdentifierVerificationStart, IdentifierVerificationFinishResponse
+from schemas.subscription import SubscribeRequest, UnsubscribeRequest, SubscriptionObject

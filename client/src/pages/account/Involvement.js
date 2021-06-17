@@ -6,6 +6,7 @@ import { deleteRole } from '../../store/user-slice';
 import VerticalDots from 'components/VerticalDots';
 import initiativeSlice from 'store/initiative-slice';
 import { toggleInitiativeSubscription } from 'store/user-slice';
+import { Identifier } from 'store/user-slice/classes';
 
 function Involvement(props) {
   const {
@@ -31,7 +32,7 @@ function Involvement(props) {
     </a>
   ));
 
-  const initiativesToRender = [];
+  let initiativesToRender = [];
   if (user) {
     for (let i = 0; i < user.roles.length; i++) {
       const role = user.roles[i];
@@ -59,43 +60,52 @@ function Involvement(props) {
       );
     }
 
-    if (user.initiative_map) {
-      Object.entries(user.initiative_map).forEach(
-        ([initiative_name, isSubscribed]) => {
-          initiativesToRender.push(
-            <Row className="mt-2 mb-2" key={'initiative-' + initiative_name}>
-              <Col xs={12} md={8}>
-                <Form.Group>
-                  <Form.Control type="name" value={initiative_name} readOnly />
-                </Form.Group>
-              </Col>
-              <Col xs={12} md={4}>
-                <Row>
-                  <Col xs={8} sm={7} md={12} className="d-md-none">
-                    <label className="text-muted ml-lg-5">Subscribed</label>
-                  </Col>
-                  <Col xs={4} sm={5} md={12}>
-                    <Form.Switch
-                      id={'involvement-initiative-' + initiative_name}
-                      className="custom-switch-md ml-lg-5 text-md-center"
-                      checked={isSubscribed}
-                      onChange={() =>
-                        toggleInitiativeSubscription({
-                          user,
-                          initiative_name,
-                          isSubscribed,
-                          tokenRefreshTime,
-                        })
-                      }
-                    />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          );
-        }
-      );
-    }
+    initiativesToRender = initiatives.map(
+      ({
+        uuid,
+        header,
+        roles_count,
+        events_count,
+        external_id,
+        details_url,
+        initiative_name,
+        content,
+        hero_image_url,
+      }) => {
+        return (
+          <Row className="mt-2 mb-2" key={'initiative-' + initiative_name}>
+            <Col xs={12} md={8}>
+              <Form.Group>
+                <Form.Control type="name" value={initiative_name} readOnly />
+              </Form.Group>
+            </Col>
+            <Col xs={12} md={4}>
+              <Row>
+                <Col xs={8} sm={7} md={12} className="d-md-none">
+                  <label className="text-muted ml-lg-5">Subscribed</label>
+                </Col>
+                <Col xs={4} sm={5} md={12}>
+                  <Form.Switch
+                    id={'involvement-initiative-' + initiative_name}
+                    className="custom-switch-md ml-lg-5 text-md-center"
+                    checked={!!user.initiative_map[initiative_name].subscription_uuid}
+                    onChange={() =>
+                      toggleInitiativeSubscription({
+                        user,
+                        uuid,
+                        header,
+                        initiative_name,
+                        tokenRefreshTime: null,
+                      })
+                    }
+                  />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        );
+      }
+    );
   }
   return user ? (
     <>

@@ -37,4 +37,4 @@ class VolunteerRole(AirtableRow, Base):
     def __repr__(self):
         return "VolunteerRole(role_uuid='%s', role_external_id='%s', name='%s')" % (
                                 self.uuid, self.external_id, self.role_name)
-    __table_args__ = (Index('ix_role_id', 'id', postgresql_using='hash'),)
+    __table_args__ = (Index('ix_role_id', 'external_id', postgresql_using='hash'),)

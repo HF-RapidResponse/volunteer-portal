@@ -9,3 +9,4 @@ from models.personal_identifier import PersonalIdentifier, IdentifierType, Email
 from models.verification_token import VerificationToken
 from models.account import Account
 from models.account_settings import AccountSettings
+from models.subscription import Subscription, SubscriptionEntity

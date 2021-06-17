@@ -1,19 +1,31 @@
-import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
-import { useQuery } from "react-query";
+import React from 'react';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { Container, Row, Col } from 'react-bootstrap';
+import { useQuery } from 'react-query';
 
-import { Card } from "components/cards/Card";
-import LoadingSpinner from "components/LoadingSpinner";
-import { Typography } from "components/typography/Typography";
-import { CardInitiative } from "components/cards/CardInitiative";
+import { Card } from 'components/cards/Card';
+import LoadingSpinner from 'components/LoadingSpinner';
+import { Typography } from 'components/typography/Typography';
+import { CardInitiative } from 'components/cards/CardInitiative';
+import { Identifier } from 'store/user-slice/classes';
+import { toggleInitiativeSubscription } from 'store/user-slice';
 
-import "./index.scss";
+import './index.scss';
 
-function Initiatives() {
-  document.title = "HF Volunteer Portal - Initiatives";
+function Initiatives(props) {
+  const {
+    user,
+    tokenRefreshTime,
+    deleteRole,
+    initiatives,
+    toggleInitiativeSubscription,
+  } = props;
 
-  const { isLoading, error, data } = useQuery("initiatives", () =>
-    fetch("/api/initiatives/").then((response) => response.json())
+  document.title = 'HF Volunteer Portal - Initiatives';
+
+  const { isLoading, error, data } = useQuery('initiatives', () =>
+    fetch('/api/initiatives/').then((response) => response.json())
   );
 
   if (isLoading) {
@@ -41,6 +53,7 @@ function Initiatives() {
   const cards = data.map(
     (
       {
+        uuid,
         roles_count,
         events_count,
         external_id,
@@ -55,18 +68,33 @@ function Initiatives() {
       let actionContent;
       if (roles_count > 0 || events_count > 0) {
         actionHref = `/initiatives/${external_id}`;
-        actionContent = "View Events & Roles";
+        actionContent = 'View Events & Roles';
       } else if (details_url) {
         actionHref = details_url;
-        actionContent = "Learn More";
+        actionContent = 'Learn More';
       }
 
       const handleSubmitSubscribe = (values) => {
-        // TODO: update when subscribe endpoint is up
         return new Promise((resolve) =>
           setTimeout(() => {
-            resolve();
-            alert(`Submitted!\n\n${JSON.stringify(values, null, 4)}`);
+            const errors = {};
+            try {
+              const requestBody = {
+                entity_type: 'initiative',
+                entity_uuid: uuid,
+                identifier: new Identifier({
+                  identifier: values.email,
+                  type: 'email',
+                }),
+              };
+
+              axios.post(`/api/subscriptions/subscribe`, requestBody);
+              resolve();
+            } catch (error) {
+              console.error(error);
+              errors.api = 'an error occurred while subscribing to the initiative';
+              throw errors;
+            }
           }, 500)
         );
       };
@@ -77,11 +105,15 @@ function Initiatives() {
             <CardInitiative
               count={idx + 1}
               header={initiative_name}
+              uuid={uuid}
               description={content}
               imageSrc={hero_image_url}
               actionHref={actionHref}
               actionContent={actionContent}
               onSubmitSubscribe={handleSubmitSubscribe}
+              user={user}
+              initiative_name={initiative_name}
+              toggleInitiativeSubscription={toggleInitiativeSubscription}
             />
           </Col>
         </Row>
@@ -116,4 +148,13 @@ function Initiatives() {
   );
 }
 
-export default Initiatives;
+const mapStateToProps = (state) => {
+  return {
+    user: state.userStore.user,
+    tokenRefreshTime: state.userStore.tokenRefreshTime,
+  };
+};
+
+const mapDispatchToProps = { toggleInitiativeSubscription };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Initiatives);

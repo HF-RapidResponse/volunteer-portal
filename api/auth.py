@@ -246,12 +246,12 @@ def get_logged_in_user(Authorize: AuthJWT, db: Session) -> Account:
     account_uuid = Authorize.get_jwt_subject()
     return db.query(Account).filter(Account.uuid==account_uuid).first() if account_uuid else None
 
-def get_verification_url_for_token(token: VerificationToken) -> str:
+def get_verification_url_for_token(token: VerificationToken,
+                                   verification_type='account') -> str:
     # WARNING: never send this directly to the front-end
     # only send this to the user through another medium to be verified by our client/api
 
-    return f'{Config["routes"]["client"]}/verify_account?token={token.uuid}&otp={token.otp}'
-
+    return f'{Config["routes"]["client"]}/verify_token?token={token.uuid}&otp={token.otp}&type={verification_type}'
 
 @router.post("/verify_identifier/start")
 def begin_identifer_verification(request: IdentifierVerificationStart, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
@@ -289,8 +289,8 @@ def begin_identifer_verification(request: IdentifierVerificationStart, Authorize
 
     return {'verification_token_uuid': token.uuid}
 
-@router.get("/verify_identifier/finish", response_model=IdentifierVerificationFinishResponse)
-def finish_identifier_verification(token: str, otp: str, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+@router.get("/verify_token/finish", response_model=IdentifierVerificationFinishResponse)
+def finish_token_verification(token: str, otp: str, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
     Authorize.jwt_optional()
     verification_token = db.query(VerificationToken).filter(VerificationToken.uuid == token).first()
     identifier = verification_token.personal_identifier
@@ -299,9 +299,8 @@ def finish_identifier_verification(token: str, otp: str, Authorize: AuthJWT = De
         raise HTTPException(status_code=422, detail='No verification token exists for the provided verification_token_uuid')
 
     try:
+        # This marks any associated identifiers, subscriptions, etc verified
         verified = verification_token.verify(otp, db)
-        identifier.verified = True
-        verification_token.already_used = True
 
         db.flush()
         db.commit()
@@ -312,7 +311,7 @@ def finish_identifier_verification(token: str, otp: str, Authorize: AuthJWT = De
     if not verified:
         logging.error(f'Attempted verification of token {verification_token.uuid} with incorrect OTP')
         raise HTTPException(status_code=422, detail='The provided token and OTP could not be verified')
-    else:
+    elif identifier:
         account = identifier.account
         if account is not None:
             create_access_and_refresh_tokens(
@@ -320,4 +319,4 @@ def finish_identifier_verification(token: str, otp: str, Authorize: AuthJWT = De
             db.flush()
             db.commit()
             return {'account': account}
-        return {'msg': 'The provided token\'s personal identifier has been verified'}
+    return {'msg': 'The provided token\'s associated values have been verified'}

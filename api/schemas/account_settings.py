@@ -11,7 +11,6 @@ class AccountSettingsSchema(BaseModel):
     show_location: bool
     organizers_can_see: bool
     volunteers_can_see: bool
-    initiative_map: Dict
 
     class Config:
         orm_mode = True

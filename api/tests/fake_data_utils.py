@@ -7,7 +7,7 @@ from faker.providers import barcode, job, address  # type: ignore
 
 from models import (NestedInitiative, Initiative, Priority,
                     RoleType, VolunteerRole, VolunteerEvent, Account,
-                    PersonalIdentifier)
+                    PersonalIdentifier, StandardEmailIdentifier)
 
 fake = Faker()
 fake.add_provider(barcode)
@@ -130,6 +130,11 @@ def generate_identifier(type='email'):
                                   verified = True)
     else:
         raise Exception("Unemplemented behavior")
+
+def generate_email_identifier():
+    return StandardEmailIdentifier(
+        value=get_fake_email(),
+        verified = True)
 
 def generate_fake_account():
     return Account(

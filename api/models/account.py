@@ -72,6 +72,9 @@ class Account(Base):
     @hybrid_property
     def primary_email_identifier(self):
         return self._primary_email_identifier
+    @hybrid_property
+    def has_primary_email_identifier(self):
+        return self._primary_email_identifier_uuid is not None
 
     @primary_email_identifier.setter
     def primary_email_identifier(self, email_identifier):

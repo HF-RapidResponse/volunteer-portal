@@ -17,7 +17,7 @@ import LoginCallback from './LoginCallback';
 import Dashboard from './Dashboard';
 import ResetPassword from './ResetPassword';
 import CheckRegisterEmail from './CheckRegisterEmail';
-import VerifyAccount from './VerifyAccount';
+import VerifyToken from './VerifyToken';
 import CancelRegistration from './CancelRegistration';
 
 // initialize GA
@@ -50,7 +50,7 @@ function PageViewSwitch() {
           exact
           component={CheckRegisterEmail}
         />
-        <Route path="/verify_account" exact component={VerifyAccount} />
+        <Route path="/verify_token" exact component={VerifyToken} />
         <Route
           path="/cancel_registration"
           exact

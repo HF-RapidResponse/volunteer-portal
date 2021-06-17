@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from models.base import Base
 import enum
 from uuid import uuid4
+from pydantic import EmailStr
 from sqlalchemy import Column, Text, DateTime, Enum, ForeignKey, Boolean, UniqueConstraint
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.dialects.postgresql import UUID
@@ -9,8 +10,8 @@ from sqlalchemy.ext.indexable import index_property
 from sqlalchemy.sql import func
 from sqlalchemy import Index
 from uuid import uuid4
-from email_validator import validate_email
 import phonenumbers
+from models.subscription import Subscription
 
 class IdentifierType(enum.Enum):
     EMAIL = 'email'
@@ -30,6 +31,7 @@ class PersonalIdentifier(Base):
     verified = Column(Boolean, default=False, nullable=False)
     verification_token = relationship('VerificationToken', back_populates='personal_identifier', uselist=False, cascade='delete')
 
+    subscriptions = relationship('Subscription', foreign_keys=[Subscription.identifier_uuid], cascade='delete')
     # enforcing uniqueness on type + value will make app logic much simpler, we accept the problems if two people share the same email, phone, etc.
     __table_args__ = (UniqueConstraint('type', 'value'),
                       Index('ix_account_uuid', 'account_uuid', postgresql_using='hash'),
@@ -42,7 +44,8 @@ class PersonalIdentifier(Base):
     @validates('value')
     def ensure_valid_value(self, _, value):
         if self.type is IdentifierType.EMAIL:
-            return validate_email(value).email
+            EmailStr.validate(value)
+            return value
         elif self.type is IdentifierType.PHONE:
             phone_number_obj = phonenumbers.parse(value, None)
             assert phonenumbers.is_valid_number(phone_number_obj)
@@ -97,5 +100,3 @@ class SlackIdentifier(PersonalIdentifier):
     }
 
     slack_workspace_id = Column(Text)
-
-    __table_args__ = tuple(UniqueConstraint('type', 'value', 'slack_workspace_id'))

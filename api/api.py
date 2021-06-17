@@ -12,6 +12,8 @@ import auth
 import account_api
 import initiatives_api
 import notifications_api
+import subscriptions_api
+
 from settings import Config, Session, get_db
 import logging
 from uuid import uuid4, UUID
@@ -47,6 +49,11 @@ app.include_router(
 app.include_router(
     notifications_api.router,
     prefix='/api'
+)
+
+app.include_router(
+    subscriptions_api.router,
+    prefix='/api/subscriptions'
 )
 
 
