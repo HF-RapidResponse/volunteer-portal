@@ -134,7 +134,6 @@ CREATE TABLE public.account_settings (
     show_location boolean NOT NULL,
     organizers_can_see boolean NOT NULL,
     volunteers_can_see boolean NOT NULL,
-    initiative_map json NOT NULL,
     password_reset_hash text,
     password_reset_time timestamp without time zone
 );
@@ -169,7 +168,7 @@ ALTER TABLE public.accounts OWNER TO admin;
 --
 
 CREATE TABLE public.events (
-    id character varying(255) NOT NULL,
+    external_id character varying(255) NOT NULL,
     airtable_last_modified timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     is_deleted boolean NOT NULL,
@@ -190,18 +189,18 @@ ALTER TABLE public.events OWNER TO admin;
 --
 
 CREATE TABLE public.initiatives (
-    id character varying(255) NOT NULL,
+    external_id character varying(255) NOT NULL,
     airtable_last_modified timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     is_deleted boolean NOT NULL,
     uuid uuid NOT NULL,
     initiative_name character varying(255) NOT NULL,
     "order" integer NOT NULL,
-    details_link character varying(255),
+    details_url character varying(255),
     hero_image_urls json[],
-    description text NOT NULL,
-    roles character varying[] NOT NULL,
-    events character varying[] NOT NULL
+    content text NOT NULL,
+    role_ids character varying[] NOT NULL,
+    event_ids character varying[] NOT NULL
 );
 
 
@@ -278,7 +277,7 @@ ALTER TABLE public.verification_tokens OWNER TO admin;
 --
 
 CREATE TABLE public.volunteer_openings (
-    id character varying(255) NOT NULL,
+    external_id character varying(255) NOT NULL,
     airtable_last_modified timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     is_deleted boolean NOT NULL,
@@ -328,11 +327,11 @@ ALTER TABLE ONLY public.accounts
 
 
 --
--- Name: events events_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: events events_external_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.events
-    ADD CONSTRAINT events_id_key UNIQUE (id);
+    ADD CONSTRAINT events_external_id_key UNIQUE (external_id);
 
 
 --
@@ -344,11 +343,11 @@ ALTER TABLE ONLY public.events
 
 
 --
--- Name: initiatives initiatives_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: initiatives initiatives_external_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.initiatives
-    ADD CONSTRAINT initiatives_id_key UNIQUE (id);
+    ADD CONSTRAINT initiatives_external_id_key UNIQUE (external_id);
 
 
 --
@@ -400,11 +399,11 @@ ALTER TABLE ONLY public.verification_tokens
 
 
 --
--- Name: volunteer_openings volunteer_openings_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
+-- Name: volunteer_openings volunteer_openings_external_id_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.volunteer_openings
-    ADD CONSTRAINT volunteer_openings_id_key UNIQUE (id);
+    ADD CONSTRAINT volunteer_openings_external_id_key UNIQUE (external_id);
 
 
 --
@@ -426,14 +425,14 @@ CREATE INDEX ix_account_uuid ON public.personal_identifiers USING hash (account_
 -- Name: ix_event_id; Type: INDEX; Schema: public; Owner: admin
 --
 
-CREATE INDEX ix_event_id ON public.events USING hash (id);
+CREATE INDEX ix_event_id ON public.events USING hash (external_id);
 
 
 --
 -- Name: ix_role_id; Type: INDEX; Schema: public; Owner: admin
 --
 
-CREATE INDEX ix_role_id ON public.volunteer_openings USING hash (id);
+CREATE INDEX ix_role_id ON public.volunteer_openings USING hash (external_id);
 
 
 --

@@ -143,8 +143,6 @@ def test_account_creation_and_deletion(db):
     assert resp['show_location'] == True
     assert resp['organizers_can_see'] == True
     assert resp['volunteers_can_see'] == True
-    default_initiatives_map = {x.initiative_name: False for x in initiatives}
-    assert resp['initiative_map'] == default_initiatives_map
 
     del_resp = client.delete(f'api/accounts/{uuid}')
     assert del_resp.status_code < 400
@@ -211,13 +209,8 @@ def test_account_settings_update(db):
     settings = resp.json()
 
     assert 'show_location' in settings
-    assert 'initiative_map' in settings
     assert settings['show_location'] == True
     settings['show_location'] = False
-    im = settings['initiative_map']
-    for k in im.keys():
-        assert im[k] == False
-        im[k] = True
 
     resp = client.put(f'/api/account_settings/{uuid}', json=settings)
     assert resp.status_code < 400
@@ -226,9 +219,6 @@ def test_account_settings_update(db):
     settings = resp.json()
 
     assert settings['show_location'] == False
-    im = settings['initiative_map']
-    for k in im.keys():
-        assert im[k] == True
 
     del_resp = client.delete(f'api/accounts/{uuid}')
     assert del_resp.status_code < 400

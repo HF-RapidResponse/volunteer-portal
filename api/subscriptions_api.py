@@ -1,7 +1,7 @@
 import logging
 
 from fastapi import Depends, HTTPException, APIRouter
-from schemas import SubscribeRequest, UnsubscribeRequest
+from schemas import SubscribeRequest, UnsubscribeRequest, SubscriptionObject
 from models import Initiative, Subscription
 from settings import Session, get_db, Config
 from auth import get_logged_in_user
@@ -11,6 +11,7 @@ from auth import get_verification_url_for_token
 from notifications_api import create_subscription_verification_email
 from account_api import check_matching_user
 from initiatives_api import GetAllInitiatives
+from helpers import row2dict
 
 from fastapi_jwt_auth import AuthJWT
 import notifications_manager
@@ -79,7 +80,7 @@ def subscribe(request: SubscribeRequest, Authorize: AuthJWT = Depends(),
         token.subscription = sub
         db.add(token)
         db.commit()
-        url = get_verification_url_for_token(token)
+        url = get_verification_url_for_token(token, verification_type='subscription')
         message = create_subscription_verification_email(url,
                                                          entity_type,
                                                          entity_info['name'])
@@ -95,16 +96,15 @@ def subscribe(request: SubscribeRequest, Authorize: AuthJWT = Depends(),
     return {'uuid': sub.uuid}
 
 
-@router.delete("/{uuid}")
-def unsubscribe(uuid, request: UnsubscribeRequest, Authorize: AuthJWT = Depends(),
+@router.delete("/{subscription_uuid}")
+def unsubscribe(subscription_uuid, request: UnsubscribeRequest,
+                Authorize: AuthJWT = Depends(),
                 db: Session = Depends(get_db)):
     Authorize.jwt_optional()
     account_uuid = Authorize.get_jwt_subject()
-    print('what is account_uuid?', account_uuid)
-    print('What is uuid?', uuid)
+
     if account_uuid:
-        sub = db.query(Subscription).filter_by(entity_uuid=uuid)\
-                                    .filter_by(account_uuid=account_uuid).first()
+        sub = db.query(Subscription).filter_by(uuid=subscription_uuid).first()
         if sub:
             db.delete(sub)
             db.commit()
@@ -113,7 +113,7 @@ def unsubscribe(uuid, request: UnsubscribeRequest, Authorize: AuthJWT = Depends(
         _, identifier = get_identifier(request.identifier.type,
                                        request.identifier.identifier, db)
         if identifier:
-            sub = db.query(Subscription).filter_by(uuid=uuid)\
+            sub = db.query(Subscription).filter_by(uuid=subscription_uuid)\
                                         .filter_by(identifier_uuid=identifier.uuid).first()
             if sub:
                 db.delete(sub)
@@ -129,23 +129,21 @@ def unsubscribe(uuid, request: UnsubscribeRequest, Authorize: AuthJWT = Depends(
                         detail="Subscription not found")
 
 
-@ router.get("/account/{uuid}/initiatives")
-def list_account_initiative_subscriptions(uuid: str, uuids_only: bool = False, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
-    Authorize.jwt_required()
-    check_matching_user(uuid, Authorize)
-
-    return get_subscribed_initiatives_for_account(db, uuid, uuids_only)
-
-
 def get_subscribed_initiatives_for_account(db, account_uuid, uuids_only=False):
     subscriptions = db.query(Subscription).filter_by(account_uuid=account_uuid)\
                                           .filter_by(entity_type=SubscriptionEntity('initiative'))\
                                           .filter_by(verified=True).all()
-    if uuids_only:
-        return [s.entity_uuid for s in subscriptions]
-
-    initiatives = [db.query(Initiative).filter_by(
-        uuid=s.entity_uuid).first() for s in subscriptions]
+    initiatives = {}
+    for s in subscriptions:
+        if uuids_only:
+            initiatives[s.entity_uuid] = None
+        else:
+            initiative = db.query(Initiative).filter_by(uuid=s.entity_uuid).first()
+            subobj = SubscriptionObject(subscription_uuid=s.uuid,
+                                        entity_object=row2dict(initiative),
+                                        entity_type='initiative',
+                                        entity_uuid=initiative.uuid)
+            initiatives[s.entity_uuid] = subobj
     return initiatives
 
 
@@ -154,9 +152,20 @@ def get_account_initiative_map(uuid: str, Authorize: AuthJWT = Depends(), db: Se
     Authorize.jwt_required()
     check_matching_user(uuid, Authorize)
 
-    subscribed_initiatives = set(
-        get_subscribed_initiatives_for_account(db, uuid, uuids_only=True))
+    subscribed_initiatives = get_subscribed_initiatives_for_account(
+        db, uuid, uuids_only=False)
     all_initiatives = GetAllInitiatives(db)
 
-    # map initiative_name: boolean is_subscribed
-    return {i.initiative_name: i.uuid in subscribed_initiatives for i in all_initiatives}
+    map = {}
+    for i in all_initiatives:
+        if i.uuid not in subscribed_initiatives:
+            subobj = SubscriptionObject(subscription_uuid=None,
+                                        entity_object=row2dict(i),
+                                        entity_type='initiative',
+                                        entity_uuid=i.uuid)
+        else:
+            subobj = subscribed_initiatives[i.uuid]
+        map[i.initiative_name] = subobj
+    # map { initiative_name: subscription object } containing sub_uuid if subscribed
+    # and initiative details
+    return map

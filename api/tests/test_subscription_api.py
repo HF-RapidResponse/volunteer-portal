@@ -194,29 +194,15 @@ def test_list_initiative_subscriptions_for_account(mock_send, db, client):
   response = client.post(f'api/subscriptions/subscribe', json=request)
   assert response.status_code < 400
 
-  response = client.get(f'api/subscriptions/account/{account["uuid"]}/initiatives')
-  assert response.status_code < 400
-  initiatives = response.json()
-  assert len(initiatives) == 2
-  assert 'initiative_name' in initiatives[0]
-
-  response = client.get(f'api/subscriptions/account/{account["uuid"]}/initiatives?uuids_only=true')
-  assert response.status_code < 400
-  initiative_uuids = response.json()
-  assert len(initiatives) == 2
-  assert str(initiative1.uuid) in initiative_uuids
-  assert str(initiative2.uuid) in initiative_uuids
-  assert str(initiative3.uuid) not in initiative_uuids
-
   response = client.get(f'api/subscriptions/account/{account["uuid"]}/initiative_map')
   assert response.status_code < 400
   initiative_map = response.json()
   assert initiative1.initiative_name in initiative_map
-  assert initiative_map[initiative1.initiative_name] == True
+  assert initiative_map[initiative1.initiative_name]['subscription_uuid'] is not None
   assert initiative2.initiative_name in initiative_map
-  assert initiative_map[initiative2.initiative_name] == True
+  assert initiative_map[initiative2.initiative_name]['subscription_uuid'] is not None
   assert initiative3.initiative_name in initiative_map
-  assert initiative_map[initiative3.initiative_name] == False
+  assert initiative_map[initiative3.initiative_name]['subscription_uuid'] is None
 
 @patch('notifications_manager.email_client.send')
 def test_create_duplicate_subscriptions(mock_send, db, initiative, client):

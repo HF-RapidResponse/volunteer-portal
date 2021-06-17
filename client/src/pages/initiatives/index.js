@@ -74,25 +74,29 @@ function Initiatives(props) {
         actionContent = 'Learn More';
       }
 
-      const handleSubmitSubscribe = async (values) => {
-        // TODO: update when subscribe endpoint is up
-        const errors = {};
-        try {
-          const requestBody = {
-            entity_type: 'initiative',
-            entity_uuid: uuid,
-            identifier: new Identifier({
-              identifier: values.email,
-              type: 'email',
-            }),
-          };
+      const handleSubmitSubscribe = (values) => {
+        return new Promise((resolve) =>
+          setTimeout(() => {
+            const errors = {};
+            try {
+              const requestBody = {
+                entity_type: 'initiative',
+                entity_uuid: uuid,
+                identifier: new Identifier({
+                  identifier: values.email,
+                  type: 'email',
+                }),
+              };
 
-          await axios.post(`/api/subscriptions/subscribe`, requestBody);
-        } catch (error) {
-          console.error(error);
-          errors.api = 'an error occurred while subscribing to the initiative';
-        }
-        throw errors;
+              axios.post(`/api/subscriptions/subscribe`, requestBody);
+              resolve();
+            } catch (error) {
+              console.error(error);
+              errors.api = 'an error occurred while subscribing to the initiative';
+              throw errors;
+            }
+          }, 500)
+        );
       };
 
       return (

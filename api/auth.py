@@ -246,12 +246,12 @@ def get_logged_in_user(Authorize: AuthJWT, db: Session) -> Account:
     account_uuid = Authorize.get_jwt_subject()
     return db.query(Account).filter(Account.uuid==account_uuid).first() if account_uuid else None
 
-def get_verification_url_for_token(token: VerificationToken) -> str:
+def get_verification_url_for_token(token: VerificationToken,
+                                   verification_type='account') -> str:
     # WARNING: never send this directly to the front-end
     # only send this to the user through another medium to be verified by our client/api
 
-    return f'{Config["routes"]["client"]}/verify_token?token={token.uuid}&otp={token.otp}'
-
+    return f'{Config["routes"]["client"]}/verify_token?token={token.uuid}&otp={token.otp}&type={verification_type}'
 
 @router.post("/verify_identifier/start")
 def begin_identifer_verification(request: IdentifierVerificationStart, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):

@@ -106,32 +106,11 @@ const getSettings = async (id) => {
     const settings = settingsRes.data;
     const initiativeMap = initMapRes.data;
     if (settings && initiativeMap) {
-      settings.initiative_map = await updateInitiativeMap(initiativeMap);
+      settings.initiative_map = initiativeMap;
     }
     return settings;
   } catch (error) {
     console.error(error);
-  }
-};
-
-export const updateInitiativeMap = async (payload) => {
-  const initiative_map = payload ?? {};
-  const updatedMap = {};
-
-  try {
-    const initiativeResponse = await axios.get(`/api/initiatives/`);
-    const initiatives = initiativeResponse.data;
-
-    if (initiatives) {
-      initiatives.forEach((item) => {
-        updatedMap[item.initiative_name] =
-          initiative_map[item.initiative_name] ?? false;
-      });
-    }
-    return updatedMap;
-  } catch {
-    console.error('error while attempting to update initiative map');
-    return initiative_map;
   }
 };
 
@@ -273,9 +252,8 @@ export const attemptChangePassword = (payload) => async (dispatch) => {
     const oldPassIsValid = await axios.post(`/api/verify_password`, acctReqObj);
 
     if (oldPassIsValid.data && formHasNoErrors(errors)) {
-      const accountRes = await axios.patch(`/api/accounts/${uuid}`, {
-        password: newPass,
-      });
+      const accountRes = await axios.patch(
+        `/api/accounts/${uuid}`, { password: newPass });
 
       const settings = await getSettings(uuid);
       const userCopy = { ...accountRes.data, ...settings };
@@ -329,35 +307,28 @@ export const toggleInitiativeSubscription = (payload) => async (dispatch) => {
     user,
     uuid,
     initiative_name,
-    willSubscribe,
     tokenRefreshTime,
   } = payload;
   const userCopy = { ...user };
   userCopy.initiative_map = {
     ...userCopy.initiative_map,
   };
-  userCopy.initiative_map[initiative_name] = willSubscribe;
+  const subscriptionCopy = { ...userCopy.initiative_map[initiative_name] };
   try {
     dispatch(refreshTokenIfNeeded(tokenRefreshTime));
-    if (willSubscribe) {
+    if (!subscriptionCopy.subscription_uuid) {
       const subscribeReqObj = {
         entity_type: 'initiative',
         entity_uuid: uuid,
-        identifier: {
-          identifier: user.email,
-          type: 'email',
-        },
       };
-      await axios.post(`/api/subscriptions/subscribe`, subscribeReqObj);
+      const subRes = await axios.post(`/api/subscriptions/subscribe`, subscribeReqObj);
+      subscriptionCopy.subscription_uuid = subRes.data.uuid;
     } else {
-      const unsubReqObj = {
-        data: {
-          entity_type: 'initiative',
-          entity_uuid: uuid,
-        },
-      };
-      await axios.delete(`/api/subscriptions/${uuid}`, unsubReqObj);
+      const uuid = subscriptionCopy.subscription_uuid;
+      await axios.delete(`/api/subscriptions/${uuid}`, { data: {} });
+      subscriptionCopy.subscription_uuid = null;
     }
+    userCopy.initiative_map[initiative_name] = subscriptionCopy;
     dispatch(setUser(userCopy));
   } catch (error) {
     console.error(error);
@@ -409,7 +380,7 @@ export const attemptUpdateAccount = (payload) => async (dispatch) => {
   throw errors;
 };
 
-export const getAccountAndSettingsFromOTP = (token_id, otp, cookies) => async (
+export const VerifyOTPMaybeLogin = (token_id, otp, cookies, verification_type) => async (
   dispatch
 ) => {
   const errors = {};
@@ -419,15 +390,18 @@ export const getAccountAndSettingsFromOTP = (token_id, otp, cookies) => async (
   }
 
   try {
+    const userRes = await axios.get(
+      `/api/verify_token/finish?token=${token_id}&otp=${otp}`
+    );
+    if (verification_type != 'account') {
+      return;
+    }
     cookies.remove('user_id', {
       path: '/',
       sameSite: 'none',
       secure: true,
     });
     dispatch(completeLogout());
-    const userRes = await axios.get(
-      `/api/verify_token/finish?token=${token_id}&otp=${otp}`
-    );
     const account = { ...userRes.data.account };
     const refreshTime = Date.now();
     dispatch(setRefreshTime(refreshTime));
@@ -435,7 +409,7 @@ export const getAccountAndSettingsFromOTP = (token_id, otp, cookies) => async (
     return;
   } catch (error) {
     console.error(error);
-    errors.api = 'failed to verify account from hash';
+    errors.api = 'failed to verify token from OTP';
   }
   throw errors;
 };

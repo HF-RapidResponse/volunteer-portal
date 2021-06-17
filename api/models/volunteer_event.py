@@ -26,4 +26,4 @@ class VolunteerEvent(AirtableRow, Base):
         return "VolunteerEvent(uuid='%s', external_id='%s', name='%s')" % (
                                 self.uuid, self.external_id, self.event_name)
 
-    __table_args__ = (Index('ix_event_id', 'id', postgresql_using='hash'),)
+    __table_args__ = (Index('ix_event_id', 'external_id', postgresql_using='hash'),)

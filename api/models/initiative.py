@@ -15,13 +15,13 @@ class Initiative(AirtableRow, Base):
     __tablename__ = 'initiatives'
 
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
-    initiative_name = Column('initiative_name', String(255), nullable=False)
-    order = Column('order', Integer, nullable=False)
-    details_url = Column('details_link', String(255), nullable=True)
-    hero_image_urls = Column('hero_image_urls', ARRAY(JSON))
-    content = Column('description', Text, nullable=False)
-    role_ids = Column('roles', ARRAY(String), default=[], nullable=False)
-    event_ids = Column('events', ARRAY(String), default=[], nullable=False)
+    initiative_name = Column(String(255), nullable=False)
+    order = Column(Integer, nullable=False)
+    details_url = Column(String(255), nullable=True)
+    hero_image_urls = Column(ARRAY(JSON))
+    content = Column(Text, nullable=False)
+    role_ids = Column(ARRAY(String), default=[], nullable=False)
+    event_ids = Column(ARRAY(String), default=[], nullable=False)
 
     def __repr__(self):
         return "Initiative(initiative_uuid='%s', initiative_external_id='%s', name='%s')" % (

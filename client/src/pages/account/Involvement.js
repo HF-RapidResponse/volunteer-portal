@@ -88,14 +88,13 @@ function Involvement(props) {
                   <Form.Switch
                     id={'involvement-initiative-' + initiative_name}
                     className="custom-switch-md ml-lg-5 text-md-center"
-                    checked={!!user.initiative_map[initiative_name]}
+                    checked={!!user.initiative_map[initiative_name].subscription_uuid}
                     onChange={() =>
                       toggleInitiativeSubscription({
                         user,
                         uuid,
                         header,
                         initiative_name,
-                        isSubscribed: !user.initiative_map[initiative_name],
                         tokenRefreshTime: null,
                       })
                     }
